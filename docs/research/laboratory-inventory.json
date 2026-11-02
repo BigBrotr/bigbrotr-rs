@@ -79054,7 +79054,7 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
+      "observed_source": "a3e51472ad7a5832bedc2a00173d91b373d8bdde before current documentation/source-pin update",
       "state": "Main/origin16ad remains current; actual Mac proxy verifier FAIL is retained while Linux runs. Root has a critically approved source-only proxy accounting/admission correction and43 controls PASS, not pushed. Separate seed fixture source work remains partial.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
@@ -79077,10 +79077,10 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root owns watcher15724 and verified proxy fix/evidence changes; no compiler or engine.",
-        "source_work": "Sol measurement_clickhouse_prep owns work/m2-monitor-c3-guards-20261102 in its separate worktree, base b05. Test-only existing-outcome seed/oracle work is partial and NOT_RUN, not integrated.",
-        "review": "Astra approved corrected issuance boundary and the next fixture architecture/closed full-document validator in principle; concrete fixture diff review pending.",
-        "hosted": "CI Sol prepares new16ad acquirer/declarations; Root alone owns long watcher. Previous f4ad terminal/public scan sealed."
+        "integrator": "Root sole integrator; current installed case and both compiler attempts are reaped. Documentation and publication admission next.",
+        "source_work": "Original seed worktree work/m2-monitor-c3-guards-20261102 clean at8129ef53; changes integrated locally into Root, not yet main/pushed.",
+        "review": "Independent bounded Astra reviews approved seed Rust/authority/native/full-document custody, Python oracles/source fence and redaction correction. No active review assignment.",
+        "hosted": "16ad terminal/public audit sealed. Root watcher15724 reaped1 without expiry, PIDs absent; no active hosted observer or new run yet."
       },
       "resources": "b05 builder79279, Rust65458, observer13418 and portable92240 all reaped0; containers stopped/PID0/no OOM. Compiler cache released/reacquired; protected four ELF bytes/fullstat unchanged. Three installed cases64800/13174/63559 all reaped0; respectively20/20/24 owned containers stopped and5/5/9 recorded processes absent. Peer owners joined; borrowed bridge1699209a preserved. No cleanup; original data, failures, .research and source worktrees retained. New source16ad watcher15724/driver2031539/GH2031542 is active; no local engine or compiler activity.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
@@ -79178,7 +79178,11 @@
         "start_ticks": "37534337",
         "run": 41512656056,
         "source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
-        "state": "Root watcher15724 remains active; actual16ad Mac failure sealed separately, Linux still running. Do not cancel or claim Mac product/Rust execution. Corrected-source full qualification remains required."
+        "state": "REAPED_EXIT1_WITHOUT_EXPIRY_TERMINAL_FAILURE_SEALED",
+        "terminal_audit": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation/terminal-audit.json",
+          "sha256": "22b21edc8db6e0ffb623f4e0027548cdaa7af5e0567e8b1aeeed1799723edbb6"
+        }
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",
@@ -79235,15 +79239,14 @@
         "branch": "work/m2-monitor-c3-guards-20261102",
         "base": "b05b0a26",
         "owner": "Sol measurement_clickhouse_prep",
-        "last_observed_local_changes": [
-          "apps/bigbrotr/src/storage/postgres/control_owner.rs",
-          "apps/bigbrotr/src/storage/postgres/monitor_outcome_seed.rs (untracked)",
-          "tests/acceptance/cases/first_launch_monitor_ack_recovery_oracle.py",
-          "tests/acceptance/cases/first_launch_passive_oracle.py",
-          "tests/acceptance/cases/first_launch_monitor_outcome_seed.py (untracked)",
-          "tests/acceptance/test_monitor_existing_outcome.py (untracked)"
-        ],
-        "state": "Partial source work; no build/cache/ELF/engine/remote access; not integrated. Further agent edits may follow this observation."
+        "last_observed_local_changes": [],
+        "state": "Source committed and integrated locally; strict build/Clippy, pure validator and nine-stage installed case PASS; not yet pushed to main. Original469 lint failure andr1 bootstrap verifier failure retained.",
+        "source": "8129ef53feda52593942d367416ba866c44ff39d",
+        "evidence_owner": "P02 initial_measurement_c3_repair.existing_outcome_qualification",
+        "qualified_capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/existing-seed-8129ef53",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-existing-seed-8129ef53",
+        "installed_runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-b05b0a26/acceptance-existing-outcome-r2",
+        "terminal_custody": "Root tools22663/19552 reaped0.23 installed containers stopped/PID0/noOOM,6 recorded children absent, peer joined and original borrowed bridge preserved; r1 all15 stopped. Compilation containers stopped; shared cache115 released/reacquired and original four ELF bytes/fullstat unchanged at qualification. No engine/compiler/CI observer active. Preserve all original data/failures/worktrees."
       }
     }
   }

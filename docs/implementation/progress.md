@@ -5,123 +5,92 @@ Q37/Q38/Q40/Q41/Q42 apply; one plan and Root sole integrator.
 Sol/xhigh is operational default; Astra/xhigh owns bounded critical review.
 Public development does not authorize official releases, packages or deployment.
 
-## Revision and demonstrated M2 capability
+## Revision and demonstrated capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **27339a35** before the current
-proxy-fix/evidence commit. Canonical main/origin and GitHub main are independently
-verified **16adbee0** after the authorized fast-forward/push. Root has the two proxy helper/control edits and current P01/inventory/checkpoint
-updates; the BigBrotr product remains qualified b05.
-Do not push this journal immediately and cancel the active same-ref CI run.
+`work/m2-finite-history-20261101`, observed HEAD **a3e51472** before this coherent
+record/source-pin update. Canonical main/origin remain **16adbee0**. Root's local
+commits include the verified proxy correction, private Control-owned seed, maintained
+builder/controls and reviewed diagnostic fix; they are not yet pushed.
 
-Corrected product **b05b0a26**, tree **a9dc791d**, passes all three real installed
-Monitor recovery journeys with its matching0044 ledger and exact-source observer:
+Qualified product **b05b0a26**, tree **a9dc791d**, now passes four real installed
+Monitor recovery journeys with matching0044 ledger and exact-source observer:
 
-- **Native I4/PG C3:** atomically copy the independently authenticated original
-  outcome4 and C4/dependency10 under fresh Control; separately confirm ACK4;
-  exact retry adds no Native write. Eight stages PASS, receipt **d25a3e48**.
-- **Persisted C4/ACK reply loss regression:** default fresh recovery reaches
-  closing I4/A4/R0 while preserving originals/xmins; retry adds no Native write.
-  Eight stages PASS, receipt **3b9d7019**.
-- **Repair faults:** withheld COMMIT preserves C3/A3; completed repair reply lost
-  preserves C4/A3; fresh direct completion confirms ACK4; retry adds no write.
-  Ten stages PASS, receipt **763a476e**.
+- Native I4/PG C3: authenticate original outcome4 and atomically advance
+  C4/dependency10 under fresh Control; ACK4 and no-write retry. Eight stages PASS.
+- Persisted C4/ACK reply loss: preserve originals/xmins while completing
+  closing I4/A4/R0 and retry. Eight stages PASS.
+- Repair COMMIT withheld and completed-but-unobserved: preserve honest uncertainty
+  and withhold ACK until fresh direct completion. Ten stages PASS.
+- **Existing outcome4/C3:** genuine same-backend Control test seed records only
+  authenticated outcome4. Ordinary installed recovery preserves the whole row,
+  recorder/timestamp/xmin, advances only C4/dependency10 under fresh Control, adds
+  one Native ACK write, and retries without writes. **Nine stages PASS.**
 
-All original inputs, receipt identities, scientific closure and applicable xmins
-are retained. One peer, no replacement probe or Sync work. Actual resource audits
-found20/20/24 containers stopped/PID0/no OOM,5/5/9 recorded processes absent and
-peers joined; borrowed bridge1699209a preserved. This is bounded initial recovery,
-not complete scheduling, fleet capacity, retirement or full M2.
+The last case uses separately attributed private `cfg(test)` artifact **8129ef53**;
+compile-only/strict all-target Clippy and its pure full-document validator PASS.
+Ordinary suites still ignore the connected seed. Original469 compilation passed
+but Clippy failed; that unqualified artifact was never used. Original installedr1
+failed at bootstrap because the verifier omitted declared config-show redaction;
+four later stages are NOT_RUN. Reviewed diagnostic projection correction retains
+complete independent typed policy/hash/length and deployment digest. Saved output
+replay and16 controls passed before realr2. No product or Rust artifact rebuild
+was needed. Tutorial's bounded test-only source-pin controls14/14 PASS.
 
 [P02](evidence/p02-ingest-dictionary-codec-20260918.json),
-`producer_ack_followthrough.initial_measurement_c3_repair.corrected_qualification`,
-owns exact commands, receipts, identities, reviews and limits. Strict compilation,
-Clippy/Rustdoc and worker/parent release PASS; four affected unfiltered Rust
-targets702/234/40/24 PASS (three dedicated library ignores remain separate).
-Observer build and655 acceptance/13 export/42 proxy controls PASS. The original
-eb384 library FAIL exposed missing live-issuance validation; reviewed77cc fix
-retains its assertion and adds direct historical ACK-conversion refusal. Original
-preparation, Clippy and installed fixture failures remain preserved, never relabelled.
-Earlier M1/passive/Archive/Index/quota/history evidence retains its original scope.
+`producer_ack_followthrough.initial_measurement_c3_repair`, owns exact identities,
+commands, reviews, original failures and receipts. The new
+`existing_outcome_qualification` records receipt **5b8bb6f1**,23 containers stopped,
+6 recorded child processes absent, peer joined and bridge1699209a preserved.
+All prior science, inputs, receipts and applicable xmins remain intact; one peer,
+no new probe or Sync. This is bounded initial recovery, not full M2.
 
-## Hosted CI
+## Hosted CI and publication
 
-[P01](evidence/p01-ci-hosted-foundation-20261026.json),
-`latest_verified_hosted_execution`, now names actual
-[f4ad run41491599696](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696):
-**36/36 required foundation commands PASS**, scope20PASS, zero FAIL/requiredNOT_RUN.
-Both Linux jobs are original attempt1 successes; the actual Mac attempt2 succeeded,
-including all four corrected selection regressions. Mac acceptance623PASS plus13
-source-bound Linux-only SKIP are distinct; Linux636PASS each. Each platform passed
-41 proxy/13 export/11 mandatory Native controls. Three full source manifests,
-compiler/native/worker identity and nine workspace postguards verified.
+[P01](evidence/p01-ci-hosted-foundation-20261026.json) retains
+[f4ad run41491599696](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696)
+as the latest fully qualified hosted execution:36 required commands PASS across
+three platforms. Later source is not covered by that success.
 
-Audit **e0251a89**, public receipt **7b2104d0**: four artifacts/519 members and ten
-attempt2 logs, zero new/unclassified credential candidates or provider alerts.
-Pattern/asynchronous-provider limits remain. Original provider admission failure
-and earlier Mac fixture FAIL are preserved. Root watcher59722 reaped0 without
-expiry; recorded PIDs absent. No active hosted observer. f4ad success does not
-qualify the changed b05 source on GitHub. The coherent16ad publication passed
-source/object/path/credential admission (15 commits/98 objects; no new/unclassified
-credentials or private captures), plus exact documentation3/3. Push receipt88ecc73f
-confirms remote/main and origin/main. Actual
-[run41512656056](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41512656056)
-now executes exact16ad/push/attempt1: scope125508187004PASS, three platforms
-125508351879/125508351817/125508351877 RUNNING at initial observation. Source4274,
-full36 commands,655/42/13 portable suites and **12** mandatory Native controls
-are source-bound. Root watcher **15724**, driver2031539/GH2031542 with verified
-start ticks37534335/37534337,60s/7500s bound, is the only active observer. On terminal
-wake ci_recovery_publication_sol for acquisition/public audit. Do not supersede it.
+[16ad run41512656056](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41512656056)
+is terminal **FAIL:31 required PASS/1FAIL/4NOT_RUN**. Both Linux jobs completed
+all product/Rust/12 Native gates. Mac failed an executed proxy verifier race after
+642 acceptance PASS/13 Linux-only SKIP,13 export PASS and41 proxy PASS/1FAIL;
+Mac product build/Clippy/Rustdoc/Rust tests and all12 Native are NOT_RUN. This is
+verifier failure, not billing or cancellation. Original packet/terminal event
+was not captured. Terminal audit **22b21edc**, public audit **85b9e08b** retain
+actual artifacts/logs and bounded credential/provider findings.
 
-Actual16ad Mac job125508351877 now **FAILS** early fault-proxy controls:
-acceptance642PASS/13 Linux-only SKIP, export13PASS, proxy41PASS/1FAIL.
-Exact-source build/Clippy/Rustdoc/Rust tests and all12 mandatory Native are NOT_RUN.
-Failure receipt **4ae87282** binds the original artifact; no raw packet/terminal
-was captured. Linux and watcher15724 remain running, never cancelled.
+Root watcher15724 reaped1 without expiry; recorded PIDs are absent. The reviewed
+local proxy fix has43 controls PASS. A corrected full three-platform hosted run,
+particularly actual Mac build/Rust/Native execution, remains required; a
+control-only green run cannot replace it. Publish the coherent seed/proxy delta
+once final controls/docs and public source/object admission pass.
 
-Astra independently reproduced a verifier race with actual run/session/cleanup:
-completed task accounting can lag terminal output; a queued accept can also follow
-listener closure and escape the snapshot. Root's minimal correction uses the
-existing task list idempotently, counts joined tasks before terminal and refuses
-late admission after stopping. Admitted malformed sessions still require exit3;
-late unadmitted transports close without sessions. No timeout/limit/oracle weakening.
-Astra approved the actual delta; exact-final43 proxy controls PASS. Receipt in
-`ci-observation/terminal-accounting-race/root-fix-receipt.json` owns source/test
-hashes, original failure and deterministic evidence. The helper-only fix is local;
-no product rebuild or corrected hosted execution has been performed.
+## Open gates, custody and next action
 
-## Remaining work and custody
-
-P04-T07 Steps2/6 and P02 retain exact-existing-outcome4/C3 preservation and connected
-binding/closing-prefix/authority/capacity refusals. Direct SQL capacity checks are
-not installed resolver exhaustion. Broader staged-before-PG, lost-RAM/durable-start,
-renewal, repeated scheduling, retirement and fleet work stay in their existing
-tasks; no all-P02 barrier or deleted scope.
-
-Sol `measurement_clickhouse_prep` is writing the test-only existing-outcome fixture
-on `work/m2-monitor-c3-guards-20261102`, separate worktree of that name, baseb05.
-Last observed changes include the two shared oracles, cfg(test) owner module/seam,
-Python seed helper and focused controls; work is partial, not integrated or
-runtime-qualified. The approved architecture uses a
-cfg(test) same-backend genuine ControlSession to seed only the authenticated
-original outcome, then ordinary installed recovery. Full expected policy documents
-must be frozen from qualified source/config before admission, never adopted from
-the database. Concrete fixture diff and oracle review remain required before engines.
+P04-T07 Steps2/6 and P02 still own connected selected-invalid-binding/no-fallback,
+closing prefix/tail/retirement restrictions, actual backend/invoker authority and
+independently paired dependency-count/retained-byte refusal boundaries. Direct SQL
+capacity proof is not installed resolver exhaustion. Exact-existing-outcome
+preservation is now qualified, not pending. Later lost-RAM/durable-start, renewal,
+repeated scheduling, successors, retirement and fleet work remain in existing
+tasks; no whole-P02 prerequisite or reduced scope.
 
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns resources.
-All Root compiler/test/installed processes are terminal; cache115 is released and
-independently reacquired, protected four ELF bytes/fullstat unchanged. The source
-agent and one Root read-only CI watcher are active; no new engines. Preserve all original failures,data,.research,
-worktrees and borrowed bridge. October31 space recovery is already reconciled;
-no cleanup was started.
+Original seed worktree is clean at8129ef53 and preserved; its commits are locally
+integrated. All current compiler/test/installed tools are reaped, containers
+stopped, cache115 released/reacquired and original four protected ELF bytes/fullstat
+unchanged at qualification. No engine, compiler or hosted observer is active.
+Preserve original failures, data, .research, worktrees and borrowed bridge.
+October31 space recovery is reconciled; no cleanup was started.
 
-**Next Root action:** preserve running16ad Linux jobs and seal actual terminal
-CI/public audit. Commit the reviewed proxy correction without superseding that
-run. Ensure the next coherent source obtains full Mac build/Rust/Native proof; a
-control-only green run cannot replace these missing changed-product gates. Review the bounded existing-outcome fixture as
-Sol completes source work, then qualify its test-only artifact and real same-backend
-seed/recovery with independent critical review before engines. Reuse unchanged b05
-product where its scope remains valid. Keep connected gates explicit. Admission
-cost, ClickHouse decoding/transport, coordinator maintenance and all selected later
-P00–P10/M1–M5 work retain their existing owners and completion criteria.
+**Next Root action:** finish this coherent record/source-pin control check, commit,
+perform public source/object admission and publish verified work to main. Observe
+and qualify the actual new full foundation run without cancelling it. In parallel,
+close the three bounded connected refusal responsibilities above, then choose the
+next useful M2 increment by actual dependencies. Finite same-job continuation,
+funded reopen beyond64, admission cost, ClickHouse decoding/transport, coordinator
+maintenance and all later selected work retain their existing owners and gates;
+reconcile prior evidence before selecting an already qualified capability again.

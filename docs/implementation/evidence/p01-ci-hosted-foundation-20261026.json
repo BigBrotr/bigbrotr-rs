@@ -2765,7 +2765,7 @@
     },
     "c3_reconciliation_publication": {
       "source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
-      "status": "PARTIAL_MAC_VERIFIER_FAILURE_LINUX_RUNNING",
+      "status": "SEALED_FAILURE_MACOS_PROXY_VERIFIER_PREBUILD",
       "source_admission": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-source-16adbee0-20261102/publication-admission.json",
       "source_admission_sha256": "2bffc77440aab2046d2f85078e44286fc517374d23735d76c6505344eba1d73e",
       "source_scope": "15 outgoing commits/98 objects/32,309,989 bytes across36 historical paths; zero sensitive/raw/private-capture/LFS/nontext inputs or new/unclassified credential candidates. Eleven matches are two known nonsecret fingerprints; bounded scanning limits apply.",
@@ -2792,9 +2792,11 @@
         "start_ticks": "37534337",
         "interval_seconds": 60,
         "bound_seconds": 7500,
-        "state": "ROOT_OWNED_READ_ONLY_RUNNING"
+        "state": "REAPED_EXIT1_REMOTE_FAILURE_NO_EXPIRY",
+        "exit_code": 1,
+        "ended_utc": "2026-11-02T20:43:14.039257+00:00"
       },
-      "next": "Let existing Linux jobs and Root watcher finish; preserve partial Mac FAIL/NOT_RUN. Integrate verified proxy correction with the next coherent source increment, then ensure full changed-product Mac qualification still executes: a control-only green run alone cannot close its missing build/Rust/Native gate.",
+      "next": "Publish one coherently reviewed seed/proxy correction increment after final controls/docs/public-source admission; require an actual corrected full foundation run, especially Mac build/Rust/Native. Latest full hosted PASS remains f4ad; preserve original16ad failure.",
       "partial_macos_failure": {
         "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation/partial-macos-failure.json",
         "receipt_sha256": "4ae8728223c9ba799f48e3793b36a14fa5f62019c8bae499dfe899db3386b94b",
@@ -2809,6 +2811,21 @@
         "tests_sha256": "1fb90e32c73c755e02210a3718f93131a70e3329c1a1be99649499c25bac83a4",
         "scope": "Idempotent accounting using existing task list; freeze/join snapshot and account synchronously before terminal; refuse late accept once stopping. No waits, limits, expected-exit or protocol weakening.",
         "review_and_checks": "Astra approved complete actual delta; exact-final43 proxy controls PASS4.102s. Added deterministic regression and packet subTest labels. No engine/product rebuild required for this helper-only change. Real corrected-source hosted qualification pending."
+      },
+      "terminal_verification": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation/terminal-audit.json",
+        "sha256": "22b21edc8db6e0ffb623f4e0027548cdaa7af5e0567e8b1aeeed1799723edbb6"
+      },
+      "terminal_public_output_audit": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation/receipt.json",
+        "sha256": "85b9e08be433b56985caacab8be8887af83786b7cc501bee78a4b378849c2147"
+      },
+      "terminal_summary": {
+        "required": "31 PASS / 1 FAIL / 4 NOT_RUN",
+        "linux": "Both exact-source jobs PASS, each1576 Rust tests,655 acceptance/42 proxy/13 export and all12 mandatory Native controls; full source/compiler/native/worker and workspace guards verified.",
+        "macos": "Executed verifier failure:642 acceptance PASS/13 Linux-only SKIP,13 export PASS,41 proxy PASS/1FAIL. Product build/Clippy/Rustdoc/Rust tests and all12 mandatory Native NOT_RUN.",
+        "classification": "Executed proxy verifier callback/admission race; no billing refusal, provider admission cancellation or observed Linux product defect.",
+        "public_audit": "Four artifacts/513 members and26 logs;54 known contexts/5 false positives, zero new/unclassified credential candidates or provider alerts within bounded pattern/asynchronous-provider limits."
       }
     }
   }

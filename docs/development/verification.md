@@ -696,8 +696,11 @@ separate required gates.
 ### Recover an existing Monitor outcome without rewriting it
 
 `p04-monitor-existing-outcome-recovery` is a separate nine-stage parameter of the
-same Monitor recovery runtime. Its Rust fixture compilation, ignored connected
-test and installed execution are **NOT_RUN** until independently qualified.
+same Monitor recovery runtime. Separate Rust fixture compilation/Clippy, its pure
+validator and all nine installed stages pass on the recorded fixture/product
+pair; see P02's `initial_measurement_c3_repair.existing_outcome_qualification`.
+Ordinary Rust suites still ignore the connected seed; a new artifact or scenario
+requires its own execution and provenance checks.
 
 ```sh
 python3 -B tests/acceptance/run.py p04-monitor-existing-outcome-recovery \
@@ -779,7 +782,10 @@ and an exact copy of the parent product manifest as
 `build/parent-product-source-manifest.json`. The admission checks source/tree,
 compiler/native tools, Cargo test-target metadata and ELF bytes. It binds the
 actual imported seed helper to the declared source before artifact admission and
-retains that helper in the ongoing source hash census. The current owner must
+retains that helper in the ongoing source hash census. Python admission/oracles
+are current acceptance inputs, not compiled Rust inputs; changing only them does
+not require rebuilding an unchanged test ELF. The closed policy fixture and all
+compiled Rust inputs remain exact. The current owner must
 end with the exact private `cfg(test)` suffix and bind its fixture file. The
 product owner's hash must match the verified runtime prefix either without or
 with that exact suffix; its fixture presence must agree with the hook form.
@@ -793,9 +799,11 @@ and reuse of an unchanged qualified product/observer while attributing the seed
 compilation separately. No product API or release capability is added.
 
 Before source work, the maintained v3 policy literal plus enumerated
-acceptance/Monitor overrides must equal every normalized `config show` setting
-and its independently reported policy digest. Integer diagnostics are checked
-against strings generated from the known typed literal; arbitrary database or
+acceptance/Monitor overrides must equal the normalized `config show` diagnostic
+projection and its independently reported complete policy digest. The four
+endpoint/ban collections are deliberately `[redacted]`, including empty lists;
+their unredacted values remain in the independently constructed document/hash.
+Integer diagnostics are checked against strings generated from the known typed literal; arbitrary database or
 diagnostic values never choose the expected document. Both complete document,
 revision and digest pairs and deployment roots are frozen. The manifest is
 independently encoded from the initialized registration before measurement

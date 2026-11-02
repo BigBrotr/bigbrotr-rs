@@ -134,7 +134,7 @@ for prerequisites and the reproducible command. Native I4/C3 recovery is describ
 below; staged-before-PG input remains separate. Never retry the probe from
 missing SQL or file observations.
 
-The next bounded recovery extension is implemented but not yet qualified: when
+The bounded recovery extension is qualified on the installed initial profile: when
 the exact original Native Measurement receipt is durable and its Monitor request
 is already reserved, default recovery can repair the next generic checkpoint.
 It replays the original under exclusive Native custody and checks its frozen
@@ -145,17 +145,24 @@ uses fresh authority. Exact completed-checkpoint replay preserves its rows.
 Native ACK still requires the separate final full-prefix confirmation; a lost
 repair COMMIT response cannot immediately ACK or authorize another probe.
 
-The maintained source-only
+The maintained
 [`p04-monitor-native-outcome-recovery` case](../development/verification.md#recover-a-native-measurement-before-its-postgresql-checkpoint-committed)
 defines the separate I4/C3 qualification with a fresh matching product/ledger:
 original Native science must authenticate the original outcome before SQL repair, fresh Control
 must commit the exact outcome and complete checkpoint together, and retry must
-preserve both stores without a new probe. Its actual installed execution remains
-NOT_RUN; the earlier C4/A3 proof does not establish this capability.
-The source-only [repair-fault variant](../development/verification.md#preserve-uncertainty-across-monitor-checkpoint-repair-faults)
+preserve both stores without a new probe. All eight installed stages pass on the
+qualified product; the earlier C4/A3 proof remains a separate regression.
+The [repair-fault variant](../development/verification.md#preserve-uncertainty-across-monitor-checkpoint-repair-faults)
 also requires withheld/committed-but-unobserved repair transactions to retain
 honest uncertainty and Native A3 until a fresh direct recovery confirms ACK4.
-Its installed execution remains NOT_RUN.
+All ten installed stages pass. The separate
+[existing-outcome case](../development/verification.md#recover-an-existing-monitor-outcome-without-rewriting-it)
+also passes all nine stages: a genuine Control-owned test seed records outcome4
+while retaining C3, then ordinary recovery preserves that row's original
+recorder, timestamp and xmin while advancing C4/dependency10 under fresh Control.
+Exact retry leaves both stores unchanged. These bounded proofs do not complete
+the connected binding/authority/capacity refusal gates, scheduling or full M2;
+their remaining owners and receipts are retained in P04-T07/P02.
 
 This extension consolidates the dependency guard in the current pre-release
 0044 migration. A previously applied 0044 with different bytes is refused by the

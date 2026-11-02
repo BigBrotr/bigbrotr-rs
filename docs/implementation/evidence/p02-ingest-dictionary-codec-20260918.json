@@ -478,12 +478,95 @@
           "remaining_connected_gates": {
             "owner": "P04-T07 Steps2/6 and P02 producer progress/recovery",
             "required": [
-              "Exact existing outcome4/C3: preserve its original bytes, recorder, timestamp and xmin while only new head/dependency receive fresh attribution.",
               "Selected invalid binding must refuse without copy-only fallback; closing growth must retain narrow binding/prefix/tail/retirement restrictions.",
               "Actual owner/backend authority and deferred/invoker guards must reject excluded or borrowed identities without effects.",
               "Dependency-count/byte-charge boundaries require independently calculated paired controls; direct SQL capacity proof is distinct from installed resolver exhaustion."
             ],
-            "active_work": "Sol owns work/m2-monitor-c3-guards-20261102 at b05 base, separate worktree. Test-only genuine same-backend ControlSession seed and strict existing-outcome oracle are in progress; not integrated, source/connected execution NOT_RUN. Astra approved architecture and closed full-document fixture validator in principle; concrete diff still needs review."
+            "active_work": "Existing-outcome preservation is qualified and locally integrated. Next close bounded connected selected-binding/prefix/tail, actual authority and paired dependency-count/retained-byte refusal controls. They own current recovery safety; later P04/P02 work remains separately planned, not a blanket phase prerequisite.",
+            "qualified_existing_outcome": {
+              "requirement": "Exact existing outcome4/C3: preserve its original bytes, recorder, timestamp and xmin while only new head/dependency receive fresh attribution.",
+              "evidence": "existing_outcome_qualification"
+            }
+          },
+          "existing_outcome_qualification": {
+            "status": "PASS_BOUNDED_INSTALLED_EXISTING_OUTCOME_C3_PRESERVATION_OTHER_REFUSAL_GATES_OPEN",
+            "tasks": [
+              "P04-T07 Steps2/6",
+              "P02 producer progress/recovery"
+            ],
+            "product": "b05b0a267d362cdef1b4f396076b980620509178",
+            "assembly": "a3e51472ad7a5832bedc2a00173d91b373d8bdde",
+            "fixture_source": "8129ef53feda52593942d367416ba866c44ff39d",
+            "original_source_commits": [
+              "c8e47bf2c4d03df62405f404744170c1de1e291f",
+              "469b4c00b149b5eaa5b68c1e68aaa2bd031a5320",
+              "8129ef53feda52593942d367416ba866c44ff39d"
+            ],
+            "integrated_commits": [
+              "75c60356",
+              "cc11419c",
+              "15718711",
+              "650f9fd7",
+              "25d337e2",
+              "a3e51472"
+            ],
+            "review": "Independent Astra approved genuine same-backend Control/native fixture custody, full-document inputs, Python oracles/imported-source fencing and the later diagnostic-redaction correction. Root reviewed the mechanical as_chunks lint correction and early-Clippy builder/control update.",
+            "build": {
+              "status": "PASS_COMPILE_ONLY_AND_STRICT_ALL_TARGET_CLIPPY",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/existing-seed-8129ef53/qualification-receipt.json",
+                "sha256": "0da62772e896aac3ddf361ec652c1d9da887257370d7bdff900d66b77df1571f"
+              },
+              "compile_seconds": 359.670984347,
+              "clippy_seconds": 17.197067734,
+              "tests_executed": 0,
+              "artifact_sha256": "895509264b10f076831e829363b5a7e249f0c595051857080683d450a4b284eb",
+              "prior_attempt": "469b4c00 release libtest compilation PASS; strict Clippy FAIL chunks_exact_to_as_chunks. Retained original unqualified artifact/failure; never used for installed proof.",
+              "prior_failure": {
+                "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/existing-seed-469b4c00/clippy-failure-receipt.json",
+                "sha256": "9d9332f9b7fed63acd17042902a144391fd2ed000935456b728616cef8b1067d"
+              },
+              "input_retention_correction": {
+                "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/existing-seed-8129ef53/input-retention-correction.json",
+                "sha256": "87b62a83770c3470cab2adf49d189eadef15850db823c20574de5e7cda280c3b"
+              }
+            },
+            "pure_validator": {
+              "status": "PASS_1_TARGETED_TEST_706_FILTERED",
+              "evidence": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/existing-seed-8129ef53/validator-unit",
+              "scope": "Full frozen policy document/digest/revision validator only; not the ignored connected seed or whole library."
+            },
+            "source_controls": "Original97 and source-fence followup99 PASS. Root final16 existing-outcome controls and14 bounded tutorial-pin controls PASS; unchanged suites reused within their prior scope.",
+            "installed": {
+              "case": "p04-monitor-existing-outcome-recovery",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/existing-r2-receipt.json",
+                "sha256": "5b8bb6f1c2e4b2de599636a2cad60d48802f1c371011c6f9b175c456f7012e32"
+              },
+              "counts": {
+                "collected": 9,
+                "executed": 9,
+                "failed": 0,
+                "skipped": 0,
+                "not_run": 0
+              },
+              "scope": "Explicit genuine Control seed commits only authenticated original outcome4, retaining C3 and charging one Native closing write to the seed. Ordinary installed recovery preserves the whole outcome row/recorder/timestamp/xmin; only C4 and dependency10 receive fresh Control/xmin. Native ACK adds one write; exact retry adds none. All original science/inputs/receipts/prior xmins retained, one peer/no new probe or Sync.",
+              "stopped_containers": 23,
+              "absent_processes": 6,
+              "borrowed_bridge": "1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f"
+            },
+            "original_installed_failure": {
+              "receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/existing-r1-failure-receipt.json",
+                "sha256": "d9fa7f9246f93a65218eb392a0eaeaf413ee8d12aea6352d10471eda018dd19a"
+              },
+              "classification": "FIXTURE_DIAGNOSTIC_REDACTION",
+              "result": "FAIL_BOOTSTRAP_FOUR_LATER_PHASES_NOT_RUN",
+              "cause": "config show intentionally redacts four endpoint/ban collections, including empty arrays; the initial synthetic expectation omitted that contract.",
+              "correction": "Fixed only diagnostic projection; complete independently built typed document/hash/length and deployment digest remain exact. Saved actual config output replay and16 controls PASS before real rerun. No product/test-ELF rebuild.",
+              "audit_note": "Root post-run custody audit initially compared the observer ELF scalar command field against its full input-map result. Corrected only metadata shape using the independently retained same-product observer map; original command/result unchanged, then actual custody audit PASS."
+            },
+            "limits": "This qualifies only exact-existing-outcome/C3 preservation and retry, not selected-invalid-binding, authority, paired capacity, fleet scheduling, renewal, retirement or full M2. Default Rust suites still ignore the connected seed. Maintained builder/input procedure is documented; private retained caches are optional accelerators."
           }
         }
       }
