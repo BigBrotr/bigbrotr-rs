@@ -79054,7 +79054,7 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "dee6b6f9",
+      "observed_source": "fd23b094",
       "state": "Local source integration only, not pushed; independent Native/Control/driver/Archive boundary reviews approved. All new application/native/real-engine and installed controls NOT_RUN. Root is sole integrator.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
@@ -79063,10 +79063,10 @@
         ".research/m2-monitor-archive-20261102"
       ],
       "active_assignments": {
-        "history_scratch_build_prep_sol": "Original70d+16b source saved clean in .research/m2-monitor-operator-20261102, integratedf82/0d and source/oracle review approved; author finished, no app execution.",
+        "history_scratch_build_prep_sol": "Separate bounded existingP01 native-source timestamp helper/optional maintained consumer and cheapcontrols, source only; no cache/target/ELF access. First Monitor author work remains preserved.",
         "quota_r2_diagnosis_sol": "Originalfb9+64d source saved clean in .research/m2-passive-monitor-acceptance-20261102, integrated3fde/dee6 and independent source/oracle approved;14 targeted fixture controls PASS, author finished. Product campaign NOT_RUN."
       },
-      "resources": "At recording no owned compiler/engine/source agent remains running. Four compiler tools reaped1, containers terminal/PID0/noOOM, cache released, full protected4ELF guards PASS. All source/partial worktrees and original failures retained; no cleanup.",
+      "resources": "At recording no owned compiler/engine is running. All earlier build/strict tools terminal and caches released; full original4ELF guards passed. Native-source helper agent continues source-only in separate WT; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79082,9 +79082,21 @@
           ".research/m2-monitor-core-product-5e05a5c6",
           ".research/m2-monitor-core-product-046d7a0c",
           ".research/m2-monitor-core-product-d1ae816a",
-          ".research/m2-monitor-core-product-3fde120f"
+          ".research/m2-monitor-core-product-3fde120f",
+          ".research/m2-monitor-core-product-5c85bb4c"
         ],
-        "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102.core_compilation"
+        "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102.core_compilation",
+        "latest_verified_build": {
+          "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/5c85bb4c",
+          "receipt_sha256": "193668f4df6be8af84e662c4198750e69f7ffb5aacfb217b40f399e745e00158",
+          "state": "Build tool5701 reaped0;7cda24f8 exited0/PID0/noOOM, cache released and original4ELF fullstat unchanged. Installed binary/worker/native bytes verified; actual engine campaign NOT_RUN."
+        },
+        "latest_strict": {
+          "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace",
+          "state": "Tool72506 reaped1;10f4c8fb terminal/PID0/noOOM/cache released. Strict Clippy FAIL, later checks NOT_RUN. Original fullstat guards PASS; source correctionfd23 pending qualification."
+        }
       }
     }
   }

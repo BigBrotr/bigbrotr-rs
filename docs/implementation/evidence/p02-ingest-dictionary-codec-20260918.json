@@ -121,7 +121,7 @@
       "status": "SOURCE_REVIEW_APPROVED_RUST_NOT_RUN",
       "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet."
     },
-    "next": "Freeze the corrected complete candidate and compile all targets before the maintained installed worker/parent build. Then run affected Rust/native/PG/Archive/Index and installed p04-passive-monitor. Current source/oracle reviews are closed; all new product assertions and actual installed campaign remain NOT_RUN.",
+    "next": "Recheck strict Clippy on corrected source before the optimized parent build, then run affected Rust/native assertions and the installed p04-passive-monitor. Reuse pure-model/fixture evidence within unchanged scope; strict FAIL and all actual assertion NOT_RUN states remain explicit.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "SOURCE_REVIEW_APPROVED_NATIVE_TESTS_NOT_RUN",
@@ -148,7 +148,7 @@
       "config": "731e7d6e9c655ffc1dd79e3e268c0721729c856f",
       "status": "SOURCE_REVIEW_APPROVED_BUILD_ENGINE_NOT_RUN",
       "scope": "Schema44 immutable exact-context dispatch and unique fresh positive-COMMIT token; unresolved-source veto, private positive no-I/O closure, original typed producer evidence admission. Initial Native mode corrected; packaged column row-lock grants and invoker helpers reconciled without broad history UPDATE. Independent Astra closed both identified blockers. Real packaged-role/token/Native tests remain NOT_RUN.",
-      "open_recovery": "Before resolving intent-only as ExecutionUnknown, reconcile actual Native input/producer inventory. Staged input can precede absent/unknown PG reservation; history/file presence alone proves neither no prior terminal input nor trusted start. Current positive custody/exclusion and original-request recovery remain required under P04-T07 Steps2/6 and P02 recovery tasks.",
+      "open_recovery": "Before resolving intent-only as ExecutionUnknown, reconcile actual Native input/producer inventory. Staged input can precede absent/unknown PG reservation; history/file presence alone proves neither no prior terminal input nor trusted start. Current positive custody/exclusion and original-request recovery remain required under P04-T07 Steps2/6 and P02 recovery tasks. The finite operator records measurement request4 outcome without advancing the generic producer checkpoint beyond ordinary dictionary ACK3; complete generic acknowledgement/retirement before repeated scheduling under P04-T07/P02 producer-progress tasks, without inventing Sync progress.",
       "source_metadata": {
         "source": "646ab78f",
         "correction": "b1e688cc50b540a6409a9f6ae9d37d75e2bfde39",
@@ -237,10 +237,47 @@
         "5e05a5c6",
         "b448660a",
         "fb0fafff",
-        "7b8411b2"
+        "7b8411b2",
+        "fd23b094"
       ],
       "runtime_tests": "NOT_RUN",
-      "release_build": "NOT_QUALIFIED"
+      "release_build": "PASS_ACTUAL_5C85BB4C_BUILD_ONLY",
+      "latest_verified_build": {
+        "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
+        "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
+        "tree": "13e1a01c8398d5e54e75e3fd5068b750df579dc1",
+        "source_files": 4263,
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/5c85bb4c/build-receipt.json",
+        "receipt_sha256": "193668f4df6be8af84e662c4198750e69f7ffb5aacfb217b40f399e745e00158",
+        "binary": {
+          "bytes": 47191112,
+          "sha256": "ff2589c6a825b995ec661ae98adc46843dd1585fe5e583c020ac33df88c173d5"
+        },
+        "worker": {
+          "bytes": 15094720,
+          "sha256": "a9ce1c6f648859a1b79574be24a16f7f7ae712b995337b799124d589010c8ba8"
+        },
+        "scope": "Maintained exact-source installed build and embedded worker/native-byte verification only; no engine or installed acceptance execution",
+        "all_target_check": "PASS actual cargo check --locked --workspace --all-targets before maintained build; dev4m33s, worker release31.09s, parent release6m52s. No test assertion inferred.",
+        "resources": "Tool5701 reaped0; owned7cda24f8 exited0/PID0/noOOM; cache115 released and independently reacquired by terminal audit; protected4ELF bytes/fullstat unchanged."
+      },
+      "latest_strict_attempt": {
+        "status": "FAIL",
+        "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
+        "tool": 72506,
+        "container": "10f4c8fbb6a5832e3993f914f5b73a719ef48e9df087b1407a14835d2a7cf698",
+        "resource": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/resources.json",
+        "log": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/out/results/clippy.log",
+        "result": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/out/results/result.json",
+        "scope": "Strict Clippy FAIL on five structural/style diagnostics, corrected mechanicallyfd23b094 (named identical tuple type, fixed42-byte chunks, collapsed equivalent condition). No lint suppression or wire/authority change. Rustdoc and all7 selected Rust assertion suites NOT_RUN because fail-fast stopped before them.",
+        "counts": {
+          "collected": 8,
+          "executed": 1,
+          "failed": 1,
+          "not_run": 7
+        },
+        "resources": "Tool reaped1, owned container terminal/PID0/noOOM, cache released; original4ELF fullstat guards passed."
+      }
     },
     "operator_source": {
       "originals": [

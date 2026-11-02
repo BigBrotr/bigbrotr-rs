@@ -7,12 +7,14 @@ The capability-first direction is reconciled in Q38/the execution guide; one pla
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source HEAD **dee6b6f9**; checkpoint,
+`work/m2-finite-history-20261101`. Observed source HEAD **fd23b094**; checkpoint,
 P02 evidence, guide and inventory updates are pending this recording commit.
 Canonical main/origin remain clean at pushed **a37f7829**. New Monitor source is
-local, incomplete and not pushed. Four real compilation attempts failed before
-assertions; their original logs are preserved. The corrected candidate remains
-unqualified by build, engines or installation.
+local, incomplete and not pushed. Four original compilation failures are
+preserved. Exact5c85bb4c now passed all-target compilation and the maintained
+installed worker/parent build with byte/source audit. Its strict Clippy run failed
+before assertion suites; correctionfd23b094 is pending qualification. Actual
+engine/installed capability remains NOT_RUN.
 
 **Quota/history recovery is qualified.** Installed53802a46 passed restart on/off
 12/12 each and finite128 retained boundary7/7. The
@@ -62,7 +64,8 @@ The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
   a removed static Sync helper (restoredfb0fafff for those actual consumers).
   3fde120f found a shadowed descriptor helper/private time constructor in the
   frontend (mechanically fixed7b8411b2). No product test assertion ran and no
-  environment failure was inferred. Release/strict/native qualification remains open.
+  environment failure was inferred. Those failures remain original; the later
+ 5c85bb4c build PASS below does not relabel them.
 - Archive sixth family / Index eleventh target integratede5e316ee; related current
   counts, formats and fixtures reconciled. Snapshot fixture correction6737d8b0
   selects the actual old/current snapshot without changing expectations. Bounded
@@ -77,6 +80,14 @@ The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
   **NOT_RUN**. Initial blocking-output and assisting-expiry-oracle defects remain
   recorded, corrected before any affected assertion execution.
 
+**Latest actual build:**5c85bb4c, [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json)
+`core_compilation.latest_verified_build`: all-target cargo check and maintained
+worker-before-parent release build PASS;4263 source files, worker/native/source
+identities verified, receipt SHA193668f4df6be8af84e662c4198750e69f7ffb5aacfb217b40f399e745e00158.
+Strict tool72506 then failed Clippy on five structural/style diagnostics, corrected
+fd23b094 without changing wire data or authority. Rustdoc and all selected Rust
+assertion suites remained NOT_RUN. No installed campaign success inferred.
+
 The five-second policy authority bound remains enforced; nominal15s checks are
 not15s renewable grants. Durable-start/renewal remain P04-T07/P04-T02 work.
 **Recovery gate:** typed terminal input may be staged before an absent/unknown PG
@@ -84,7 +95,9 @@ reservation. Reconcile actual Native input and producer inventory before decidin
 intent-only → ExecutionUnknown. Historical SQL/file presence cannot prove a start,
 no prior terminal input or old-worker exclusion. Closing an unissued request still
 returns Unresolved in the authored negative control; no functional settlement is
-claimed. Existing P04-T07 Steps2/6 and P02 recovery tasks retain these obligations.
+claimed. The finite operator leaves generic producer checkpoint at dictionary
+ACK3 after known measurement outcome4; generic acknowledgement/retirement before
+repeated scheduling remains P04-T07/P02 progress work, separate from Sync progress. Existing P04-T07 Steps2/6 and P02 recovery tasks retain these obligations.
 
 The maintained installed case `p04-passive-monitor` is integrated3fde120f/dee6b6f9.
 Its independent oracle/peer review is approved. Author14 targeted fixture controls
@@ -111,18 +124,21 @@ One integrating owner; separate writable worktrees, all partial source retained:
   Native/model/transport source authors and previous CI watchers have finished.
 
 [Inventory](../research/laboratory-inventory.json) owns custody and model/native/CI
-capsules. At recording, four compiler tools are reaped1 with exited/PID0/noOOM
-containers and released
-exclusive cache; no owned local compiler/engine or hosted watcher is running.
+capsules. At recording, build5701 is reaped0 and strict72506 reaped1; their
+containers are exited/PID0/noOOM with exclusive cache released. Earlier four
+compiler failures remain stopped-retained. No owned compiler/engine or hosted
+watcher is running.
 All4 protected ELF bytes and complete recorded stat fields passed every guard.
-All assigned source/review agents have finished. No cleanup performed; protected
+Monitor source/review agents have finished; the bounded existingP01 optional
+native-source timestamp helper assignment continues source-only. No cleanup performed; protected
 original ELFs were accessed only through required no-atime guards, whose
 observations remain in their owning receipts.
 Preserve original failures, .research, databases, worktrees and the borrowed bridge.
 
-**Next Root action:** freeze the corrected complete candidate and compile all
-targets before the maintained worker/parent build and affected Rust/native plus
-actual installed `p04-passive-monitor` qualification. Check
+**Next Root action:** freeze corrected source and run strict Clippy before the
+optimized parent build, then the affected Rust/native suites and actual installed
+`p04-passive-monitor` qualification. Existing pure-model/fixture evidence remains
+valid within unchanged inputs; do not convert NOT_RUN assertions into PASS. Check
 changed schema, packaged roles, budgets, source completion and fault reachability
 before affected build/native/PG/Archive/Index and installed qualification. Reuse
 unchanged model/hosted evidence; do not relabel source approval as runtime PASS.
