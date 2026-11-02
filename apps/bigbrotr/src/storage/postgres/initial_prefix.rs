@@ -25,6 +25,7 @@ impl InitialPrefixRequest<'_> {
             policy_ttl: self.policy_ttl,
             request: None,
             source: None,
+            monitor: None,
             network_event: false,
             job: None,
             progress: true,

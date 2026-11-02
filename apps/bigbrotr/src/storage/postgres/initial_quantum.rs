@@ -60,6 +60,7 @@ impl LinearQuantumRequest<'_> {
                 bigbrotr_model::EventOrigin::Network,
                 None,
             )?,
+            monitor: None,
             network_event: true,
             job: None,
             progress: true,

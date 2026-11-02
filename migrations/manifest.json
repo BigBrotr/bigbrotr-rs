@@ -237,6 +237,10 @@
     {
       "version": 43,
       "name": "0043_linear_quanta.sql"
+    },
+    {
+      "version": 44,
+      "name": "0044_measurement_dispatches.sql"
     }
   ],
   "reserved": [

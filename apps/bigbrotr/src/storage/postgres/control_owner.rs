@@ -66,8 +66,17 @@ pub use acquisition_read::ScopeReadError;
 #[path = "relay_enrollment.rs"]
 mod relay_enrollment;
 pub use relay_enrollment::EnrollmentRoutes;
+#[path = "monitor.rs"]
+mod monitor;
+#[path = "monitor_types.rs"]
+mod monitor_types;
 #[path = "relay_source.rs"]
 mod relay_source;
+pub use monitor::{
+    MonitorCreation, MonitorDispatchToken, MonitorEvidenceHistory, MonitorNoIoProof,
+    MonitorNoIoReason, MonitorSourceError, MonitorSourceOutcome,
+};
+pub use monitor_types::{MonitorEvidenceBinding, MonitorIntent};
 pub use relay_source::{RelaySourceError, RelaySourceRequest};
 #[path = "scope_grants.rs"]
 mod scope_grants;
@@ -169,13 +178,14 @@ mod source_closure;
 pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
-    InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
-    InitialPendingQuotaRequest, InitialPrefixRequest, InitialVisibilityRequest,
-    LinearQuantumRequest, LinearQuantumSource, LiveInitialCertificationRequest,
-    LiveInitialDictionaryAppendRequest, LiveInitialEventRequest, LiveInitialObservationRequest,
-    LiveInitialVisibilityRequest, LiveSuccessorCertificationRequest,
-    LiveSuccessorDictionaryAppendRequest, LiveSuccessorEventRequest,
-    LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest, ProducerPrefixReceipt,
+    InitialImportBatchRequest, InitialMeasurementRequest, InitialObservationRequest,
+    InitialOperationError, InitialPendingQuotaRequest, InitialPrefixRequest,
+    InitialVisibilityRequest, LinearQuantumRequest, LinearQuantumSource,
+    LiveInitialCertificationRequest, LiveInitialDictionaryAppendRequest, LiveInitialEventRequest,
+    LiveInitialObservationRequest, LiveInitialVisibilityRequest, LiveMeasurementRequest,
+    LiveSuccessorCertificationRequest, LiveSuccessorDictionaryAppendRequest,
+    LiveSuccessorEventRequest, LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest,
+    ProducerPrefixReceipt,
 };
 pub use initial_succession::{InitialSuccessionError, InitialSuccessionRequest};
 pub use producer_closing::{

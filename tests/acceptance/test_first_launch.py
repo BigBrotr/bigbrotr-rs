@@ -221,14 +221,14 @@ class FirstLaunchControls(unittest.TestCase):
 
     def test_current_table_inventory_is_derived_from_migrations(self):
         expected = case.expected_tables(ROOT)
-        self.assertEqual(len(expected), 83)
+        self.assertEqual(len(expected), 85)
         self.assertIn('index_frontier_handoffs', expected)
         self.assertIn('producer_requests', expected)
         self.assertIn('schema_versions', expected)
 
     def test_current_bootstrap_refuses_predecessor_or_changed_ledger_before_control_setup(self):
         current = case.expected_ledger(ROOT)
-        self.assertEqual(len(current), 59)
+        self.assertEqual(len(current), 60)
         self.assertIn(801, [row['migration'] for row in current])
         last, = [row for row in current if row['migration'] == 42]
         self.assertEqual(last['checksum'], 'fd6b43739a8e2f5639d00ef72ae9bf9edaad8bd9a2e93b81922329bb0e3e2a43')
@@ -253,7 +253,7 @@ class FirstLaunchControls(unittest.TestCase):
                 self.assertEqual([call.args[0] for call in calls],
                     ['build-info', 'verify-worker', 'config-validate', 'migration-plan', 'migration-apply'])
                 for call in calls[-2:]:
-                    self.assertEqual(call.args[-2:], ('--target', '43'))
+                    self.assertEqual(call.args[-2:], ('--target', '44'))
                 self.assertEqual(runtime.docker.call_count, 1)
                 self.assertEqual(case.load(runtime.root/'bootstrap/applied-control-ledger.json'), ledger)
 

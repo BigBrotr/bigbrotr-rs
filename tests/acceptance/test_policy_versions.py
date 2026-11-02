@@ -25,11 +25,11 @@ class EngineBoundaryReached(Exception):
 class PolicySchemaControls(unittest.TestCase):
     def test_current_inventory_covers_the_complete_declared_catalog(self):
         inventory = SCHEMA.declared_inventory(ROOT)
-        self.assertEqual(inventory['target'], 43)
-        self.assertEqual(inventory['applied_versions'][-1], 43)
-        self.assertEqual(len(inventory['applied_versions']), 59)
-        self.assertEqual(len(inventory['inputs_sha256']), 60)
-        self.assertEqual(len(inventory['tables']), 83)
+        self.assertEqual(inventory['target'], 44)
+        self.assertEqual(inventory['applied_versions'][-1], 44)
+        self.assertEqual(len(inventory['applied_versions']), 60)
+        self.assertEqual(len(inventory['inputs_sha256']), 61)
+        self.assertEqual(len(inventory['tables']), 85)
         self.assertIn('acquisition_progress', inventory['tables'])
         self.assertIn('producer_checkpoint_dependencies', inventory['tables'])
         self.assertIn('index_frontier_handoffs', inventory['tables'])

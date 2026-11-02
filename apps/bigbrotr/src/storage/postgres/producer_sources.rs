@@ -167,6 +167,24 @@ pub(super) async fn require_binding(
     job: Option<JobId>,
     phase: RequestPhase,
 ) -> Result<(), SourceBindingError> {
+    // Legacy/Sync/import retries must compare omission of Monitor attribution.
+    let monitor_schema: bool = tx
+        .query_one(
+            "SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=44)",
+            &[],
+        )
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(backend)?;
+    if monitor_schema {
+        let row = tx.query_opt("SELECT monitor_attempt_id IS NULL FROM control.producer_requests WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea AND producer_epoch=$3::text::numeric AND request_sequence=$4::text::numeric", &[&&dataset.as_bytes()[..],&&request.producer_slot_id.as_bytes()[..],&request.producer_epoch.get().to_string(),&request.request_sequence.get().to_string()]).await.map_err(backend)?;
+        if let Some(row) = row {
+            if !row.try_get::<_, bool>(0).map_err(backend)? {
+                return Err(SourceBindingError::Conflict);
+            }
+        }
+    }
     let epoch = request.producer_epoch.get().to_string();
     let sequence = request.request_sequence.get().to_string();
     let (source_installed, scope_installed, job_installed) = installed(tx).await?;
@@ -369,6 +387,51 @@ pub(super) async fn require_current_enrollment(
         .map_err(backend)?;
     if matches != Some(true) {
         return Err(SourceBindingError::Conflict);
+    }
+    Ok(())
+}
+
+/// Historical Monitor evidence preflight. Caller already holds current Control
+/// and dataset; lock the exact frozen intent before Ingest/producer locks. Never
+/// authorizes a socket or adopts a new source generation after observation.
+pub(super) async fn require_monitor(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    binding: super::control_owner::MonitorEvidenceBinding,
+    request: Option<(ProducerRequestId, RequestPhase)>,
+    resolution: bool,
+) -> Result<(), SourceBindingError> {
+    let intent = binding.intent();
+    if intent.dataset() != dataset {
+        return Err(SourceBindingError::Conflict);
+    }
+    let source = intent.source();
+    tx.query_one("SELECT control.require_measurement_evidence($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::text::numeric,$6::bytea)",
+        &[&&dataset.as_bytes()[..],&&intent.attempt_id().as_bytes()[..],&&source.endpoint_id.as_bytes()[..],&&source.access_scope_id.as_bytes()[..],&source.enrollment_generation.get().to_string(),&&source.route_id.as_bytes()[..]])
+        .await.map_err(backend)?;
+    // Read the authoritative frozen bytes; a copied struct is no permission.
+    let matches:bool=tx.query_one("SELECT context_bytes=$3::bytea AND profile_version=1 AND authority_ceiling_us=$4::bigint FROM control.measurement_dispatches WHERE dataset_id=$1::bytea AND attempt_id=$2::bytea",
+        &[&&dataset.as_bytes()[..],&&intent.attempt_id().as_bytes()[..],&&intent.context_bytes()[..],&(intent.profile().effective_authority_us().get() as i64)]).await.map_err(backend)?.try_get(0).map_err(backend)?;
+    if !matches {
+        return Err(SourceBindingError::Conflict);
+    }
+    if let Some((request, phase)) = request {
+        let row=tx.query_opt("SELECT relay_endpoint_id=$5::bytea AND relay_access_scope_id=$6::bytea AND relay_enrollment_generation=$7::text::numeric AND relay_route_id=$8::bytea AND acquisition_scope_id IS NULL AND acquisition_job_id IS NULL AND monitor_attempt_id=$9::bytea AND monitor_resolution=$10::boolean FROM control.producer_requests WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea AND producer_epoch=$3::text::numeric AND request_sequence=$4::text::numeric",
+            &[&&dataset.as_bytes()[..],&&request.producer_slot_id.as_bytes()[..],&request.producer_epoch.get().to_string(),&request.request_sequence.get().to_string(),&&source.endpoint_id.as_bytes()[..],&&source.access_scope_id.as_bytes()[..],&source.enrollment_generation.get().to_string(),&&source.route_id.as_bytes()[..],&&intent.attempt_id().as_bytes()[..],&resolution]).await.map_err(backend)?;
+        match row {
+            Some(row) if row.try_get::<_, Option<bool>>(0).map_err(backend)? != Some(true) => {
+                return Err(SourceBindingError::Conflict);
+            }
+            None if matches!(phase, RequestPhase::Dispatch) => {
+                return Err(SourceBindingError::MissingReservation);
+            }
+            _ => {}
+        }
+        let conflict:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM control.producer_requests WHERE dataset_id=$1::bytea AND monitor_attempt_id=$2::bytea AND monitor_resolution=$3::boolean AND (producer_slot_id,producer_epoch,request_sequence) IS DISTINCT FROM ($4::bytea,$5::text::numeric,$6::text::numeric))",
+            &[&&dataset.as_bytes()[..],&&intent.attempt_id().as_bytes()[..],&resolution,&&request.producer_slot_id.as_bytes()[..],&request.producer_epoch.get().to_string(),&request.request_sequence.get().to_string()]).await.map_err(backend)?.try_get(0).map_err(backend)?;
+        if conflict {
+            return Err(SourceBindingError::Conflict);
+        }
     }
     Ok(())
 }

@@ -146,3 +146,15 @@ reuse verifies hashes and permits only documentation/Python Git differences.
 See [job-effect qualification](../../docs/implementation/evidence/p03-job-effect-faults-native-20260928.json)
 for executed boundaries and exclusions. This frozen-validator fixture does not
 replace concrete SyncArrivalPolicy/socket custody or the installed M1 journey.
+
+`monitor_guards.sql` is an unexecuted schema44 fixture for the first installed
+Monitor qualification. Install it in a fresh isolated clone before the first
+real dispatch and first Monitor evidence reservation, using the actual Control
+login. Its hooks retain product guards and roll back each candidate:16 dispatch
+cases cover closed context/profile, ownership, expiry, immutability and the
+pending-source veto (including release by a recorded no-I/O refusal);10 evidence
+cases cover exact original binding, Sync/Monitor exclusion and mutual exclusion
+of evidence and no-I/O closure. Results contain closed case names/codes only.
+The fixture does not supply a runtime no-I/O proof, test socket custody, establish
+native admission, or qualify lost COMMIT/restart behavior. Those require the
+installed source/producer journey. No execution of this fixture is claimed.

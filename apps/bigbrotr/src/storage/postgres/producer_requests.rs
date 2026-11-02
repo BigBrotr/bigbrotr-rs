@@ -280,3 +280,40 @@ async fn reserve_in(
     .map_err(backend)?;
     Ok(())
 }
+
+/// Only the typed Measurement bridge calls this. The frozen attempt is checked
+/// before Ingest locks by its common preflight; this retains exact staged bytes
+/// and immutable source attribution under the usual producer serialization.
+pub(super) async fn reserve_monitor(
+    tx: &Transaction<'_>,
+    staged: &StagedProducerRequest,
+    issuer: ControlOwner,
+    binding: super::control_owner::MonitorEvidenceBinding,
+    resolution: bool,
+) -> Result<(), ReservationError> {
+    tx.query_one("SELECT reserved_through_request::text FROM control.producer_epochs WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea AND producer_epoch=$3::text::numeric FOR UPDATE",
+        &[&&staged.dataset.as_bytes()[..],&&staged.request.producer_slot_id.as_bytes()[..],&staged.request.producer_epoch.get().to_string()]).await.map_err(backend)?;
+    producer_sources::require_monitor(
+        tx,
+        staged.dataset,
+        binding,
+        Some((staged.request, RequestPhase::Reservation)),
+        resolution,
+    )
+    .await
+    .map_err(ReservationError::Source)?;
+    if let Some(old) = read(tx, staged.dataset, staged.request).await? {
+        if old.digest != staged.digest
+            || old.input_bytes != staged.input_bytes
+            || old.manifest_sha256 != staged.manifest_sha256
+        {
+            return Err(ReservationError::Conflict);
+        }
+        return Ok(());
+    }
+    let intent = binding.intent();
+    let source = intent.source();
+    tx.execute("INSERT INTO control.producer_requests(producer_slot_id,producer_epoch,request_sequence,dataset_id,request_digest,input_bytes,input_profile,manifest_sha256,issuer_resource,issuer_epoch,issuer_incarnation,reserved_at_us,relay_endpoint_id,relay_access_scope_id,relay_enrollment_generation,relay_route_id,monitor_attempt_id,monitor_resolution) VALUES($1::bytea,$2::text::numeric,$3::text::numeric,$4::bytea,$5::bytea,$6::integer,1,$7::bytea,$8::bytea,$9::text::numeric,$10::bytea,(EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint,$11::bytea,$12::bytea,$13::text::numeric,$14::bytea,$15::bytea,$16::boolean)",
+        &[&&staged.request.producer_slot_id.as_bytes()[..],&staged.request.producer_epoch.get().to_string(),&staged.request.request_sequence.get().to_string(),&&staged.dataset.as_bytes()[..],&&staged.digest.as_bytes()[..],&(staged.input_bytes as i32),&&staged.manifest_sha256[..],&&issuer.resource_id.as_bytes()[..],&issuer.epoch.get().to_string(),&&issuer.process_incarnation.as_bytes()[..],&&source.endpoint_id.as_bytes()[..],&&source.access_scope_id.as_bytes()[..],&source.enrollment_generation.get().to_string(),&&source.route_id.as_bytes()[..],&&intent.attempt_id().as_bytes()[..],&resolution]).await.map_err(backend)?;
+    Ok(())
+}

@@ -48,6 +48,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: None,
                     progress: false,

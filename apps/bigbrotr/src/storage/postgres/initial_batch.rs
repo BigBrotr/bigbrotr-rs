@@ -35,6 +35,9 @@ use std::sync::atomic::{AtomicBool, Ordering};
 mod dispatch;
 use super::producer_progress::{self, ProducerProgressError, ProgressGrant, SyncProgress};
 use dispatch::NativeOwner;
+#[path = "monitor_admission.rs"]
+mod monitor_admission;
+pub use monitor_admission::{InitialMeasurementRequest, LiveMeasurementRequest};
 #[path = "initial_prefix.rs"]
 mod prefix_operations;
 #[path = "initial_quantum.rs"]
@@ -128,6 +131,7 @@ struct InitialIngestContext<'a> {
     policy_ttl: Duration,
     request: Option<(ProducerRequestId, RequestPhase)>,
     source: Option<CurrentSourceCheck<'a>>,
+    monitor: Option<(MonitorEvidenceBinding, bool)>,
     network_event: bool,
     job: Option<ImportJobBinding>,
     progress: bool,
@@ -492,6 +496,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: None,
                 },
@@ -594,6 +599,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: None,
                 },
@@ -718,6 +724,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source,
+                    monitor: None,
                     network_event: matches!(
                         input.event.origin(),
                         bigbrotr_model::EventOrigin::Network
@@ -875,6 +882,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Reservation)),
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: None,
                 },
@@ -954,6 +962,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Dispatch)),
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: None,
                 },
@@ -1189,6 +1198,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Reservation)),
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: None,
                 },
@@ -1271,6 +1281,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Dispatch)),
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: None,
                 },
@@ -1504,6 +1515,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((input.event.request_id(), RequestPhase::Reservation)),
                     source,
+                    monitor: None,
                     network_event: matches!(
                         input.event.origin(),
                         bigbrotr_model::EventOrigin::Network
@@ -1613,6 +1625,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((input.event.request_id(), RequestPhase::Dispatch)),
                     source,
+                    monitor: None,
                     network_event: matches!(
                         input.event.origin(),
                         bigbrotr_model::EventOrigin::Network
@@ -1830,6 +1843,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
+                    monitor: None,
                     network_event: false,
                     job: Some(input.batch.job),
                 },
@@ -1971,7 +1985,9 @@ impl ControlSession {
         }
         let tx = application_transaction(
             &mut self.client,
-            if input.progress || store.compacted() {
+            if input.monitor.is_some() {
+                44
+            } else if input.progress || store.compacted() {
                 40
             } else {
                 authority.schema()
@@ -1992,7 +2008,24 @@ impl ControlSession {
             // check below samples authority again after every intervening wait.
             binding.require(&tx).await?;
         }
-        if let Some((request, phase)) = input.request {
+        if let Some((binding, resolution)) = input.monitor {
+            if input.source.is_some()
+                || input.network_event
+                || input.job.is_some()
+                || input.progress
+            {
+                return Err(OwnerError::InvalidInput.into());
+            }
+            producer_sources::require_monitor(
+                &tx,
+                authority.dataset(),
+                binding,
+                input.request,
+                resolution,
+            )
+            .await
+            .map_err(InitialOperationError::Source)?;
+        } else if let Some((request, phase)) = input.request {
             producer_sources::require_binding(
                 &tx,
                 authority.dataset(),
