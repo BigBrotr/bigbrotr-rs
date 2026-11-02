@@ -217,7 +217,7 @@ impl TransportTrace {
         Arc::ptr_eq(&self.0, &other.0)
     }
     /// Arc allocation layout: its two atomic reference counts followed by the
-    /// full Mutex<State>, including the mutex/poison state and alignment padding.
+    /// full `Mutex<State>`, including the mutex/poison state and alignment padding.
     /// Excludes allocator bookkeeping and this handle's inline pointer.
     pub const fn retained_bytes() -> usize {
         match Layout::new::<[AtomicUsize; 2]>().extend(Layout::new::<Mutex<State>>()) {
