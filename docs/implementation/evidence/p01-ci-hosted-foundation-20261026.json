@@ -2830,7 +2830,7 @@
     },
     "existing_outcome_publication": {
       "source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca",
-      "status": "PUSHED_NEW_FULL_FOUNDATION_RUNNING_NOT_QUALIFIED",
+      "status": "SEALED_FAILURE_MACOS_ACCEPTANCE_PATH_ALIAS",
       "source_admission": {
         "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-source-551cb56f-20261102/publication-admission.json",
         "sha256": "278da622fd6f93d9501ba143c8ab2eaa4f2957515669da1a26a450d0d952153e"
@@ -2857,10 +2857,10 @@
           "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/watch-identity.json",
           "sha256": "636ef8990dc53b8d95dc609f9105be24660211a9a7a543ce369400f3e52538cb"
         },
-        "state": "ROOT_OWNED_READ_ONLY_RUNNING"
+        "state": "REAPED_EXIT1_REMOTE_FAILURE_NO_EXPIRY"
       },
       "qualification": "Required36 foundation commands and12 mandatory Native controls per platform remain pending actual terminal/public audit. Source-declared671 acceptance/43 proxy/13 export; new cfg(test) seed ignored by default, actual connected execution recorded separately in P02. Alternate nonselected workflow jobs SKIP are not required executions or PASS.",
-      "next": "Preserve this run; Root reaps watcher, acquire exact-source artifacts/logs and verify actual three-platform gates/public outputs using the prepared retained observer. f4ad remains latest full hosted PASS until success.",
+      "next": "Current source includes local77394acf fixture canonicalization; next coherent product source must complete actual full foundation especially Mac build/Rust/Native. Keep latest fully qualified hosted baseline f4ad until such execution succeeds.",
       "partial_macos_failure": {
         "status": "FAIL_FIXTURE_CANONICAL_TEMPORARY_ROOT_PATH_ALIAS",
         "receipt": {
@@ -2875,6 +2875,21 @@
         "classification": "Artifact admission correctly returns canonical paths. Synthetic fixture expected Darwin /var alias instead of /private/var; no product/provenance defect observed.",
         "local_correction": "77394acf normalizes owned fixture root and adds a positive compiled-root symlink alias case.16 targeted controls PASS. Local only; no corrected Mac execution yet. Original551 FAIL remains unchanged.",
         "scope": "One completed actual-source platform artifact, safe/digest-verified and zero scanner candidates. Full-run status/remaining Linux jobs not qualified by this partial receipt."
+      },
+      "terminal_verification": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/terminal-audit.json",
+        "sha256": "1a118c2c54f213dfe05b3f20894bca4b3e8cc839524851a6b41232fae8a1e576"
+      },
+      "terminal_public_output_audit": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/receipt.json",
+        "sha256": "fb609ed11149e6b2de8b0e3c1655227e6b085114e3ae9d6acc84c3951c959415"
+      },
+      "terminal_summary": {
+        "required": "29PASS/1FAIL/6NOT_RUN",
+        "linux": "Both full actual-source jobs PASS: Rust1577 each, declared5/4 ignores, all12 mandatory Native and671 acceptance/43 proxy/13 export controls. Event40/static65 practical checks PASS.",
+        "macos": "Two commands PASS, acceptance FAIL:671 collected657PASS/1 distinct failed case(two subtest failures)/13SKIP. Six later commands and all12 mandatory Native NOT_RUN. Path-alias fixture defect, not product/billing/cancellation.",
+        "public": "Four exact-source artifacts/511 members and26 workflow logs.54 occurrences/five known nonsecret fingerprints, zero unclassified or operational credentials/provider alerts within bounded pattern/asynchronous-provider limits. Original verifier passed unchanged.",
+        "watcher": "Root61745 reaped1 without expiry; driver2075466/GH2075469 freshly absent."
       }
     }
   }

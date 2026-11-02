@@ -79077,10 +79077,10 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root11316 compiler and pure validator reaped0, all associated containers stopped/PID0/noOOM; cache115 released/reacquired and four ELF guards unchanged. New installed connected guard case not started. Root61745 remains the sole hosted observer pending actual terminal; later source/oracle agents have no engine/compiler access.",
-        "source_work": "Connected guard sourcea2dc2177 committed/clean in its worktree and integrated locally454f4de0;53 controls/rustfmt and independent Astra source review PASS. Compile/Clippy/new connected execution NOT_RUN. Separate Sol implements same-job continuation in work/m2-finite-job-adoption-20261102; independent Sol owns its fixture/oracle worktree. Both remain partial/unintegrated.",
-        "review": "Astra approved current guard source, bounded deferred-hook injection and explicit settled-job succession architecture. New acquisition continuation production/oracle code will need critical review before build/engine qualification.",
-        "hosted": "One Root watcher61745,60s interval/7500s bound; remote run41529949800 source551/push/attempt1 has scopePASS and three foundation jobs running."
+        "integrator": "Root sole integrator; all compiler/test/installed/hosted observer tools are terminal. Current bounded guard and old-seed regression qualified. No engine/compiler/cache holder or autonomous source writer active.",
+        "source_work": "New M2 production8bee81aa and independent oracle c53142f8 committed/clean in separate worktrees; both Astra source approved with all concrete review fixes. Not yet Root-integrated/compiled/engine-qualified.",
+        "review": "Completed critical guard, settled-job authority architecture/source and independent five-query oracle reviews. Source approval is not runtime acceptance.",
+        "hosted": "Current551 complete failure sealed; both Linux PASS, Mac fixture alias failure before build. Corrected future full three-platform execution still required."
       },
       "resources": "b05 builder79279, Rust65458, observer13418 and portable92240 all reaped0; containers stopped/PID0/no OOM. Compiler cache released/reacquired; protected four ELF bytes/fullstat unchanged. Three installed cases64800/13174/63559 all reaped0; respectively20/20/24 owned containers stopped and5/5/9 recorded processes absent. Peer owners joined; borrowed bridge1699209a preserved. No cleanup; original data, failures, .research and source worktrees retained. New source16ad watcher15724/driver2031539/GH2031542 is active; no local engine or compiler activity.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
@@ -79174,7 +79174,7 @@
         "tool": 61745,
         "run": 41529949800,
         "source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca",
-        "state": "ROOT_WATCHER61745_ACTIVE; MAC_PARTIAL_FAILURE_SEALED; REMAINING_LINUX_RUNNING_AT_OBSERVATION",
+        "state": "REAPED_ROOT61745_EXIT1_NO_EXPIRY_PIDS_ABSENT",
         "identity": {
           "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/watch-identity.json",
           "sha256": "636ef8990dc53b8d95dc609f9105be24660211a9a7a543ce369400f3e52538cb"
@@ -79182,6 +79182,10 @@
         "partial_macos_receipt": {
           "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/partial-macos-receipt.json",
           "sha256": "46dfb88c30e2ee14f15fa6028f89e88d0eab3868916c2e690395593eab5fcb31"
+        },
+        "terminal_audit": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/terminal-audit.json",
+          "sha256": "1a118c2c54f213dfe05b3f20894bca4b3e8cc839524851a6b41232fae8a1e576"
         }
       },
       "next_ack_source": {
@@ -79274,6 +79278,14 @@
           "failure_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/connected-r1-failure-receipt.json",
           "failure_receipt_sha256": "4f1bf034d55d24f3967d36208ba2ce43be1dbaf33aca593c88a421fb87864555",
           "state": "16containers stopped/PID0/noOOM, two recorded children absent, bridge preserved. No new resolver phase executed. Original private SQL diagnostic retained, not published."
+        },
+        "connected_qualification": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/connected-r2-receipt.json",
+          "sha256": "12c252431df63629a611ecb987c0c638cefaf101793b2afa01e1c8d90884d881"
+        },
+        "existing_seed_regression": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/existing-b125-r1-receipt.json",
+          "sha256": "8ff635be921f37ce3d4e36e17600df5cbb8e3757e1253444e8b8f7e72e241d85"
         }
       }
     }

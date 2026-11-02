@@ -478,14 +478,17 @@
           "remaining_connected_gates": {
             "owner": "P04-T07 Steps2/6 and P02 producer progress/recovery",
             "required": [
-              "Selected invalid binding must refuse without copy-only fallback; closing growth must retain narrow binding/prefix/tail/retirement restrictions.",
-              "Actual owner/backend authority and deferred/invoker guards must reject excluded or borrowed identities without effects.",
-              "Dependency-count/byte-charge boundaries require independently calculated paired controls; direct SQL capacity proof is distinct from installed resolver exhaustion."
+              "Genuine prepared/active-prefix, noncontiguous-tail and retirement workflow qualification stays with existing P02 prefix/retirement and P04-T07 Step6 tasks; no fabricated prepared C3/reserved4 state is presented as a valid workflow.",
+              "Wider evidence-only/mixed producer retained-byte and installed pressure/exhaustion qualification stays with P02. Installed checkpoint-producing request4/max8deps/64KiB preflights its charge before original admission; SQL scalar boundary pairs are qualified separately, not substituted for wider installed exhaustion."
             ],
-            "active_work": "Existing-outcome preservation is qualified and locally integrated. Next close bounded connected selected-binding/prefix/tail, actual authority and paired dependency-count/retained-byte refusal controls. They own current recovery safety; later P04/P02 work remains separately planned, not a blanket phase prerequisite.",
+            "active_work": "Bounded initial known-receipt extension is qualified including original repair faults, exact existing outcome and connected refusals/SQL boundaries. Advance next M2 settled same-job adoption by actual dependencies; remaining broader profiles retain their existing owners and are not an all-P02 barrier.",
             "qualified_existing_outcome": {
               "requirement": "Exact existing outcome4/C3: preserve its original bytes, recorder, timestamp and xmin while only new head/dependency receive fresh attribution.",
               "evidence": "existing_outcome_qualification"
+            },
+            "qualified_bounded_guards": {
+              "evidence": "connected_guard_qualification",
+              "scope": "Selected invalid binding actual resolver refuses with no copy-only fallback; borrowed backend actual login refuses; real invoker immediate/deferred guards and independent SQL capacity pairs PASS."
             }
           },
           "existing_outcome_qualification": {
@@ -569,7 +572,7 @@
             "limits": "This qualifies only exact-existing-outcome/C3 preservation and retry, not selected-invalid-binding, authority, paired capacity, fleet scheduling, renewal, retirement or full M2. Default Rust suites still ignore the connected seed. Maintained builder/input procedure is documented; private retained caches are optional accelerators."
           },
           "connected_guard_qualification": {
-            "status": "PASS_TEST_ARTIFACT_R1_FIXTURE_FAIL_CORRECTION_APPROVED_RERUN_NOT_RUN",
+            "status": "PASS_BOUNDED_CONNECTED_RESOLVER_AND_SQL_GUARDS",
             "source": "a2dc217712eaecd51ca8de585a6f617f551a18ab",
             "integrated": "454f4de03c63384368a9f9beab861006741e8d61",
             "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-connected-guards-20261102",
@@ -583,10 +586,8 @@
               "tests/acceptance/cases/first_launch_monitor_outcome_seed.py": "eec9100de150f66965ae00716ef7f2470ddcde4097dbf0fcd2f9fa03730ed265"
             },
             "scope": "Actual connected library resolver refusals with genuine owner/borrowed actual-login backend and explicit isolated binding corruption; ordinary installed ACK/retry positive. SQL hook immediate/deferred/capacity pairs remain distinct from valid stale-owner workflow or installed resolver exhaustion. Production runtime unchanged; separately rebuilt test-only artifact required.",
-            "not_run": [
-              "p04-monitor-connected-guards real PG/Native case"
-            ],
-            "later_owners": "Genuine prepared/active-prefix, noncontiguous-tail, retirement workflow and wider evidence-only/mixed-history capacity remain existing P04/P02 owners; no fabricated completed scope.",
+            "not_run": [],
+            "later_owners": "Broader genuine prepared/active-prefix, noncontiguous-tail and retirement workflows remain the existing P02 prefix/retirement and P04-T07 Step6 owners. Wider evidence-only/library mixed-history capacity and installed pressure remain P02 capacity qualification. Lost-RAM/durable-start, renewal, repeated scheduling and fleet remain P04/P03. This closes only the bounded initial known-receipt recovery extension, not those tasks or full M2.",
             "build_observation": {
               "observed_at_utc": "2026-11-02T22:26:16.563667+00:00",
               "source": "b1258b592be5a3a4a27c36a2fc64658de27037cf",
@@ -646,6 +647,45 @@
                 "tests/acceptance/cases/first_launch_monitor_ack_recovery_oracle.py": "6db20109b8429d9705bc177a9af3d38a3cde96ffbc09a8665e0436a9ca24020a",
                 "tests/acceptance/test_monitor_connected_guards.py": "4e7050627fd6b497e229595fa58d64c70b40ff966ec5ca565cb10ef7104c857c"
               }
+            },
+            "installed": {
+              "receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/connected-r2-receipt.json",
+                "sha256": "12c252431df63629a611ecb987c0c638cefaf101793b2afa01e1c8d90884d881"
+              },
+              "root_tool": 60832,
+              "assembly": "625ff2e1a59ff2b205f03a2ebcef2076639735aa",
+              "product": "b05b0a267d362cdef1b4f396076b980620509178",
+              "fixture_source": "b1258b592be5a3a4a27c36a2fc64658de27037cf",
+              "artifact_sha256": "faf30d0c8052eee5dfece8d6f5ed330853607d604e49981513d6da12480845be",
+              "counts": {
+                "collected": 12,
+                "executed": 12,
+                "failed": 0,
+                "skipped": 0,
+                "not_run": 0
+              },
+              "stopped_containers": 29,
+              "absent_processes": 9,
+              "scope": "Actual resolver borrowed-backend and selected-invalid-context refusal without outcome/head/dependency/input/Native effects; separately accounted genuine Control claims/exclusions. Actual invoker SQL closing, independently paired count/byte boundaries and post-immediate deferred-owner corruption guards. Fresh positive resolver then ordinary installed ACK and no-write retry; one joined peer, unchanged borrowed bridge. Explicit setup alone alters/restores one dispatch context and xmin, never a production transition."
+            },
+            "existing_seed_regression": {
+              "receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/existing-b125-r1-receipt.json",
+                "sha256": "8ff635be921f37ce3d4e36e17600df5cbb8e3757e1253444e8b8f7e72e241d85"
+              },
+              "root_tool": 59670,
+              "fixture_source": "b1258b592be5a3a4a27c36a2fc64658de27037cf",
+              "counts": {
+                "collected": 9,
+                "executed": 9,
+                "failed": 0,
+                "skipped": 0,
+                "not_run": 0
+              },
+              "stopped_containers": 23,
+              "absent_processes": 6,
+              "scope": "Old existing-outcome operation after shared Rust fixture refactoring: exact seeded bytes/recorder/time/xmin preserved, new C4/dependency attribution, ACK/retry. Reused qualified b05 product and same faf30d0c artifact; no rebuild."
             }
           }
         }

@@ -382,6 +382,19 @@ with four later stages NOT_RUN in the evidence; its correction preserves the
 complete independently frozen policy digest. The other required refusal
 boundaries stay open; this does not close Steps2/6 or their broader P02 obligations.
 
+The bounded `p04-monitor-connected-guards` case now passes all twelve real stages
+on the unchanged b05 product with a separately qualified test artifact. It proves
+the actual resolver's borrowed-backend and selected-binding refusals without data
+effects, actual-invoker SQL closing/capacity pairs and the deferred current-owner
+guard, followed by positive resolution, installed ACK and no-write retry. The
+first attempt exposed a fixture expectation of a trigger error where packaged ACL
+correctly refused the operation; that original failure is retained. The corrected
+fixture preserves the packaged privileges. Existing-outcome preservation also
+passes nine stages after the shared fixture refactor. P02 owns exact identities,
+receipts and scope. Genuine prepared/active-prefix/retirement workflows and wider
+installed capacity remain their existing owners; they are not made prerequisites
+of the next independent M2 capability.
+
 - [ ] **1. Separate schedule and measurement identity.** Maintain due/claim/deferral records in bounded operations state; acquire budget before external work. A stable attempt ID and method/profile bind actual endpoint/route/observer/access context. Persist a bounded dispatch intent before action to make ambiguity recoverable, without treating that intent as proof the action began.
 - [ ] **2. Implement honest crash recovery.** Record actual start/end and monotonic duration when observed, plus terminal evidence receipt. After a crash with only intent, retain execution-unknown and nullable actual start; with durably recoverable proof of start but missing completion, retain completion-unknown. Neither becomes a fabricated timeout or success/failure vote. A local start timestamp observed only in lost RAM is not recovered proof of start. Retry is a new attempt; retrying an evidence write resolves the original receipt. Preserve unresolved dispatch intent through the correctness horizon until terminal/unknown recovery is durably linked; operational display TTL cannot delete that obligation.
 - [ ] **3. Schedule liveness and catalog independently.** Defaults are 5m and 6h, claim 100, concurrency 32, host concurrency 1, host start budget 32/min and 0.1 jitter. Use 15s check timeout/45s overlay; retries=1 total attempt. Failure due decay factor 2 caps at 7d; achieved coverage/backlog is reported rather than promised cadence. A retry_initial of 1s is inactive until attempts exceed one.

@@ -160,9 +160,12 @@ All ten installed stages pass. The separate
 also passes all nine stages: a genuine Control-owned test seed records outcome4
 while retaining C3, then ordinary recovery preserves that row's original
 recorder, timestamp and xmin while advancing C4/dependency10 under fresh Control.
-Exact retry leaves both stores unchanged. These bounded proofs do not complete
-the connected binding/authority/capacity refusal gates, scheduling or full M2;
-their remaining owners and receipts are retained in P04-T07/P02.
+Exact retry leaves both stores unchanged. The separate twelve-stage connected
+guard case also passes actual resolver binding/backend refusals and SQL
+closing/deferred-owner/capacity pairs before positive resolution and installed
+ACK/retry. SQL limit pairs do not establish wider installed exhaustion; genuine
+prepared/active-prefix/retirement, scheduling and full M2 remain in P04-T07/P02.
+Those existing owners retain the remaining requirements and exact evidence.
 
 This extension consolidates the dependency guard in the current pre-release
 0044 migration. A previously applied 0044 with different bytes is refused by the
