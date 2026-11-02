@@ -1437,7 +1437,7 @@ fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_ackno
         }
         .inspect_pending(&pending, topology, &worker_budget)
         .unwrap();
-        assert_eq!(result.staged_counts, [1, 1, 1, 1, 0]);
+        assert_eq!(result.staged_counts, [1, 1, 1, 1, 0, 0]);
         assert_eq!(
             result.archive_batch_digest.to_string(),
             vector["sha256"].as_str().unwrap()

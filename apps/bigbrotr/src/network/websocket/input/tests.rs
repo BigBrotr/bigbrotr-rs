@@ -317,15 +317,15 @@ async fn observed_tx_counter_counts_only_writes_and_preserves_the_exact_cap() {
     trace
         .begin(Instant::now() + Duration::from_secs(5))
         .unwrap();
-    let mut input = Input::with_observation(&mut stream, 2 * 1024 * 1024, Some(trace.clone()));
-    input
-        .read_exact(&mut vec![0; RESPONSE.len()])
-        .await
-        .unwrap();
-    input.enable();
     // Literal masked client Binary:8-byte header +65528-byte payload =64KiB.
     let frame = [vec![0x82, 0xfe, 0xff, 0xf8, 0, 0, 0, 0], vec![b'x'; 65528]].concat();
     let consumer = async {
+        let mut input = Input::with_observation(&mut stream, 2 * 1024 * 1024, Some(trace.clone()));
+        input
+            .read_exact(&mut vec![0; RESPONSE.len()])
+            .await
+            .unwrap();
+        input.enable();
         input.write_all(&frame).await.unwrap();
         assert!(input.write_all(&[0x89, 0x80, 0, 0, 0, 0]).await.is_err());
         drop(input);

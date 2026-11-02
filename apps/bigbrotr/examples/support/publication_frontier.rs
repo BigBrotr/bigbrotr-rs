@@ -95,9 +95,9 @@ pub async fn inspect(
     assert_eq!(
         captured.observed().observation().family_counts,
         if mode == "history" && !prefix {
-            [6, 1, 1, 2, 2]
+            [6, 1, 1, 2, 2, 0]
         } else {
-            [6, 1, 1, 1, 1]
+            [6, 1, 1, 1, 1, 0]
         }
     );
     captured.verify_barrier().await.unwrap();
