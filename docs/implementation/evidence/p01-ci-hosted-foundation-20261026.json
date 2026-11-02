@@ -2625,6 +2625,14 @@
         "status": "LOST_UNRECEIPTED_BOTH_PROCESSES_ABSENT",
         "preserved": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation/lost-observer-1",
         "scope": "Observed after agent setup turn ended; exact exitcause unknown, no terminalreceipt. Agent-scoped tools unavailable toRoot; no remoteCIcancellation/rerun. Original identity/log/custody retained withhashes."
+      },
+      "macos_provider_admission": {
+        "status": "CANCELLED_BEFORE_EXECUTION_HOSTED_RUNNER_CAPACITY",
+        "job": 125435969590,
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation/early-macos-admission/provider-admission.json",
+        "receipt_sha256": "c0784c2fbe1a56d4eb1f519f850902f94ecca98db534ed6e0ac6cfd0cbfe1503",
+        "scope": "902seconds/zerosteps/noassignedrunner; fourcompleteannotations identifyacquisitionfailure+threemacOSarm64capacitynotices. All9Maccommands/11mandatoryNativeNOT_RUN. No observedbilling/product/fixture/usercancellation. Linuxjobsremainactive; no remotereexecution requested.",
+        "next": "PreserveLinuxruns; afterterminalsealedoutputs consideronlytargetedmissingMacretryatidenticalsource/platform/coverage. No immediatewhole-run restart/settingschange."
       }
     }
   }

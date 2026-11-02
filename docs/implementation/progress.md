@@ -92,14 +92,22 @@ GH1948046, start ticks verified,60s/7500s bound. Root can poll its own session;
 agent tools are scoped to their owner. Wake the idle CI agent for terminal audit.
 P01 `recovery_followthrough_publication` owns receipts and declarations.
 
+The new Mac job125435969590 is now CANCELLED before execution: zero steps,
+no runner, provider acquisition failure/macOS capacity annotations. Its nine
+commands and11 Native controls are NOT_RUN; no billing/product/fixture execution
+or user cancellation established. P01 binds receipt c0784c2f. Preserve running
+Linux jobs; consider only a same-source targeted Mac retry after terminal sealing.
+
 ## Active work, resources and next action
 
 Two independent, partial M2 source assignments remain unintegrated:
 
 - Sol current_control_inventory: Rust/native/PG/funding/tests for initial
   NativeI4/PGC3 checkpoint repair in `.research/m2-monitor-ack-recovery-20261102`,
-  afterf9. Astra approved the bounded historical-binding/custody design; actual
-  implementation still needs critical review and real qualification.
+  sourcef12. Actual Astra review is BLOCKED: three maintained probe callers need
+  the new grant, and repair selection must preserve existing resolution/unsupported
+  copy-only replay. Sol fixes these plus the owning reference contract before a
+  bounded follow-up review. No compilation/build or runtime test has started.
 - Sol measurement_clickhouse_prep: shared Python fault journey/oracle in
   `.research/m2-monitor-native-outcome-20261102`, branch
   `work/m2-monitor-native-outcome-20261102`, basedeb09. Reuse the exact C4 selector

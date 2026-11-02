@@ -270,6 +270,18 @@
             "receipt_sha256": "2cf1477ede246a199cc8ec537a3391ced2f571da0d221b70e326c4f6551caee1",
             "scope": "Actual oneControlconnection/20305frames/1362047bytes, exactselectedUPDATE1/same-sessioncompletedCOMMITreplyloss. PGC4/outcome4/nativeI4/A3/R0; installedfreshControl defaultrecovery closingI4/A4/R0 andexactretry native63->65->65. Allfouroriginalrequests/inputs/receipts,tenFacts/fourPendingBatchheaders/science/head+dependencyxmins retained; noSync/newprobe.85tableclosure checked,20ownedcontainers inclall3nativeobservers stopped/PID0/noOOM,5processesabsent,listenerjoined/closed/queueempty,borrowedbridge unchanged; cleanupPASS. Originalr1/r2/r3FAIL remain preserved."
           }
+        },
+        "initial_measurement_c3_repair": {
+          "status": "SOURCE_REVIEW_BLOCKED_FIX_IN_PROGRESS_ALL_RUNTIME_NOT_RUN",
+          "tasks": "P04-T07 Steps2/6; P02 producer-progress/recovery",
+          "original": "f12db3545764bf8beee477281eb6649741969a02",
+          "source_controls": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102/.research/measurement-c3-repair-source-controls/source-controls.json",
+          "source_controls_sha256": "a6ec0a4677c12ec85023112b49d5ae9e96df2b904a49777d02115c56a72141f0",
+          "scope": "BorrowedactualhistoricalMeasurementNativewitness; freshControl atomicoriginaloutcome+genericcheckpointrepair; separatefundedsnapshot/preclaimoverlap; current0044narrowclosingdependencyguard. ExistingfinalfullprefixconfirmedACK unchanged. No generalresolution/successor/retirement qualification.",
+          "review": "Astra complete14filedelta+owning/callerboundaries, receipts/hash authenticated. Coherentwitness/stamps/atomicity/cancel/unknown/funding/SQLnarrowguard, but BLOCKED: threemaintainedprobe callersomitnewProgressGrant; unconditionalMeasurementrepairrejectsresolution/unsupportedprofilesbeforecopy-only eligibility. Fixexplicitselection, nevercatchvalidationerrorsandfallback. R0concern dismissed: priornativeinitialresolveralreadyrefusedretired!=0; compact/successoruseotherAPIs.",
+          "checks": "Author11Rustfmt/diff/61affectedPython/checksumdiscriminatorPASS. TheseareSOURCEcontrols; compilation/Rust/native/PG/installedALLNOT_RUN. No buildstartedwhileblocked.",
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102",
+          "next": "Reconcile3examplecallers/grantlifetimes plusresolution/unsupportedcopyselection andowningreferencecontract in coherentfollowup, criticallyreviewactualfixdelta, thenfrozenqualification. IndependentPythonC3oracle/casein .research/m2-monitor-native-outcome-20261102 remainsunintegrated/unqualified."
         }
       }
     },
