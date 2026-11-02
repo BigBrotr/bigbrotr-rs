@@ -2891,6 +2891,32 @@
         "public": "Four exact-source artifacts/511 members and26 workflow logs.54 occurrences/five known nonsecret fingerprints, zero unclassified or operational credentials/provider alerts within bounded pattern/asynchronous-provider limits. Original verifier passed unchanged.",
         "watcher": "Root61745 reaped1 without expiry; driver2075466/GH2075469 freshly absent."
       }
+    },
+    "qualified_monitor_guards_publication": {
+      "source": "5a9b7cc4c16027776a26f96d4eb7f54f22a5c58f",
+      "status": "PUSHED_HOSTED_EXECUTION_IN_PROGRESS",
+      "source_admission": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-guards-source-5a9b7cc4-20261103/publication-admission.json",
+        "sha256": "c63c3083f5aae708fbe263960df8367de5e695464dda86d2ffe3d737db0ab110"
+      },
+      "push": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/push-receipt.json",
+        "sha256": "a0395547b6867fec72fc9d05c9889d523f1840ca041f6cf84caa599722d816e5"
+      },
+      "run": 41546602945,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945",
+      "attempt": 1,
+      "event": "push",
+      "watcher": {
+        "tool": 56226,
+        "identity": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/watch-identity.json",
+          "sha256": "ccc2dd55a55c8838ec0efb01474e1a75000c83189e5c041b7154ffc65c6beb09"
+        },
+        "state": "ACTIVE_ROOT_SINGLE_OBSERVER_60S_BOUND7500S"
+      },
+      "scope": "Qualified bounded Monitor production/current connected test fixture and canonical-path correction; no new M2 schema45 source in this run. Source declares681 acceptance/13 export/43 proxy. Required36 foundation/12 mandatory Native per platform pending actual execution and terminal audit. Latest full hosted PASS remains f4ad.",
+      "next": "Reap existing sole observer at terminal; acquire and independently verify exact-source artifacts, actual full three-platform commands/Native and public-output scan. Preserve original551 failure; no duplicate or superseding push."
     }
   }
 }

@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca pushed main/origin, before current publication journal",
-      "state": "Main/origin16ad remains current; actual Mac proxy verifier FAIL is retained while Linux runs. Root has a critically approved source-only proxy accounting/admission correction and43 controls PASS, not pushed. Separate seed fixture source work remains partial.",
+      "observed_source": "Root clean7c89f554; canonical main/origin/actual remote5a9b7cc4 clean/pushed",
+      "state": "Bounded Monitor five installed journeys qualified and published. New M2 settled same-job sources integrated locally, portable controls PASS, production compilation/installed M2 NOT_RUN.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79077,12 +79077,12 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root sole integrator; all compiler/test/installed/hosted observer tools are terminal. Current bounded guard and old-seed regression qualified. No engine/compiler/cache holder or autonomous source writer active.",
-        "source_work": "New M2 production8bee81aa and independent oracle c53142f8 committed/clean in separate worktrees; both Astra source approved with all concrete review fixes. Not yet Root-integrated/compiled/engine-qualified.",
-        "review": "Completed critical guard, settled-job authority architecture/source and independent five-query oracle reviews. Source approval is not runtime acceptance.",
-        "hosted": "Current551 complete failure sealed; both Linux PASS, Mac fixture alias failure before build. Corrected future full three-platform execution still required."
+        "integrator": "Root sole integrator/launcher; current local compiler/test/installed tools terminal.",
+        "source_work": "Sol existing_outcome_publication_admission prepares source-only new exact7c89 guarded build capsule; no compiler/cache/ELF/Docker mutation authorized to agent. Production/oracle original worktrees committed/clean, both Astra source approved.",
+        "review": "Critical Monitor guards, settled-job authority/retirement and independent five-query oracle source reviews complete. No source-only review stands in for runtime acceptance.",
+        "hosted": "Root sole watcher56226 active for5a9 run41546602945; original551 terminal failure sealed and retained."
       },
-      "resources": "b05 builder79279, Rust65458, observer13418 and portable92240 all reaped0; containers stopped/PID0/no OOM. Compiler cache released/reacquired; protected four ELF bytes/fullstat unchanged. Three installed cases64800/13174/63559 all reaped0; respectively20/20/24 owned containers stopped and5/5/9 recorded processes absent. Peer owners joined; borrowed bridge1699209a preserved. No cleanup; original data, failures, .research and source worktrees retained. New source16ad watcher15724/driver2031539/GH2031542 is active; no local engine or compiler activity.",
+      "resources": "All earlier Monitor compiler/test/installed tools terminal/stopped/PID0/noOOM, shared cache115 released with original4ELF guards passed. Portable7c89 Root51231 reaped0/containerba2708ff stopped/PID0/noOOM; no cache/store/protectedELF mounts. Borrowed bridge1699209a remains preserved. New guarded production build only being prepared; no local engine/compiler active. Hosted observer56226 driver2138096/GH2138099 active, identity pinned. No cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79170,23 +79170,16 @@
         }
       },
       "hosted_observer": {
-        "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation",
-        "tool": 61745,
-        "run": 41529949800,
-        "source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca",
-        "state": "REAPED_ROOT61745_EXIT1_NO_EXPIRY_PIDS_ABSENT",
+        "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation",
+        "tool": 56226,
+        "run": 41546602945,
+        "source": "5a9b7cc4c16027776a26f96d4eb7f54f22a5c58f",
+        "state": "ACTIVE_ROOT_SINGLE_OBSERVER",
         "identity": {
-          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/watch-identity.json",
-          "sha256": "636ef8990dc53b8d95dc609f9105be24660211a9a7a543ce369400f3e52538cb"
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/watch-identity.json",
+          "sha256": "ccc2dd55a55c8838ec0efb01474e1a75000c83189e5c041b7154ffc65c6beb09"
         },
-        "partial_macos_receipt": {
-          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/partial-macos-receipt.json",
-          "sha256": "46dfb88c30e2ee14f15fa6028f89e88d0eab3868916c2e690395593eab5fcb31"
-        },
-        "terminal_audit": {
-          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/terminal-audit.json",
-          "sha256": "1a118c2c54f213dfe05b3f20894bca4b3e8cc839524851a6b41232fae8a1e576"
-        }
+        "prior": "551 terminal failure receipts remain owned by P01; observer61745 reaped1 without expiry, PIDs absent."
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",
@@ -79229,7 +79222,7 @@
         "source": "b05b0a267d362cdef1b4f396076b980620509178",
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26",
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-b05b0a26",
-        "state": "Strict worker-bound release, four unfiltered Rust targets, observer and655/13/42 portable suites PASS. Three installed recovery journeys8/8,8/8,10/10 PASS with independent terminal custody; connected refusal/existing-outcome gates remain open.",
+        "state": "Worker-bound release, four unfiltered Rust targets, observer and portable controls PASS. Five bounded installed Monitor journeys now qualified including connected guards12/12 and old-seed regression9/9; exact evidence owned by P02.",
         "evidence_owner": "P02 producer_ack_followthrough.initial_measurement_c3_repair.corrected_qualification",
         "prior_attempt_retained": {
           "source": "eb384d20d723337bcc6ae9c9605951fc8fa16b4c",
@@ -79287,6 +79280,18 @@
           "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/existing-b125-r1-receipt.json",
           "sha256": "8ff635be921f37ce3d4e36e17600df5cbb8e3757e1253444e8b8f7e72e241d85"
         }
+      },
+      "settled_adoption_qualification": {
+        "source": "7c89f554e2b50a9627a85b7995b3ad2b2d49d1d6",
+        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-7c89f554",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/7c89f554",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-7c89f554",
+        "state": "BUILD_CAPSULE_SOURCE_PREPARATION_ONLY; product and observer not compiled. Portable692/13/43PASS, zeroSKIP.",
+        "portable": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/portable-receipt.json",
+          "sha256": "3a2cd53e84bb47e4e51f8d7f2ed97beecd1ac6354f82fe1e8e8b2758af536647"
+        },
+        "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103"
       }
     }
   }

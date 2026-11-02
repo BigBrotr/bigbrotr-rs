@@ -2116,19 +2116,25 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "SOURCE_INTEGRATED_CHEAP_CHECKS_PENDING_BUILD_AND_INSTALLED_NOT_RUN",
+    "status": "SOURCE_INTEGRATED_PORTABLE_PASS_BUILD_AND_INSTALLED_NOT_RUN",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Run integrated source/schema/dispatch/oracle controls and current-source docs checks before fresh exact-source production/worker/observer qualification. Installed five-query and new authority/unknown outcome/SQL65/later zero-query paths remain explicit gates.",
+    "next": "Review fresh exact7c89 build capsule and run actual format/planning preflight before worker-bound product/observer build; then independently checked installed five-query same-job continuation. New authority/unknown outcome/SQL65/later zero-query paths remain gates.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
       "sha256": "ec5ec60942be0a7e413d67c7496c05bcd7efa97c130ccbdf05ba1138a5dbf5b0"
     },
     "cheap_fixture_correction": "Owning bootstrap test retained --target44 while current manifest requires45. Updated only that literal, retaining previous/changed/incompatible ledger rejection cases;28 owning controls PASS. Full suite will run in the declared native-toolchain image, not an unqualified LLVM-less host.",
-    "documentation_checks": "Exact85b0fa3c tools/ci.py documentation-only PASS3/3 at .research/ci-doc-m2-adoption-85b0fa3c/result.json; later source correction still needs its relevant final checks."
+    "documentation_checks": "Exact85b0fa3c tools/ci.py documentation-only PASS3/3 at .research/ci-doc-m2-adoption-85b0fa3c/result.json; later source correction still needs its relevant final checks.",
+    "checked_source": "7c89f554e2b50a9627a85b7995b3ad2b2d49d1d6",
+    "portable": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/portable-receipt.json",
+      "sha256": "3a2cd53e84bb47e4e51f8d7f2ed97beecd1ac6354f82fe1e8e8b2758af536647",
+      "result": "692 acceptance/13 export/43 proxy PASS, zero SKIP, in pinned declared native-toolchain image. No product compilation/engine acceptance."
+    }
   }
 }

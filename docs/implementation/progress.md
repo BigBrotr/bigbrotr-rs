@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-2026-11-03, Tux (late2026-11-02 UTC). **Goal ACTIVE:** complete selected
+2026-11-03, Tux (2026-11-02 23:55 UTC checkpoint). **Goal ACTIVE:** complete selected
 P00–P10/M1–M5. Q37/Q38/Q40/Q41/Q42 apply; Root is sole integrator.
 Sol/xhigh operates by default; bounded critical reviews use Astra/xhigh.
 Public development does not authorize official releases, packages or deployment.
@@ -8,10 +8,11 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and qualified recovery capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **625ff2e1** before this coherent
-closure record. Canonical main/origin/actual remote remain **551cb56f**.
-Current local work includes portable Mac fixture correction77394acf and the
-reviewed/qualified connected Monitor fixture; no new push has occurred.
+`work/m2-finite-history-20261101`, observed clean HEAD **7c89f554** before this
+checkpoint. Canonical main/origin/actual remote are **5a9b7cc4**, clean and pushed:
+qualified bounded Monitor recovery, connected fixtures and Mac path correction.
+The reviewed M2 production/oracle sources are integrated locally, not on main;
+no installed M2 capability is claimed from source checks.
 
 Qualified product **b05b0a26** now has five bounded installed Monitor journeys:
 C4/lost ACK eight stages; Native I4/PG C3 repair eight; repair COMMIT faults ten;
@@ -52,7 +53,7 @@ is sealed **FAIL:29 required PASS/1FAIL/6NOT_RUN**. Both Linux jobs passed fully
 Rust1577 each, declared5/4 ignores, Native12 each,671 acceptance/43 proxy/13 export,
 event40/static65 practical checks. Mac failed the known fixture path alias after
 657 acceptance PASS/one distinct failing case(two subtests)/13SKIP; six later
-commands and all12 Native NOT_RUN. Local77394acf normalizes the owned fixture root
+commands and all12 Native NOT_RUN. Published77394acf normalizes the owned fixture root
 and adds an alias control; it is not a corrected Mac execution.
 
 [P01](evidence/p01-ci-hosted-foundation-20261026.json) owns terminal audit
@@ -61,8 +62,14 @@ zero new/unclassified operational credentials or provider alerts within retained
 pattern/asynchronous-provider limits. Original verifier passed unchanged.
 Root watcher61745 reaped1 without expiry; both PIDs absent. Earlier16ad failure
 is separate. [f4ad run41491599696](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696)
-remains the latest full three-platform PASS. A future coherent full source must
-still obtain actual corrected Mac build/Rust/Native execution.
+remains the latest full three-platform PASS.
+
+[5a9 run41546602945](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945)
+is active for the coherent Monitor closure. Root observer56226 owns the sole
+60s watcher (driver2138096/GH2138099, bounded7500s); source/run identity and public
+source admission are retained in P01. No duplicate run or superseding push.
+Actual corrected Mac build/Rust/Native and full terminal public audit remain
+pending, independent of local M2 qualification.
 
 ## Next M2 increment and resources
 
@@ -77,21 +84,30 @@ Production source **8bee81aa** is committed/clean in
 `.research/m2-finite-job-adoption-oracle-20261102`. Both have bounded Astra source
 approval after concrete fixes. Production14 focused controls/rustfmt PASS;
 oracle103 linear/35 restart/13 accounting controls PASS. These branches are
-**not yet Root-integrated, compiled or engine-qualified**. Migration45 requires
-61 ledger entries/86 tables; reconcile common fixture/schema/dispatch callers
-without losing the already integrated Monitor variants. Zero-query/custody,
-SQL65 and absent/uncertain adoption remain explicit qualification gates.
+**Root-integrated at8a52d74e and54045215**, with current shared fixture target45
+corrected at7c89f554. All33 production and14 unmerged oracle paths byte-match
+approved originals; the two common dispatch/setup files preserve Monitor hooks.
+Migration45 requires61 ledger entries/86 tables. Exact7c89 portable suites PASS:
+692 acceptance/13 export/43 proxy, zero SKIP, including declared native-toolchain
+setup. Receipt3a2cd53e and original host fixture/environment failure are in P03.
+Documentation3/3 PASS at85b0fa3c remains valid for unchanged document inputs.
+Product compilation and installed acceptance remain **NOT_RUN**. Zero-query/
+custody, SQL65 and absent/uncertain adoption remain explicit qualification gates.
 
 [Inventory](../research/laboratory-inventory.json) owns resources. All Root
-compiler/test/installed tools are terminal; no engine/compiler/cache holder,
-source writer or hosted observer remains active. Compiler11316 is reaped0,
+compiler/test/installed tools are terminal; no local engine/compiler/cache holder
+is active. Sol prepares the fresh exact7c89 production build capsule only; Root
+is sole launcher/integrator. The hosted56226 observer remains active. Compiler11316 is reaped0,
 cache115 released/reacquired and original four protected ELF bytes/fullstat
 independently unchanged. Preserve datasets, failures, .research/worktrees and the
 borrowed bridge. October31 space recovery is reconciled; no cleanup was started.
 
-**Next Root action:** commit this closure record, integrate the two reviewed M2
-source branches with one integrator, reconcile schema45/common source controls
-and the tutorial source fence, then run proportionate cheap checks before a fresh
-exact-source product/observer build and installed five-query proof. Publish only
-a coherent qualified result including the Mac correction; keep full selected
-later work, performance/ClickHouse/coordinator follow-through and honest gaps.
+**Next Root action:** review the parameterized7c89 build capsule, execute actual
+format/planning preflight, then fresh worker-bound product/observer qualification
+and the independent five-query same-job installed proof. Frozen clean source is
+`.research/m2-adoption-core-product-7c89f554`; outputs will use
+`/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-7c89f554`.
+Keep strict Rustdoc flags explicit in the new wrapper; do not retroactively
+expand earlier local doc scope. Monitor full hosted acceptance proceeds in
+parallel. Preserve selected later tasks, performance/ClickHouse/coordinator
+follow-through and honest gaps; no entire-P02 prerequisite or scope reduction.
