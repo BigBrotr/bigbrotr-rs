@@ -165,7 +165,8 @@ class PassiveMonitorRuntime(Runtime):
         stop_process(self.client); self.processes.remove(self.client)
         require(load(self.home/'client-result.json')['status'] == 'PASS', 'passive client did not complete')
         ended = load(self.home/'listener-ended.json')
-        require(ended['connections'] == 1 and ended['completed'] is True and ended['listener_closed'] is True,
+        require(ended['connections'] == 1 and ended['completed'] is True and ended['final_queue_empty'] is True
+            and ended['listener_closed'] is True,
             'owned passive listener did not join')
         self.stopped, stopped_catalog = self.capture(output,'stopped')
         self.refs = oracle.completed(self.report,self.stopped,self.initialized,self.selection)

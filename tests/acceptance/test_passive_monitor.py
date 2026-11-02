@@ -354,6 +354,7 @@ class PassiveMonitorControls(unittest.TestCase):
             self.assertFalse(worker.is_alive());self.assertFalse(errors)
             ended=json.loads((directory/'listener-ended.json').read_text())
             self.assertEqual((ended['connections'],ended['completed'],ended['listener_closed']),(1,True,True))
+            self.assertTrue(ended['final_queue_empty'])
 
     def test_literal_peer_rejects_auth_publish_and_wrong_filter_without_completion(self):
         for command in (['AUTH',{}],['EVENT',{}],['REQ','ab'*16+'0000000000000001',dict(kinds=[1],limit=3)]):
@@ -389,6 +390,40 @@ class PassiveMonitorControls(unittest.TestCase):
             finally:
                 finished.set();worker.join(1)
             self.assertEqual(json.loads((directory/'listener-ended.json').read_text())['connections'],2)
+
+    def test_queued_second_connection_is_refused_even_when_owner_finished_before_worker_resumes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary)
+            (directory/'event.jsonl').write_bytes((ROOT/'tests/fixtures/ingest/import-event.jsonl').read_bytes())
+            listener=peer.relay_listener(('127.0.0.1',0));address=listener.getsockname()
+            finished=threading.Event();paused=threading.Event();resume=threading.Event();errors=[]
+            original_publish=peer.publish
+            def pause_after_completion(path,name,value):
+                original_publish(path,name,value)
+                if name == 'relay-complete.json':
+                    paused.set()
+                    assert resume.wait(1), 'test did not resume the paused peer'
+            with patch.object(peer,'publish',side_effect=pause_after_completion):
+                worker=threading.Thread(target=peer.relay,args=(directory,listener,finished,errors));worker.start()
+                try:
+                    literal_client(address)
+                    self.assertTrue(paused.wait(1))
+                    self.assertTrue(worker.is_alive())
+                    self.assertGreaterEqual(listener.fileno(),0)
+                    self.assertTrue(json.loads((directory/'relay-complete.json').read_text())['listening'])
+                    # TCP connect completes into the real backlog while the
+                    # peer cannot accept. Finish wins before its next loop turn.
+                    with socket.create_connection(address,timeout=1) as extra:
+                        extra.settimeout(1)
+                        finished.set();resume.set();worker.join(1)
+                        self.assertFalse(worker.is_alive());self.assertTrue(errors)
+                        self.assertIn('queued another connection',errors[0])
+                        self.assertEqual(extra.recv(1),b'')
+                finally:
+                    finished.set();resume.set();worker.join(1)
+            ended=json.loads((directory/'listener-ended.json').read_text())
+            self.assertEqual((ended['connections'],ended['completed'],ended['listener_closed']),(2,True,True))
+            self.assertFalse(ended['final_queue_empty'])
 
 
 if __name__ == '__main__':

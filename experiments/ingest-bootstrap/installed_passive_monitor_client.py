@@ -81,7 +81,7 @@ def exchange(connection, event):
 
 
 def relay(directory, listener, finished, errors):
-    connections, completed = 0, False
+    connections, completed, final_queue_empty = 0, False, False
     try:
         original = (directory / 'event.jsonl').read_bytes()
         assert hashlib.sha256(original).hexdigest() == SIGNED_SHA256
@@ -107,12 +107,26 @@ def relay(directory, listener, finished, errors):
                 assert connections == 1 and remote[0] == '127.0.0.1', 'passive attempt opened another connection'
                 trace = exchange(connection, event)
                 publish(directory, 'relay-exchange.json', trace)
+        # The owner has joined, but a connection made just before its exit may
+        # still be queued if this worker was delayed. Check the same live socket
+        # with an actual kernel accept before closing it or reporting success.
+        try:
+            connection, _ = accept_nowait(listener)
+        except OSError as error:
+            assert error.errno in (errno.EAGAIN, errno.EWOULDBLOCK)
+            assert listener.fileno() >= 0
+            final_queue_empty = True
+        else:
+            connections += 1
+            with connection:
+                raise AssertionError('passive attempt queued another connection before owner join')
     except BaseException as error:
         errors.append(type(error).__name__ + ': ' + str(error))
         publish(directory, 'relay-error.json', dict(error=errors[-1]))
     finally:
         listener.close()
         publish(directory, 'listener-ended.json', dict(connections=connections, completed=completed,
+            final_queue_empty=final_queue_empty,
             listener_closed=listener.fileno() == -1, finished_at_us=time.time_ns() // 1000))
 
 
@@ -167,6 +181,6 @@ def run(directory, request, cli, logged_in, session, saved, auth):
         assert not worker.is_alive(), 'passive peer did not join'
     assert not errors, errors
     ended = json.loads((directory/'listener-ended.json').read_text())
-    assert ended['connections'] == 1 and ended['completed'] and ended['listener_closed']
+    assert ended['connections'] == 1 and ended['completed'] and ended['final_queue_empty'] and ended['listener_closed']
     return dict(login=logged_in, logout=logged_out, observations=observations, source=selection,
         peer='one-passive-request-no-auth-no-publish')
