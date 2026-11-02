@@ -17,9 +17,12 @@ def head(major, value):
 def cbor(value):
     if value is None:
         return b"\xf6"
+    # bool subclasses int in Python; preserve its distinct canonical CBOR type.
+    if isinstance(value, bool):
+        return b"\xf5" if value else b"\xf4"
     if isinstance(value, int):
-        assert value >= 0
-        return head(0, value)
+        assert value >= -(2**63)
+        return head(0, value) if value >= 0 else head(1, -1 - value)
     if isinstance(value, bytes):
         return head(2, len(value)) + value
     if isinstance(value, str):

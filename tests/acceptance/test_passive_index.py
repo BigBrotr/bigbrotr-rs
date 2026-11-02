@@ -19,10 +19,25 @@ from cases import first_launch_passive_index as case
 from cases import first_launch_passive_index_oracle as oracle
 from cases import first_launch_passive_oracle as passive
 from test_passive_monitor import sample, retained_fixture, encoder, decode
+from bootstrap_oracle import cbor as bootstrap_cbor
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('passive_index_schema_test',ROOT/'experiments/clickhouse-frontier/initial_schema.py')
 schema = importlib.util.module_from_spec(spec);spec.loader.exec_module(schema)
+
+
+def literal_measurement_row():
+    """All semantic columns, independent of the projection builder."""
+    r=lambda kind,n=1:[bytes.fromhex('01'*16),kind,bytes([kind])*16,n]
+    return [bytes.fromhex('66'*16),[bytes.fromhex('01'*16),0,1,10],1,r(4,3),109,
+        bytes.fromhex('4522a214e60794e362dd633d59223278667ad98c90905346c889dea69694b334'),0,
+        bytes([3])*16,0,r(1),r(2),r(6),r(3),r(5),
+        [1,300000000,15000000,10000000,1,1,1,1,1,1,0,2097152,262144,64,32,3,
+         4194304,65536,2000000,9,4096,64,0,4000000],
+        [r(2,2),1,None,0],2,None,[1,0,None,101],[[102,1],None,[103,2]],
+        [[104,3],[bytes.fromhex('8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849'),
+            [105,4],[106,5]],[107,6],True,False,False],
+        [3,3,1,480,472,160],[108,7],[0,None,None,None],1]
 
 
 def source_fixture():
@@ -184,20 +199,64 @@ class PassiveIndexControls(unittest.TestCase):
         args,_,_=source_fixture();science,rows=oracle.expected(*args)
         self.assertEqual([len(rows[t]) for t in common.TARGETS],[9,0,0,0,0,0,0,0,0,0,1])
         row,=rows['measurement_facts']
-        r=lambda kind,n=1:[bytes.fromhex('01'*16),kind,bytes([kind])*16,n]
-        # Spell every semantic column independently of the projection builder;
-        # the scientific fact digest is the existing independently frozen one.
-        literal=[bytes.fromhex('66'*16),[bytes.fromhex('01'*16),0,1,10],1,r(4,3),109,
-            bytes.fromhex('4522a214e60794e362dd633d59223278667ad98c90905346c889dea69694b334'),0,
-            bytes([3])*16,0,r(1),r(2),r(6),r(3),r(5),
-            [1,300000000,15000000,10000000,1,1,1,1,1,1,0,2097152,262144,64,32,3,
-             4194304,65536,2000000,9,4096,64,0,4000000],
-            [r(2,2),1,None,0],2,None,[1,0,None,101],[[102,1],None,[103,2]],
-            [[104,3],[bytes.fromhex('8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849'),
-                [105,4],[106,5]],[107,6],True,False,False],
-            [3,3,1,480,472,160],[108,7],[0,None,None,None],1]
-        self.assertEqual(row,literal)
+        self.assertEqual(row,literal_measurement_row())
         self.assertEqual([(b['first'],b['last']) for b in science['batches']],[(1,2),(3,3),(4,9),(10,10)])
+
+    def test_bootstrap_boolean_and_signed_bytes_preserve_old_unsigned_encodings(self):
+        for value,wanted in ((False,'f4'),(True,'f5'),(0,'00'),(1,'01'),(23,'17'),(24,'1818'),
+                (255,'18ff'),(256,'190100'),(65535,'19ffff'),(65536,'1a00010000'),
+                (4294967296,'1b0000000100000000'),(18446744073709551615,'1bffffffffffffffff'),
+                (-1,'20'),(-24,'37'),(-25,'3818'),(-256,'38ff'),(-257,'390100'),
+                (-(2**63),'3b7fffffffffffffff')):
+            with self.subTest(value=value,type=type(value)):
+                self.assertEqual(bootstrap_cbor(value),bytes.fromhex(wanted))
+        self.assertEqual(bootstrap_cbor([False,True,0,1]),bytes.fromhex('84f4f50001'))
+        with self.assertRaises(AssertionError):bootstrap_cbor(-(2**63)-1)
+        with self.assertRaises(ValueError):bootstrap_cbor(2**64)
+
+    def test_measurement_chunk_matches_frozen_independent_node_bytes_and_digest(self):
+        # Reproduce the frozen preimage with:
+        # node experiments/identity-contract/reference.mjs tests/fixtures/model/passive-index-chunk.json
+        fixture=json.loads((ROOT/'tests/fixtures/model/passive-index-chunk.json').read_text())
+        self.assertEqual([v['name'] for v in fixture['vectors']],
+            ['passive-measurement-chunk','passive-measurement-negative-utc-fact','passive-measurement-negative-utc-chunk'])
+        self.assertEqual(len(fixture['expected']),3)
+        for vector,result in zip(fixture['vectors'],fixture['expected']):
+            value=encoder.unpack(vector['value'])
+            with self.subTest(vector=vector['name']):
+                self.assertEqual(vector['name'],result['name'])
+                self.assertEqual(b'bigbrotr/'+vector['domain'].encode()+b'/1\0'+bootstrap_cbor(value),
+                    bytes.fromhex(result['preimage_hex']))
+                self.assertEqual(common.digest(vector['domain'],value).hex(),result['sha256'])
+        value=encoder.unpack(fixture['vectors'][0]['value'])
+        row=literal_measurement_row();source=row[1]
+        self.assertEqual(value,[row[0],'measurement_facts',2,[source[0],0,[[0,1,10]]],0,
+            [[source,['measurement_facts',0],row]]])
+        # These complete bytes also bind the mapper used by the actual passive
+        # publication oracle, rather than just a separately passing scalar test.
+        args,_,_=source_fixture();_,rows=oracle.expected(*args)
+        self.assertEqual(rows['measurement_facts'],[row])
+
+        # A signed UTC fixture is also a valid complete A05 fact, not just a
+        # negative integer embedded in an otherwise inconsistent row.
+        document,report,refs,wire,event,_=sample()
+        fact=document['fact'];fact['recorded_at']='-11'
+        fact['payload_digest']=report['measurement']['payload_digest']=fixture['expected'][1]['sha256']
+        observed=fact['payload']['observed']
+        observed['execution']['observed_at']='-19'
+        for moment in (observed['open']['tcp_connected'],observed['open']['websocket_opened'],
+                observed['read']['request_flushed'],observed['read']['first_valid_event']['received'],
+                observed['read']['first_valid_event']['verified'],observed['read']['eose'],fact['payload']['ended']):
+            moment['observed_at']=str(int(moment['observed_at'])-120)
+        measurement,encoded=passive.scientific(document,report,refs,wire,event,-20,-10,encoder.cbor)
+        self.assertEqual(encoded,bytes.fromhex(fixture['expected'][1]['preimage_hex']))
+        negative_args=list(args)
+        negative_args[4][3][4][0][1]=bytes.fromhex(fixture['expected'][1]['sha256'])
+        negative_args[5:8]=[document,measurement,encoded]
+        _,negative_rows=oracle.expected(*negative_args)
+        negative_chunk=encoder.unpack(fixture['vectors'][2]['value'])
+        self.assertEqual(negative_rows['measurement_facts'],[negative_chunk[5][0][2]])
+        self.assertEqual(negative_chunk[5][0][2][5],bytes.fromhex(fixture['expected'][1]['sha256']))
 
     def test_dictionary_time_and_original_input_cannot_supply_forged_science(self):
         args,_,_=source_fixture()
