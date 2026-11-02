@@ -12,6 +12,10 @@ TEST = 'storage::postgres::control_owner::monitor_outcome_seed::seed_exact_exist
 HOOK = '\n#[cfg(test)]\n#[path = "monitor_outcome_seed.rs"]\nmod monitor_outcome_seed;\n'
 OWNER = 'apps/bigbrotr/src/storage/postgres/control_owner.rs'
 FIXTURE = 'apps/bigbrotr/src/storage/postgres/monitor_outcome_seed.rs'
+# config show deliberately hides all non-null endpoint and ban collections,
+# including empty lists. This closed profile has exactly these sensitive keys.
+REDACTED_POLICY_KEYS = ('monitor.active_write.endpoints','monitor.endpoints.urls',
+    'relay_policy.banned','sync.endpoints.urls')
 
 
 def encoded(value):
@@ -46,7 +50,9 @@ def policy(source, report, config_hash):
     require(report['format']=='bigbrotr-config-static/1' and report['status']=='valid-static', 'seed config was not validated')
     require(report['document_sha256']==config_hash, 'seed deployment bytes differ')
     actual={name:row['value'] for name,row in report['settings'].items() if row['deployment_locked'] is False}
-    require(encoded(actual)==encoded(diagnostic(document['settings'])), 'closed seed policy differs from complete normalized candidate')
+    shown=diagnostic(document['settings'])
+    for name in REDACTED_POLICY_KEYS:shown[name]='[redacted]'
+    require(encoded(actual)==encoded(shown), 'closed seed policy differs from complete normalized candidate')
     body=encoded(document);sha=hashlib.sha256(b'bigbrotr/product-policy/3\0'+body).hexdigest()
     require(report['initial_policy']['format']==document['format']
         and report['initial_policy']['sha256']==sha
@@ -172,9 +178,11 @@ def artifact(compiled, candidate, source):
         and digest(parent_path)==candidate['artifact']['source']['manifest_sha256'],
         'seed parent product identity differs')
     parent_sources(manifest,parent,source)
-    for name in ('tests/fixtures/configuration/policy-v3.json',
-            'tests/acceptance/cases/first_launch_monitor_outcome_seed.py'):
-        require(digest(source/name)==manifest['files_sha256'][name], 'seed policy/source admission helper changed')
+    # Python admission/oracles are attributed to the current acceptance source
+    # by candidate()/source_unchanged(), not compiled into this Rust artifact.
+    # Keep the closed policy input and every compiled fixture byte exact.
+    name='tests/fixtures/configuration/policy-v3.json'
+    require(digest(source/name)==manifest['files_sha256'][name], 'seed policy input changed')
     return dict(binary=binary,receipt=receipt_path,manifest=manifest_path,parent_manifest=parent_path),dict(
         source=manifest['revision'],tree=manifest['tree'],source_manifest_sha256=digest(manifest_path),
         receipt_sha256=digest(receipt_path),binary_sha256=digest(binary),test=TEST,

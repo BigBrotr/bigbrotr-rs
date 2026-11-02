@@ -123,17 +123,22 @@ class ExistingOutcomeControls(unittest.TestCase):
         report=dict(format='bigbrotr-config-static/1',status='valid-static',document_sha256='ab'*32,
             settings={name:dict(value=shown(value),deployment_locked=False) for name,value in values.items()},
             initial_policy=dict(format=literal['format'],sha256=digest,encoded_bytes=str(len(body))))
+        for name in ('monitor.active_write.endpoints','monitor.endpoints.urls','relay_policy.banned','sync.endpoints.urls'):
+            report['settings'][name]['value']='[redacted]'
         report['settings']['runtime.lease_ttl']=dict(value='60000000',deployment_locked=True)
         frozen=seed.policy(root,report,'ab'*32)
         self.assertEqual(frozen['config'],dict(revision=1,document=literal,sha256=digest))
         self.assertEqual(frozen['config'],frozen['policy'])
         self.assertIs(type(frozen['policy']['document']['settings']['monitor.retries']),int)
-        for change in ('missing','extra','wrong-boolean','wrong-integer','policy-digest','deployment-digest'):
+        for change in ('missing','extra','wrong-boolean','wrong-integer','unredacted-endpoint',
+                'unexpected-redaction','policy-digest','deployment-digest'):
             altered=copy.deepcopy(report)
             if change=='missing':altered['settings'].pop('monitor.enabled')
             elif change=='extra':altered['settings']['not_a_key']=dict(value=True,deployment_locked=False)
             elif change=='wrong-boolean':altered['settings']['monitor.enabled']['value']=1
             elif change=='wrong-integer':altered['settings']['monitor.retries']['value']=1
+            elif change=='unredacted-endpoint':altered['settings']['monitor.endpoints.urls']['value']=values['monitor.endpoints.urls']
+            elif change=='unexpected-redaction':altered['settings']['monitor.enabled']['value']='[redacted]'
             elif change=='policy-digest':altered['initial_policy']['sha256']='00'*32
             else:altered['document_sha256']='00'*32
             with self.subTest(change=change),self.assertRaises(ValueError):seed.policy(root,altered,'ab'*32)
@@ -173,7 +178,7 @@ class ExistingOutcomeControls(unittest.TestCase):
             with self.subTest(change=change),self.assertRaises(ValueError):seed.mounts(altered,target)
 
     def test_separate_fixture_artifact_rejects_changed_product_inputs_or_unbound_source(self):
-        for change in (None,'product','cargo-config','external-example','owner-hook','fixture-source','policy-source','parent','binary','test-target','compiler','unqualified-build'):
+        for change in (None,'acceptance-helper','product','cargo-config','external-example','owner-hook','fixture-source','policy-source','parent','binary','test-target','compiler','unqualified-build'):
             with self.subTest(change=change),tempfile.TemporaryDirectory() as directory:
                 root=Path(directory);source=root/'source';compiled=root/'compiled'
                 (source/seed.OWNER).parent.mkdir(parents=True);(compiled/'build').mkdir(parents=True);(compiled/'artifacts').mkdir()
@@ -210,6 +215,7 @@ class ExistingOutcomeControls(unittest.TestCase):
                         source_manifest_sha256=seed.digest(mp),rustc='qualified compiler',native_toolchain=native),
                     artifact=dict(bytes=binary.stat().st_size,sha256=seed.digest(binary)))
                 if change=='fixture-source':(source/seed.FIXTURE).write_bytes(b'altered fixture')
+                elif change=='acceptance-helper':(source/'tests/acceptance/cases/first_launch_monitor_outcome_seed.py').write_bytes(b'updated uncompiled acceptance helper')
                 elif change=='policy-source':(source/'tests/fixtures/configuration/policy-v3.json').write_bytes(b'altered policy')
                 elif change=='parent':candidate['artifact']['source']['manifest_sha256']='00'*32
                 elif change=='binary':
@@ -218,7 +224,7 @@ class ExistingOutcomeControls(unittest.TestCase):
                 elif change=='compiler':receipt['compilation']['rustc']='different compiler'
                 elif change=='unqualified-build':receipt['compilation']['status']='PASS_ANOTHER_PROFILE'
                 (compiled/'artifacts/test-tool-artifact.json').write_text(json.dumps(receipt))
-                if change:
+                if change not in (None,'acceptance-helper'):
                     with self.assertRaises(ValueError):seed.artifact(compiled,candidate,source)
                 else:
                     paths,identity=seed.artifact(compiled,candidate,source)
