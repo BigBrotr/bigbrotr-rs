@@ -179,10 +179,10 @@ pub(super) async fn require_binding(
         .map_err(backend)?;
     if monitor_schema {
         let row = tx.query_opt("SELECT monitor_attempt_id IS NULL FROM control.producer_requests WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea AND producer_epoch=$3::text::numeric AND request_sequence=$4::text::numeric", &[&&dataset.as_bytes()[..],&&request.producer_slot_id.as_bytes()[..],&request.producer_epoch.get().to_string(),&request.request_sequence.get().to_string()]).await.map_err(backend)?;
-        if let Some(row) = row {
-            if !row.try_get::<_, bool>(0).map_err(backend)? {
-                return Err(SourceBindingError::Conflict);
-            }
+        if let Some(row) = row
+            && !row.try_get::<_, bool>(0).map_err(backend)?
+        {
+            return Err(SourceBindingError::Conflict);
         }
     }
     let epoch = request.producer_epoch.get().to_string();

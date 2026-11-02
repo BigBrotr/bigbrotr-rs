@@ -80,7 +80,12 @@ impl MonitorIntent {
     /// This fixed SQL attribution is separate from the scientific CBOR codec.
     pub(in crate::storage::postgres) fn context_bytes(self) -> [u8; 294] {
         let mut bytes = [0; 294];
-        for (slot, reference) in bytes.chunks_exact_mut(42).zip(self.references()) {
+        for (slot, reference) in bytes
+            .as_chunks_mut::<42>()
+            .0
+            .iter_mut()
+            .zip(self.references())
+        {
             slot[..16].copy_from_slice(reference.dataset_id.as_bytes());
             slot[16..18].copy_from_slice(&(reference.dictionary_kind as u16).to_be_bytes());
             slot[18..34].copy_from_slice(reference.allocation_domain.as_bytes());
@@ -98,7 +103,7 @@ impl MonitorIntent {
             return Err(OwnerError::InvalidMetadata);
         }
         let mut refs = [None; 7];
-        for ((target, bytes), kind) in refs.iter_mut().zip(bytes.chunks_exact(42)).zip(KINDS) {
+        for ((target, bytes), kind) in refs.iter_mut().zip(bytes.as_chunks::<42>().0).zip(KINDS) {
             let kind_bytes: [u8; 2] = bytes[16..18]
                 .try_into()
                 .map_err(|_| OwnerError::InvalidMetadata)?;

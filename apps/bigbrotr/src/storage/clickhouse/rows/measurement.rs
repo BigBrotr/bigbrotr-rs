@@ -7,6 +7,8 @@ use bigbrotr_model::Measurement;
 use bigbrotr_protocol::archive_measurement as transport;
 use serde::{Deserialize, Serialize};
 
+type TerminationTuple = (u16, Option<u16>, Option<u16>, Option<u16>);
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MeasurementData {
     pub attempt_id: [u8; 16],
@@ -22,7 +24,7 @@ pub struct MeasurementData {
     pub prior_unknown: Option<(SourceTuple, [u8; 32])>,
     pub observed: Option<Observed>,
     pub ended: Option<Moment>,
-    pub termination: Option<(u16, Option<u16>, Option<u16>, Option<u16>)>,
+    pub termination: Option<TerminationTuple>,
     pub teardown: Option<u16>,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -365,7 +367,7 @@ impl ValueWriter {
     }
     pub(super) fn measurement_termination(
         &mut self,
-        value: &Option<(u16, Option<u16>, Option<u16>, Option<u16>)>,
+        value: &Option<TerminationTuple>,
     ) -> Result<(), RowsError> {
         optional(self, value, |out, v| {
             out.array(4);
