@@ -45,6 +45,28 @@ impl SourceWorker {
     }
 }
 
+/// Static Sync transport projection used by the maintained real source/lease
+/// fixtures. It grants no selector, socket or admission authority. Product Sync
+/// additionally checks its actual collection intent or received event below.
+#[allow(
+    dead_code,
+    reason = "native source/lease probe includes this module; production uses collection/arrival checks"
+)]
+pub(crate) fn authorize_sync_source(
+    root: &Resolved,
+    document: &str,
+    digest: [u8; 32],
+    endpoint: &Endpoint,
+    route: RouteSelection,
+) -> Result<DirectPolicy, OwnerError> {
+    source_policy(
+        &restore_source(root, document, digest, SourceWorker::Sync)?,
+        SourceWorker::Sync,
+        endpoint,
+        route,
+    )
+}
+
 /// Monitor has its own accepted service and endpoint selection. This static
 /// policy projection grants neither dispatch nor evidence-write authority.
 pub(crate) fn authorize_monitor_source(
