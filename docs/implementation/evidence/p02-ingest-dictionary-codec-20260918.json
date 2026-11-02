@@ -92,8 +92,8 @@
     "custody": "Tool51327 reaped0; owned container stopped/PID0/noOOM; Cargo-home lock released; original4ELF bytes/full metadata guarded unchanged."
   },
   "passive_measurement_20261102": {
-    "status": "PASS_PURE_MODEL_ONLY_RUNTIME_STORAGE_INTEGRATION_IN_PROGRESS",
-    "scope": "P04-T07 first explicit-endpoint passive read prerequisite: closed A05 model and exact retained request input. Does not qualify native/PG/Archive/Index/installed Monitor or complete M2.",
+    "status": "PASS_FIRST_INSTALLED_PASSIVE_READ_AND_RESTART_INSPECTION_FURTHER_QUALIFICATION_OPEN",
+    "scope": "P04-T07 first explicit enrolled endpoint passive read, normal PG/Native typed admission, Archive and installed inspection after restart at exact5c85bb4c. Does not complete M2, full recovery or new ClickHouse intake.",
     "source": {
       "model_original": "d35af507411eeabb0d027b5aa34cae5a297b4dab",
       "counter_correction_original": "e6c4e5970da0eec4c98809c9d42af5cf42029571",
@@ -119,9 +119,10 @@
       "correction": "5f6ec0db816779183698909470bc1e0bb23fb2dc",
       "local_integrated": "ea7124fa5eb9ef609befce666d72fe2e34805802",
       "status": "SOURCE_REVIEW_APPROVED_RUST_NOT_RUN",
-      "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet."
+      "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet.",
+      "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN."
     },
-    "next": "Recheck strict Clippy on corrected source before the optimized parent build, then run affected Rust/native assertions and the installed p04-passive-monitor. Reuse pure-model/fixture evidence within unchanged scope; strict FAIL and all actual assertion NOT_RUN states remain explicit.",
+    "next": "Qualify59912918 bounded Clippy correction with early strict checks, run affected Rust/native/pipe assertions, then prove real ClickHouse measurement intake/readback. Reuse actual installed5c85bb4c and unchanged model evidence within exact scope.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "SOURCE_REVIEW_APPROVED_NATIVE_TESTS_NOT_RUN",
@@ -139,7 +140,8 @@
         ],
         "status": "SOURCE_ORACLE_REVIEW_APPROVED_8_CONTROLS_NOT_RUN",
         "scope": "Initial/resolution, original and distinct requests, conflict, exact closure/corruption, method/visibility, preflight resources and authority, closing producer, final authority refusal retaining staged input only. Unissued closing request remains Unresolved; not a recovery-completion claim."
-      }
+      },
+      "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN."
     },
     "control_dispatch": {
       "original": "369b5726d46a5cf7f638c777533f7df931569cc7",
@@ -152,9 +154,10 @@
       "source_metadata": {
         "source": "646ab78f",
         "correction": "b1e688cc50b540a6409a9f6ae9d37d75e2bfde39",
-        "status": "SOURCE_REVIEW_APPROVED_NOT_RUN",
+        "status": "PASS_INSTALLED_POSITIVE_5C85BB4C_DEDICATED_CONTROLS_NOT_RUN",
         "scope": "Read exact enrolled immutable destination under Control with128KiB retained grant, without fake acquisition scope. Original646 incorrectly used visibility-required helper withNone; independent review caught it before execution. b1e extracts unchanged enrollment-only SQL; actual dispatch/admission still require exact nonnull scientific visibility."
-      }
+      },
+      "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN."
     },
     "passive_driver": {
       "originals": [
@@ -166,7 +169,8 @@
         "c698b43e05f4e98306f98bdf978b061892a6ec5c"
       ],
       "status": "SOURCE_ORACLE_REVIEW_APPROVED_RUST_WIRE_TESTS_NOT_RUN",
-      "scope": "Funded one-use connector/capture, kind1 limit1 passive REQ, independent signature verification and correlated EOSE/CLOSED barriers; no AUTH/signing/retry/Sync event. Consumption errors now retain bounded observations and capture grant, without inventing a terminal cause. 19 authored controls remain NOT_RUN."
+      "scope": "Funded one-use connector/capture, kind1 limit1 passive REQ, independent signature verification and correlated EOSE/CLOSED barriers; no AUTH/signing/retry/Sync event. Consumption errors now retain bounded observations and capture grant, without inventing a terminal cause. 19 authored controls remain NOT_RUN.",
+      "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN."
     },
     "archive_index": {
       "originals": [
@@ -177,9 +181,9 @@
         "e5e316ee",
         "6737d8b0"
       ],
-      "status": "SOURCE_ORACLE_REVIEW_APPROVED_RUST_NATIVE_CLICKHOUSE_NOT_RUN",
+      "status": "PASS_INSTALLED_ARCHIVE_POSITIVE_5C85BB4C_RUST_AND_REAL_CLICKHOUSE_NOT_RUN",
       "scope": "Sixth scientific family and typed full-digest/strong-prior read under caller-held real pin/capture/current scope and custody; eleventh Index target. Related family6/count/schema2/frontier2 consumers and fixtures reconciled. Restart fixture now selects actual old/current snapshots via production read-only options; original expected outcomes unchanged.",
-      "cheap_checks": "Author fmt/diff/layout oracle/generator reproducibility PASS; portable321 had320PASS/1ERROR from an older tutorial source-review pin, preserved as FAIL pending final exact-source review/pin check. No real Arrow/Parquet or installed authority claim."
+      "cheap_checks": "Author fmt/diff/layout oracle/generator reproducibility PASS; portable321 had320PASS/1ERROR from an older tutorial source-review pin, preserved as FAIL pending final exact-source review/pin check. No real Arrow/Parquet or installed authority claim. Actual installed typed Archive read and same-data PG restart PASS at5c85bb4c; real ClickHouse new target and Rust assertions NOT_RUN."
     },
     "installed_inspection": {
       "original": "17d07c008d34c0c21e83389892daa6987c69e48d",
@@ -189,7 +193,7 @@
         "26c7e47f",
         "dfc7e343"
       ],
-      "status": "SOURCE_ORACLE_REVIEW_APPROVED_RUNTIME_NOT_RUN",
+      "status": "PASS_INSTALLED_TYPED_INSPECTION_5C85BB4C_REAL_PIPE_ASSERTIONS_NOT_RUN",
       "scope": "Actual current published selection, retained-input binding, native snapshot capture and durable pin under existing Control supervisor. Full typed digest/prior verification and joined bounded scientific output retain custody; local operator only. Initial Linux output supports a separately reopened nonblocking pipe/FIFO and bound actual pin/policy gate, not regular/device/socket sinks. Documented pipefail+cat preserves redirection. Kernel acceptance is not downstream consumption/persistence.",
       "review": "Independent Astra caught blocking stdout across expiry; Root nonblocking correction approved. The expiry oracle was also corrected to leave the shared gate untouched by the test supervisor, and refused pin binding preserves ordinary readiness cleanup. All original source/failures retained. Three real-pipe/regular-sink controls authored, not executed."
     },
@@ -238,7 +242,8 @@
         "b448660a",
         "fb0fafff",
         "7b8411b2",
-        "fd23b094"
+        "fd23b094",
+        "59912918"
       ],
       "runtime_tests": "NOT_RUN",
       "release_build": "PASS_ACTUAL_5C85BB4C_BUILD_ONLY",
@@ -261,22 +266,36 @@
         "all_target_check": "PASS actual cargo check --locked --workspace --all-targets before maintained build; dev4m33s, worker release31.09s, parent release6m52s. No test assertion inferred.",
         "resources": "Tool5701 reaped0; owned7cda24f8 exited0/PID0/noOOM; cache115 released and independently reacquired by terminal audit; protected4ELF bytes/fullstat unchanged."
       },
+      "previous_strict_attempts": [
+        {
+          "status": "FAIL",
+          "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
+          "tool": 72506,
+          "container": "10f4c8fbb6a5832e3993f914f5b73a719ef48e9df087b1407a14835d2a7cf698",
+          "resource": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/resources.json",
+          "log": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/out/results/clippy.log",
+          "result": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/out/results/result.json",
+          "scope": "Strict Clippy FAIL on five structural/style diagnostics, corrected mechanicallyfd23b094 (named identical tuple type, fixed42-byte chunks, collapsed equivalent condition). No lint suppression or wire/authority change. Rustdoc and all7 selected Rust assertion suites NOT_RUN because fail-fast stopped before them.",
+          "counts": {
+            "collected": 8,
+            "executed": 1,
+            "failed": 1,
+            "not_run": 7
+          },
+          "resources": "Tool reaped1, owned container terminal/PID0/noOOM, cache released; original4ELF fullstat guards passed."
+        }
+      ],
       "latest_strict_attempt": {
         "status": "FAIL",
-        "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
-        "tool": 72506,
-        "container": "10f4c8fbb6a5832e3993f914f5b73a719ef48e9df087b1407a14835d2a7cf698",
-        "resource": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/resources.json",
-        "log": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/out/results/clippy.log",
-        "result": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c-workspace/out/results/result.json",
-        "scope": "Strict Clippy FAIL on five structural/style diagnostics, corrected mechanicallyfd23b094 (named identical tuple type, fixed42-byte chunks, collapsed equivalent condition). No lint suppression or wire/authority change. Rustdoc and all7 selected Rust assertion suites NOT_RUN because fail-fast stopped before them.",
-        "counts": {
-          "collected": 8,
-          "executed": 1,
-          "failed": 1,
-          "not_run": 7
-        },
-        "resources": "Tool reaped1, owned container terminal/PID0/noOOM, cache released; original4ELF fullstat guards passed."
+        "source": "214e72cbad540e9fb87d2f53bff8d552ecfe9c5f",
+        "tool": 2788,
+        "container": "c3b328a9bd757cfb0995cf60c2821a61f10b4868debf9c6ddf5a7f7fac005e96",
+        "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/214e72cb/resource.json",
+        "resource_sha256": "ae518768128a26f0c1679ef5459a52cff7b329879a6b138e4c7f1af7d69bf1c3",
+        "result": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-214e72cb/out/compile-preflight/result.json",
+        "classification": "PRODUCT_STRUCTURAL_LINT",
+        "scope": "All-target compilation PASS269.486s, strict Clippy FAIL15.745s on one large-enum diagnostic.59912918 documents the bounded inline Cut exception, preserving existing hot-path custody/allocation; no runtime/wire/authority change. Release build and assertions NOT_RUN for214e72cb.",
+        "resources": "Tool reaped1, container exited1/PID0/noOOM, cache released; original4ELF bytes/fullstat unchanged."
       }
     },
     "operator_source": {
@@ -292,7 +311,8 @@
       "scope": "Protected one-use local source selection after actual initialized visibility/enrollment; exact descriptors, original-budget funded driver and full evidence-kernel permit before fresh dispatch COMMIT/IO. Dedicated req4 compact measurement admission, no Sync job/event. Native/socket stack custody, both-policy checks, private no-I/O proof and parked uncertain observations/intent retained.",
       "findings": "Astra caught event_candidates field mismatch, prohibited nested reservation and insufficient evidence permit in70d. Corrected16b approved before execution; two combined production funding/driver/drop controls added. Original eight+two new Rust controls remain NOT_RUN.",
       "limits": "Ordinary scheduler/fleet/extra Monitor checks and full lost-RAM/input-before-PG recovery remain P04-T07/P04-T02/P02 owners; first positive path does not complete them.",
-      "compile_correction": "7b8411b2"
+      "compile_correction": "7b8411b2",
+      "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN."
     },
     "installed_acceptance": {
       "originals": [
@@ -304,11 +324,19 @@
         "dee6b6f9"
       ],
       "case": "p04-passive-monitor",
-      "status": "SOURCE_ORACLE_REVIEW_APPROVED_INSTALLED_NOT_RUN",
+      "status": "PASS_ACTUAL_INSTALLED_PASSIVE_MONITOR_AND_RESTART_INSPECTION",
       "scope": "Maintained first-launch schema44 packaged role/actual enrollment; protected one-shot selection, literal one-connection signed EVENT/EOSE peer, original PG/Native request/scientific expectation, actual Archive cut, same-data PostgreSQL restart, exact installed typed inspection and joined pin release. Independent canonical A05/request CBOR and frozen digest; no product-derived expected result.",
       "cheap_checks": "Author14/14 targeted Python controls PASS at64d82, prior28/28 lifecycle controls reused; existing Node reference independently matched frozen positive4522a214e60794e362dd633d59223278667ad98c90905346c889dea69694b334. AST/diff PASS. Real sockets here exercise the fixture, not the BigBrotr application.",
       "original_failure": "The deterministic second-connection-queued-at-owner-finish regression fails against originalfb9 (one expected failure, no errors). Its prior13PASS scope remains original. Correction requires final actual nonblocking accept on the same live listener; only EAGAIN/EWOULDBLOCK proves empty queue, any extra closes/refuses. Astra targeted review approved.",
-      "limits": "Actual installed run, slow-output integration, crash recovery and fleet/additional checks NOT_RUN; no M2 or full P04-T07 completion claim."
+      "limits": "Real ClickHouse measurement intake/readback, Rust/native/real-pipe assertions, full lost-RAM/staged-before-PG recovery and fleet/additional checks NOT_RUN; no complete M2/P04-T07 claim.",
+      "actual": {
+        "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
+        "tree": "13e1a01c8398d5e54e75e3fd5068b750df579dc1",
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/5c85bb4c/installed-passive-r1-receipt.json",
+        "receipt_sha256": "608ccad187e2ca4d180e7603c479874fc4221401d08a5398f9c6377cbb0fafd5",
+        "result": "7/7 stages PASS, zero FAIL/SKIP/NOT_RUN; family counts9,0,0,0,0,1, source cut10, requests4, snapshot5, frontier4. One real peer, zero AUTH responses/publishes/Sync jobs/event-family facts. Same-data PG restart and new installed scientific inspection PASS.",
+        "custody": "Tool76840 reaped0; all18 owned containers stopped/PID0/noOOM, listener closed/queue empty, cleanup errors empty, borrowed bridge preserved."
+      }
     }
   }
 }

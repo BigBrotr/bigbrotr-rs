@@ -2,148 +2,99 @@
 
 2026-11-02, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
 Q37/Q38/Q40/Q41/Q42 remain; public development, no official release/deployment.
-The capability-first direction is reconciled in Q38/the execution guide; one plan.
+Capability-first execution is reconciled in Q38/the guide; one existing plan.
 
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source HEAD **fd23b094**; checkpoint,
-P02 evidence, guide and inventory updates are pending this recording commit.
-Canonical main/origin remain clean at pushed **a37f7829**. New Monitor source is
-local, incomplete and not pushed. Four original compilation failures are
-preserved. Exact5c85bb4c now passed all-target compilation and the maintained
-installed worker/parent build with byte/source audit. Its strict Clippy run failed
-before assertion suites; correctionfd23b094 is pending qualification. Actual
-engine/installed capability remains NOT_RUN.
+`work/m2-finite-history-20261101`. Observed source **59912918**, clean before this
+recording update. Canonical main/origin remain clean at pushed **a37f7829**.
+New Monitor work is local and not pushed; qualification is incomplete.
 
-**Quota/history recovery is qualified.** Installed53802a46 passed restart on/off
+**First installed passive capability PASS at5c85bb4c:** explicit enrolled endpoint
+→ one bounded passive WebSocket read → normal PG/Native typed admission → Archive
+→ standalone typed scientific inspection after same-data PostgreSQL restart.
+The maintained `p04-passive-monitor` case passed all7 stages, zero FAIL/SKIP/NOT_RUN.
+Its independent oracle observed nine dictionary facts and one measurement, cut10,
+four producer requests, snapshot5/frontier4; one peer connection, no AUTH response,
+publish, Sync job or event-family fact. This does not complete M2 or recovery.
+The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
+`passive_measurement_20261102.installed_acceptance`, owns the exact receipt,
+artifact identities, independent expectations, limits and original fixture failure.
+
+**Quota/history recovery remains qualified:** installed53802a46 restart on/off
 12/12 each and finite128 retained boundary7/7. The
 [P03 report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101.finite_history_windows_20261101`, owns exact revisions,
-receipts, original failures and their classifications. Reuse unchanged evidence
-within its scope; no unresolved quota failure is concealed by advancing M2.
+`linear_quantum_20261101.finite_history_windows_20261101`, owns exact receipts,
+original failures and classifications. Reuse unchanged evidence within its scope.
 
 **Hosted foundation PASS:** [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298),
 exacta37f7829, all33 selected checks plus20 scope controls, zero required NOT_RUN.
 The [P01 report](evidence/p01-ci-hosted-foundation-20261026.json) owns platform,
-compiler/native/worker identities, exclusions and bounded public-output audit.
-Earlier70d5912c cancellation/failure remains preserved. New local source has no
-hosted qualification or publication scan yet.
+compiler/native/worker identities and bounded public-output audit. New local
+Monitor source still needs its publication scan and actual hosted qualification.
 
-## Active M2 increment: one passive read retained across restart
+## Active increment and remaining gates
 
-Expected result: explicit operator-enrolled direct endpoint → guarded bounded
-passive WebSocket read → typed A05 admission → Archive → installed standalone
-inspection after restart. Shared-source Index intake is a necessary dependency.
-Full Monitor/M2, cadence/fleet and runtime storage qualification remain open.
+The first passive path's Native, PG44 least-privilege dispatch, driver, Archive
+sixth family, Index eleventh target and installed inspection are integrated
+locally and critically reviewed. The P02 report owns source/review boundaries.
+Pure model70/81PASS and fixture14PASS remain valid within unchanged scope.
+Actual installed5c85bb4c proves the positive normal path; dedicated Rust/native,
+negative authority/replay/corruption, and real-pipe assertions are **NOT_RUN**.
+Real ClickHouse measurement intake/readback is **NOT_RUN**.
 
-The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
-`passive_monitor_descriptors_20261102` / `passive_measurement_20261102`, owns details:
+Latest verified build5c85bb4c passed all-target compilation and the maintained
+worker-before-parent release build with exact source/native/worker verification.
+Its later strict Clippy failed on five structural diagnostics, correctedfd23b094.
+Next214e72cb passed all-target compilation but failed Clippy on one large-enum
+diagnostic;59912918 documents the bounded inline-Cut exception without changing
+behavior or adding a hot-path allocation. That attempt's release/assertions were
+NOT_RUN. Original compiler/lint failures and logs remain in P02's `core_compilation`.
+The next source must pass strict checks before the optimized build and assertions.
 
-- A04 descriptors: isolated model70PASS; A05 typed observations/exact request input:
-  isolated afa8ea50 model81PASS, zero failed/ignored/filtered. Original literals
-  and setup NOT_RUN failure preserved. These are pure-model results.
-- Native6d473c3e and eight admission/replay/corruption/authority controls integrated
-  throughb00498ef; independent source/oracle review approved, tests **NOT_RUN**.
-- Guarded transport ea7124fa and passive driver c698b43e: source/oracle approved;
-  consuming errors now preserve known observations and their grant. Runtime/wire
-  tests **NOT_RUN**. RX read versus guard-consumed semantics are explicit.
-- Control schema44 integrated0221c3a3; correctionc147185a fixes Initial Native mode
-  and packaged least-privilege Monitor grants/preflight. Independent Astra closed
-  both blockers. Actual packaged-role/token/admission tests **NOT_RUN**.
-  Metadata reader646ab78f required correctionb1e688cc: preparation now uses
-  the enrollment-only helper; dispatch still requires exact visibility.
-  Independent Astra approved the correction before execution.
-- Once-only operator source f82bf8cd corrected0d282062: actual protected selection,
-  enrollment/dictionary/source/admission path, Native/socket custody and parked
-  uncertainty. Astra closed field, nested-reservation and underfunding defects;
-  eight+two combined Rust controls **NOT_RUN**. Full lost-RAM recovery stays open.
-- Compilation failures are classified in the P02 report: feab0650 lacked Model
-  type exports (fixed5e05a5c6); all-target5e05a5c6 found two stale family arrays and
-  a test stream borrow (fixedb448660a); d1ae816a found six native probe callers of
-  a removed static Sync helper (restoredfb0fafff for those actual consumers).
-  3fde120f found a shadowed descriptor helper/private time constructor in the
-  frontend (mechanically fixed7b8411b2). No product test assertion ran and no
-  environment failure was inferred. Those failures remain original; the later
- 5c85bb4c build PASS below does not relabel them.
-- Archive sixth family / Index eleventh target integratede5e316ee; related current
-  counts, formats and fixtures reconciled. Snapshot fixture correction6737d8b0
-  selects the actual old/current snapshot without changing expectations. Bounded
-  source/oracle review approved; Rust/Arrow/Parquet/ClickHouse **NOT_RUN**. Author's
-  portable320PASS/1ERROR is a preserved stale tutorial-review-pin failure; update
-  only after exact candidate review and rerun the affected control.
-- Installed inspection integrated86bbf93b, corrections046d7a0c/26c7e47f/dfc7e343:
-  actual pin/capture/custody through joined scientific output, using an independent
-  nonblocking Linux pipe and the actual policy/pin gate per write. Regular/device/
-  socket sinks refuse; documented pipefail+cat supports terminal/file output.
-  Critical source/oracle review approved; actual full-pipe and installed tests
-  **NOT_RUN**. Initial blocking-output and assisting-expiry-oracle defects remain
-  recorded, corrected before any affected assertion execution.
+The remaining first-increment gates are affected Rust/native/pipe assertions,
+real ClickHouse intake/readback, final source-review pin/control reconciliation,
+and public/hosted qualification of a coherent candidate. Do not convert source
+review, compilation, fixture tests or a positive journey into broader PASS.
 
-**Latest actual build:**5c85bb4c, [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json)
-`core_compilation.latest_verified_build`: all-target cargo check and maintained
-worker-before-parent release build PASS;4263 source files, worker/native/source
-identities verified, receipt SHA193668f4df6be8af84e662c4198750e69f7ffb5aacfb217b40f399e745e00158.
-Strict tool72506 then failed Clippy on five structural/style diagnostics, corrected
-fd23b094 without changing wire data or authority. Rustdoc and all selected Rust
-assertion suites remained NOT_RUN. No installed campaign success inferred.
+The five-second policy authority ceiling remains enforced; nominal15s checks are
+not renewable15s grants. Full lost-RAM/durable-start/renewal and repeated scheduling
+remain P04-T07/P04-T02/P02 work. In particular, reconcile actual Native staged input
+and producer inventory before intent-only → ExecutionUnknown: absent/unknown PG
+reservation or file presence cannot prove start, no terminal input or worker
+exclusion. Closing an unissued request still returns Unresolved in the authored
+negative control. Measurement outcome4 currently leaves generic checkpoint at
+dictionary ACK3; generic acknowledgement/retirement belongs to P04-T07/P02 producer
+progress before repeated scheduling, without invented Sync progress.
 
-The five-second policy authority bound remains enforced; nominal15s checks are
-not15s renewable grants. Durable-start/renewal remain P04-T07/P04-T02 work.
-**Recovery gate:** typed terminal input may be staged before an absent/unknown PG
-reservation. Reconcile actual Native input and producer inventory before deciding
-intent-only → ExecutionUnknown. Historical SQL/file presence cannot prove a start,
-no prior terminal input or old-worker exclusion. Closing an unissued request still
-returns Unresolved in the authored negative control; no functional settlement is
-claimed. The finite operator leaves generic producer checkpoint at dictionary
-ACK3 after known measurement outcome4; generic acknowledgement/retirement before
-repeated scheduling remains P04-T07/P02 progress work, separate from Sync progress. Existing P04-T07 Steps2/6 and P02 recovery tasks retain these obligations.
+Full fleet/cadence/additional checks and later capacity/recovery/operations
+qualifications retain their existing P02/P03/P04/P08 owners. Admission-cost,
+ClickHouse transport/decoding and coordinator-maintenance follow-through remains
+assigned there. All selected later milestones remain in scope.
 
-The maintained installed case `p04-passive-monitor` is integrated3fde120f/dee6b6f9.
-Its independent oracle/peer review is approved. Author14 targeted fixture controls
-PASS and the prior28 lifecycle controls remain valid; the queued-second-at-finish
-negative reproduces an expected failure on originalfb9 and passes corrected64d.
-These socket tests exercise the fixture; actual BigBrotr installed execution stays
-**NOT_RUN**. Source identities, frozen digest and limits are in the P02 report.
+## Custody, parallel work and next action
 
-## Agents, resources and next action
+[Inventory](../research/laboratory-inventory.json),
+`implementation_monitor_descriptors_20261102.runtime_integration`, owns resource
+paths. All original implementation worktrees/source commits remain retained.
+At recording no owned compiler/engine or hosted watcher is running. Build5701,
+strict72506 and preflight2788 are reaped; their containers are exited/PID0/noOOM,
+cache released. All18 installed-case containers are stopped/PID0/noOOM; listener
+closed and final queue empty. Borrowed bridge remains intact. All4 original ELF
+bytes and complete recorded stat fields passed required no-atime guards.
+No cleanup performed; preserve .research, unique data and original failures.
 
-One integrating owner; separate writable worktrees, all partial source retained:
+Root is the only integrator. Two bounded agents are active:
 
-- Sol `history_scratch_build_prep_sol`: `.research/m2-monitor-operator-20261102`,
-  explicit `serve --initialize-ingest --monitor-once` for one exact enrolled source;
-  actual Native/socket custody and original producer admission saved70d3/16b8,
-  integratedf82/0d and independently source/oracle approved. Author finished.
-- Sol `quota_r2_diagnosis_sol`: author maintained `p04-passive-monitor` installed
-  acceptance savedfb9/64d in `.research/m2-passive-monitor-acceptance-20261102`,
-  integrated3fde/dee6 and source/oracle approved. Author finished. Original
-  inspection17d remains preserved with Root output corrections above.
-- Astra `a05_model_boundary_review_astra`: PG correction and narrow metadata
-  reader correction approved. Archive reviewer approved eb97f50e plusf287375d and
-  the installed inspection/output corrections throughdfc7e343.
-  Native/model/transport source authors and previous CI watchers have finished.
+- Astra/xhigh independently rechecks optional P01 timestamp helpera185a7fd in
+  `.research/p01-native-source-timestamps-20261102`; not integrated or used.
+- Sol/xhigh prepares the smallest maintained real ClickHouse measurement proof;
+  read-only initially, no build/engine launch.
 
-[Inventory](../research/laboratory-inventory.json) owns custody and model/native/CI
-capsules. At recording, build5701 is reaped0 and strict72506 reaped1; their
-containers are exited/PID0/noOOM with exclusive cache released. Earlier four
-compiler failures remain stopped-retained. No owned compiler/engine or hosted
-watcher is running.
-All4 protected ELF bytes and complete recorded stat fields passed every guard.
-Monitor source/review agents have finished; the bounded existingP01 optional
-native-source timestamp helper assignment continues source-only. No cleanup performed; protected
-original ELFs were accessed only through required no-atime guards, whose
-observations remain in their owning receipts.
-Preserve original failures, .research, databases, worktrees and the borrowed bridge.
-
-**Next Root action:** freeze corrected source and run strict Clippy before the
-optimized parent build, then the affected Rust/native suites and actual installed
-`p04-passive-monitor` qualification. Existing pure-model/fixture evidence remains
-valid within unchanged inputs; do not convert NOT_RUN assertions into PASS. Check
-changed schema, packaged roles, budgets, source completion and fault reachability
-before affected build/native/PG/Archive/Index and installed qualification. Reuse
-unchanged model/hosted evidence; do not relabel source approval as runtime PASS.
-
-Full500/partitions/sparse growth/adoption/slices/revisits/live/NEG/fleet/import,
-producer/compacted/reclamation/capacity and Q40 admission-cost/ClickHouse/coordinator
-follow-through retain existing P03/P02/P04/P08 owners. All selected later phases
-remain in scope. This increment does not complete P04-T07 or M2.
+**Next Root action:** freeze corrected source, run existing guarded all-target and
+strict Clippy preflight, then maintained release build and affected Rust/native
+suites. In parallel prepare the real ClickHouse qualification, checking changed
+schema/role/budget/source-completion premises before launch. Reuse installed5c
+and model/fixture evidence only for their actual unchanged scope; integrate and
+push a coherent qualified result, then advance the next useful M2 capability.
