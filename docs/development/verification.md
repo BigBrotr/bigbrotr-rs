@@ -547,6 +547,12 @@ The shared recipe retains its declared local Archive owner and ordinary explicit
 Archive bootstrap. The faulted serving lifetime selects only Control, Ingest and
 Monitor; it does not start the Archive publisher or reader.
 
+This case explicitly selects the existing `retained-catch-up` proxy fixture
+profile: 131,072 frames, 64 lifetime connections, 64MiB wire and 120s. The default
+20,000-frame profile exhausted its ceiling before the selected UPDATE during the
+installed journey. The case verifies the advertised envelope before source work;
+this fixture allowance is not a product capacity or performance qualification.
+
 The existing bounded loopback proxy selects the exact dataset/producer slot,
 epoch1, generic revision4/C4 Bind and successful UPDATE1, then loses only that
 session's COMMIT reply after actual server completion. No transaction ordinal or

@@ -209,3 +209,30 @@ class MonitorAckRecoveryControls(unittest.TestCase):
                 self.assertEqual((output/'proxy.stdout').read_bytes(),proxy.stdout)
                 self.assertEqual(bool(runtime.resources['cleanup_errors']),bool(code))
                 if not timeout:self.assertEqual(json.loads((output/'proxy-report.json').read_text()),terminal)
+
+    def test_driver_explicitly_selects_and_checks_the_retained_proxy_envelope_before_source_work(self):
+        source=Path(__file__).resolve().parents[2]
+        path=source/'experiments/archive-engine/native_commit_proxy.py'
+        ready=dict(source_sha256=case.digest(path),armed=False,upstream_host='127.0.0.1',upstream_port=15432,port=43210,
+            mode='after-complete',target='control-measurement-checkpoint',profile='retained-catch-up',
+            frame_limit=131072,connection_limit=64,connection_limit_scope='lifetime',wire_limit=64*1024*1024,lifetime_seconds=120)
+        for field,value in ((None,None),('profile','default'),('frame_limit',20000),('connection_limit',16),
+                ('connection_limit_scope','active'),('wire_limit',128*1024*1024),('lifetime_seconds',180),
+                ('mode','before-forward'),('target','control-producer-progress'),('armed',True),('upstream_host','127.0.0.2')):
+            with self.subTest(field=field),tempfile.TemporaryDirectory() as temporary:
+                runtime=object.__new__(case.MonitorAckRecoveryRuntime)
+                runtime.source=source;runtime.root=Path(temporary);runtime.config=runtime.root/'instance.toml'
+                original=(source/'config/recipes/acceptance.toml').read_text();runtime.config.write_text(original)
+                runtime.set_value=set_value;proxy=Mock();proxy.process.pid=123
+                runtime.proxy_process=Mock(return_value=proxy)
+                runtime.proxy_event=Mock(return_value=ready if field is None else dict(ready,**{field:value}))
+                runtime.finish_fault_proxy=Mock()
+                runtime.passive_begin=Mock(side_effect=RuntimeError('ready accepted; stop before source work'))
+                with self.assertRaisesRegex(RuntimeError if field is None else ValueError,
+                        'ready accepted' if field is None else 'wrong deferred checkpoint proxy'):
+                    runtime.checkpoint_reply_loss()
+                runtime.proxy_process.assert_called_once_with([case.sys.executable,'-B',str(path),'--upstream-port','15432',
+                    '--mode','after-complete','--target','control-measurement-checkpoint','--profile','retained-catch-up','--defer-arm'],input_pipe=True)
+                self.assertEqual(runtime.passive_begin.call_count,int(field is None))
+                runtime.finish_fault_proxy.assert_called_once_with(runtime.root/'passive-checkpoint-reply-loss',failed=True)
+                self.assertEqual(runtime.config.read_text(),original)

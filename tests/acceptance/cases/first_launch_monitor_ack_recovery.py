@@ -76,13 +76,17 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         self.direct_recipe=self.config.read_text()
         path=self.source/'experiments/archive-engine/native_commit_proxy.py'
         args=[sys.executable,'-B',str(path),'--upstream-port','15432','--mode','after-complete',
-            '--target','control-measurement-checkpoint','--defer-arm']
+            '--target','control-measurement-checkpoint','--profile','retained-catch-up','--defer-arm']
         self.fault_proxy=self.proxy_process(args,input_pipe=True)
         try:
             ready=self.proxy_event(self.fault_proxy,'ready',5)
             save(output/'proxy-ready.json',ready)
             save(output/'proxy-process.json',dict(argv=args,pid=self.fault_proxy.process.pid,source_sha256=digest(path)))
-            require(ready['source_sha256']==digest(path) and ready['armed'] is False and ready['upstream_port']==15432,
+            require(ready['source_sha256']==digest(path) and ready['armed'] is False
+                and ready['upstream_host']=='127.0.0.1' and ready['upstream_port']==15432
+                and ready['mode']=='after-complete' and ready['target']=='control-measurement-checkpoint'
+                and tuple(ready[k] for k in ('profile','frame_limit','connection_limit','connection_limit_scope',
+                    'wire_limit','lifetime_seconds'))==('retained-catch-up',131072,64,'lifetime',64*1024*1024,120),
                 'wrong deferred checkpoint proxy')
             self.config.write_text(self.set_value(self.direct_recipe,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             entry=self.passive_begin(output)

@@ -368,7 +368,8 @@ class Proxy:
                               or target in ('control-pin-release','control-index-publication','control-measurement-checkpoint')):
             raise ValueError('defer-arm-mode')
         self.defer_arm = defer_arm
-        if target == 'control-measurement-checkpoint' and (mode!='after-complete' or not defer_arm or profile!='default' or lifetime_seconds!=120):
+        if target == 'control-measurement-checkpoint' and (mode!='after-complete' or not defer_arm
+                or profile not in ('default','retained-catch-up') or lifetime_seconds!=120):
             raise ValueError('measurement-checkpoint-profile')
         self.measurement_identity = [None,None]
         if type(hold_pin_release) is not bool or (hold_pin_release and not (
@@ -442,7 +443,8 @@ class Proxy:
     def emit(self, event, **extra):
         quantum_summary = self.target.startswith('control-quantum-') and event in (
             'ready', 'terminal', 'quantum-gap-write-rejected')
-        if quantum_summary:
+        measurement_summary = self.target == 'control-measurement-checkpoint' and event in ('ready','terminal')
+        if quantum_summary or measurement_summary:
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit, connection_limit_scope='lifetime',
                          wire_limit=MAX_WIRE, lifetime_seconds=self.lifetime_seconds,

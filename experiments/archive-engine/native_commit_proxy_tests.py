@@ -111,7 +111,11 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):old.frontend(b'B',bind(values).replace(b'checkpoint',b'publish',1))
 
     def test_measurement_identity_is_selected_once_before_arm_without_payload_logging(self):
-        for options in (dict(),dict(defer_arm=True,mode='before-forward'),dict(defer_arm=True,profile='retained-catch-up'),dict(defer_arm=True,lifetime_seconds=180)):
+        for options in (dict(),dict(defer_arm=True,mode='before-forward'),dict(defer_arm=True,mode='pass'),
+                dict(defer_arm=True,mode='hold-reply'),dict(defer_arm=True,profile='ordinary-reader'),
+                dict(defer_arm=True,profile='unknown'),dict(defer_arm=True,lifetime_seconds=180),
+                dict(defer_arm=True,profile='retained-catch-up',mode='before-forward'),
+                dict(defer_arm=True,profile='retained-catch-up',lifetime_seconds=180)):
             options=dict(dict(mode='after-complete',target='control-measurement-checkpoint'),**options)
             with self.assertRaises(ValueError):Proxy(**options)
         proxy=Proxy('after-complete',target='control-measurement-checkpoint',defer_arm=True)
@@ -123,6 +127,23 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(proxy.report['measurement_identity_sha256'],hashlib.sha256(bytes.fromhex('aa'*16+'bb'*16)).hexdigest())
         with self.assertRaises(ValueError):proxy.command(b'select-measurement '+b'aa'*16+b' '+b'bb'*16+b'\n')
         self.assertEqual((proxy.frame_limit,proxy.connection_limit,proxy.lifetime_seconds),(20000,16,120))
+
+    async def test_measurement_profiles_advertise_and_enforce_their_existing_envelopes(self):
+        for profile,frames,connections in (('default',20000,16),('retained-catch-up',131072,64)):
+            with self.subTest(profile=profile):
+                proxy=Proxy('after-complete',target='control-measurement-checkpoint',defer_arm=True,profile=profile)
+                output=io.StringIO()
+                with redirect_stdout(output):
+                    proxy.emit('ready');proxy.emit('terminal',unexpected=0,failure_kinds={})
+                for event in map(json.loads,output.getvalue().splitlines()):
+                    self.assertEqual({k:event[k] for k in ('profile','frame_limit','connection_limit','connection_limit_scope',
+                        'wire_limit','lifetime_seconds')},dict(profile=profile,frame_limit=frames,connection_limit=connections,
+                        connection_limit_scope='lifetime',wire_limit=64*1024*1024,lifetime_seconds=120))
+                stream=asyncio.StreamReader();stream.feed_data(message(b'Z',b'I')*2)
+                proxy.report['frames']=frames-1
+                await proxy.frame(stream)
+                with self.assertRaisesRegex(ValueError,'^budget$'):await proxy.frame(stream)
+                self.assertEqual(proxy.report['frames'],frames+1)
 
     def test_release_hold_is_explicit_and_only_valid_for_armed_release_target(self):
         for options in (dict(),dict(target='control-pin-release'),dict(defer_arm=True),
@@ -910,7 +931,12 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(await asyncio.wait_for(connection[2].read(),3),b'')
 
     async def test_measurement_checkpoint_reply_loss_is_bound_to_UPDATE1_and_the_same_commit(self):
-        async with SocketProxy(self,'after-complete',target='control-measurement-checkpoint') as proxy:
+        for profile in ('default','retained-catch-up'):
+            with self.subTest(profile=profile):
+                await self.measurement_checkpoint_reply_loss(profile)
+
+    async def measurement_checkpoint_reply_loss(self, profile):
+        async with SocketProxy(self,'after-complete',target='control-measurement-checkpoint',profile=profile) as proxy:
             connection=await proxy.connect('bigbrotr_control','bigbrotr_control')
             await proxy.command('select-measurement '+'aa'*16+' '+'bb'*16,'measurement-selected')
             await proxy.command('arm','armed')
