@@ -543,6 +543,10 @@ python3 -B tests/acceptance/run.py p04-monitor-ack-recovery \
   --evidence /absolute/fresh-evidence
 ```
 
+The shared recipe retains its declared local Archive owner and ordinary explicit
+Archive bootstrap. The faulted serving lifetime selects only Control, Ingest and
+Monitor; it does not start the Archive publisher or reader.
+
 The existing bounded loopback proxy selects the exact dataset/producer slot,
 epoch1, generic revision4/C4 Bind and successful UPDATE1, then loses only that
 session's COMMIT reply after actual server completion. No transaction ordinal or

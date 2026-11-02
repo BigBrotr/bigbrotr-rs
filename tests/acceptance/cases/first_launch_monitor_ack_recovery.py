@@ -35,8 +35,6 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
 
     def prepare_state(self):
         super().prepare_state()
-        self.config.write_text(self.set_value(self.config.read_text(),'topology','local_roles',['control','ingest','monitor']))
-        self.inputs['initial_recipe_sha256']=digest(self.config)
         save(self.home/'monitor-ack-recovery.json',dict(format='bigbrotr-monitor-ack-recovery-peer/1',
             boundary='checkpoint-after-complete',observed_seconds=120))
 

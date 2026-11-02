@@ -3,15 +3,19 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import tempfile
+import tomllib
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock,patch
 
+from cases.first_launch import Runtime
 from cases import first_launch_index_oracle as inventory
 from cases import first_launch_monitor_ack_recovery as case
 from cases import first_launch_monitor_ack_recovery_oracle as oracle
 from cases import first_launch_passive_oracle as passive
 from test_passive_index import native_fixture
 from test_passive_monitor import encoder,decode,retained_fixture
+from installed import set_value
 
 
 def fixture():
@@ -159,6 +163,18 @@ class MonitorAckRecoveryControls(unittest.TestCase):
 
     def test_new_journey_launches_only_initial_monitor_then_plain_installed_recovery(self):
         runtime=object.__new__(case.MonitorAckRecoveryRuntime);runtime.launch=Mock(return_value='owner')
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime.root=Path(temporary);runtime.state=runtime.root/'instance';runtime.state.mkdir()
+            runtime.home=runtime.root/'archive-export';runtime.home.mkdir()
+            runtime.config=runtime.state/'instance.toml'
+            runtime.config.write_text((Path(__file__).resolve().parents[2]/'config/recipes/acceptance.toml').read_text())
+            runtime.inputs={};runtime.set_value=set_value
+            with patch.object(Runtime,'prepare_state'):
+                runtime.prepare_state()
+            declared=tomllib.loads(runtime.config.read_text())
+            self.assertEqual(declared['topology']['local_roles'],['control','ingest','monitor','archive'])
+            self.assertFalse(declared['archive']['reader']['enabled'])
+            self.assertEqual(runtime.inputs['initial_recipe_sha256'],case.digest(runtime.config))
         self.assertEqual(runtime.passive_launch(),'owner')
         runtime.launch.assert_called_once_with('monitor-checkpoint-reply-loss','app','serve','--file',
             '/etc/bigbrotr/instance.toml','--roles','control,ingest,monitor','--initialize-ingest',
