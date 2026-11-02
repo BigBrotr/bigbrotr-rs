@@ -122,7 +122,7 @@
       "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet.",
       "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN."
     },
-    "next": "Close the source-diagnosed dictionary reopen test failure and independent ClickHouse canonical-oracle defect. Remaining5 Rust assertion suites continue against exact verified f474; then execute reviewed maintained real ClickHouse acceptance using that unchanged product with separately attributed current harness/assembly. Corrected full Rustdoc and current-source hosted CI remain required.",
+    "next": "Freeze coherent current source after reviewed fixture/Rustdoc and maintained build-tool changes; anticipate all-target/Clippy/Rustdoc, qualify corrected dictionary fixture and current-source tools. Reuse unchanged f474 real installed Archive/ClickHouse and remaining Rust evidence within scope; finish integrated portable/public/actual-hosted gates before coherent main push/integration closure.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "PASS_8_ACTUAL_NATIVE_CONTROLS_AT_F474_WITH_WHOLE_LIBRARY_FAILURE_RETAINED",
@@ -182,21 +182,22 @@
         "e5e316ee",
         "6737d8b0"
       ],
-      "status": "PASS_INSTALLED_ARCHIVE_POSITIVE_5C85BB4C_RUST_AND_REAL_CLICKHOUSE_NOT_RUN",
+      "status": "PASS_REAL_ARCHIVE_ARROW_PARQUET_AND_CLICKHOUSE_FIRST_PASSIVE_CAPABILITY_F474",
       "scope": "Sixth scientific family and typed full-digest/strong-prior read under caller-held real pin/capture/current scope and custody; eleventh Index target. Related family6/count/schema2/frontier2 consumers and fixtures reconciled. Restart fixture now selects actual old/current snapshots via production read-only options; original expected outcomes unchanged.",
       "cheap_checks": "Author fmt/diff/layout oracle/generator reproducibility PASS; portable321 had320PASS/1ERROR from an older tutorial source-review pin, preserved as FAIL pending final exact-source review/pin check. No real Arrow/Parquet or installed authority claim. Actual installed typed Archive read and same-data PG restart PASS at5c85bb4c; real ClickHouse new target and Rust assertions NOT_RUN.",
       "review_pin_maintenance": {
         "reviewed_source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
         "scope": "Independent Astra reviewed changed tutorial selected Sync dispatch/lifecycle, shared session/transport and callers: no reachable signer or outbound Nostr text beyond REQ/CLOSE; explicit Monitor once-only selection is separate. Ordinary Monitor startup negative without initialization remains unchanged. Whole-code object pins updated; stale blanket Monitor wording corrected. No general egress or Monitor/storage reapproval inferred.",
         "checks": "Affected tutorial controls14PASS/0FAIL/0SKIP. Original author portable320PASS/1ERROR remains preserved; this closes its stale review-pin cause without claiming a fresh whole portable run.",
-        "documentation_only_followthrough": "65accd30 only wraps Mutex<State> in Rustdoc code markup after actualf474 Rustdoc unclosed-HTML FAIL. Root inspected the exact one-comment delta and reused unchanged f474 signer/egress review; no product rebuild or fresh runtime claim."
+        "documentation_only_followthrough": "65accd30 only wraps Mutex<State> in Rustdoc code markup after actualf474 Rustdoc unclosed-HTML FAIL. Root inspected the exact one-comment delta and reused unchanged f474 signer/egress review; no product rebuild or fresh runtime claim.",
+        "fixture_only_followthrough": "d20a84d7 only changes cfg(test) descriptor-fixture lifetime and exact replay/conflict assertions, independently reviewed. Root checked the only other app delta is Rustdoc markup; all f474 production Nostr behavior remains unchanged. Pin now namesd20 source."
       },
       "clickhouse_preflight": {
         "source": "f11024b87fdf917518a6512a92ceeaa9a0787b8d",
         "integrated": "8fc31ea1",
         "status": "CRITICAL_ORACLE_REVIEW_APPROVED_ACTUAL_ENGINE_NOT_RUN",
         "finding": "Original f110 shared CBOR encoded bool as int and refused negative UTC; synthetic metadata fixture shared it. Corrected bool-before-int and signedi64 domain, independent frozen vectors and wrong-encoding negative close the verifier defect without changing product or runtime limits.",
-        "engine": "NOT_RUN",
+        "engine": "PASS_ACTUAL_F474_WITH_62AE5DBC_HARNESS_SEE_INSTALLED_ACCEPTANCE_INDEX_ACTUAL",
         "correction": "97a9b708d204c4cb6bcfb4634e3947259d3904a4",
         "review": "Independent Astra verified all three literal preimages/digests against Node, positive measurement chunk d5985e9f273396348c96da53d6e4e98be08245900a5e27457522d9130e688dea, bool/integer refusal and complete negative-UTC fact/chunk. Original56 event fact/chunk preimages unchanged;43 targeted controlsPASS. Original erroneous CBOR scope remains preserved."
       }
@@ -346,7 +347,13 @@
           "ignored": 3,
           "filtered": 0
         },
-        "failure_classification": "UNKNOWN_PENDING_SOURCE_DIAGNOSIS"
+        "failure_classification": "FIXTURE_LIFETIME_PRECONDITION",
+        "correction": {
+          "source": "d20a84d7816d390a5bba65025517b51f77b8e1bf",
+          "status": "SOURCE_REVIEW_APPROVED_CORRECTED_TEST_NOT_RUN",
+          "cause": "The descriptor fixture attempted fresh preparation/admission after raw reopen, which deliberately retains RecoveryBlocked until positive recovery. Its fresh work now stays in the original funded lifetime; raw reopen validates only exact original/new-AlreadyDurable receipt replay and unchanged Native rows/inputs. Conflict must be StateMismatch, not any refusal.",
+          "review": "Independent Astra approved unchanged test purpose and replay/closure coverage; no product code, quota binding or recovery bypass."
+        }
       },
       "remaining_assertions": {
         "status": "PASS_ONLY_REMAINING_5_UNFILTERED_ASSERTION_GROUPS",
@@ -395,6 +402,22 @@
         "receipt_sha256": "608ccad187e2ca4d180e7603c479874fc4221401d08a5398f9c6377cbb0fafd5",
         "result": "7/7 stages PASS, zero FAIL/SKIP/NOT_RUN; family counts9,0,0,0,0,1, source cut10, requests4, snapshot5, frontier4. One real peer, zero AUTH responses/publishes/Sync jobs/event-family facts. Same-data PG restart and new installed scientific inspection PASS.",
         "custody": "Tool76840 reaped0; all18 owned containers stopped/PID0/noOOM, listener closed/queue empty, cleanup errors empty, borrowed bridge preserved."
+      },
+      "index_actual": {
+        "status": "PASS_ACTUAL_INSTALLED_PASSIVE_MONITOR_ARCHIVE_INDEX_AND_RESTART_INSPECTION",
+        "product_source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
+        "assembly_source": "62ae5dbc7eefc47a583cb8a23e94bd55167ca7d5",
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/f474b5a0/installed-index-r1-receipt.json",
+        "receipt_sha256": "92e5a09725a92f164ec9cdeefcb9e033f94f9e2f97d8accc329b5b3659da7bc7",
+        "scope": "7/7 maintained stages PASS; one peer/zero AUTH response/publish/Sync/event facts. Archive9dict+1measurement, ClickHouse11targets/185columns/44complete commitments/10physical rows, cut10/revision4. Same-data PG restart and installed typed read preserve all science/Index data.",
+        "custody": "Tool5765 reaped0; all19 owned containers stopped/PID0/noOOM, listenerclosed/finalqueueempty, cleanup errors empty, borrowedbridge unchanged.",
+        "limits": [
+          "ClickHouse/Index restart and outage/recovery/readiness",
+          "full lost-RAM/staged-before-PG recovery",
+          "native C API census",
+          "fleet/additional methods/cadence/capacity",
+          "new-source corrected dictionary fixture and Rustdoc pending qualification"
+        ]
       }
     }
   }

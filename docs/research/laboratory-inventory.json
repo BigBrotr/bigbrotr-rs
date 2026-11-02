@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "7ad5b67a",
-      "state": "Local not pushed. Installed5c passive/restart PASS; f474 exact build/Clippy PASS, library697PASS/1FAIL/3ignored (eight critical Native controlsPASS), RustdocFAIL corrected comment only. Remaining5-suite continuation active; realCH NOT_STARTED pending oracle correction.",
+      "observed_source": "d20a84d7",
+      "state": "Local not pushed; first actual installed passive Archive+ClickHouse and PG restart inspection PASS atf474 with frozen62ae harness. Source-reviewed fixture/Rustdoc/build-tool follow-through needs final current-source qualification; no whole M2 or release claim.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79066,11 +79066,11 @@
         ".research/m2-current-control-inventory-20261102"
       ],
       "active_assignments": {
-        "current_control_inventory": "Sol/xhigh source-only diagnosis of dictionary reopen fixture RecoveryBlocked; exact85-table reconciliation integrated7ad5.",
-        "measurement_clickhouse_prep": "Oracle97a9 complete, Astra targetedrecheck approved; Root owns actualClickHouse next.",
-        "native_timestamp_review": "Critical source/oracle reviews complete through97a9; no runtimequalification claim."
+        "current_control_inventory": "Sol source-only causal diagnosis may return a counterexample; Root fixtured20 committed and Astra-approved, test NOT_RUN. No edit authorization.",
+        "measurement_clickhouse_prep": "CBOR correction97a9 saved clean and critically approved; integrated88b7330b. ActualcaseRootPASS.",
+        "native_timestamp_review": "Bounded critical reviews complete through oracle97a9 and fixtured20; no ongoing runtime assignment."
       },
-      "resources": "No owned compiler/engine running atrecording. Tool89102 reaped0, dc54b5a0 exited0/PID0/noOOM/cache released; earlier strict/library/source guards retained. All18 installed5c containers and native-build-control container stopped; borrowedbridge preserved; no cleanup.",
+      "resources": "At recording all owned compiler/engine/test/client processes are terminal. Tool89102 reaped0 with cache released; actualIndex tool5765 reaped0 and19containers stopped/PID0/noOOM, listenerjoined/closed/queueempty, cleanup errors empty. Earlier18containers/data retained, borrowedbridge1699209a unchanged, all4 protectedELF bytes/fullstat intact. No cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79119,6 +79119,13 @@
           "container": "dc54b5a080a2caa2c74bddc25253d757df3e83564d6f369602bcd5d547591c63",
           "tool": 89102,
           "state": "Tool89102 reaped0; five remaining groupsPASS, allunfiltered,394assertionsPASS/1dedicatedignored. Container stopped/PID0/noOOM/cache released; original4ELF guardsPASS. Originallibrary/RustdocFAIL separate."
+        },
+        "installed_index": {
+          "source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
+          "harness_worktree": ".research/m2-passive-index-harness-62ae5dbc",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-f474b5a0/acceptance-passive-index-r1",
+          "receipt_sha256": "92e5a09725a92f164ec9cdeefcb9e033f94f9e2f97d8accc329b5b3659da7bc7",
+          "state": "7stagesPASS;19 ownedcontainers stopped/PID0/noOOM, private data/captures preserved; see P02 for science/original audit-transcription failure. Borrowednetwork preserved."
         }
       }
     }
