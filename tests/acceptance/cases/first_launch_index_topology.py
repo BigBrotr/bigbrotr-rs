@@ -72,7 +72,7 @@ class TopologyIndexRuntime(IndexRuntime):
             require(self.files(self.state/'data'/folder)==expected,'Index topology catch-up changed '+folder)
         index.exact(self.custody(),self.initial_index_custody)
         tables=self.ch(f"SELECT name,toString(uuid) AS uuid,engine_full FROM system.tables WHERE database='{DATABASE}' ORDER BY name",rows=True)
-        columns=self.ch(f"SELECT table,name,type,position,default_kind,default_expression FROM system.columns WHERE database='{DATABASE}' ORDER BY table,position",rows=True)
+        columns=self.ch(f"SELECT table,name,type,position,default_kind,default_expression FROM system.columns WHERE database='{DATABASE}' ORDER BY table,position",rows=True,schema_columns=True)
         index.exact(dict(tables=tables,columns=columns),self.initial_index_schema)
         save(self.topology_output/(label+'-preservation.json'),dict(archive='unchanged',original_export='unchanged',
             original_inputs='unchanged',index_custody='unchanged',clickhouse_schema_and_uuids='unchanged'))

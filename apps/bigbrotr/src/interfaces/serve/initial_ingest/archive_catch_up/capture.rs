@@ -8,6 +8,7 @@ use bigbrotr::storage::{
         control_owner::ArchiveFrontierReceipt,
     },
 };
+use bigbrotr_protocol::archive_batch::ARCHIVE_FAMILY_COUNT;
 use bigbrotr_protocol::archive_cut::CutRead;
 
 pub(super) struct Context<'a, 'lineage> {
@@ -33,7 +34,7 @@ pub(super) enum Action<'a> {
 }
 pub(super) struct Outcome {
     pub(super) snapshot: u64,
-    pub(super) family_counts: [u64; 5],
+    pub(super) family_counts: [u64; ARCHIVE_FAMILY_COUNT],
     pub(super) receipt: Option<ArchiveFrontierReceipt>,
     pub(super) created: bool,
 }

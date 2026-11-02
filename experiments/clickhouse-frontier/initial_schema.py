@@ -18,8 +18,8 @@ import uuid
 
 IMAGE = "clickhouse/clickhouse-server:26.8.35.10@sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc"
 VERSION = "26.8.35.10"
-SCHEMA_SHA = "b83807768847a743f0e585831c81cba699e9ba789595d3899e155c062b96469c"
-INSPECT_SHA = "74cd53ef21e11e23a599b0bf4e8e87bdc60fc5596cf655661fa6e3e5d3e165f5"
+SCHEMA_SHA = "f78e7835d44ac7be2472b8e10e20c41221ee4ad7787799b850d4baaeedfb6aeb"
+INSPECT_SHA = "f9d6f8fd343621afb56f3f8d9949a671e9b58a47d27af52b563c111d022fad7f"
 DB = "serving_fixture"
 SETTINGS = "fsync_after_insert = 1, fsync_part_directory = 1, non_replicated_deduplication_window = 0, index_granularity = 8192"
 SOURCE = "Tuple(FixedString(16), UInt32, UInt64, UInt64)"
@@ -66,6 +66,27 @@ PROVENANCE = [("event_id", "FixedString(32)"), ("endpoint_id", REF),
               ("clock_id", REF), ("resolution_us", "UInt64"),
               ("uncertainty_us", "Nullable(UInt64)"), ("anomaly_flags", "UInt32"),
               ("verification_method_id", REF), ("corrects", f"Array({SOURCE})")]
+# Literal independent compound-attempt projection. Optional compounds are
+# zero/one Arrays so (NULL,NULL) remains distinct from absence.
+MOMENT = "Tuple(Nullable(Int64), Nullable(UInt64))"
+OPT_MOMENT = f"Array({MOMENT})"
+FIRST_EVENT = f"Array(Tuple(FixedString(32), {MOMENT}, {MOMENT}))"
+MEASUREMENT = [
+    ("attempt_id", "FixedString(16)"), ("subject_kind", "UInt16"),
+    ("endpoint_id", REF), ("observer_id", REF), ("route_id", REF),
+    ("access_scope_id", REF), ("method_id", REF),
+    ("profile", "Tuple(" + ", ".join(["UInt64"] * 24) + ")"),
+    ("clock_quality", f"Tuple({REF}, UInt64, Nullable(UInt64), UInt32)"),
+    ("state_kind", "UInt16"),
+    ("prior_unknown", f"Array(Tuple({SOURCE}, FixedString(32)))"),
+    ("observed_execution", "Array(Tuple(UInt16, UInt16, Nullable(UInt16), Nullable(Int64)))"),
+    ("observed_open", f"Array(Tuple({OPT_MOMENT}, {OPT_MOMENT}, {OPT_MOMENT}))"),
+    ("observed_read", f"Array(Tuple({OPT_MOMENT}, {FIRST_EVENT}, {OPT_MOMENT}, Bool, Bool, Bool))"),
+    ("observed_counters", "Array(Tuple(UInt64, UInt64, UInt64, UInt64, UInt64, UInt64))"),
+    ("ended", OPT_MOMENT),
+    ("termination", "Array(Tuple(UInt16, Nullable(UInt16), Nullable(UInt16), Nullable(UInt16)))"),
+    ("teardown", "Nullable(UInt16)"),
+]
 FAMILIES = [
     ("dictionaries", DICTIONARY, "dictionary_ref"),
     ("events", EVENT, "created_at, event_id"),
@@ -77,6 +98,7 @@ FAMILIES = [
     ("event_tag_index", TAG, "tag_key, tag_value, event_id"),
     ("provenance_by_event", PROVENANCE, "event_id, endpoint_id, observer_id, access_scope_id, visibility_scope"),
     ("provenance_by_relay", PROVENANCE, "endpoint_id, event_id, observer_id, access_scope_id, visibility_scope"),
+    ("measurement_facts", MEASUREMENT, ""),
 ]
 
 
@@ -87,13 +109,13 @@ def literal(value):
 def inventory():
     tables = []
     for i, (name, columns, order) in enumerate(FAMILIES):
-        key = f"projection_generation, {order}, source, discriminator"
+        key = "projection_generation, " + (order + ", " if order else "") + "source, discriminator"
         tables.append(dict(name=name, uuid=str(uuid.UUID(bytes=bytes([i + 1]) * 16)),
                            columns=COMMON + columns, key=key,
                            engine_full=f"MergeTree ORDER BY ({key}) SETTINGS {SETTINGS}"))
-    assert [len(t["columns"]) for t in tables] == [35, 15, 13, 15, 12, 12, 12, 10, 18, 18]
-    # Independent literal schema inventory must retain the existing identity vector.
-    h = hashlib.sha256(b"bigbrotr/index-table-manifest/1\0")
+    assert [len(t["columns"]) for t in tables] == [35, 15, 13, 15, 12, 12, 12, 10, 18, 18, 25]
+    # Independent literal schema inventory must pin the schema-2 identity vector.
+    h = hashlib.sha256(b"bigbrotr/index-table-manifest/2\0")
     def text(value):
         raw = value.encode(); h.update(len(raw).to_bytes(4, "big")); h.update(raw)
     for value in [VERSION, DB, "Atomic"]:
@@ -103,7 +125,7 @@ def inventory():
         h.update(len(t["columns"]).to_bytes(2, "big"))
         for name, ty in t["columns"]:
             text(name); text(ty)
-    assert h.hexdigest() == "ad1b0478a2f12cac320ffc2b92723cd4cd1f019d2661fddfa2deb1a7af813106"
+    assert h.hexdigest() == "f043fc18a0785c737aaa2ebd0e3ba944d2feb2c6345b90eac684cdbe9777ffa0"
     return tables
 
 
@@ -329,11 +351,11 @@ class Lab:
         actual = self.query(f"SELECT name,toString(uuid) AS uuid,engine,engine_full,partition_key,sorting_key,primary_key,sampling_key,storage_policy,length(dependencies_database) AS dependent_databases,length(dependencies_table) AS dependent_tables FROM system.tables WHERE database='{DB}' ORDER BY name", "writer", rows=True, name="table-facts")
         expected = [dict(name=t["name"], uuid=t["uuid"], engine="MergeTree", engine_full=t["engine_full"], partition_key="", sorting_key=t["key"], primary_key=t["key"], sampling_key="", storage_policy="default", dependent_databases=0, dependent_tables=0) for t in sorted(tables, key=lambda t:t["name"])]
         self.save("expected-table-catalog.json", expected)
-        self.verify(actual == expected, "ten table UUID engines keys settings match frozen adapter")
+        self.verify(actual == expected, "eleven table UUID engines keys settings match frozen adapter")
         columns = self.query(f"SELECT table,name,type,position,default_kind,default_expression FROM system.columns WHERE database='{DB}' ORDER BY table,position", "writer", rows=True, name="column-facts")
         expected = [dict(table=t["name"], name=name, type=ty, position=i+1, default_kind="", default_expression="") for t in sorted(tables,key=lambda t:t["name"]) for i,(name,ty) in enumerate(t["columns"])]
         self.save("expected-column-catalog.json", expected)
-        self.verify(columns == expected, "all160 columns types positions and defaults match frozen adapter")
+        self.verify(columns == expected, "all185 columns types positions and defaults match frozen adapter")
         self.verify(self.query(f"SELECT count() FROM system.projections WHERE database='{DB}'", "writer") == "0", "no native projections")
         for t in tables:
             assert self.query(f"SELECT count() FROM {DB}.{t['name']}", "writer") == "0"
@@ -383,7 +405,7 @@ class Lab:
         self.checks.append(dict(name="actual numeric and optional setting type names match adapter", status="PASS"))
         parts = self.query(f"SELECT table,groupUniqArray(partition_id) AS partition_ids,sum(rows) AS rows FROM system.parts WHERE active AND database='{DB}' GROUP BY table ORDER BY table", rows=True, name="physical-partitions")
         expected_counts = {t["name"]:(2 if t["name"] in ["events","event_tag_index"] else 1) for t in tables}
-        self.verify(len(parts) == 10 and all(row["partition_ids"] == ["all"] for row in parts) and {r["table"]:r["rows"] for r in parts} == expected_counts, "all10 physical partition IDs all; duplicate row retained")
+        self.verify(len(parts) == len(tables) and all(row["partition_ids"] == ["all"] for row in parts) and {r["table"]:r["rows"] for r in parts} == expected_counts, "all11 physical partition IDs all; duplicate row retained")
         self.concurrency()
         # Same table UUID/types/engine can hide an unselected per-column TTL.
         # Mutation is confined to this final synthetic negative control.

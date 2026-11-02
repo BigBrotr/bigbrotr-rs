@@ -12,7 +12,7 @@ fn tables() -> IndexTables {
 
 #[test]
 fn closed_table_columns_match_the_typed_serialization_order() {
-    let expected: [&[&str]; 10] = [
+    let expected: [&[&str]; INDEX_TARGET_COUNT] = [
         DictionaryRow::COLUMN_NAMES,
         EventRow::COLUMN_NAMES,
         EligibilityRow::COLUMN_NAMES,
@@ -23,6 +23,7 @@ fn closed_table_columns_match_the_typed_serialization_order() {
         TagRow::COLUMN_NAMES,
         ProvenanceRow::COLUMN_NAMES,
         ProvenanceRow::COLUMN_NAMES,
+        MeasurementRow::COLUMN_NAMES,
     ];
     for (target, expected) in IndexTarget::ALL.into_iter().zip(expected) {
         assert_eq!(
@@ -34,7 +35,7 @@ fn closed_table_columns_match_the_typed_serialization_order() {
     // caller cannot silently turn an explicit empty family into an omitted one.
     assert_eq!(
         IndexTarget::ALL.map(|target| columns(target).count()),
-        [35, 15, 13, 15, 12, 12, 12, 10, 18, 18]
+        [35, 15, 13, 15, 12, 12, 12, 10, 18, 18, 25]
     );
 }
 
@@ -127,13 +128,13 @@ fn every_family_is_append_only_with_explicit_persistence_and_no_calendar_cast() 
 #[test]
 fn manifest_identity_distinguishes_database_and_every_table_uuid() {
     let original = tables();
-    // Python/hashlib over the literal schema-1 field/key inventory, the database
-    // serving_fixture, UUID bytes 01..0a repeated16, no PARTITION BY and explicit
+    // Python/hashlib over the literal schema-2 field/key inventory, the database
+    // serving_fixture, UUID bytes 01..0b repeated16, no PARTITION BY and explicit
     // index_granularity8192. No Rust
     // encoder or observed engine metadata computed this independent vector.
     assert_eq!(
         original.identity_digest().to_string(),
-        "ad1b0478a2f12cac320ffc2b92723cd4cd1f019d2661fddfa2deb1a7af813106"
+        "f043fc18a0785c737aaa2ebd0e3ba944d2feb2c6345b90eac684cdbe9777ffa0"
     );
     let ids = std::array::from_fn(|i| [i as u8 + 1; 16]);
     assert_ne!(
@@ -142,7 +143,7 @@ fn manifest_identity_distinguishes_database_and_every_table_uuid() {
             .unwrap()
             .identity_digest()
     );
-    for i in 0..10 {
+    for i in 0..INDEX_TARGET_COUNT {
         let mut changed = ids;
         changed[i][15] = 100;
         assert_ne!(
@@ -181,6 +182,16 @@ fn retained_manifest_roundtrips_and_refuses_changed_format_unknown_fields_and_al
     changed["table_uuids"][0] = "01010101-0101-0101-0101-01010101010A".into();
     assert!(IndexTables::decode_manifest(&serde_json::to_vec(&changed).unwrap()).is_err());
     assert!(IndexTables::decode_manifest(&vec![b' '; MAX_TABLE_MANIFEST_BYTES + 1]).is_err());
+}
+
+#[test]
+fn old_ten_target_manifest_and_schema_one_are_not_padded_or_adopted() {
+    let mut old: serde_json::Value =
+        serde_json::from_slice(&tables().encode_manifest().unwrap()).unwrap();
+    old["table_uuids"].as_array_mut().unwrap().pop();
+    assert!(IndexTables::decode_manifest(&serde_json::to_vec(&old).unwrap()).is_err());
+    old["format"] = "bigbrotr-index-tables/1".into();
+    assert!(IndexTables::decode_manifest(&serde_json::to_vec(&old).unwrap()).is_err());
 }
 
 #[test]

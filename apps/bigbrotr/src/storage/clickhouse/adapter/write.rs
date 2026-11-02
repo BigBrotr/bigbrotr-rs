@@ -129,6 +129,7 @@ pub(super) async fn batch(
             IndexTarget::ProvenanceByEvent | IndexTarget::ProvenanceByRelay => {
                 insert!(ProvenanceRow, provenance)
             }
+            IndexTarget::MeasurementFacts => insert!(MeasurementRow, measurement),
         }
     }
     Ok(())

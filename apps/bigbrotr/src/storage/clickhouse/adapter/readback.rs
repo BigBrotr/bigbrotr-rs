@@ -116,6 +116,9 @@ pub(super) async fn plan(
             IndexTarget::ProvenanceByEvent | IndexTarget::ProvenanceByRelay => {
                 family::<ProvenanceRow>(owner, tables, plan, target, limits).await?
             }
+            IndexTarget::MeasurementFacts => {
+                family::<MeasurementRow>(owner, tables, plan, target, limits).await?
+            }
         };
         receipt_row(&mut hash, target, actual.row_count, actual.rows_digest);
     }

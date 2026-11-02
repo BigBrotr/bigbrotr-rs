@@ -14,7 +14,7 @@ use crate::storage::{
     rocks::store::IngestRecovery,
 };
 use bigbrotr_model::{Digest256, OwnerResourceId};
-use bigbrotr_protocol::archive_cut::CutRead;
+use bigbrotr_protocol::{archive_batch::ARCHIVE_FAMILY_COUNT, archive_cut::CutRead};
 use sha2::{Digest, Sha256};
 use std::cell::Cell;
 use tokio_postgres::{Row, Transaction};
@@ -26,7 +26,7 @@ pub struct ArchiveFrontierReceipt {
     pub revision: u64,
     pub snapshot_id: u64,
     pub request_digest: Digest256,
-    pub family_counts: [u64; 5],
+    pub family_counts: [u64; ARCHIVE_FAMILY_COUNT],
     pub created: bool,
 }
 fn backend(_: tokio_postgres::Error) -> Error {
@@ -73,7 +73,7 @@ impl ControlSession {
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| Error::Unavailable)?;
-        let row = tx.query_opt("SELECT dataset_id=$2::bytea AND catalog_id=$3::bytea,frontier_revision::text,snapshot_id,substring(request_digest FROM 1 FOR 33),dictionary_count::text,payload_count::text,eligibility_count::text,receive_count::text,provenance_count::text FROM control.archive_frontier_snapshots WHERE operation_id=$1::bytea", &[&&operation_id[..],&&self.request.dataset.as_bytes()[..],&&catalog.as_bytes()[..]]).await.map_err(backend)?;
+        let row = tx.query_opt("SELECT dataset_id=$2::bytea AND catalog_id=$3::bytea,frontier_revision::text,snapshot_id,substring(request_digest FROM 1 FOR 33),dictionary_count::text,payload_count::text,eligibility_count::text,receive_count::text,provenance_count::text,measurement_count::text FROM control.archive_frontier_snapshots WHERE operation_id=$1::bytea", &[&&operation_id[..],&&self.request.dataset.as_bytes()[..],&&catalog.as_bytes()[..]]).await.map_err(backend)?;
         let result = if let Some(row) = row {
             if !row.try_get::<_, bool>(0).map_err(backend)? {
                 return Err(Error::Conflict);
@@ -96,6 +96,7 @@ impl ControlSession {
                     number(&row, 6)?,
                     number(&row, 7)?,
                     number(&row, 8)?,
+                    number(&row, 9)?,
                 ],
                 created: false,
             })
@@ -307,7 +308,7 @@ impl ControlSession {
         let incarnation = &current.process_incarnation.as_bytes()[..];
         tx.execute("INSERT INTO control.consumer_frontier_revisions(consumer_id,frontier_revision,dataset_id,consumer_role,topology_generation,previous_revision,owner_resource_id,owner_epoch,owner_incarnation,created_at_us) VALUES ($1::bytea,$2::text::numeric,$3::bytea,'archive',$4::text::numeric,NULLIF($5::text::numeric,0),$1::bytea,$6::text::numeric,$7::bytea,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)", &[&catalog,&rev,&dataset,&topology,&expected_revision.to_string(),&epoch.to_string(),&incarnation]).await.map_err(backend)?;
         let counts = observation.family_counts.map(|n| n.to_string());
-        tx.execute("INSERT INTO control.archive_frontier_snapshots(operation_id,consumer_id,frontier_revision,dataset_id,topology_generation,catalog_id,owner_epoch,owner_incarnation,snapshot_id,request_digest,dictionary_count,payload_count,eligibility_count,receive_count,provenance_count) VALUES ($1::bytea,$2::bytea,$3::text::numeric,$4::bytea,$5::text::numeric,$2::bytea,$6::text::numeric,$7::bytea,$8::bigint,$9::bytea,$10::text::numeric,$11::text::numeric,$12::text::numeric,$13::text::numeric,$14::text::numeric)", &[&&operation_id[..],&catalog,&rev,&dataset,&topology,&epoch.to_string(),&incarnation,&(observation.snapshot_id as i64),&&observation.request_digest.as_bytes()[..],&counts[0],&counts[1],&counts[2],&counts[3],&counts[4]]).await.map_err(backend)?;
+        tx.execute("INSERT INTO control.archive_frontier_snapshots(operation_id,consumer_id,frontier_revision,dataset_id,topology_generation,catalog_id,owner_epoch,owner_incarnation,snapshot_id,request_digest,dictionary_count,payload_count,eligibility_count,receive_count,provenance_count,measurement_count) VALUES ($1::bytea,$2::bytea,$3::text::numeric,$4::bytea,$5::text::numeric,$2::bytea,$6::text::numeric,$7::bytea,$8::bigint,$9::bytea,$10::text::numeric,$11::text::numeric,$12::text::numeric,$13::text::numeric,$14::text::numeric,$15::text::numeric)", &[&&operation_id[..],&catalog,&rev,&dataset,&topology,&epoch.to_string(),&incarnation,&(observation.snapshot_id as i64),&&observation.request_digest.as_bytes()[..],&counts[0],&counts[1],&counts[2],&counts[3],&counts[4],&counts[5]]).await.map_err(backend)?;
         for input in inputs {
             tx.execute("INSERT INTO control.archive_frontier_batches VALUES ($1::bytea,$2::text::numeric,$3::bytea)", &[&catalog,&rev,&&input.request().attempt_id()[..]]).await.map_err(backend)?;
         }
@@ -375,7 +376,7 @@ async fn resolve(
     dataset: &[u8],
 ) -> Result<Option<ArchiveFrontierReceipt>, Error> {
     let counts = wanted.family_counts.map(|n| n.to_string());
-    let row = tx.query_opt("SELECT dataset_id=$2::bytea AND consumer_id=$3::bytea AND frontier_revision=$4::text::numeric AND snapshot_id=$5::bigint AND request_digest=$6::bytea AND dictionary_count=$7::text::numeric AND payload_count=$8::text::numeric AND eligibility_count=$9::text::numeric AND receive_count=$10::text::numeric AND provenance_count=$11::text::numeric FROM control.archive_frontier_snapshots WHERE operation_id=$1::bytea", &[&&wanted.operation_id[..],&dataset,&&wanted.consumer_id.as_bytes()[..],&wanted.revision.to_string(),&(wanted.snapshot_id as i64),&&wanted.request_digest.as_bytes()[..],&counts[0],&counts[1],&counts[2],&counts[3],&counts[4]]).await.map_err(backend)?;
+    let row = tx.query_opt("SELECT dataset_id=$2::bytea AND consumer_id=$3::bytea AND frontier_revision=$4::text::numeric AND snapshot_id=$5::bigint AND request_digest=$6::bytea AND dictionary_count=$7::text::numeric AND payload_count=$8::text::numeric AND eligibility_count=$9::text::numeric AND receive_count=$10::text::numeric AND provenance_count=$11::text::numeric AND measurement_count=$12::text::numeric FROM control.archive_frontier_snapshots WHERE operation_id=$1::bytea", &[&&wanted.operation_id[..],&dataset,&&wanted.consumer_id.as_bytes()[..],&wanted.revision.to_string(),&(wanted.snapshot_id as i64),&&wanted.request_digest.as_bytes()[..],&counts[0],&counts[1],&counts[2],&counts[3],&counts[4],&counts[5]]).await.map_err(backend)?;
     match row {
         None => Ok(None),
         Some(row) if row.try_get::<_, bool>(0).map_err(backend)? => {

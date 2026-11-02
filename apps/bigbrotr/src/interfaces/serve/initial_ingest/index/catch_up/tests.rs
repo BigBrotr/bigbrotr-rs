@@ -1,8 +1,8 @@
 use super::*;
 use bigbrotr::runtime::{ProcessEnvelope, WaiterLimits};
 use bigbrotr::storage::postgres::{
-    IndexBinding, IndexChunk, IndexOwnerIdentity, IndexTarget, RetainedIndexPlan,
-    RetainedIndexRevision,
+    INDEX_SCHEMA_VERSION, IndexBinding, IndexChunk, IndexOwnerIdentity, IndexTarget,
+    RetainedIndexPlan, RetainedIndexRevision,
 };
 use bigbrotr_model::{
     AdmissionBatch, Digest256, FactRef, PolicyEpoch, RecoveryGenerationId, TopologyGeneration,
@@ -73,7 +73,7 @@ fn plan(first: u64, revision: u64) -> IndexPlan {
     let chunks = std::array::from_fn(|i| {
         IndexChunk::new(
             IndexTarget::ALL[i],
-            1,
+            INDEX_SCHEMA_VERSION,
             "all".into(),
             Digest256::from_bytes([20 + i as u8; 32]),
             u64::from(i == 0),

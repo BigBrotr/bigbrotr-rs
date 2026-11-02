@@ -133,7 +133,7 @@ def process_closed(answer,operation,config,prefix):
     # Every installed success here is delivered only after the actual owned
     # runtime's native/worker close, Control release and parent driver join.
     if operation == 'catchup':
-        assert len(reports)==1 and last['format']=='bigbrotr-archive-catch-up/1'
+        assert len(reports)==1 and last['format']=='bigbrotr-archive-catch-up/2'
     elif not operation.startswith('ordinary'):
         assert last['native']=='closed' and last['owner_release']=='committed'
         assert last['ready'] is False

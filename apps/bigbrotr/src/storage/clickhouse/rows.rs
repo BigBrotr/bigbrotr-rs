@@ -13,6 +13,7 @@ use crate::storage::postgres::IndexTarget;
 
 mod digest;
 mod mapping;
+mod measurement;
 mod serde_fields;
 
 pub use digest::{ChunkHasher, ChunkSummary, ProjectionRow};
@@ -26,7 +27,7 @@ pub type SourceTuple = ([u8; 16], u32, u64, u64);
 /// Dataset, dictionary kind, allocation domain, ordinal.
 pub type ReferenceTuple = ([u8; 16], u16, [u8; 16], u64);
 
-pub const SCHEMA_VERSION: u16 = 1;
+pub const SCHEMA_VERSION: u16 = crate::storage::postgres::INDEX_SCHEMA_VERSION;
 pub const PARTITION: &str = "all";
 /// AdmissionLimits::facts caps every encoded core fact at 2 MiB. Each tag
 /// array/string consumes at least one canonical byte; retained text cannot be
@@ -234,4 +235,32 @@ row!(ProvenanceRow, [ProvenanceByEvent, ProvenanceByRelay], {
     verification_method_id: ReferenceTuple => reference,
     #[serde(with = "serde_fields::optional_tuple")]
     corrects: Option<SourceTuple> => optional_source,
+});
+
+row!(MeasurementRow, [MeasurementFacts], {
+    attempt_id: [u8; 16] => bytes,
+    subject_kind: u16 => u16,
+    endpoint_id: ReferenceTuple => reference,
+    observer_id: ReferenceTuple => reference,
+    route_id: ReferenceTuple => reference,
+    access_scope_id: ReferenceTuple => reference,
+    method_id: ReferenceTuple => reference,
+    profile: [u64; 24] => measurement_profile,
+    clock_quality: (ReferenceTuple, u64, Option<u64>, u32) => measurement_clock,
+    state_kind: u16 => u16,
+    #[serde(with = "serde_fields::optional_tuple")]
+    prior_unknown: Option<(SourceTuple, [u8; 32])> => measurement_prior,
+    #[serde(with = "serde_fields::optional_tuple")]
+    observed_execution: Option<(u16, u16, Option<u16>, Option<i64>)> => measurement_execution,
+    #[serde(with = "serde_fields::optional_tuple")]
+    observed_open: Option<measurement::Open> => measurement_open,
+    #[serde(with = "serde_fields::optional_tuple")]
+    observed_read: Option<measurement::Read> => measurement_read,
+    #[serde(with = "serde_fields::optional_tuple")]
+    observed_counters: Option<(u64, u64, u64, u64, u64, u64)> => measurement_counters,
+    #[serde(with = "serde_fields::optional_tuple")]
+    ended: Option<measurement::Moment> => measurement_moment,
+    #[serde(with = "serde_fields::optional_tuple")]
+    termination: Option<(u16, Option<u16>, Option<u16>, Option<u16>)> => measurement_termination,
+    teardown: Option<u16> => optional_u16,
 });

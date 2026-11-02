@@ -11,6 +11,7 @@ mod schema;
 pub mod initialization_custody;
 
 pub mod event;
+pub mod measurement;
 pub mod membership;
 
 pub mod cut;

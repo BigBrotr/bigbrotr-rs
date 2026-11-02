@@ -39,3 +39,9 @@ pub use membership::validate_membership_limits;
 
 mod cut;
 pub use cut::{ObservedCut, validate_cut_limits};
+
+mod measurements;
+pub use measurements::{
+    ArchiveMeasurementError, ArchivedMeasurement, MEASUREMENT_DATA_BYTES,
+    validate_measurement_limits,
+};

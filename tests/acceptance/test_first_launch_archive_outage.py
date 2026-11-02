@@ -127,8 +127,8 @@ class ArchiveCensusProfileControls(unittest.TestCase):
             return value,queries
 
     def test_closed_census_exact_family_and_commit_edges_keep_an_overflow_sentinel(self):
-        names=('dictionaries','events','event_eligibility_facts','event_receive_facts','provenance_facts','archive_commits')
-        caps=dict(zip(names,(73,62,62,62,63,67)))
+        names=('dictionaries','events','event_eligibility_facts','event_receive_facts','provenance_facts','measurement_facts','archive_commits')
+        caps=dict(zip(names,(73,62,62,62,63,0,67)))
         value,queries=self.reader(caps,'closed-reclamation')
         self.assertEqual({name:len(rows) for name,rows in value['tables'].items()},caps)
         self.assertEqual(queries,[(name,cap+1) for name,cap in caps.items()])
@@ -137,7 +137,7 @@ class ArchiveCensusProfileControls(unittest.TestCase):
                 self.reader({name:cap+1},'closed-reclamation')
 
     def test_default_census_stays16_per_family_and8_commits(self):
-        caps=dict.fromkeys(('dictionaries','events','event_eligibility_facts','event_receive_facts','provenance_facts'),16)
+        caps=dict.fromkeys(('dictionaries','events','event_eligibility_facts','event_receive_facts','provenance_facts','measurement_facts'),16)
         caps['archive_commits']=8
         value,queries=self.reader(caps)
         self.assertEqual({name:len(rows) for name,rows in value['tables'].items()},caps)

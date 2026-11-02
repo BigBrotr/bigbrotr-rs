@@ -51,7 +51,7 @@ fn length_bytes(length: u64) -> u64 {
 }
 
 impl ValueWriter {
-    fn charge(&mut self, bytes: u64) -> Result<(), RowsError> {
+    pub(super) fn charge(&mut self, bytes: u64) -> Result<(), RowsError> {
         self.wire_bytes = self
             .wire_bytes
             .checked_add(bytes)
@@ -61,7 +61,7 @@ impl ValueWriter {
     pub(super) fn array(&mut self, length: u64) {
         encode!(self.encoder.array(length));
     }
-    fn null(&mut self) {
+    pub(super) fn null(&mut self) {
         encode!(self.encoder.null());
     }
     pub(super) fn bytes<const N: usize>(&mut self, value: &[u8; N]) -> Result<(), RowsError> {
@@ -83,6 +83,10 @@ impl ValueWriter {
     pub(super) fn i64(&mut self, value: &i64) -> Result<(), RowsError> {
         encode!(self.encoder.i64(*value));
         self.charge(8)
+    }
+    pub(super) fn boolean(&mut self, value: bool) -> Result<(), RowsError> {
+        encode!(self.encoder.bool(value));
+        self.charge(1)
     }
     pub(super) fn text(&mut self, value: &str) -> Result<(), RowsError> {
         encode!(self.encoder.str(value));

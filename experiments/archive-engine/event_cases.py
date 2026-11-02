@@ -60,9 +60,9 @@ def cut_expectation(mode, prefix=False):
     read = dict(dataset_id='01'*16, topology_generation='0',
                 bounds=[dict(shard_id=0, owner_epoch=1, complete_through=count)],
                 receipts=receipts, snapshot_id=snapshot)
-    observation = dict(format='bigbrotr-native-cut/1', snapshot_id=snapshot,
+    observation = dict(format='bigbrotr-native-cut/2', snapshot_id=snapshot,
                        request_digest=cut_digest(read),
-                       family_counts=[6, 1, 1, 2, 2] if mode == 'history' and not prefix else [6, 1, 1, 1, 1])
+                       family_counts=[6, 1, 1, 2, 2, 0] if mode == 'history' and not prefix else [6, 1, 1, 1, 1, 0])
     return dict(event='captured-prefix' if prefix else 'captured-cut', observation=observation, read=read,
                 frontier=dict(operation_id=('f0' if prefix else 'f1')*16, revision=2 if mode=='history' and not prefix else 1, snapshot_id=snapshot,
                               request_digest=cut_digest(read)), pin='not-granted')
@@ -301,7 +301,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False, nati
                 # complete input identities, native snapshot and real logical
                 # Archive owner. No product decoder constructs this expectation.
                 frontier = json.loads(sql('bbpub_control_'+mode, """SELECT json_build_object(
-                    'binding',(SELECT json_agg(json_build_array(encode(operation_id,'hex'),encode(consumer_id,'hex'),frontier_revision,topology_generation,snapshot_id,encode(request_digest,'hex'),dictionary_count,payload_count,eligibility_count,receive_count,provenance_count) ORDER BY frontier_revision) FROM control.archive_frontier_snapshots),
+                    'binding',(SELECT json_agg(json_build_array(encode(operation_id,'hex'),encode(consumer_id,'hex'),frontier_revision,topology_generation,snapshot_id,encode(request_digest,'hex'),dictionary_count,payload_count,eligibility_count,receive_count,provenance_count,measurement_count) ORDER BY frontier_revision) FROM control.archive_frontier_snapshots),
                     'head',(SELECT json_build_array(consumer_role,current_revision,current_topology_generation) FROM control.consumers),
                     'bounds',(SELECT json_agg(json_build_array(frontier_revision,shard_id,owner_epoch,last_complete_sequence,attestation_kind,encode(attestation_digest,'hex')) ORDER BY frontier_revision,shard_id,owner_epoch) FROM control.consumer_frontiers),
                     'batches',(SELECT json_agg(json_build_array(i.frontier_revision,encode(i.attempt_id,'hex')) ORDER BY i.frontier_revision,a.ordinal) FROM control.archive_frontier_batches i JOIN control.archive_attempts a USING(attempt_id)),

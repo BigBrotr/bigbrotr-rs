@@ -6,8 +6,8 @@ from cases import first_launch_index_restart_oracle as restart
 
 # Existing signed initial event, distinct tagged successor event and predecessor
 # resend: the original event has no second payload/receive/eligibility row.
-COUNTS = (13,2,2,2,2,2,2,1,3,3)
-RETAINED_COUNTS = (73,62,62,62,62,62,62,1,63,63)
+COUNTS = (13,2,2,2,2,2,2,1,3,3,0)
+RETAINED_COUNTS = (73,62,62,62,62,62,62,1,63,63,0)
 
 
 def initial_profile(retained_boundary=False):
@@ -90,7 +90,7 @@ def batch_history(after, science, rows, binding, publisher, generation, *, retai
         for name in index.TARGETS:
             selected=[r for r in rows[name] if r[1][2]==epoch and first<=r[1][3]<=last]
             values=[[row[1],[name,row[6]],row] for row in selected]
-            digest=index.digest('projection-chunk',[binding[2],name,1,[binding[0],topology,[list(x) for x in cuts]],0,values])
+            digest=index.digest('projection-chunk',[binding[2],name,2,[binding[0],topology,[list(x) for x in cuts]],0,values])
             chunks.append((len(selected),digest,digest))
         metadata=index.metadata_digest(binding,revision-1,(topology,previous),(topology,cuts),
             (bytes.fromhex(batch['admission_digest']),0,epoch,first,last),chunks)
@@ -119,7 +119,7 @@ def batch_history(after, science, rows, binding, publisher, generation, *, retai
             chunk=index.only(after['projection_chunks'],chunk_id=encoded)
             index.exact({k:v for k,v in chunk.items() if k!='xmin'},dict(generation_id=generation_id,chunk_id=encoded,
                 dataset_id=dataset,storage_incarnation=generation['storage_incarnation'],table_identity_digest=generation['table_identity_digest'],
-                target=target,target_schema_version=1,topology_generation=1,chunk_ordinal=revision,row_count=count,
+                target=target,target_schema_version=2,topology_generation=1,chunk_ordinal=revision,row_count=count,
                 owner_resource_id=consumer_id,owner_epoch=2,owner_role='index',owner_incarnation=publisher['process_incarnation'],
                 invalid_reason=None,state='committed',prepared_at_us=plan['prepared_at_us'],
                 committed_at_us=receipt['committed_at_us'],engine_receipt_digest='\\x'+engine.hex()))
@@ -237,8 +237,8 @@ def published_history(after, science, schema, actual, *, owner_epoch, retained_b
     index.exact([p['frontier_revision'] for p in plans],list(range(1,initial+1))+list(range(initial+2,initial+5)))
     index.exact([(b['epoch'],b['first'],b['last']) for b in science['batches']],
                 [(1,1,2),(1,3,3),(1,4,7)]+([(1,8+5*n,12+5*n) for n in range(61)] if retained_boundary else [(1,8,12)])+[(2,1,4),(2,5,9),(2,10,10)])
-    assert len(after['projection_plan_chunks'])==len(after['projection_chunks'])==(initial+3)*10
-    assert len(after['projection_chunk_bounds'])==initial*10+60 and len(after['index_frontier_plans'])==initial+3
+    assert len(after['projection_plan_chunks'])==len(after['projection_chunks'])==(initial+3)*len(index.TARGETS)
+    assert len(after['projection_chunk_bounds'])==(initial+6)*len(index.TARGETS) and len(after['index_frontier_plans'])==initial+3
     handoff,revisions,bounds,old_bound=bridge_history(after,binding,publisher,generation,retained_boundary=retained_boundary)
     index.exact(sorted(r['frontier_revision'] for r in revisions),list(range(1,initial+5)))
     assert len(bounds)==initial+8
@@ -263,6 +263,6 @@ def published_history(after, science, schema, actual, *, owner_epoch, retained_b
     assert consumer['xmin']==index.only(after['index_frontier_plans'],frontier_revision=initial+4)['xmin']
     recovery_sessions(after,binding,owners,commitments,handoff,retained_boundary=retained_boundary)
     return dict(format='bigbrotr-installed-index-topology/1',topology_generation=1,source_cuts=[[1,cut],[2,10]],
-        frontier_revision=initial+4,handoff_revision=initial+1,source_batches=initial+3,committed_chunks=(initial+3)*10,chunk_bounds=initial*10+60,
+        frontier_revision=initial+4,handoff_revision=initial+1,source_batches=initial+3,committed_chunks=(initial+3)*len(index.TARGETS),chunk_bounds=(initial+6)*len(index.TARGETS),
         family_counts=dict(zip(index.TARGETS,counts)),index_owner_epoch=owner_epoch,exact_retry=False,
         original_receipts='unchanged',all_typed_fields_equal=True,raw_multiplicity='exact',complete_M1='NOT_RUN')

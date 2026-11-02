@@ -22,6 +22,15 @@ struct Golden {
     fact_digests: Vec<Digest256>,
     body_digest: Digest256,
     targets: BTreeMap<String, ExpectedChunk>,
+    measurement: ExpectedMeasurement,
+}
+#[derive(Deserialize)]
+struct ExpectedMeasurement {
+    fact_digest: Digest256,
+    rows_digest: Digest256,
+    row_binary_bytes: u64,
+    row_binary_hex: String,
+    row_binary_with_names_and_types_hex: String,
 }
 fn golden() -> Golden {
     serde_json::from_str(include_str!("fixtures/golden.json")).unwrap()
@@ -187,12 +196,12 @@ pub(in crate::storage) fn facts() -> [Fact; 5] {
 }
 
 #[test]
-fn all_ten_families_match_independent_canonical_and_wire_vectors() {
+fn all_current_families_match_independent_canonical_and_wire_vectors() {
     let facts = facts();
     let golden = golden();
     let cut = cut();
-    let expected_counts = [1, 1, 1, 1, 1, 1, 1, 6, 1, 1];
-    let mut counts = [0; 10];
+    let expected_counts = [1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0];
+    let mut counts = [0; crate::storage::postgres::INDEX_TARGET_COUNT];
     let mut hashes = std::array::from_fn(|i| {
         ChunkHasher::new(generation(), IndexTarget::ALL[i], &cut, expected_counts[i])
     });
@@ -327,14 +336,14 @@ fn corrections_keep_previous_epoch_scope_and_distinct_clock_identity() {
 fn off_keeps_eligibility_and_receive_and_explicit_zero_witness_outcomes() {
     let facts = facts();
     let cut = cut();
-    let mut counts = [0; 10];
+    let mut counts = [0; crate::storage::postgres::INDEX_TARGET_COUNT];
     for fact in &facts[..4] {
         let rows = FactRows::new(generation(), fact, false, FactDecodeLimits::default()).unwrap();
         for (count, added) in counts.iter_mut().zip(rows.counts()) {
             *count += added;
         }
     }
-    assert_eq!(counts, [1, 1, 1, 1, 1, 1, 1, 6, 0, 0]);
+    assert_eq!(counts, [1, 1, 1, 1, 1, 1, 1, 6, 0, 0, 0]);
     assert!(matches!(
         FactRows::new(generation(), &facts[4], false, FactDecodeLimits::default()),
         Err(RowsError::ProvenanceDisabled)
@@ -376,6 +385,127 @@ fn mapping_refuses_fanout_before_reserving_tag_references() {
         FactRows::new(generation(), &facts[1], true, limits),
         Err(RowsError::TagLimit)
     ));
+}
+
+pub(in crate::storage) fn measurement_fact() -> Fact {
+    use bigbrotr_model::{
+        ConnectCallResult, ConnectDestination, FirstValidEvent, Measurement, MeasurementAttemptId,
+        MeasurementContext, MeasurementCounters, MeasurementMoment, MeasurementState,
+        MeasurementSubject, MeasurementTermination, ObservedAttempt, ObservedExecution,
+        OpenObservation, PassiveReadProfile, ReadObservation, TeardownObservation,
+        TerminalMeasurement,
+    };
+    let moment = |utc: Option<i64>, elapsed: Option<u64>| MeasurementMoment {
+        observed_at: utc.map(ObservedTime::new),
+        elapsed_us: elapsed.map(DurationUs::new),
+    };
+    fact(
+        6,
+        FactPayload::Measurement(
+            Measurement::new(
+                MeasurementAttemptId::try_from([0x44; 16]).unwrap(),
+                MeasurementContext {
+                    subject: MeasurementSubject::RelayEndpoint(reference(
+                        DictionaryKind::Endpoint,
+                        7,
+                    )),
+                    observer_id: reference(DictionaryKind::Observer, 5),
+                    route_id: reference(DictionaryKind::Route, 1),
+                    access_scope_id: reference(DictionaryKind::AccessScope, 8),
+                    method_id: reference(DictionaryKind::Method, 10),
+                },
+                PassiveReadProfile::first(DurationUs::new(4_000_000)).unwrap(),
+                ClockQuality::new(
+                    reference(DictionaryKind::Observer, 6),
+                    DurationUs::new(1),
+                    Some(DurationUs::new(0)),
+                    5,
+                )
+                .unwrap(),
+                MeasurementState::Terminal(TerminalMeasurement {
+                    observed: ObservedAttempt {
+                        execution: ObservedExecution {
+                            destination: ConnectDestination::DnsResolver,
+                            result: ConnectCallResult::Accepted,
+                            observed_at: Some(ObservedTime::new(-1)),
+                        },
+                        open: OpenObservation {
+                            tcp_connected: Some(moment(Some(-5), Some(0))),
+                            tls_completed: Some(moment(None, Some(1))),
+                            websocket_opened: Some(moment(Some(0), Some(2))),
+                        },
+                        read: ReadObservation {
+                            request_flushed: Some(moment(None, None)),
+                            first_valid_event: Some(FirstValidEvent {
+                                event_id: EventId::from_bytes([0xaa; 32]),
+                                received: moment(Some(-10), Some(3)),
+                                verified: moment(Some(-20), Some(5)),
+                            }),
+                            eose: Some(moment(Some(0), Some(4))),
+                            eose_prefix_verified: true,
+                            auth_observed: true,
+                            correlated_closed: false,
+                        },
+                        counters: MeasurementCounters {
+                            rx_physical_frames: 6,
+                            rx_messages: 3,
+                            event_candidates: 1,
+                            rx_ws_bytes: 700,
+                            rx_payload_bytes: 680,
+                            tx_ws_bytes: 140,
+                        },
+                    },
+                    ended: moment(Some(-100), Some(6)),
+                    termination: MeasurementTermination::Eose,
+                    teardown: TeardownObservation::Completed,
+                }),
+            )
+            .unwrap(),
+        ),
+    )
+}
+
+#[test]
+fn compound_measurement_is_lossless_under_provenance_off_and_has_one_source_row() {
+    let fact = measurement_fact();
+    let golden = golden().measurement;
+    assert_eq!(fact.payload_digest(), golden.fact_digest);
+    let original_cut = cut();
+    let mut bounds = original_cut.bounds().to_vec();
+    bounds[1].last_complete_sequence = CompleteThrough::new(6);
+    let cut = SourceCut::new(dataset(), TopologyGeneration::new(17), bounds).unwrap();
+    let mapped = FactRows::new(generation(), &fact, false, FactDecodeLimits::default()).unwrap();
+    assert_eq!(mapped.counts(), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
+    let original = mapped.measurement().unwrap();
+    assert_eq!(original.source, ([0x11; 16], 7, 3, 6));
+    assert_eq!(original.profile[23], 4_000_000);
+    assert_eq!(original.clock_quality.2, Some(0));
+    let read = original.observed_read.as_ref().unwrap();
+    let request = read.request_flushed.as_ref().unwrap();
+    assert_eq!((request.observed_at, request.elapsed_us), (None, None));
+    assert_eq!(read.eose.as_ref().unwrap().observed_at, Some(0));
+    assert_eq!(
+        read.first_valid_event.as_ref().unwrap().verified.elapsed_us,
+        Some(5)
+    );
+    let mut hash = ChunkHasher::new(generation(), IndexTarget::MeasurementFacts, &cut, 1);
+    hash.push(&original).unwrap();
+    let summary = hash.finish().unwrap();
+    assert_eq!(summary.rows_digest, golden.rows_digest);
+    assert_eq!(summary.row_binary_bytes, golden.row_binary_bytes);
+    let encoded = serde_json::to_value(&original).unwrap();
+    let readback: MeasurementRow = serde_json::from_value(encoded.clone()).unwrap();
+    assert_eq!(readback, original);
+    let mut invalid = encoded.clone();
+    invalid["observed_read"] =
+        serde_json::json!([encoded["observed_read"][0], encoded["observed_read"][0]]);
+    assert!(serde_json::from_value::<MeasurementRow>(invalid).is_err());
+    let mut corrupt = readback;
+    corrupt.observed_counters.as_mut().unwrap().4 -= 1;
+    assert_eq!(corrupt.payload_digest, original.payload_digest);
+    let mut hash = ChunkHasher::new(generation(), IndexTarget::MeasurementFacts, &cut, 1);
+    hash.push(&corrupt).unwrap();
+    assert_ne!(hash.finish().unwrap().rows_digest, golden.rows_digest);
 }
 
 #[test]
@@ -432,6 +562,7 @@ fn every_closed_row_supports_clickhouse_gat_read_and_write() {
     typed::<EventIndexRow>();
     typed::<TagRow<'static>>();
     typed::<ProvenanceRow>();
+    typed::<MeasurementRow>();
     let facts = facts();
     let row = FactRows::new(generation(), &facts[2], true, FactDecodeLimits::default())
         .unwrap()
@@ -583,4 +714,106 @@ fn readback_tags_reject_large_declared_arrays_before_visiting_elements() {
     let outer = SeqDeserializer::<_, Error>::new(std::iter::once(inner));
     assert!(serde_fields::tags::deserialize(outer).is_err());
     assert_eq!(visited, 0);
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn actual_selected_client_decodes_and_serializes_independent_compound_wire() {
+    use axum::{
+        Router,
+        body::{Body, to_bytes},
+        extract::Request,
+        routing::any,
+    };
+    use std::{
+        sync::{Arc, Mutex},
+        time::Duration,
+    };
+    fn bytes(text: &str) -> Vec<u8> {
+        text.as_bytes()
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .map(|p| u8::from_str_radix(std::str::from_utf8(p).unwrap(), 16).unwrap())
+            .collect()
+    }
+    let golden = golden().measurement;
+    let response = bytes(&golden.row_binary_with_names_and_types_hex);
+    let expected_wire = bytes(&golden.row_binary_hex);
+    let (sent, received) = tokio::sync::oneshot::channel();
+    let sent = Arc::new(Mutex::new(Some(sent)));
+    let app = Router::new().route(
+        "/",
+        any(move |request: Request| {
+            let response = response.clone();
+            let sent = Arc::clone(&sent);
+            async move {
+                let insert =
+                    url::form_urlencoded::parse(request.uri().query().unwrap_or("").as_bytes())
+                        .any(|(key, value)| key == "query" && value.starts_with("INSERT INTO "));
+                let body = to_bytes(request.into_body(), 64 * 1024).await.unwrap();
+                if insert {
+                    sent.lock()
+                        .unwrap()
+                        .take()
+                        .unwrap()
+                        .send(body.to_vec())
+                        .unwrap();
+                    Body::empty()
+                } else {
+                    Body::from(response)
+                }
+            }
+        }),
+    );
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let (finish, finished) = tokio::sync::oneshot::channel();
+    let server = tokio::spawn(async move {
+        axum::serve(listener, app)
+            .with_graceful_shutdown(async {
+                let _ = finished.await;
+            })
+            .await
+            .unwrap();
+    });
+    let client = clickhouse::Client::default()
+        .with_url(format!("http://{address}"))
+        .with_compression(clickhouse::Compression::None);
+    // No engine or physical publication claim: this exercises the actual pinned
+    // client's bounded type-header parser, nested decoder and row serializer.
+    let actual = tokio::time::timeout(
+        Duration::from_secs(5),
+        client
+            .query("SELECT literal_compound")
+            .fetch_one::<MeasurementRow>(),
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    let fact = measurement_fact();
+    let rows = FactRows::new(generation(), &fact, false, FactDecodeLimits::default()).unwrap();
+    let expected = rows.measurement().unwrap();
+    assert_eq!(actual, expected);
+    let mut insert = client
+        .with_validation(false)
+        .insert::<MeasurementRow>("measurement_facts")
+        .await
+        .unwrap();
+    insert.write(&expected).await.unwrap();
+    tokio::time::timeout(Duration::from_secs(5), insert.end())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        tokio::time::timeout(Duration::from_secs(5), received)
+            .await
+            .unwrap()
+            .unwrap(),
+        expected_wire
+    );
+    finish.send(()).unwrap();
+    tokio::time::timeout(Duration::from_secs(5), server)
+        .await
+        .unwrap()
+        .unwrap();
 }

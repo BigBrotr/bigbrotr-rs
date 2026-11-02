@@ -1,6 +1,7 @@
 use super::*;
 use crate::storage::postgres::{
-    IndexChunk, IndexPlan, IndexProvenance, IndexPublicationReceipt, IndexTarget,
+    INDEX_SCHEMA_VERSION, IndexChunk, IndexPlan, IndexProvenance, IndexPublicationReceipt,
+    IndexTarget,
 };
 use bigbrotr_model::{
     AdmissionBatch, CompleteThrough, DatasetId, FactRef, OwnerEpoch, OwnerResourceId,
@@ -55,7 +56,7 @@ fn plan(revision: u64, first: u64) -> IndexPlan {
     let chunks = std::array::from_fn(|i| {
         IndexChunk::new(
             IndexTarget::ALL[i],
-            1,
+            INDEX_SCHEMA_VERSION,
             "all".into(),
             Digest256::from_bytes([20 + i as u8; 32]),
             u64::from(i == 0),
@@ -80,7 +81,7 @@ fn retained(revision: u64, first: u64, published: bool) -> RetainedIndexPlan {
         plan_digest: plan.digest(),
         revision: revision + 1,
         cut: plan.after().clone(),
-        family_counts: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        family_counts: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         publisher: owner(),
         engine_receipt_digest: Digest256::from_bytes([11; 32]),
         committed_at_us: 100,

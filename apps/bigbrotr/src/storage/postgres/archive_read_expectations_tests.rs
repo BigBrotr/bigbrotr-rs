@@ -108,7 +108,7 @@ impl Fixture {
                 revision: 2,
                 snapshot_id: 9,
                 request_digest: cut.digest(),
-                family_counts: [2, 0, 0, 0, 0],
+                family_counts: [2, 0, 0, 0, 0, 0],
                 created: false,
             },
             topology: cut.topology_generation,
@@ -163,7 +163,8 @@ impl Fixture {
         for bound in &mut self.owner.selection.bounds {
             bound.complete_through = 0;
         }
-        self.owner.current.receipt.family_counts = [0; 5];
+        self.owner.current.receipt.family_counts =
+            [0; bigbrotr_protocol::archive_batch::ARCHIVE_FAMILY_COUNT];
         self.owner.current.receipt.request_digest = CutRead {
             dataset_id: self.owner.selection.dataset_id,
             topology_generation: self.owner.selection.topology_generation,

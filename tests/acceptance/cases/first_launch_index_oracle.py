@@ -2,7 +2,7 @@
 
 Scientific inputs come from the maintained literal signed/source oracle. SQL
 observations supply only generated identity bindings, not expected row values.
-Coordination encodings follow storage-services.md; all ten zero/nonzero outcomes
+Coordination encodings follow storage-services.md; all eleven zero/nonzero outcomes
 are checked. No engine, subprocess or file mutation occurs here.
 """
 import hashlib
@@ -12,16 +12,16 @@ import uuid
 
 TARGETS = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts',
            'event_id_index', 'event_author_index', 'event_time_index', 'event_tag_index',
-           'provenance_by_event', 'provenance_by_relay')
-COUNTS = (8, 1, 1, 1, 1, 1, 1, 0, 1, 1)
+           'provenance_by_event', 'provenance_by_relay', 'measurement_facts')
+COUNTS = (8, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0)
 # Largest single target in one literal source batch, not the cumulative census.
 BATCH_MAX_ROWS = 4
 CONFLICTING_CONTENT = 'independent physical readiness corruption'
 RANGES = ((1, 2), (3, 3), (4, 7), (8, 12))
-PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-               (1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-               (4, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-               (1, 1, 1, 1, 1, 1, 1, 0, 1, 1))
+PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+               (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+               (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+               (1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0))
 INDEX_TABLES = ('projection_generations', 'index_owner_sessions', 'projection_plans',
                 'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds', 'index_frontier_plans', 'index_frontier_handoffs')
 
@@ -182,7 +182,7 @@ def ordinary_selection(state, *, provenance=True):
     catalog = consumer['consumer_id']
     snapshot = only(state['archive_frontier_snapshots'], consumer_id=catalog, frontier_revision=4)
     exact([snapshot[k] for k in ('dataset_id', 'catalog_id', 'topology_generation', 'snapshot_id',
-          'dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count')],
+          'dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count', 'measurement_count')],
           [dataset, catalog, 0, 5, *selected['initial_counts']])
     bound = only(state['consumer_frontiers'], consumer_id=catalog, frontier_revision=4)
     exact([bound[k] for k in ('dataset_id', 'topology_generation', 'shard_id', 'owner_epoch', 'last_complete_sequence')],
@@ -208,7 +208,7 @@ def startup_selection(state, successor=None, *, retained_compacted_epoch2=False,
         return 4, [(1,12 if initial_provenance else 8)]
     assert successor is None or type(successor) is bool
     from cases.first_launch_restart import profile
-    selected = (dict(snapshot=68,counts=[73,62,62,62,63],initial_cut=312,successor_cut=10,successor_requests=3)
+    selected = (dict(snapshot=68,counts=[73,62,62,62,63,0],initial_cut=312,successor_cut=10,successor_requests=3)
         if retained_compacted_epoch2 else profile(successor))
     revision=4 if retained_compacted_epoch2 else 6
     dataset = only(state['datasets'])['dataset_id']
@@ -217,7 +217,7 @@ def startup_selection(state, successor=None, *, retained_compacted_epoch2=False,
     exact([consumer['dataset_id'],consumer['current_revision'],consumer['current_topology_generation']], [dataset,revision,1])
     snapshot = only(state['archive_frontier_snapshots'],consumer_id=catalog,frontier_revision=revision)
     exact([snapshot[k] for k in ('dataset_id','catalog_id','topology_generation','snapshot_id',
-          'dictionary_count','payload_count','eligibility_count','receive_count','provenance_count')],
+          'dictionary_count','payload_count','eligibility_count','receive_count','provenance_count','measurement_count')],
           [dataset,catalog,1,selected['snapshot'],*selected['counts']])
     cuts = [(1,selected['initial_cut']),(2,selected['successor_cut'])]
     bounds = sorted((r for r in state['consumer_frontiers'] if r['consumer_id']==catalog and r['frontier_revision']==revision),key=lambda r:r['owner_epoch'])
@@ -423,23 +423,23 @@ def retained(root):
     assert identity['format'] == 'bigbrotr-local-index-custody/1'
     assert identity['root'] == '/var/lib/bigbrotr/index' and identity['provenance'] == 'local_first_witness'
     assert set(tables) == {'format', 'server_version', 'database', 'table_uuids'}
-    assert tables['format'] == 'bigbrotr-index-tables/1' and tables['server_version'] == '26.8.35.10'
-    assert tables['database'] == 'serving_fixture' and len(tables['table_uuids']) == len(set(tables['table_uuids'])) == 10
+    assert tables['format'] == 'bigbrotr-index-tables/2' and tables['server_version'] == '26.8.35.10'
+    assert tables['database'] == 'serving_fixture' and len(tables['table_uuids']) == len(set(tables['table_uuids'])) == len(TARGETS)
     assert all(str(uuid.UUID(t)) == t and uuid.UUID(t).int != 0 for t in tables['table_uuids'])
     return identity, tables, hashlib.sha256(paths[0].read_bytes()).digest()
 
 
 def metadata_digest(binding, revision, before, after, source, chunks):
-    data = b'bigbrotr/index-plan-metadata/1\0' + b''.join(binding[:6]) + bytes([binding[6]]) + be(revision)
+    data = b'bigbrotr/index-plan-metadata/2\0' + b''.join(binding[:6]) + bytes([binding[6]]) + be(revision)
     for topology, streams in (before, after):
         data += be(topology) + be(len(streams), 4)
         for shard, epoch, complete in streams:
             data += be(shard, 4) + be(epoch) + be(complete)
     admission, shard, epoch, first, last = source
     data += admission + be(shard, 4) + be(epoch) + be(first) + be(last)
-    assert len(chunks) == 10
+    assert len(chunks) == len(TARGETS)
     for i, (count, chunk, rows) in enumerate(chunks):
-        data += bytes([i]) + be(1, 2) + be(3, 4) + b'all' + chunk + be(count) + rows
+        data += bytes([i]) + be(2, 2) + be(3, 4) + b'all' + chunk + be(count) + rows
     return hashlib.sha256(data).digest()
 
 
@@ -515,7 +515,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
     if owner_count > 1:
         assert complete or publication_fault is not None
         recovery_sessions(state, binding, owners, sessions, plans,publication_fault=publication_fault)
-    assert len(state['projection_chunks']) == len(state['projection_plan_chunks']) == len(state['projection_chunk_bounds']) == 10*len(plans)
+    assert len(state['projection_chunks']) == len(state['projection_plan_chunks']) == len(state['projection_chunk_bounds']) == len(TARGETS)*len(plans)
     assert len(state['index_frontier_plans']) == head
     revisions = [r for r in state['consumer_frontier_revisions'] if r['consumer_role'] == 'index']
     bounds = [r for r in state['consumer_frontiers'] if r['consumer_id'] == consumer['consumer_id']]
@@ -532,7 +532,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
                 origin_incarnation=origin['process_incarnation'], sealed=True).items():
             assert type(plan[field]) is type(expected) and plan[field] == expected, field
         members = [r for r in state['projection_plan_chunks'] if r['plan_digest'] == plan['plan_digest']]
-        assert len(members) == 10 and {r['target'] for r in members} == set(TARGETS)
+        assert len(members) == len(TARGETS) and {r['target'] for r in members} == set(TARGETS)
         chunks = []
         selected = []
         for target, count in zip(TARGETS, plan_counts[number-1]):
@@ -541,7 +541,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
             assert member['generation_id'] == row['generation_id'] == generation['generation_id']
             assert member['partition_key'] == 'all' and member['rows_digest'] == member['chunk_id']
             for field, expected in dict(dataset_id=dataset, storage_incarnation=generation['storage_incarnation'],
-                table_identity_digest=generation['table_identity_digest'], target=target, target_schema_version=1,
+                table_identity_digest=generation['table_identity_digest'], target=target, target_schema_version=2,
                 topology_generation=0, chunk_ordinal=number, row_count=count, owner_resource_id=owner['resource_id'],
                 owner_epoch=origin['epoch'], owner_role='index', owner_incarnation=origin['process_incarnation'], invalid_reason=None).items():
                 assert type(row[field]) is type(expected) and row[field] == expected, field
@@ -699,7 +699,7 @@ def expression(ty, value):
     if ty.startswith('Tuple('):
         return 'tuple('+','.join(expression(t,f'tupleElement({value},{i})') for i,t in enumerate(parts(ty[6:-1]),1))+')'
     if ty.startswith('Array('): return f'arrayMap(v -> {expression(ty[6:-1], "v")}, {value})'
-    assert ty in ('String','UInt16','UInt32','UInt64','Int64')
+    assert ty in ('String','UInt16','UInt32','UInt64','Int64','Bool')
     return value
 
 
@@ -728,7 +728,7 @@ def physical_rows(actual, science, generation, schema, *, through=12, replayed_p
     assert type(retained_boundary) is bool
     assert through in ((312,) if retained_boundary else (3,7,12)) and type(replayed_pending) is bool
     assert through == 12 or not replayed_pending
-    rows = expected_rows(science,raw(generation,16),schema, counts=(68,61,61,61,61,61,61,0,61,61) if retained_boundary else COUNTS)
+    rows = expected_rows(science,raw(generation,16),schema, counts=(68,61,61,61,61,61,61,0,61,61,0) if retained_boundary else COUNTS)
     assert set(actual) == set(TARGETS)
     for name,columns,_ in schema.FAMILIES:
         physical = [row for row in rows[name] if row[1][3] <= through for _ in range(
@@ -749,10 +749,10 @@ def publication(live, after, actual, science, schema, root, *, owner_count=1, pu
                          retained_boundary=retained_boundary)
     plan_science(live,science,rows,generation)
     return dict(format='bigbrotr-installed-initial-index/1', source_cut=312 if retained_boundary else 12, frontier_revision=64 if retained_boundary else 4,
-        admission_batches=64 if retained_boundary else 4, committed_chunks=640 if retained_boundary else 40,
+        admission_batches=64 if retained_boundary else 4, committed_chunks=64*len(TARGETS) if retained_boundary else 4*len(TARGETS),
         family_counts={name:len(values) for name,values in rows.items()},
         live_observation=True, independent_source_and_c_api=True, all_typed_fields_equal=True,
-        zero_tag_outcome=True, batch_max_rows=BATCH_MAX_ROWS, metadata_rows=2560 if retained_boundary else 160,
+        zero_tag_outcome=True, batch_max_rows=BATCH_MAX_ROWS, metadata_rows=256*len(TARGETS) if retained_boundary else 16*len(TARGETS),
         generation_id=generation['generation_id'][2:],table_identity_sha256=identity['table_identity_digest'],
         readiness='NOT_RUN', restart='NOT_RUN',column_ttl_negative='NOT_RUN')
 
@@ -775,7 +775,7 @@ def plan_science(state, science, rows, generation):
         for name in TARGETS:
             selected = [r for r in rows[name] if batch['first'] <= r[1][3] <= batch['last']]
             values = [[row[1],[name,row[6]],row] for row in selected]
-            expected = digest('projection-chunk',[raw(generation['generation_id'],16),name,1,cut,0,values])
+            expected = digest('projection-chunk',[raw(generation['generation_id'],16),name,2,cut,0,values])
             member = only(state['projection_plan_chunks'],plan_digest=plan['plan_digest'],target=name)
             assert member['chunk_id'] == member['rows_digest'] == '\\x'+expected.hex()
 
@@ -783,7 +783,7 @@ def plan_science(state, science, rows, generation):
 def table_identity(schema, root):
     """Independent schema/table manifest commitment, shared by prefix and full proof."""
     identity,tables,_ = retained(root)
-    h = hashlib.sha256(b'bigbrotr/index-table-manifest/1\0')
+    h = hashlib.sha256(b'bigbrotr/index-table-manifest/2\0')
     def text(value): data=value.encode(); h.update(be(len(data),4)+data)
     for value in (schema.VERSION,tables['database'],'Atomic'): text(value)
     for t,identifier in zip(schema.inventory(),tables['table_uuids']):

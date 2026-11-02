@@ -6,7 +6,7 @@ use crate::{
 use bigbrotr_model::{
     ArchiveBatch, Digest256, SourceRecordId, TopologyGeneration, codec::FactDecodeLimits,
 };
-use bigbrotr_protocol::archive_batch::Limits;
+use bigbrotr_protocol::archive_batch::{ARCHIVE_FAMILY_COUNT, Limits, PREPARATION_FORMAT};
 use std::{
     fs,
     os::unix::fs::{MetadataExt, PermissionsExt},
@@ -40,7 +40,7 @@ pub enum PreparationError {
 }
 #[derive(Debug)]
 pub struct PreparationInspection {
-    pub staged_counts: [u64; 5],
+    pub staged_counts: [u64; ARCHIVE_FAMILY_COUNT],
     /// Schema-1 semantic input identity, never a durable publication receipt.
     pub archive_batch_digest: Digest256,
 }
@@ -414,9 +414,10 @@ impl<'a> Preparation<'a> {
             serde_json::from_value(field("last")?).map_err(|_| PreparationError::InvalidResult)?;
         let digest: Digest256 = serde_json::from_value(field("batch_digest")?)
             .map_err(|_| PreparationError::InvalidResult)?;
-        let staged_counts: [u64; 5] = serde_json::from_value(field("staged_counts")?)
-            .map_err(|_| PreparationError::InvalidResult)?;
-        if value["format"] != "bigbrotr-private-preparation/1"
+        let staged_counts: [u64; ARCHIVE_FAMILY_COUNT] =
+            serde_json::from_value(field("staged_counts")?)
+                .map_err(|_| PreparationError::InvalidResult)?;
+        if value["format"] != PREPARATION_FORMAT
             || value.as_object().map(|m| m.len()) != Some(6)
             || first != pending.batch().first()
             || last != pending.batch().last()

@@ -641,7 +641,7 @@ mod tests {
             batch_digest: Digest256::from_bytes([5; 32]),
             attempt_id: [9; 16],
             publication_ordinal: 1,
-            family_counts: [1, 0, 0, 0, 0],
+            family_counts: [1, 0, 0, 0, 0, 0],
             files: 2,
         };
         assert!(

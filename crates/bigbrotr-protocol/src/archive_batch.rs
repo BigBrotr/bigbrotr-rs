@@ -13,6 +13,19 @@ use std::{
 
 const MAGIC: &[u8; 8] = b"BBAP\0\0\0\x01";
 
+/// Closed scientific family order shared by preparation, membership and cuts.
+/// The receipt relation is technical metadata and has no scientific source ID.
+pub const ARCHIVE_FAMILY_COUNT: usize = 6;
+pub const PREPARATION_FORMAT: &str = "bigbrotr-private-preparation/2";
+pub const ARCHIVE_FAMILIES: [(&str, &str); ARCHIVE_FAMILY_COUNT] = [
+    ("dictionaries", "dictionary"),
+    ("events", "event-payload"),
+    ("event_eligibility_facts", "event-eligibility"),
+    ("event_receive_facts", "event-receive"),
+    ("provenance_facts", "provenance"),
+    ("measurement_facts", "measurement"),
+];
+
 #[derive(Debug, Clone, Copy)]
 pub struct Limits {
     pub max_records: usize,

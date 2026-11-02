@@ -895,11 +895,11 @@ async fn insert_plan(
         tx.execute("INSERT INTO control.projection_chunks(generation_id,chunk_id,dataset_id,storage_incarnation,
             table_identity_digest,target,target_schema_version,topology_generation,chunk_ordinal,row_count,
             owner_resource_id,owner_epoch,owner_incarnation,prepared_at_us)
-            VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6,1,$7::text::numeric,
-                $8::text::numeric,$9::text::numeric,$10::bytea,$11::text::numeric,$12::bytea,$13::bigint)",
+            VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6,$7::integer,$8::text::numeric,
+                $9::text::numeric,$10::text::numeric,$11::bytea,$12::text::numeric,$13::bytea,$14::bigint)",
             &[&&b.generation.as_bytes()[..],&&chunk.chunk_id.as_bytes()[..],&&b.dataset.as_bytes()[..],
                 &&b.storage_incarnation.as_bytes()[..],&&b.table_identity_digest.as_bytes()[..],
-                &chunk.target.as_str(),&topology,&revision,&chunk.row_count.to_string(),
+                &chunk.target.as_str(),&i32::from(chunk.schema_version),&topology,&revision,&chunk.row_count.to_string(),
                 &&b.resource.as_bytes()[..],&session.owner.epoch.get().to_string(),
                 &&session.owner.incarnation.as_bytes()[..],&now]).await.map_err(pg)?;
         tx.execute("INSERT INTO control.projection_plan_chunks(generation_id,plan_digest,target,chunk_id,partition_key,rows_digest)
@@ -1019,10 +1019,16 @@ async fn read_plan(
         },
         digest: Digest256::from_bytes(bytes(&row, 6)?),
     };
-    let rows = tx.query("SELECT m.target,c.target_schema_version,m.partition_key,m.chunk_id,c.row_count::text,m.rows_digest
+    let chunks_sql = format!("SELECT m.target,c.target_schema_version,m.partition_key,m.chunk_id,c.row_count::text,m.rows_digest
         FROM control.projection_plan_chunks m JOIN control.projection_chunks c USING(generation_id,chunk_id)
-        WHERE m.generation_id=$1::bytea AND m.plan_digest=$2::bytea LIMIT 11",
-        &[&&binding.generation.as_bytes()[..],&&digest.as_bytes()[..]]).await.map_err(pg)?;
+        WHERE m.generation_id=$1::bytea AND m.plan_digest=$2::bytea LIMIT {}", INDEX_TARGET_COUNT + 1);
+    let rows = tx
+        .query(
+            &chunks_sql,
+            &[&&binding.generation.as_bytes()[..], &&digest.as_bytes()[..]],
+        )
+        .await
+        .map_err(pg)?;
     if rows.len() != INDEX_TARGET_COUNT {
         return Err(IndexError::Conflict);
     }

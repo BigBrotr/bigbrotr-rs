@@ -84,8 +84,8 @@ def run(c):
         assert c.sql("SELECT count(*) FROM pg_namespace WHERE nspname='bigbrotr_archive'", db) == str(int(guard))
         names = c.sql('SELECT table_name FROM public.ducklake_table ORDER BY table_name', db).splitlines()
         assert names == (['archive_commits', 'dictionaries', 'event_eligibility_facts',
-                          'event_receive_facts', 'events', 'provenance_facts'] if complete else [])
-        assert c.sql('SELECT count(*) FROM public.ducklake_column', db) == ('203' if complete else '0')
+                          'event_receive_facts', 'events', 'measurement_facts', 'provenance_facts'] if complete else [])
+        assert c.sql('SELECT count(*) FROM public.ducklake_column', db) == ('336' if complete else '0')
         snapshots = c.sql('SELECT snapshot_id::text FROM public.ducklake_snapshot ORDER BY snapshot_id', db).splitlines()
         assert snapshots == (['0', '1'] if complete else ['0'])
         assert c.sql('SELECT count(*) FROM public.ducklake_data_file', db) == '0'
@@ -97,7 +97,7 @@ def run(c):
         _, oid = c.bootstrap(db)
         owner_oid = c.sql("SELECT oid FROM pg_roles WHERE rolname='CatalogManager'") if guard else str(oid)
         assert c.sql("SELECT bool_and(relowner=" + owner_oid + "::oid) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == 't'
-        return dict(native_tables=28, scientific_tables=names, columns=203 if complete else 0,
+        return dict(native_tables=28, scientific_tables=names, columns=336 if complete else 0,
                     snapshots=snapshots, data_files=0, guard_installed=guard, owner_oid=int(owner_oid))
 
     def one(item, label, target, mode, crash):

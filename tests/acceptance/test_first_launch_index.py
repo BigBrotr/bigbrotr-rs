@@ -35,14 +35,14 @@ def metadata_fixture(root, *, science=None, retained_boundary=False):
     science = fixture()[3].first if science is None else science
     prefix = '\\x'
     ds, resource, generation, incarnation, storage = ('22'*16,'55'*16,'66'*16,'77'*16,'88'*16)
-    table = 'ad1b0478a2f12cac320ffc2b92723cd4cd1f019d2661fddfa2deb1a7af813106'
+    table = 'f043fc18a0785c737aaa2ebd0e3ba944d2feb2c6345b90eac684cdbe9777ffa0'
     identity = dict(format='bigbrotr-local-index-custody/1',root='/var/lib/bigbrotr/index',
         dataset=ds,resource=resource,generation=generation,storage_incarnation=storage,
         table_identity_digest=table,provenance='local_first_witness')
     journal = root/'.bigbrotr-index-custody'; journal.mkdir()
     path = journal/'identity.json'; path.write_text(json.dumps(identity)); path.chmod(0o600)
     custody = hashlib.sha256(path.read_bytes()).digest()
-    path = journal/'tables.json'; path.write_text(json.dumps(dict(format='bigbrotr-index-tables/1',
+    path = journal/'tables.json'; path.write_text(json.dumps(dict(format='bigbrotr-index-tables/2',
         server_version=schema.VERSION,database=case.DATABASE,table_uuids=[r['uuid'] for r in schema.inventory()]))); path.chmod(0o600)
     own = dict(resource_id=prefix+resource,epoch=1,dataset_id=prefix+ds,role='index',role_instance_id=prefix+'99'*16,
                process_incarnation=prefix+incarnation,index_publication_protocol=1)
@@ -62,7 +62,7 @@ def metadata_fixture(root, *, science=None, retained_boundary=False):
             current_revision=64 if retained_boundary else 4,current_topology_generation=0,xmin='164' if retained_boundary else '104')])
     binding = tuple(bytes.fromhex(n) for n in (ds,resource,generation,storage,table))+(custody,1)
     values = check.expected_rows(science,bytes.fromhex(generation),schema,
-        counts=(68,61,61,61,61,61,61,0,61,61) if retained_boundary else check.COUNTS)
+        counts=(68,61,61,61,61,61,61,0,61,61,0) if retained_boundary else check.COUNTS)
     actual = {name:[{key:check.json_value(ty,value) for (key,ty),value in zip(schema.COMMON+cols,row)}
                    for row in values[name]] for name,cols,_ in schema.FAMILIES}
     for n,batch in enumerate(science['batches'],1):
@@ -70,7 +70,7 @@ def metadata_fixture(root, *, science=None, retained_boundary=False):
         cut=[bytes.fromhex(ds),0,[[0,1,last]]]
         for target in check.TARGETS:
             rows=[r for r in values[target] if first<=r[1][3]<=last]
-            rows_digest=check.digest('projection-chunk',[bytes.fromhex(generation),target,1,cut,0,[[r[1],[target,0],r] for r in rows]])
+            rows_digest=check.digest('projection-chunk',[bytes.fromhex(generation),target,2,cut,0,[[r[1],[target,0],r] for r in rows]])
             chunks.append((len(rows),rows_digest,rows_digest))
         digest=check.metadata_digest(binding,n-1,(0,[(0,1,first-1)]),(0,[(0,1,last)]),
             (bytes.fromhex(batch['admission_digest']),0,1,first,last),chunks)
@@ -85,7 +85,7 @@ def metadata_fixture(root, *, science=None, retained_boundary=False):
                 target=target,chunk_id=prefix+chunk.hex(),partition_key='all',rows_digest=prefix+rows_digest.hex()))
             state['projection_chunks'].append(dict(generation_id=prefix+generation,chunk_id=prefix+chunk.hex(),
                 dataset_id=prefix+ds,storage_incarnation=prefix+storage,table_identity_digest=prefix+table,target=target,
-                target_schema_version=1,topology_generation=0,chunk_ordinal=n,row_count=count,owner_resource_id=prefix+resource,
+                target_schema_version=2,topology_generation=0,chunk_ordinal=n,row_count=count,owner_resource_id=prefix+resource,
                 owner_epoch=1,owner_role='index',owner_incarnation=prefix+incarnation,invalid_reason=None,state='committed',
                 committed_at_us=at,engine_receipt_digest=prefix+engine.hex(),xmin=str(100+n)))
             state['projection_chunk_bounds'].append(dict(generation_id=prefix+generation,chunk_id=prefix+chunk.hex(),
@@ -108,7 +108,7 @@ def ordinary_fixture():
         owner_epochs=[dict(role='control',state='active',dataset_id=dataset,process_incarnation='\\x'+'77'*16)],
         consumers=[dict(consumer_role='archive',consumer_id=catalog,dataset_id=dataset,current_revision=4,current_topology_generation=0)],
         archive_frontier_snapshots=[dict(consumer_id=catalog,frontier_revision=4,dataset_id=dataset,catalog_id=catalog,
-            topology_generation=0,snapshot_id=5,dictionary_count=8,payload_count=1,eligibility_count=1,receive_count=1,provenance_count=1)],
+            topology_generation=0,snapshot_id=5,dictionary_count=8,payload_count=1,eligibility_count=1,receive_count=1,provenance_count=1,measurement_count=0)],
         consumer_frontiers=[dict(consumer_id=catalog,frontier_revision=4,dataset_id=dataset,
             topology_generation=0,shard_id=0,owner_epoch=1,last_complete_sequence=12)],
         archive_frontier_batches=[dict(consumer_id=catalog,frontier_revision=4,attempt_id='\\x'+f'{n:032x}') for n in range(1,5)],
@@ -142,15 +142,16 @@ class ClickHouseBatchControls(unittest.TestCase):
             ('event_tag_index',[('key','String'),('value','String')],''),
             ('provenance_by_event',[('ref','Tuple(FixedString(16), UInt16, FixedString(16), UInt64)')],''),
             ('provenance_by_relay',[('uncertainty','Nullable(UInt64)')],''),
+            ('measurement_facts',[('observed','Bool')],''),
         ]
         metadata = [[('label','Nullable(String)')], [('content','String'),('tags','Array(Array(String))')],
             [('sig','String')], [('refs','Array(Tuple(String, UInt64))')], [('ordinal','UInt64')],
             [('at','Int64')], [('at','UInt64')], [('key','String'),('value','String')],
-            [('ref','Tuple(String, UInt16, String, UInt64)')], [('uncertainty','Nullable(UInt64)')]]
+            [('ref','Tuple(String, UInt16, String, UInt64)')], [('uncertainty','Nullable(UInt64)')], [('observed','Bool')]]
         base_row = dict(source=['11'*16,0,1,18446744073709551615],generation='22'*16,discriminator=0)
         values = [dict(label=None),dict(content='literal {"data": []}\nλ',tags=[['t','one','two']]),
             dict(sig='33'*64),dict(refs=[['44'*16,9]]),dict(ordinal=18446744073709551615),
-            dict(at=-7),dict(at=8),None,dict(ref=['55'*16,2,'66'*16,10]),dict(uncertainty=None)]
+            dict(at=-7),dict(at=8),None,dict(ref=['55'*16,2,'66'*16,10]),dict(uncertainty=None),None]
         rows = {name:[] if value is None else [dict(base_row,**value)]
                 for (name,_,_),value in zip(families,values)}
         documents = []
@@ -259,7 +260,7 @@ class ClickHouseBatchControls(unittest.TestCase):
             for changed in (padding+raw,raw+padding):
                 with self.subTest(padding=repr(padding)),self.assertRaises(ValueError):
                     self.read(raw=changed)
-        padding = ' '*(10*1048576)
+        padding = ' '*(len(check.TARGETS)*1048576)
         for changed in (padding+raw,raw+padding):
             with self.assertRaisesRegex(ValueError,'batch output bound'):
                 self.read(raw=changed)
@@ -319,7 +320,7 @@ class ClickHouseBatchControls(unittest.TestCase):
         changed = copy.deepcopy(documents);changed[0]['data'][0]['label'] = 'λ'*(512*1024)
         with self.assertRaisesRegex(ValueError,'table output bound'):self.read(changed)
         with self.assertRaisesRegex(ValueError,'batch output bound'):
-            self.read(raw='x'*(10*1048576+1))
+            self.read(raw='x'*(len(check.TARGETS)*1048576+1))
 
     def test_cli_error_diagnostics_and_original_caller_deadline_refuse(self):
         for returncode,stderr in ((1,''),(1,'server refused'),(0,'server refused')):
@@ -637,13 +638,13 @@ class InitialIndexControls(unittest.TestCase):
         cut=[bytes([0x11])*16,17,[[7,2,100],[7,3,5]]]
         for target in check.TARGETS:
             with self.subTest(target=target):
-                self.assertEqual(check.digest('projection-chunk',[bytes([0x33])*16,target,1,cut,0,[]]).hex(),
+                self.assertEqual(check.digest('projection-chunk',[bytes([0x33])*16,target,2,cut,0,[]]).hex(),
                     golden['targets'][target]['empty_digest'])
 
     def test_metadata_encoding_matches_both_existing_independent_literal_vectors(self):
-        chunks=[(int(i==0),bytes([30+i])*32,bytes([50+i])*32) for i in range(10)]
-        for mode,wanted in [(1,'aa7f2eef19d03e4e3704714e90e400c10b75bddce94485682b45452adac61e98'),
-                            (0,'4321a18b1a112a16a2d899e6da618dd6abfc7c67bfab89c2aecfcb02df094900')]:
+        chunks=[(int(i==0),bytes([30+i])*32,bytes([50+i])*32) for i in range(11)]
+        for mode,wanted in [(1,'725a44d231cc358dccb0ed3f2c09de3ecf4eb91d34b11aaaabdb7bb57c28544e'),
+                            (0,'c2f7a4fc22d913dfb2d8f84ae46cef7bc799a32e0e3d3150c177453f54b897aa')]:
             binding=tuple(bytes([i])*16 for i in range(1,5))+(bytes([5])*32,bytes([6])*32,mode)
             actual=check.metadata_digest(binding,0,(0,[(0,1,0),(7,1,0)]),(0,[(0,1,0),(7,1,2)]),
                 (bytes.fromhex('2f9a7d60f00046f394e093e0b697dd064b7629e21f77486193e07236dec92e74'),7,1,1,2),chunks)
@@ -652,7 +653,7 @@ class InitialIndexControls(unittest.TestCase):
     def test_frozen_signed_fields_and_explicit_zero_family(self):
         science=fixture()[3].first
         rows=check.expected_rows(science,bytes([0x66])*16,schema)
-        self.assertEqual([len(rows[n]) for n in check.TARGETS],[8,1,1,1,1,1,1,0,1,1])
+        self.assertEqual([len(rows[n]) for n in check.TARGETS],[8,1,1,1,1,1,1,0,1,1,0])
         self.assertEqual(max(sum(batch['first'] <= row[1][3] <= batch['last'] for row in rows[target])
             for batch in science['batches'] for target in check.TARGETS),4)
         self.assertEqual(check.BATCH_MAX_ROWS,4)
@@ -666,7 +667,7 @@ class InitialIndexControls(unittest.TestCase):
     def test_changed_fields_missing_zero_outcomes_and_unrelated_proofs_refuse(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary); state,rows,science=metadata_fixture(root)
-            self.assertEqual(check.publication(state,state,rows,science,schema,root)['committed_chunks'],40)
+            self.assertEqual(check.publication(state,state,rows,science,schema,root)['committed_chunks'],44)
             for change in [lambda s:s['projection_plan_chunks'].pop(),lambda s:s['projection_chunks'][0].update(row_count=True),
                     lambda s:s['projection_plans'][0].update(source_first=2),lambda s:s['index_owner_sessions'][0].update(issuer_incarnation='\\x'+'00'*16),
                     lambda s:s['index_frontier_plans'][0].update(engine_receipt_digest='\\x'+'00'*32),
@@ -726,7 +727,7 @@ class InitialIndexControls(unittest.TestCase):
             tables=[dict(name=r['name'],uuid=r['uuid'],engine_full=r['engine_full']) for r in inventory]
             columns=[dict(table=r['name'],name=name,type=ty,position=i+1,default_kind='',default_expression='')
                 for r in inventory for i,(name,ty) in enumerate(r['columns'])]
-            self.assertEqual(len(columns),160)
+            self.assertEqual(len(columns),185)
             check.schema_metadata(schema,root,tables,columns)
             for change in [lambda r:r.append(copy.deepcopy(r[0])),lambda r:r[0].update(type='String'),
                     lambda r:r[0].update(default_expression='1')]:

@@ -200,7 +200,7 @@ def frontier(model,observed,science,receipts,revisions,initial_revision):
     for revision in revisions:
         offset=revision-initial_revision;topology=1 if offset==1 else 2
         bounds=[(1,12),(2,0)]+([] if offset==1 else [(3,10 if offset==3 else 0)])
-        counts=[13,2,2,2,3] if offset==3 else [8,1,1,1,1];selected=7 if offset==3 else 4
+        counts=[13,2,2,2,3,0] if offset==3 else [8,1,1,1,1,0];selected=7 if offset==3 else 4
         r=only(observed['consumer_frontier_revisions'],frontier_revision=revision);at,tx=r['created_at_us'],r['xmin']
         clock(at,model.window);fresh_xmin(tx,original)
         assert previous_at<=at<actual['lease_expires_at_us'] and tx not in used_transactions
@@ -282,7 +282,7 @@ def catalog_growth(phase,science):
         current=after['physical']['data']['files'][name]
         assert {k:v for k,v in old.items() if k!='links'}=={k:v for k,v in current.items() if k!='links'}
         assert current['links']==old['links'] if old['sha256'] is not None else current['links']>=old['links']
-    counts=dict(zip(science['tables'],[12,1,1,1,1] if end==5 else [13,2,2,2,3]))|{'archive_commits':end}
+    counts=dict(zip(science['tables'],[12,1,1,1,1] if end==5 else [13,2,2,2,3,0]))|{'archive_commits':end}
     assert len(b['public.ducklake_table_stats'])==6
     for name,count in counts.items():
         tid=tables[name]['table_id'];row=only(b['public.ducklake_table_stats'],table_id=tid)
@@ -353,7 +353,7 @@ def catalog_roles(phase):
 
 
 def journals(state,science,initial_revision,original,*,virgin=False):
-    """Literal retained input, local manifest, and BBFRONT version1 science."""
+    """Literal retained input, local manifest, and BBFRONT version2 science."""
     assert type(virgin) is bool
     if virgin:
         assert initial_revision==0 and not original['control']['archive_attempts']
@@ -386,11 +386,11 @@ def journals(state,science,initial_revision,original,*,virgin=False):
         revision=snap['frontier_revision']
         if revision<=initial_revision:continue
         operation=binary(snap['operation_id']);name='frontier-'+operation.hex()+'.intent';expected_paths.add(name)
-        raw=bytes.fromhex(records[name]);assert 214<=len(raw)<=65536 and raw[:8]==b'BBFRONT\x01'
+        raw=bytes.fromhex(records[name]);assert 222<=len(raw)<=65536 and raw[:8]==b'BBFRONT\x02'
         assert raw[8:40]==bytes.fromhex(binding) and raw[40:56]==binary(snap['dataset_id']) and raw[56:72]==binary(snap['catalog_id']) and raw[72:88]==operation
         assert raw[88:96]==be(revision-1) and raw[96:104]==be(9 if virgin else 8) and raw[104:136]==binary(snap['request_digest'])
-        assert raw[136:176]==b''.join(be(snap[k]) for k in COUNTS)
-        n=int.from_bytes(raw[176:180],'big');assert len(raw)==180+n+32 and raw[-32:]==bytes.fromhex(sha(b'bigbrotr/archive-frontier-intent/1\0'+raw[:-32]))
+        assert raw[136:184]==b''.join(be(snap[k]) for k in COUNTS)
+        n=int.from_bytes(raw[184:188],'big');assert len(raw)==188+n+32 and raw[-32:]==bytes.fromhex(sha(b'bigbrotr/archive-frontier-intent/2\0'+raw[:-32]))
         offset=revision-initial_revision;bounds=[(1,12),(2,0)]+([] if offset==1 else [(3,10 if offset==3 else 0)])
         selected=receipts[:7 if offset==3 else 4]
         if virgin:
@@ -401,7 +401,7 @@ def journals(state,science,initial_revision,original,*,virgin=False):
             receipts=[dict(r,dataset_id=r['dataset_id'].lower(),topology_generation=str(r['topology_generation']),batch_digest=r['batch_digest'].lower(),attempt_id=list(bytes.fromhex(r['attempt_id']))) for r in selected],snapshot_id=9 if virgin else 8)
         # JSON field order is Rust declaration order, different from C API rows.
         expected['receipts']=[{k:r[k] for k in ('dataset_id','schema_version','topology_generation','batch_digest','record_count','input_ranges','attempt_id','publication_ordinal')} for r in expected['receipts']]
-        assert raw[180:180+n]==json.dumps(expected,separators=(',',':')).encode()
+        assert raw[188:188+n]==json.dumps(expected,separators=(',',':')).encode()
     assert set(files)==expected_paths
     for name,item in original['physical']['state']['files'].items():assert files[name]==item
 
@@ -441,10 +441,10 @@ def archive_phase(phase,science,initial_revision,original):
     journals(after,science,initial_revision,original)
     if not failed:
         snapshot=only(observed['archive_frontier_snapshots'],frontier_revision=initial_revision+3)
-        assert json.loads(phase['response']['stdout'])==dict(format='bigbrotr-archive-catch-up/1',dataset_id=model.ds['dataset_id'][2:],
+        assert json.loads(phase['response']['stdout'])==dict(format='bigbrotr-archive-catch-up/2',dataset_id=model.ds['dataset_id'][2:],
             catalog_id=only(wanted['consumers'])['consumer_id'][2:],terminal_epoch=3,issued_attempts_before=7,new_attempts=0,
             frontier_revision=initial_revision+3,snapshot_id=8,operation_id=list(binary(snapshot['operation_id'])),request_digest=snapshot['request_digest'][2:],
-            family_counts=[13,2,2,2,3],new_frontier_revisions=2 if case=='resolution' else 0)
+            family_counts=[13,2,2,2,3,0],new_frontier_revisions=2 if case=='resolution' else 0)
     if case=='exact-retry':assert before['local_records']==after['local_records'] and before['physical']['state']==after['physical']['state']
     return receipts
 
@@ -471,7 +471,7 @@ def verify(value):
     assert value['readback']['returncode']==0 and not value['readback']['stderr']
     assert json.loads(value['readback']['stdout'])==dict(format='bigbrotr-independent-installed-archive-read/1',tables={**science['tables'],'archive_commits':receipts})
     return dict(status='PASS',installed_processes=14,continuation_processes=13,control_tables=75,snapshots=count,
-        scientific_records=22,archive_receipts=7,family_counts=[13,2,2,2,3],initial_frontier_revision=revision,final_frontier_revision=revision+3,
+        scientific_records=22,archive_receipts=7,family_counts=[13,2,2,2,3,0],initial_frontier_revision=revision,final_frontier_revision=revision+3,
         final_snapshot=8,publication_receipt_reused=True,first_bridge_operation_reused=True,exact_retry=True,same_physical_roots=True)
 
 

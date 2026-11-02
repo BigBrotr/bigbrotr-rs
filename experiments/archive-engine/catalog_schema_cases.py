@@ -56,19 +56,19 @@ try:
     parent=json.loads(cmd('docker','exec',runner,'/out/native-tests/catalog-schema-probe',db,'initialize','success'))
     assert parent=={'success':True,'active_permits':0,'outcome':'Ok(())'}
     names=json.loads(sql(db,"SELECT json_agg(table_name ORDER BY table_name) FROM ducklake_table"))
-    assert names==['archive_commits','dictionaries','event_eligibility_facts','event_receive_facts','events','provenance_facts']
+    assert names==['archive_commits','dictionaries','event_eligibility_facts','event_receive_facts','events','measurement_facts','provenance_facts']
     snapshots=json.loads(sql(db,'SELECT json_agg(t ORDER BY snapshot_id) FROM (SELECT snapshot_id,schema_version,next_catalog_id,next_file_id FROM ducklake_snapshot)t'))
-    assert snapshots==[{'snapshot_id':0,'schema_version':0,'next_catalog_id':1,'next_file_id':0},{'snapshot_id':1,'schema_version':1,'next_catalog_id':7,'next_file_id':0}]
+    assert snapshots==[{'snapshot_id':0,'schema_version':0,'next_catalog_id':1,'next_file_id':0},{'snapshot_id':1,'schema_version':1,'next_catalog_id':8,'next_file_id':0}]
     schema_hash=hashlib.sha256((source/'contracts/archive/v1/schema.json').read_bytes()).hexdigest()
     assert json.loads(sql(db,'SELECT row_to_json(t) FROM (SELECT author,commit_message,commit_extra_info FROM ducklake_snapshot_changes WHERE snapshot_id=1)t'))=={'author':'BigBrotr','commit_message':'initialize archive schema 1','commit_extra_info':'sha256:'+schema_hash}
     rows={}
     for table in sorted(json.loads((source/'contracts/archive/catalog-native-v1.json').read_text())['tables']):
         rows[table]=json.loads(sql(db,'SELECT coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),\'[]\'::jsonb) FROM public.'+table+' t'))
     assert not rows['ducklake_data_file'] and not rows['ducklake_inlined_data_tables']
-    assert len(rows['ducklake_schema'])==1 and len(rows['ducklake_table'])==6
+    assert len(rows['ducklake_schema'])==1 and len(rows['ducklake_table'])==7
     assert all(c['begin_snapshot']==1 and c['end_snapshot'] is None for c in rows['ducklake_column'])
     assert all(t['begin_snapshot']==1 and t['end_snapshot'] is None and t['schema_id']==0 for t in rows['ducklake_table'])
-    assert sorted(t['table_id'] for t in rows['ducklake_table'])==list(range(1,7))
+    assert sorted(t['table_id'] for t in rows['ducklake_table'])==list(range(1,8))
     (root/'initial-native-rows.json').write_text(json.dumps(rows,indent=2)+'\n')
     report['cases'].append({'case':'supervised-fresh-initialization','parent':parent,'tables':names,'snapshots':snapshots,'schema_sha256':schema_hash,'native_column_rows':len(rows['ducklake_column'])});save()
     # A different verified empty root proves the existing-DB check itself ran.

@@ -1,7 +1,8 @@
 use super::{
-    DictionaryRow, EligibilityRow, Envelope, EventIndexRow, EventRow, IndexTarget, ProvenanceRow,
-    ReceiveRow, RowsError, TagRow, reference_tuple, source_tuple,
+    DictionaryRow, EligibilityRow, Envelope, EventIndexRow, EventRow, IndexTarget, MeasurementRow,
+    ProvenanceRow, ReceiveRow, RowsError, TagRow, reference_tuple, source_tuple,
 };
+use crate::storage::postgres::INDEX_TARGET_COUNT;
 use bigbrotr_model::{
     DictionaryDescriptor, Fact, FactPayload, ProjectionGenerationId,
     codec::FactDecodeLimits,
@@ -120,16 +121,17 @@ impl<'a> FactRows<'a> {
         self.tags.capacity() * size_of::<(&str, &str)>()
     }
 
-    /// Explicit outcomes for all ten initial targets, in IndexTarget::ALL order.
+    /// Explicit outcomes for all current targets, in IndexTarget::ALL order.
     /// Zero-output targets still require a complete chunk digest and publication
     /// outcome; an absent target is never inferred from a missing insertion.
-    pub fn counts(&self) -> [u64; 10] {
+    pub fn counts(&self) -> [u64; INDEX_TARGET_COUNT] {
         match self.fact.payload() {
-            FactPayload::Dictionary(_) => [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            FactPayload::EventPayload(_) => [0, 1, 0, 0, 1, 1, 1, self.tags.len() as u64, 0, 0],
-            FactPayload::EventEligibility(_) => [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-            FactPayload::EventReceive(_) => [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-            FactPayload::Provenance(_) => [0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+            FactPayload::Dictionary(_) => [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            FactPayload::EventPayload(_) => [0, 1, 0, 0, 1, 1, 1, self.tags.len() as u64, 0, 0, 0],
+            FactPayload::EventEligibility(_) => [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            FactPayload::EventReceive(_) => [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+            FactPayload::Provenance(_) => [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+            FactPayload::Measurement(_) => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         }
     }
 
@@ -285,9 +287,28 @@ impl<'a> FactRows<'a> {
         }))
     }
 
+    pub fn measurement(&self) -> Option<MeasurementRow> {
+        let FactPayload::Measurement(value) = self.fact.payload() else {
+            return None;
+        };
+        let value = super::measurement::MeasurementData::new(value);
+        Some(mapped_row!(MeasurementRow, self.envelope, 0, {
+            attempt_id: value.attempt_id, subject_kind: value.subject_kind, endpoint_id: value.endpoint_id,
+            observer_id: value.observer_id, route_id: value.route_id, access_scope_id: value.access_scope_id,
+            method_id: value.method_id, profile: value.profile, clock_quality: value.clock_quality,
+            state_kind: value.state_kind, prior_unknown: value.prior_unknown,
+            observed_execution: value.observed.map(|v| v.execution), observed_open: value.observed.map(|v| v.open),
+            observed_read: value.observed.map(|v| v.read), observed_counters: value.observed.map(|v| v.counters),
+            ended: value.ended, termination: value.termination, teardown: value.teardown,
+        }))
+    }
+
     /// Closed dispatch for planning: each target has one accumulator, including
     /// zero-row outcomes. Inserts/readback use the same public typed getters.
-    pub fn hash_into(&self, chunks: &mut [super::ChunkHasher; 10]) -> Result<(), RowsError> {
+    pub fn hash_into(
+        &self,
+        chunks: &mut [super::ChunkHasher; INDEX_TARGET_COUNT],
+    ) -> Result<(), RowsError> {
         for (target, chunk) in IndexTarget::ALL.into_iter().zip(chunks) {
             if chunk.target() != target {
                 return Err(RowsError::WrongTarget);
@@ -327,6 +348,11 @@ impl<'a> FactRows<'a> {
                 }
                 IndexTarget::ProvenanceByEvent | IndexTarget::ProvenanceByRelay => {
                     if let Some(row) = self.provenance() {
+                        chunk.push(&row)?;
+                    }
+                }
+                IndexTarget::MeasurementFacts => {
+                    if let Some(row) = self.measurement() {
                         chunk.push(&row)?;
                     }
                 }

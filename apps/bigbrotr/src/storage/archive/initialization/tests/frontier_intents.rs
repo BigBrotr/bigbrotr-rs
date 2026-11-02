@@ -82,7 +82,7 @@ fn frontier_intent_survives_lost_delivery_and_matches_only_original_result() {
         revision: 6,
         snapshot_id: 7,
         request_digest: retained.observation().request_digest,
-        family_counts: [0; 5],
+        family_counts: [0; bigbrotr_protocol::archive_batch::ARCHIVE_FAMILY_COUNT],
         created: false,
     };
     assert!(retained.matches_receipt(&result));
@@ -129,7 +129,9 @@ fn frontier_intent_survives_lost_delivery_and_matches_only_original_result() {
 }
 #[test]
 fn partial_unknown_version_links_and_cancel_never_create_a_replacement() {
-    for case in ["partial", "version", "symlink", "hardlink", "cancel"] {
+    for case in [
+        "partial", "version", "legacy", "symlink", "hardlink", "cancel",
+    ] {
         let (_data, state, owner) = coordinator();
         let b = budget();
         let cancel = AtomicBool::new(false);
@@ -137,7 +139,8 @@ fn partial_unknown_version_links_and_cancel_never_create_a_replacement() {
         let mut bytes = fixture_bytes(&owner, [4; 16]);
         match case {
             "partial" => bytes.truncate(80),
-            "version" => bytes[7] = 2,
+            "version" => bytes[7] = 3,
+            "legacy" => bytes[7] = 1,
             _ => {}
         }
         let original = state.path().join("retained-original");

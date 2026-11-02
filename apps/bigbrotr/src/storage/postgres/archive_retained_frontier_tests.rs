@@ -108,7 +108,7 @@ impl Fixture {
                     revision: 2,
                     snapshot_id: 9,
                     request_digest: read.digest(),
-                    family_counts: [2, 0, 0, 0, 0],
+                    family_counts: [2, 0, 0, 0, 0, 0],
                     created: false,
                 },
                 topology: read.topology_generation,

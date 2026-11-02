@@ -126,7 +126,7 @@ fn advanced_cut(before: &SourceCut, batch: &AdmissionBatch) -> Result<SourceCut,
         .map_err(|_| PlanError::InvalidSource)
 }
 
-/// Derive all ten outcomes, including zero rows. A gap, foreign stream, corrupt
+/// Derive all eleven outcomes, including zero rows. A gap, foreign stream, corrupt
 /// preimage or disabled-provenance witness refuses the complete batch. No remote
 /// effect, frontier movement or reclamation occurs here.
 pub fn plan_batch(

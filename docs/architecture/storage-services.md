@@ -288,9 +288,9 @@ Read views handle physical retry duplicates independently of CH's finite token
 retention. Poisoned data has an inspectable location and error; a repaired parser
 can replay it without advancing unrelated sources incorrectly.
 
-The first PG publication adapter fixes ten targets: dictionaries, events,
+The first PG publication adapter fixes eleven targets: dictionaries, events,
 eligibility, receive, event ID/author/time/tag access paths, and provenance by
-event/relay. Schema 1 uses the explicit physical partition `all`; each complete
+event/relay, followed by measurement facts. Projection schema 2 uses the explicit physical partition `all`; each complete
 AdmissionBatch has one deterministic chunk per target, including zero rows.
 For this initial profile, the `projection-chunk/1` row digest is also its chunk
 ID: that existing domain binds generation, target, schema, complete cut, ordinal
@@ -298,11 +298,18 @@ and every row. The owned source planner counts and hashes the same retained
 batch in two bounded passes, decoding one fact at a time. It keeps the source
 and mapping reservations through dispatch; it grants no physical readiness.
 The accepted provenance-off profile retains both explicit zero witness targets.
+Measurement facts retain one compound row under either provenance profile; their
+typed execution/open/read/counter/terminal children share the original source and
+digest. The raw Index path adds no independent child votes or availability reducer.
+Optional compounds use zero/one typed Array(Tuple) fields to preserve known
+null/null clock samples. Projection schema2 and the eleven-UUID manifest refuse
+prior ten-target/schema1 plans; no implicit padding or adoption is supported.
+A05 exact-source Rust/native/ClickHouse qualification remains required.
 Preparation verifies the actual retained pending batch and persists the complete
 plan before dispatch. Its only resume unit is that whole batch. A timeout leaves
 the plan prepared; it does not certify absence or allow a different plan at that
 head. Publication requires the private CH verifier's complete physical proof and
-atomically commits all ten chunks, their typed frontier binding and the next
+atomically commits all eleven chunks, their typed frontier binding and the next
 contiguous consumer head. This adapter currently requires the same retained
 topology on both cuts; it refuses an unwired topology handoff.
 
@@ -339,8 +346,8 @@ Historical PG reads and lost-COMMIT receipt resolution grant no physical readine
 The selected source owner must retain required pending batches; preparation alone
 does not implement native reclamation or substitute for a retention claim.
 
-The operational `index-plan-metadata/1` fingerprint is SHA-256 over the literal
-ASCII domain `bigbrotr/index-plan-metadata/1\0` (one terminal zero byte), followed
+The operational `index-plan-metadata/2` fingerprint is SHA-256 over the literal
+ASCII domain `bigbrotr/index-plan-metadata/2\0` (one terminal zero byte), followed
 by the fields below in order. This is a PG coordination commitment, separate
 from scientific fact/admission fingerprints and the CH chunk/row digests. Every
 integer here is fixed-width unsigned big-endian; this recipe is not CBOR. Raw
@@ -358,9 +365,9 @@ IDs/digests use their bytes, never hex or text. No field is nullable or omitted:
    epoch u64, first sequence u64 and last sequence u64. The source is nonempty,
    advances exactly one stream from its prior prefix+1 through the entire batch,
    and leaves other streams unchanged.
-5. Exactly ten chunks, no count prefix, in target order 0..9: dictionaries, events,
+5. Exactly eleven chunks, no count prefix, in target order 0..10: dictionaries, events,
    eligibility facts, receive facts, event ID, author, time, tag, provenance by
-   event, provenance by relay. Each chunk encodes target byte, schema u16 (`1`),
+   event, provenance by relay, measurement facts. Each chunk encodes target byte, schema u16 (`2`),
    partition byte length u32 (`3`) and UTF-8 bytes (`all`), chunk digest32, row count
    u64 and logical rows digest32. Empty chunks retain all fields and a zero count.
 
@@ -388,7 +395,7 @@ frontier and compare-and-set head commit atomically under current Control/Index
 authority. Exactly one batch or handoff receipt must represent each revision.
 
 The initial physical adapter selects ClickHouse `26.8.35.10`, an existing empty
-Atomic database and ten separately identified MergeTree tables. They omit
+Atomic database and eleven separately identified MergeTree tables. They omit
 `PARTITION BY` and use the engine's single physical partition ID `all`; logical chunk metadata
 retains `all`, while the catalog partition expression is empty. Authored timestamps
 remain UInt64. A constant `PARTITION BY 'all'` is invalid in the selected engine.
@@ -403,8 +410,8 @@ closed declaration, with UUID visibility explicitly enabled; column TTLs, codecs
 constraints and skip indexes cannot hide outside the storage expression.
 Declared settings and component tests are not engine qualification.
 
-The closed retained `bigbrotr-index-tables/1` JSON manifest contains exactly
-`format`, `server_version`, `database` and ten canonical lowercase dashed UUID
+The closed retained `bigbrotr-index-tables/2` JSON manifest contains exactly
+`format`, `server_version`, `database` and eleven canonical lowercase dashed UUID
 strings in `table_uuids`, in target order. It is bounded to 4096 bytes and contains
 no connection or credential. Custody retains it before remote installation;
 recovery requires its computed identity to match the unchanged custody binding.
@@ -412,13 +419,13 @@ The following operational SHA-256 recipes use fixed-width big-endian integers,
 raw IDs/digests and one terminal zero byte in each ASCII domain. They are separate
 from scientific facts and `projection-chunk/1` row commitments:
 
-- `bigbrotr/index-table-manifest/1\0`: server version, database and `Atomic`, each
+- `bigbrotr/index-table-manifest/2\0`: server version, database and `Atomic`, each
   UTF-8 with u32 byte length; then each target in order: length-prefixed target
   name, UUID16, length-prefixed complete engine expression, u16 column count,
   then each ordered column's length-prefixed name and type. Exact initial
   expressions and types are owned by `storage/clickhouse/schema.rs`.
 - `bigbrotr/index-engine-receipt/1\0`: table-identity digest32, complete plan
-  digest32, then exactly ten target byte / observed distinct row-count u64 /
+  digest32, then exactly eleven target byte / observed distinct row-count u64 /
   observed rows-digest32 tuples. Zero outcomes are present. Inspection hashes
   complete typed values, rejects divergent copies of an immutable identity and
   checks UUID/schema before and after readback; a stored digest is insufficient.

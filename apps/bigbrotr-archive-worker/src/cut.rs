@@ -8,6 +8,7 @@ use crate::{
     schema,
 };
 use bigbrotr_protocol::{
+    archive_batch::ARCHIVE_FAMILY_COUNT,
     archive_cut::{CutObservation, CutRead, FORMAT},
     archive_receipt::MAX_INPUT_BYTES,
 };
@@ -82,6 +83,28 @@ pub(crate) fn inspect_attached(
     }
     c.execute_batch("BEGIN TRANSACTION")
         .map_err(|_| ReceiptError::Native)?;
+    let observation = inspect_in_transaction(c, read, root, max_receipts, max_facts)?;
+    c.execute_batch("COMMIT")
+        .map_err(|_| ReceiptError::Native)?;
+    Ok(observation)
+}
+
+/// Shared selected-cut inspection for a caller-owned native transaction. Never
+/// opens another snapshot or commits before a dependent scientific hydration.
+pub(crate) fn inspect_in_transaction(
+    c: &Connection,
+    read: &CutRead,
+    root: &Path,
+    max_receipts: usize,
+    max_facts: usize,
+) -> Result<CutObservation, ReceiptError> {
+    read.validate(max_facts)?;
+    if max_receipts == 0 || max_receipts == usize::MAX {
+        return Err(ReceiptError::InvalidInput);
+    }
+    if read.receipts.len() > max_receipts {
+        return Err(ReceiptError::ResourceLimit);
+    }
     let snapshot_id: u64 = c
         .query_row(
             "SELECT id FROM ducklake_current_snapshot('archive')",
@@ -110,7 +133,7 @@ pub(crate) fn inspect_attached(
     if found.contains(&false) {
         return Err(ReceiptError::Mismatch);
     }
-    let mut counts = [0u64; 5];
+    let mut counts = [0u64; ARCHIVE_FAMILY_COUNT];
     for expected in &read.receipts {
         let batch = membership::scan_members(c, expected, root, max_facts)?;
         for (count, n) in counts.iter_mut().zip(batch) {
@@ -125,8 +148,6 @@ pub(crate) fn inspect_attached(
         family_counts: counts,
     };
     observation.validate(read, max_facts)?;
-    c.execute_batch("COMMIT")
-        .map_err(|_| ReceiptError::Native)?;
     Ok(observation)
 }
 
@@ -144,7 +165,7 @@ fn refuses(c: &Connection, rows: &str) -> Result<(), ReceiptError> {
 pub(crate) fn reference_closure(
     c: &Connection,
     read: &CutRead,
-    counts: [u64; 5],
+    counts: [u64; ARCHIVE_FAMILY_COUNT],
 ) -> Result<(), ReceiptError> {
     let ranges = read.bounds.iter().filter(|b| b.complete_through != 0).map(|b|format!(
         "(source_record_id.shard_id={} AND source_record_id.owner_epoch={} AND source_record_id.sequence BETWEEN 1 AND {})",
@@ -184,6 +205,12 @@ pub(crate) fn reference_closure(
         "SELECT access_scope_id,3 FROM cut_provenance_facts",
         "SELECT clock_quality.clock_id,2 FROM cut_provenance_facts",
         "SELECT verification_method_id,5 FROM cut_provenance_facts",
+        "SELECT endpoint_id,1 FROM cut_measurement_facts",
+        "SELECT observer_id,2 FROM cut_measurement_facts",
+        "SELECT route_id,6 FROM cut_measurement_facts",
+        "SELECT access_scope_id,3 FROM cut_measurement_facts",
+        "SELECT method_id,5 FROM cut_measurement_facts",
+        "SELECT clock_quality.clock_id,2 FROM cut_measurement_facts",
     ].into_iter().map(str::to_owned));
     c.execute_batch(&format!(
         "CREATE TEMP VIEW cut_required_refs AS {}",
@@ -249,5 +276,14 @@ pub(crate) fn reference_closure(
             ),
         )?;
     }
+    crate::measurement::validate_rows(
+        c,
+        "cut_measurement_facts",
+        "cut_measurement_facts",
+        "cut_dictionaries",
+        usize::try_from(counts[ARCHIVE_FAMILY_COUNT - 1])
+            .map_err(|_| ReceiptError::ResourceLimit)?,
+    )
+    .map_err(|_| ReceiptError::Mismatch)?;
     Ok(())
 }

@@ -1,9 +1,12 @@
 //! Private source/digest and original-file census; never a protection certificate.
-use crate::archive_receipt::{ExpectationError, ReceiptExpectation};
+use crate::{
+    archive_batch::ARCHIVE_FAMILY_COUNT,
+    archive_receipt::{ExpectationError, ReceiptExpectation},
+};
 use bigbrotr_model::Digest256;
 use serde::{Deserialize, Serialize};
 
-pub const FORMAT: &str = "bigbrotr-native-membership/1";
+pub const FORMAT: &str = "bigbrotr-native-membership/2";
 pub const MAX_PATH_BYTES: usize = 8192;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -34,8 +37,8 @@ pub struct MembershipObservation {
     pub batch_digest: Digest256,
     pub attempt_id: [u8; 16],
     pub publication_ordinal: u64,
-    /// Dictionaries, payloads, eligibility, receive, provenance, in that order.
-    pub family_counts: [u64; 5],
+    /// ARCHIVE_FAMILIES order; typed measurement children add no separate rows.
+    pub family_counts: [u64; ARCHIVE_FAMILY_COUNT],
     /// Populated original family files plus the one original receipt file.
     pub files: u32,
 }

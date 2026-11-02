@@ -5,6 +5,7 @@ use bigbrotr_model::{
     AdmissionBatch, ArchiveBatch, Digest256, FactRef, OwnerEpoch, Sequence, SourceRecordId,
 };
 use bigbrotr_protocol::{
+    archive_batch::{ARCHIVE_FAMILIES, ARCHIVE_FAMILY_COUNT},
     archive_membership::{FORMAT, MAX_PATH_BYTES, MembershipObservation, MembershipRead},
     archive_receipt::{MAX_CHUNK_ROWS, MAX_INPUT_BYTES, ReceiptExpectation},
 };
@@ -203,7 +204,7 @@ pub(crate) fn scan_members(
     expected: &ReceiptExpectation,
     root: &Path,
     max_facts: usize,
-) -> Result<[u64; 5], ReceiptError> {
+) -> Result<[u64; ARCHIVE_FAMILY_COUNT], ReceiptError> {
     expected.validate()?;
     if expected.record_count > max_facts as u64 {
         return Err(ReceiptError::ResourceLimit);
@@ -248,16 +249,10 @@ pub(crate) fn scan_members(
     let ranges = expected.input_ranges.iter().map(|r| format!(
         "(source_record_id.shard_id={} AND source_record_id.owner_epoch={} AND source_record_id.sequence BETWEEN {} AND {})",
         r.shard_id, r.owner_epoch, r.first_sequence, r.last_sequence)).collect::<Vec<_>>().join(" OR ");
-    let mut family_counts = [0u64; 5];
+    let mut family_counts = [0u64; ARCHIVE_FAMILY_COUNT];
     for (index, (table, kind)) in schema::TABLES
         .into_iter()
-        .zip([
-            "dictionary",
-            "event-payload",
-            "event-eligibility",
-            "event-receive",
-            "provenance",
-        ])
+        .zip(ARCHIVE_FAMILIES.map(|(_, kind)| kind))
         .enumerate()
     {
         let path = original_path(root, table, &expected.attempt_id);

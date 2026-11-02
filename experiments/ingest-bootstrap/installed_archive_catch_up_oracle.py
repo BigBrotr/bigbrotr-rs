@@ -164,8 +164,8 @@ def archive(phase,science,initial_revision,*,compacted=False):
         original=only(wanted['archive_owner_sessions'])
         wanted['archive_owner_sessions'].append(dict(original,owner_epoch=2,owner_incarnation=control['process_incarnation'],
             issuer_epoch=control['epoch'],issuer_incarnation=control['process_incarnation'],xmin=tx))
-        for offset,(topology,bounds,counts,selected) in enumerate([(1,[(1,12),(2,0)],[8,1,1,1,1],4),
-            (2,[(1,12),(2,0),(3,0)],[8,1,1,1,1],4),(2,[(1,12),(2,0),(3,10)],[13,2,2,2,3],7)],1):
+        for offset,(topology,bounds,counts,selected) in enumerate([(1,[(1,12),(2,0)],[8,1,1,1,1,0],4),
+            (2,[(1,12),(2,0),(3,0)],[8,1,1,1,1,0],4),(2,[(1,12),(2,0),(3,10)],[13,2,2,2,3,0],7)],1):
             revision=initial_revision+offset;r=only(observed['consumer_frontier_revisions'],frontier_revision=revision)
             at,tx=r['created_at_us'],r['xmin'];clock(at,window);fresh_xmin(tx,before['control'])
             assert control['acquired_at_us']<=at<=control['released_at_us']
@@ -189,10 +189,10 @@ def archive(phase,science,initial_revision,*,compacted=False):
     assert after['native']==before['native'] and after['inputs']==before['inputs'] and after['contents']==before['contents']
     snapshot=only(observed['archive_frontier_snapshots'],frontier_revision=initial_revision+3)
     report=json.loads(phase['response']['stdout'])
-    assert report==dict(format='bigbrotr-archive-catch-up/1',dataset_id=ds[2:],catalog_id=catalog[2:],terminal_epoch=3,
+    assert report==dict(format='bigbrotr-archive-catch-up/2',dataset_id=ds[2:],catalog_id=catalog[2:],terminal_epoch=3,
         issued_attempts_before=7 if retry else 4,new_attempts=0 if retry else 3,frontier_revision=initial_revision+3,
         snapshot_id=8,operation_id=list(binary(snapshot['operation_id'])),request_digest=snapshot['request_digest'][2:],
-        family_counts=[13,2,2,2,3],new_frontier_revisions=0 if retry else 3)
+        family_counts=[13,2,2,2,3,0],new_frontier_revisions=0 if retry else 3)
     actual=json.loads(phase['readback']['stdout'])
     assert actual==dict(format='bigbrotr-independent-installed-archive-read/1',tables={**science['tables'],'archive_commits':receipts})
     if retry:
@@ -208,7 +208,7 @@ def archive_first(phase,science):
     """Virgin compacted publication; expected rows never come from Archive output."""
     before,after=phase['before'],phase['after']; observed=after['control'];window=phase['window']
     assert len(before['control'])==77 and len(science['batches'])==8
-    assert [len(science['tables'][t]) for t in TABLES]==[12,4,4,4,4]
+    assert [len(science['tables'][t]) for t in TABLES]==[12,4,4,4,4,0]
     model=Model(before['control'],before['native'],before['inputs'],window)
     model.completed_control(observed);wanted=model.pg;control=model.control;ds=model.ds['dataset_id']
     persistence=only(wanted['archive_persistence']);catalog=persistence['catalog_id']
@@ -273,7 +273,7 @@ def archive_first(phase,science):
         bounds=[(1,27),(2,1),(3,0)]
         wanted['archive_frontier_snapshots'].append(dict(operation_id=operation,consumer_id=catalog,frontier_revision=1,
             dataset_id=ds,topology_generation=2,catalog_id=catalog,owner_epoch=1,owner_incarnation=control['process_incarnation'],
-            snapshot_id=9,request_digest='\\x'+cut_digest(ds,2,receipts,bounds,9),**dict(zip(COUNTS,[12,4,4,4,4])),xmin=tx))
+            snapshot_id=9,request_digest='\\x'+cut_digest(ds,2,receipts,bounds,9),**dict(zip(COUNTS,[12,4,4,4,4,0])),xmin=tx))
         for epoch,cut in bounds:
             batch=next((b for b in science['batches'] if b['epoch']==epoch and b['last']==cut),None)
             wanted['consumer_frontiers'].append(dict(consumer_id=catalog,frontier_revision=1,dataset_id=ds,
@@ -283,10 +283,10 @@ def archive_first(phase,science):
     same(wanted,observed)
     assert after['native']==before['native'] and after['inputs']==before['inputs'] and after['contents']==before['contents']
     snapshot=only(observed['archive_frontier_snapshots'])
-    assert json.loads(phase['response']['stdout'])==dict(format='bigbrotr-archive-catch-up/1',dataset_id=ds[2:],
+    assert json.loads(phase['response']['stdout'])==dict(format='bigbrotr-archive-catch-up/2',dataset_id=ds[2:],
         catalog_id=catalog[2:],terminal_epoch=3,issued_attempts_before=8 if retry else 0,new_attempts=0 if retry else 8,
         frontier_revision=1,snapshot_id=9,operation_id=list(binary(snapshot['operation_id'])),request_digest=snapshot['request_digest'][2:],
-        family_counts=[12,4,4,4,4],new_frontier_revisions=0 if retry else 1,
+        family_counts=[12,4,4,4,4,0],new_frontier_revisions=0 if retry else 1,
         recovery_basis='closed-producer-floor-v3',compacted_requests='7')
     assert json.loads(phase['readback']['stdout'])==dict(format='bigbrotr-independent-installed-archive-read/1',
         tables={**science['tables'],'archive_commits':receipts})
@@ -497,7 +497,7 @@ def verify(value):
     assert observations[-1]['server_us']>=window['expires_at_us'] and 0<=observations[-1]['elapsed_seconds']<=66
     assert all(a['server_us']<=b['server_us'] and a['elapsed_seconds']<=b['elapsed_seconds'] for a,b in zip(observations,observations[1:]))
     return dict(status='PASS',installed_processes=14,continuation_processes=13,control_tables=75,snapshots=snapshot_count,
-        scientific_records=22,archive_receipts=7,family_counts=[13,2,2,2,3],initial_frontier_revision=revision,
+        scientific_records=22,archive_receipts=7,family_counts=[13,2,2,2,3,0],initial_frontier_revision=revision,
         final_frontier_revision=revision+3,final_snapshot=8,export_exact_retry=True,same_physical_roots=True)
 
 

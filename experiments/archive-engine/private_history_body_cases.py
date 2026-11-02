@@ -98,8 +98,8 @@ def main(root):
         assert [v['expected'] for v in values if v['event']=='inputs-reopened'] == receipts
         read = dict(dataset_id='01'*16, topology_generation='0', bounds=[dict(shard_id=0,owner_epoch=1,complete_through=10)],
                     receipts=receipts[1:3], snapshot_id=3)
-        expected = dict(event='captured-cut', observation=dict(format='bigbrotr-native-cut/1', snapshot_id=3,
-            request_digest=cut_digest(read), family_counts=[6,1,1,1,1]), read=read,
+        expected = dict(event='captured-cut', observation=dict(format='bigbrotr-native-cut/2', snapshot_id=3,
+            request_digest=cut_digest(read), family_counts=[6,1,1,1,1,0]), read=read,
             frontier=dict(operation_id='f1'*16, revision=1, snapshot_id=3, request_digest=cut_digest(read)), pin='not-granted')
         assert [v for v in values if v['event']=='captured-cut'] == [expected]
         result['files_before'] = files()

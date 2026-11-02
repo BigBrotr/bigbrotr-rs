@@ -315,7 +315,7 @@ mod tests {
             batch_digest: read.receipt.batch_digest,
             attempt_id: read.receipt.attempt_id,
             publication_ordinal: 1,
-            family_counts: [2, 1, 0, 1, 0],
+            family_counts: [2, 1, 0, 1, 0, 0],
             files: 4,
         };
         let reply = serde_json::to_vec(&expected).unwrap();
@@ -330,7 +330,7 @@ mod tests {
                 "attempt" => altered.attempt_id = [8; 16],
                 "ordinal" => altered.publication_ordinal = 2,
                 "counts" => altered.family_counts[0] = 3,
-                "overflow" => altered.family_counts = [u64::MAX, 5, 0, 0, 0],
+                "overflow" => altered.family_counts = [u64::MAX, 5, 0, 0, 0, 0],
                 "files" => altered.files = 3,
                 "format" => altered.format = "bigbrotr-native-receipt/1".into(),
                 _ => unreachable!(),
@@ -341,6 +341,13 @@ mod tests {
                 "{case}"
             );
         }
+        let mut legacy = serde_json::to_value(&expected).unwrap();
+        legacy["family_counts"].as_array_mut().unwrap().pop();
+        legacy["format"] = serde_json::json!("bigbrotr-native-membership/1");
+        assert_eq!(
+            decode_response(&serde_json::to_vec(&legacy).unwrap(), &read),
+            Err(ReceiptError::ObservationUnknown)
+        );
         let reply = String::from_utf8(reply).unwrap();
         for invalid in [
             format!("{reply}{{}}"),

@@ -77,7 +77,7 @@ def retained_observation(*, archive_schedule='unbound-publication-loss'):
         # retained but absent; the declared native replacement and later intents publish.
         consumer=state['consumers'][0];catalog=consumer['consumer_id'];consumer['current_revision']=4
         state['archive_frontier_snapshots'][0].update(frontier_revision=4,snapshot_id=68,
-            **dict(zip(restart.COUNTS,[73,62,62,62,63])))
+            **dict(zip(restart.COUNTS,[73,62,62,62,63,0])))
         for row in state['consumer_frontiers']:
             row.update(frontier_revision=4,last_complete_sequence=312 if row['owner_epoch']==1 else 10)
         example=state['archive_attempts'][0]

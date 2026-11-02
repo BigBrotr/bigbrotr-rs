@@ -1,11 +1,14 @@
 //! Private complete-prefix observation inputs. These values carry no authority.
 
-use crate::archive_receipt::{ExpectationError, MAX_RANGES, ReceiptExpectation};
+use crate::{
+    archive_batch::ARCHIVE_FAMILY_COUNT,
+    archive_receipt::{ExpectationError, MAX_RANGES, ReceiptExpectation},
+};
 use bigbrotr_model::{DatasetId, Digest256, TopologyGeneration};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-pub const FORMAT: &str = "bigbrotr-native-cut/1";
+pub const FORMAT: &str = "bigbrotr-native-cut/2";
 pub const MAX_BATCHES: usize = 128;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -145,7 +148,7 @@ pub struct CutObservation {
     pub format: String,
     pub snapshot_id: u64,
     pub request_digest: Digest256,
-    pub family_counts: [u64; 5],
+    pub family_counts: [u64; ARCHIVE_FAMILY_COUNT],
 }
 impl CutObservation {
     pub fn validate(&self, read: &CutRead, max_facts: usize) -> Result<(), ExpectationError> {
@@ -319,7 +322,7 @@ mod tests {
             format: FORMAT.into(),
             snapshot_id: 9,
             request_digest: read.digest(),
-            family_counts: [5, 1, 1, 1, 1],
+            family_counts: [5, 1, 1, 1, 1, 0],
         };
         assert_eq!(response.validate(&read, 9), Ok(()));
         let mut altered = read.clone();
@@ -340,7 +343,7 @@ mod tests {
                 "snapshot" => bad.snapshot_id = 8,
                 "digest" => bad.request_digest = Digest256::from_bytes([8; 32]),
                 "counts" => bad.family_counts[0] = 4,
-                "overflow" => bad.family_counts = [u64::MAX, 10, 0, 0, 0],
+                "overflow" => bad.family_counts = [u64::MAX, 10, 0, 0, 0, 0],
                 _ => unreachable!(),
             }
             assert_eq!(
@@ -350,6 +353,15 @@ mod tests {
             );
         }
         let encoded = serde_json::to_string(&response).unwrap();
+        let mut old = serde_json::to_value(&response).unwrap();
+        old["family_counts"].as_array_mut().unwrap().pop();
+        assert!(serde_json::from_value::<CutObservation>(old).is_err());
+        let mut old = response.clone();
+        old.format = "bigbrotr-native-cut/1".into();
+        assert_eq!(
+            old.validate(&read, 9),
+            Err(ExpectationError::InvalidIdentity)
+        );
         for bad in [
             format!("{encoded}{{}}"),
             format!("{},\"snapshot_id\":9}}", &encoded[..encoded.len() - 1]),

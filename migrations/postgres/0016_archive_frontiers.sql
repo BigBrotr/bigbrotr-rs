@@ -106,6 +106,7 @@ CREATE TABLE control.archive_frontier_snapshots (
     eligibility_count control.u64 NOT NULL,
     receive_count control.u64 NOT NULL,
     provenance_count control.u64 NOT NULL,
+    measurement_count control.u64 NOT NULL,
     PRIMARY KEY (consumer_id, frontier_revision),
     CHECK (consumer_id = catalog_id),
     FOREIGN KEY (consumer_id, dataset_id, frontier_revision, topology_generation)

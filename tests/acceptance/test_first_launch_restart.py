@@ -123,7 +123,7 @@ def publication_fixture(science, provenance=True):
     cuts, snapshot_id = ([(1, 12), (2, 10)], 8) if provenance else ([(1, 8), (2, 5)], 7)
     snapshot = dict(frontier_revision=6, topology_generation=1, snapshot_id=snapshot_id,
         request_digest='\\x' + cut_digest(dataset, 1, receipts, cuts, snapshot_id),
-        **dict(zip(check.COUNTS, [13, 2, 2, 2, 3] if provenance else [7, 2, 2, 2, 0])))
+        **dict(zip(check.COUNTS, [13, 2, 2, 2, 3, 0] if provenance else [7, 2, 2, 2, 0, 0])))
     state = dict(datasets=[dict(dataset_id=dataset)], consumers=[dict(consumer_id=catalog, consumer_role='archive', current_revision=6, current_topology_generation=1)],
         archive_attempts=attempts, archive_frontier_snapshots=[snapshot],
         consumer_frontiers=[dict(consumer_id=catalog, frontier_revision=6, topology_generation=1, shard_id=0, owner_epoch=epoch, last_complete_sequence=cut)
@@ -373,7 +373,7 @@ class RestartControls(unittest.TestCase):
     def test_full_science_and_publication_positive(self):
         state, census = publication_fixture(self.science)
         check.publication(state, census, self.science, revision=6, snapshot=8, topology=1, cuts=[(1, 12), (2, 10)])
-        self.assertEqual([len(rows) for rows in self.science['tables'].values()], [13, 2, 2, 2, 3])
+        self.assertEqual([len(rows) for rows in self.science['tables'].values()], [13, 2, 2, 2, 3, 0])
         endpoints = [r['descriptor_value']['url'] for r in self.science['tables']['dictionaries'] if r['descriptor_schema'] == 'endpoint']
         self.assertIn(check.ENDPOINT, endpoints)
         self.assertNotIn('ws://127.0.0.1:7447/installed-successor-fixture', endpoints)
@@ -547,9 +547,9 @@ class ProvenanceOffControls(unittest.TestCase):
     def test_off_literal_facts_inputs_cuts_and_original_science(self):
         first = self.encoded.first
         self.assertEqual(len(first['native']), 36)
-        self.assertEqual([len(rows) for rows in first['tables'].values()], [5, 1, 1, 1, 0])
+        self.assertEqual([len(rows) for rows in first['tables'].values()], [5, 1, 1, 1, 0, 0])
         self.assertEqual([(b['first'], b['last']) for b in first['batches']], [(1, 2), (3, 3), (4, 4), (5, 8)])
-        self.assertEqual([len(rows) for rows in self.science['tables'].values()], [7, 2, 2, 2, 0])
+        self.assertEqual([len(rows) for rows in self.science['tables'].values()], [7, 2, 2, 2, 0, 0])
         self.assertEqual([(b['epoch'], b['first'], b['last']) for b in self.science['batches']],
             [(1, 1, 2), (1, 3, 3), (1, 4, 4), (1, 5, 8), (2, 1, 1), (2, 2, 5)])
         self.assertEqual(len(self.encoded.inputs), 2)

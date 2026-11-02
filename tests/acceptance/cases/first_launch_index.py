@@ -26,7 +26,7 @@ from cases import first_launch_index_oracle as oracle
 STAGES = ('prerequisites', 'candidate', 'runtime_image', 'fresh_bootstrap',
           'signed_acquisition', 'index_publication', 'ordinary_history_export', 'cleanup')
 LIMITS = [
-    'Fresh installed signed source publishes all ten Index targets and PG proof while Archive advances; ordinary Archive history/export remains exact.',
+    'Fresh installed signed source publishes all eleven Index targets and PG proof while Archive advances; ordinary Archive history/export remains exact.',
     'Authenticated initial role/source/publication observations must match the independent signed cut and current PG identity without touching session idle time.',
     'After positive readiness, one independently inserted conflicting event row must make Index unavailable while authenticated Control and the original Archive read/export journey remain usable; the fault is retained.',
     'Ordinary Control must report both private capabilities Ready at rev4/cut12/snapshot5, then refuse full readiness while one exact retained input is withheld; a narrow read cannot revive it, and exact restoration permits full-probe recovery.',
@@ -275,7 +275,9 @@ class IndexRuntime(Runtime):
         self.record_resources()
         return info
 
-    def ch(self, sql, role='reader', *, rows=False, error=None, strict_output=False):
+    def ch(self, sql, role='reader', *, rows=False, error=None, strict_output=False, schema_columns=False):
+        require(type(schema_columns) is bool and (not schema_columns or rows), 'closed ClickHouse metadata profile')
+        row_limit = sum(len(self.schema.COMMON)+len(columns) for _,columns,_ in self.schema.FAMILIES)+1 if schema_columns else 175
         require(not strict_output or (not rows and error is None), 'strict ClickHouse output profile')
         self.inspect(self.ch_entry)
         used = sum(p.stat().st_size for folder in ('data', 'logs')
@@ -287,7 +289,7 @@ class IndexRuntime(Runtime):
         require(role in ROLES, 'unknown ClickHouse observer role')
         result = self.docker('exec', '-i', self.ch_entry['id'], 'clickhouse-client',
             '--config-file', '/run/ch-private/'+role+'.xml', '--output_format_json_quote_64bit_integers=0',
-            '--max_result_rows=175', '--max_result_bytes=1048576', '--result_overflow_mode=throw',
+            '--max_result_rows='+str(row_limit), '--max_result_bytes=1048576', '--result_overflow_mode=throw',
             '--max_execution_time=10', '--receive_timeout=15',
             '--multiquery', data=sql + (' FORMAT JSONEachRow' if rows else ''), check=False,
             label='clickhouse-'+role)
@@ -301,7 +303,7 @@ class IndexRuntime(Runtime):
         return [json.loads(line) for line in result.stdout.splitlines()] if rows else result.stdout.strip()
 
     def ch_table_rows(self):
-        """Read all ten families with one client; retain each complete typed result."""
+        """Read all eleven families with one client; retain each complete typed result."""
         require(tuple(name for name,_,_ in self.schema.FAMILIES) == oracle.TARGETS,
                 'ClickHouse batch table inventory')
         deadlines = [getattr(self,name,None) for name in ('prefix_deadline','boundary_deadline')]
@@ -412,7 +414,7 @@ class IndexRuntime(Runtime):
                            for name, _, _ in self.schema.FAMILIES}
         save(output/'clickhouse-live.json', self.index_rows)
         tables = self.ch(f"SELECT name,toString(uuid) AS uuid,engine_full FROM system.tables WHERE database='{DATABASE}' ORDER BY name", rows=True)
-        columns = self.ch(f"SELECT table,name,type,position,default_kind,default_expression FROM system.columns WHERE database='{DATABASE}' ORDER BY table,position", rows=True)
+        columns = self.ch(f"SELECT table,name,type,position,default_kind,default_expression FROM system.columns WHERE database='{DATABASE}' ORDER BY table,position", rows=True, schema_columns=True)
         oracle.schema_metadata(self.schema,self.state/'data/index',tables,columns)
         save(output/'clickhouse-schema.json',dict(tables=tables,columns=columns))
         require(self.inspect(entry)['State']['Running'] and self.archive_published(), 'combined owner/Archive stopped during Index publication')

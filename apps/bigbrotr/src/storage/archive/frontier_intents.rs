@@ -4,6 +4,7 @@
 use super::{LifetimeError, LocalCoordinator, ObservedCut, lifetime};
 use crate::{runtime::OwnedPermit, storage::postgres::control_owner::ArchiveFrontierReceipt};
 use bigbrotr_model::{DatasetId, Digest256, OwnerResourceId};
+use bigbrotr_protocol::archive_batch::ARCHIVE_FAMILY_COUNT;
 use bigbrotr_protocol::archive_cut::{CutObservation, CutRead, FORMAT};
 use rustix::fs::{Dir, Mode};
 use sha2::{Digest, Sha256};
@@ -13,9 +14,10 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
-const MAGIC: &[u8; 8] = b"BBFRONT\x01";
-const DOMAIN: &[u8] = b"bigbrotr/archive-frontier-intent/1\0";
-const PREFIX: usize = 180;
+const MAGIC: &[u8; 8] = b"BBFRONT\x02";
+const DOMAIN: &[u8] = b"bigbrotr/archive-frontier-intent/2\0";
+const COUNTS_OFFSET: usize = 136;
+const PREFIX: usize = COUNTS_OFFSET + 8 * ARCHIVE_FAMILY_COUNT + 4;
 const MAX_BYTES: usize = 64 * 1024;
 const MAX_INTENTS: usize = 256;
 const MAX_ENTRIES: usize = 1024;
@@ -562,7 +564,7 @@ fn check_header(
     {
         return Err(FrontierIntentError::Identity);
     }
-    let n = u32::from_be_bytes(bytes[176..180].try_into().expect("header")) as usize;
+    let n = u32::from_be_bytes(bytes[PREFIX - 4..PREFIX].try_into().expect("header")) as usize;
     if !(2..=MAX_BYTES - PREFIX - 32).contains(&n) {
         return Err(FrontierIntentError::ResourceLimit);
     }
@@ -598,7 +600,7 @@ fn decode(
             format: FORMAT.into(),
             snapshot_id: number(96),
             request_digest: Digest256::from_bytes(bytes[104..136].try_into().expect("header")),
-            family_counts: std::array::from_fn(|i| number(136 + 8 * i)),
+            family_counts: std::array::from_fn(|i| number(COUNTS_OFFSET + 8 * i)),
         },
         read: serde_json::from_slice(&bytes[PREFIX..PREFIX + n])
             .map_err(|_| FrontierIntentError::Identity)?,

@@ -3,7 +3,7 @@
 use super::{PhysicalError, operation::QueryOwner};
 use crate::storage::{
     clickhouse::schema::{self, IndexTables},
-    postgres::IndexTarget,
+    postgres::{INDEX_TARGET_COUNT, IndexTarget},
 };
 use clickhouse::{Row, RowOwned, RowRead, query::Query};
 use serde::Deserialize;
@@ -16,9 +16,9 @@ pub(super) async fn collect<R: RowOwned + RowRead>(
     let id = owner.begin()?;
     let mut cursor = query
         // Metadata cardinality is independent of the accepted insert batch
-        // ceiling. Every caller supplies its closed 1/10/175-row bound; using
+        // ceiling. Every caller supplies its closed metadata bound; using
         // the data ceiling here could create tables and then reject their own
-        // 160-column inventory for a valid smaller source batch.
+        // compiled column inventory for a valid smaller source batch.
         .with_setting("max_result_rows", limit.to_string())
         .with_setting("query_id", &id)
         .fetch::<R>()
@@ -167,8 +167,8 @@ pub(super) async fn installed(
     require_empty: bool,
 ) -> Result<(), PhysicalError> {
     let query = owner.client.query("SELECT name,toString(uuid) AS uuid,engine,engine_full,partition_key,sorting_key,primary_key,sampling_key,storage_policy,length(dependencies_database) AS dependent_databases,length(dependencies_table) AS dependent_tables FROM system.tables WHERE database={database:String} ORDER BY name").param("database", tables.database());
-    let rows = collect::<TableRow>(owner, query, 10).await?;
-    if rows.len() != 10 {
+    let rows = collect::<TableRow>(owner, query, INDEX_TARGET_COUNT + 1).await?;
+    if rows.len() != INDEX_TARGET_COUNT {
         return Err(PhysicalError::Schema);
     }
     for target in IndexTarget::ALL {
@@ -205,11 +205,11 @@ pub(super) async fn installed(
         }
     }
     let query = owner.client.query("SELECT table,name,type,position,default_kind,default_expression FROM system.columns WHERE database={database:String} ORDER BY table,position").param("database", tables.database());
-    let rows = collect::<ColumnRow>(owner, query, 175).await?;
     let expected_count: usize = IndexTarget::ALL
         .into_iter()
         .map(|target| schema::columns(target).count())
         .sum();
+    let rows = collect::<ColumnRow>(owner, query, expected_count + 1).await?;
     if rows.len() != expected_count {
         return Err(PhysicalError::Schema);
     }

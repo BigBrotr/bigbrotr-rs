@@ -75,7 +75,7 @@ def check(wanted):
                 owner_epoch=1,owner_incarnation=sql(3),snapshot_id=count+1,
                 request_digest='\\x'+literal_cut(receipts[:count],b['last'],count+1),
                 dictionary_count=8 if count==4 else b['last'],payload_count=int(count==4),
-                eligibility_count=int(count==4),receive_count=int(count==4),provenance_count=int(count==4)))
+                eligibility_count=int(count==4),receive_count=int(count==4),provenance_count=int(count==4),measurement_count=0))
             state['consumer_frontiers'].append(row(consumer_id=catalog_id,frontier_revision=rev,
                 dataset_id=dataset,topology_generation=0,shard_id=0,owner_epoch=1,last_complete_sequence=b['last'],
                 attestation_kind='archive-batch',attestation_digest='\\x'+b['archive_digest']))

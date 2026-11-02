@@ -1,6 +1,6 @@
 """Closed installed backlog/rebind controls over the maintained Index oracle.
 
-The original initial science and ten-family encoders remain the owners of bytes.
+The original initial science and eleven-family encoders remain the owners of bytes.
 Every phase compares all83 Control tables, with explicit permitted transitions.
 """
 from cases import first_launch_index_oracle as index
@@ -33,7 +33,7 @@ def backlog(state, root, *, prefix=False):
     else:
         plan = index.only(state['projection_plans'],frontier_revision=3)
         assert (plan['source_first'],plan['source_last']) == (4,7)
-        assert len([r for r in state['projection_chunks'] if r['state']=='prepared']) == 10
+        assert len([r for r in state['projection_chunks'] if r['state']=='prepared']) == len(index.TARGETS)
 
 
 def unchanged_except(before, after, mutable):

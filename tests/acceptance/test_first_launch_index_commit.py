@@ -143,7 +143,7 @@ class IndexCommitControls(unittest.TestCase):
                 oracle.fault(held,failed,evidence,root)
                 oracle.recovered(failed,caught,root,mode);oracle.recovered(caught,retry,root,mode,retry=True)
                 result=index.publication(retry,retry,rows,science,schema,root,owner_count=4,publication_fault=mode)
-                self.assertEqual(result['committed_chunks'],40)
+                self.assertEqual(result['committed_chunks'],44)
                 self.assertEqual(len(rows['dictionaries']),12 if mode=='before-forward' else 8)
                 self.assertEqual([r['origin_epoch'] for r in retry['projection_plans']],[1,1,1,3])
                 self.assertEqual([r['owner_epoch'] for r in retry['index_frontier_plans']],[1,1,3 if mode=='before-forward' else 2,3])

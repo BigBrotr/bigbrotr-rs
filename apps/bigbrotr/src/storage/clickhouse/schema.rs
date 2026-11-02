@@ -1,9 +1,10 @@
 //! Closed first serving layout. These declarations are inputs to real inspection,
 //! never installation or durability evidence by themselves. One Atomic database
-//! contains exactly these ten append-only tables, without native projections.
-use crate::storage::postgres::{IndexBinding, IndexTarget};
+//! contains exactly the closed append-only targets, without native projections.
+use crate::storage::postgres::{INDEX_TARGET_COUNT, IndexBinding, IndexTarget};
 use bigbrotr_model::Digest256;
 use sha2::{Digest, Sha256};
+use std::sync::LazyLock;
 
 pub const SERVER_VERSION: &str = "26.8.35.10";
 pub const MAX_TABLE_MANIFEST_BYTES: usize = 4096;
@@ -26,11 +27,14 @@ pub enum SchemaError {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct IndexTables {
     database: String,
-    uuids: [[u8; 16]; 10],
+    uuids: [[u8; 16]; INDEX_TARGET_COUNT],
     identity_digest: Digest256,
 }
 impl IndexTables {
-    pub fn new(database: String, uuids: [[u8; 16]; 10]) -> Result<Self, SchemaError> {
+    pub fn new(
+        database: String,
+        uuids: [[u8; 16]; INDEX_TARGET_COUNT],
+    ) -> Result<Self, SchemaError> {
         if database.is_empty()
             || database.len() > 63
             || !database.as_bytes()[0].is_ascii_alphabetic()
@@ -55,7 +59,7 @@ impl IndexTables {
             identity_digest: Digest256::from_bytes([0; 32]),
         };
         let mut hash = Sha256::new();
-        hash.update(b"bigbrotr/index-table-manifest/1\0");
+        hash.update(b"bigbrotr/index-table-manifest/2\0");
         hash_text(&mut hash, SERVER_VERSION);
         hash_text(&mut hash, &value.database);
         hash_text(&mut hash, "Atomic");
@@ -75,7 +79,7 @@ impl IndexTables {
     /// Closed, bounded, non-secret manifest retained by the filesystem owner.
     pub fn encode_manifest(&self) -> Result<Vec<u8>, SchemaError> {
         let manifest = TablesManifest {
-            format: "bigbrotr-index-tables/1".into(),
+            format: "bigbrotr-index-tables/2".into(),
             server_version: SERVER_VERSION.into(),
             database: self.database.clone(),
             table_uuids: self.uuids.map(uuid_text),
@@ -92,11 +96,11 @@ impl IndexTables {
         }
         let manifest: TablesManifest =
             serde_json::from_slice(bytes).map_err(|_| SchemaError::Manifest)?;
-        if manifest.format != "bigbrotr-index-tables/1" || manifest.server_version != SERVER_VERSION
+        if manifest.format != "bigbrotr-index-tables/2" || manifest.server_version != SERVER_VERSION
         {
             return Err(SchemaError::Manifest);
         }
-        let mut uuids = [[0; 16]; 10];
+        let mut uuids = [[0; 16]; INDEX_TARGET_COUNT];
         for (target, text) in uuids.iter_mut().zip(manifest.table_uuids) {
             *target = parse_uuid(&text)?;
         }
@@ -142,7 +146,7 @@ struct TablesManifest {
     format: String,
     server_version: String,
     database: String,
-    table_uuids: [String; 10],
+    table_uuids: [String; INDEX_TARGET_COUNT],
 }
 fn parse_uuid(text: &str) -> Result<[u8; 16], SchemaError> {
     let bytes = text.as_bytes();
@@ -232,6 +236,119 @@ const PROVENANCE: &[Column] = cols![
     received_at: "Int64", clock_id: REFERENCE, resolution_us: "UInt64", uncertainty_us: "Nullable(UInt64)",
     anomaly_flags: "UInt32", verification_method_id: REFERENCE, corrects: OPTIONAL_SOURCE,
 ];
+// Keep one original row while each typed child fits the existing bounded
+// RowBinary header profile. Optional compounds are zero/one Arrays, preserving
+// a known (NULL,NULL) moment separately from an unobserved phase.
+struct MeasurementTypes {
+    profile: String,
+    clock: String,
+    prior: String,
+    execution: String,
+    open: String,
+    read: String,
+    counters: String,
+    moment: String,
+    termination: String,
+}
+static MEASUREMENT_TYPES: LazyLock<MeasurementTypes> = LazyLock::new(|| {
+    let moment = "Tuple(Nullable(Int64), Nullable(UInt64))";
+    let optional_moment = format!("Array({moment})");
+    let event = format!("Array(Tuple(FixedString(32), {moment}, {moment}))");
+    let profile = std::iter::repeat_n("UInt64", 24)
+        .collect::<Vec<_>>()
+        .join(", ");
+    MeasurementTypes {
+        profile: format!("Tuple({profile})"),
+        clock: format!("Tuple({REFERENCE}, UInt64, Nullable(UInt64), UInt32)"),
+        prior: format!("Array(Tuple({SOURCE}, FixedString(32)))"),
+        execution: "Array(Tuple(UInt16, UInt16, Nullable(UInt16), Nullable(Int64)))".into(),
+        open: format!("Array(Tuple({optional_moment}, {optional_moment}, {optional_moment}))"),
+        read: format!(
+            "Array(Tuple({optional_moment}, {event}, {optional_moment}, Bool, Bool, Bool))"
+        ),
+        counters: "Array(Tuple(UInt64, UInt64, UInt64, UInt64, UInt64, UInt64))".into(),
+        moment: optional_moment,
+        termination: "Array(Tuple(UInt16, Nullable(UInt16), Nullable(UInt16), Nullable(UInt16)))"
+            .into(),
+    }
+});
+static MEASUREMENT: LazyLock<[Column; 18]> = LazyLock::new(|| {
+    let ty = &*MEASUREMENT_TYPES;
+    [
+        Column {
+            name: "attempt_id",
+            ty: "FixedString(16)",
+        },
+        Column {
+            name: "subject_kind",
+            ty: "UInt16",
+        },
+        Column {
+            name: "endpoint_id",
+            ty: REFERENCE,
+        },
+        Column {
+            name: "observer_id",
+            ty: REFERENCE,
+        },
+        Column {
+            name: "route_id",
+            ty: REFERENCE,
+        },
+        Column {
+            name: "access_scope_id",
+            ty: REFERENCE,
+        },
+        Column {
+            name: "method_id",
+            ty: REFERENCE,
+        },
+        Column {
+            name: "profile",
+            ty: ty.profile.as_str(),
+        },
+        Column {
+            name: "clock_quality",
+            ty: ty.clock.as_str(),
+        },
+        Column {
+            name: "state_kind",
+            ty: "UInt16",
+        },
+        Column {
+            name: "prior_unknown",
+            ty: ty.prior.as_str(),
+        },
+        Column {
+            name: "observed_execution",
+            ty: ty.execution.as_str(),
+        },
+        Column {
+            name: "observed_open",
+            ty: ty.open.as_str(),
+        },
+        Column {
+            name: "observed_read",
+            ty: ty.read.as_str(),
+        },
+        Column {
+            name: "observed_counters",
+            ty: ty.counters.as_str(),
+        },
+        Column {
+            name: "ended",
+            ty: ty.moment.as_str(),
+        },
+        Column {
+            name: "termination",
+            ty: ty.termination.as_str(),
+        },
+        Column {
+            name: "teardown",
+            ty: "Nullable(UInt16)",
+        },
+    ]
+});
 pub(crate) fn columns(target: IndexTarget) -> impl Iterator<Item = Column> {
     let payload = match target {
         IndexTarget::Dictionaries => DICTIONARY,
@@ -243,6 +360,7 @@ pub(crate) fn columns(target: IndexTarget) -> impl Iterator<Item = Column> {
         }
         IndexTarget::EventTagIndex => TAG,
         IndexTarget::ProvenanceByEvent | IndexTarget::ProvenanceByRelay => PROVENANCE,
+        IndexTarget::MeasurementFacts => &*MEASUREMENT,
     };
     COMMON.iter().chain(payload).copied()
 }
@@ -274,6 +392,7 @@ pub(crate) fn sort_key(target: IndexTarget) -> &'static str {
         IndexTarget::ProvenanceByRelay => {
             "projection_generation, endpoint_id, event_id, observer_id, access_scope_id, visibility_scope, source, discriminator"
         }
+        IndexTarget::MeasurementFacts => "projection_generation, source, discriminator",
     }
 }
 pub(crate) fn engine_expression(target: IndexTarget) -> String {

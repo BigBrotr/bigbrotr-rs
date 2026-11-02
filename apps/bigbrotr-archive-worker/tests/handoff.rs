@@ -50,9 +50,15 @@ fn actual_worker_accepts_complete_batch_and_refuses_truncation_without_a_result(
         String::from_utf8_lossy(&result.stderr)
     );
     let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
-    assert_eq!(report["format"], "bigbrotr-private-preparation/1");
+    assert_eq!(
+        report["format"],
+        bigbrotr_protocol::archive_batch::PREPARATION_FORMAT
+    );
     assert_eq!(report["facts"], 1);
-    assert_eq!(report["staged_counts"], serde_json::json!([0, 1, 0, 0, 0]));
+    assert_eq!(
+        report["staged_counts"],
+        serde_json::json!([0, 1, 0, 0, 0, 0])
+    );
     assert_eq!(report["first"]["sequence"], "2");
     let result = run(&wire[..wire.len() - 1]);
     assert!(!result.status.success());

@@ -23,9 +23,9 @@ pub use handoff::{IndexHandoff, IndexHandoffReceipt, RetainedIndexRevision};
 #[path = "index_publication/tests.rs"]
 mod tests;
 
-pub const INDEX_TARGET_COUNT: usize = 10;
+pub const INDEX_TARGET_COUNT: usize = 11;
 pub const MAX_INDEX_STREAMS: usize = 1024;
-pub const INDEX_SCHEMA_VERSION: u16 = 1;
+pub const INDEX_SCHEMA_VERSION: u16 = 2;
 pub const INDEX_PARTITION: &str = "all";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -59,7 +59,7 @@ impl IndexProvenance {
     }
 }
 
-/// Canonical initial physical targets. Every plan includes all ten, even empty.
+/// Closed physical targets. Every plan includes all eleven, even empty.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(u8)]
 pub enum IndexTarget {
@@ -73,6 +73,7 @@ pub enum IndexTarget {
     EventTagIndex,
     ProvenanceByEvent,
     ProvenanceByRelay,
+    MeasurementFacts,
 }
 impl IndexTarget {
     pub const ALL: [Self; INDEX_TARGET_COUNT] = [
@@ -86,6 +87,7 @@ impl IndexTarget {
         Self::EventTagIndex,
         Self::ProvenanceByEvent,
         Self::ProvenanceByRelay,
+        Self::MeasurementFacts,
     ];
     pub const fn as_str(self) -> &'static str {
         match self {
@@ -99,6 +101,7 @@ impl IndexTarget {
             Self::EventTagIndex => "event_tag_index",
             Self::ProvenanceByEvent => "provenance_by_event",
             Self::ProvenanceByRelay => "provenance_by_relay",
+            Self::MeasurementFacts => "measurement_facts",
         }
     }
 }
@@ -294,7 +297,12 @@ impl IndexPlan {
             || before.bounds().len() != after.bounds().len()
             || !chunks.iter().map(IndexChunk::target).eq(IndexTarget::ALL)
             || (binding.provenance == IndexProvenance::Off
-                && chunks[8..].iter().any(|chunk| chunk.row_count != 0))
+                && chunks.iter().any(|chunk| {
+                    matches!(
+                        chunk.target,
+                        IndexTarget::ProvenanceByEvent | IndexTarget::ProvenanceByRelay
+                    ) && chunk.row_count != 0
+                }))
         {
             return Err(IndexError::InvalidInput);
         }
@@ -365,7 +373,7 @@ impl IndexPlan {
     // variable field is length-prefixed; cuts are ordered by SourceCut itself.
     fn metadata_digest(&self) -> Digest256 {
         let mut hash = Sha256::new();
-        hash.update(b"bigbrotr/index-plan-metadata/1\0");
+        hash.update(b"bigbrotr/index-plan-metadata/2\0");
         hash.update(self.binding.dataset.as_bytes());
         hash.update(self.binding.resource.as_bytes());
         hash.update(self.binding.generation.as_bytes());

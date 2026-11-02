@@ -51,7 +51,7 @@ fn input(count: usize) -> (AdmissionBatch, Vec<Vec<u8>>) {
 }
 
 #[test]
-fn complete_plan_matches_existing_independent_ten_family_vectors() {
+fn complete_plan_matches_existing_independent_eleven_family_vectors() {
     let (batch, records) = input(5);
     let (plan, wire) = plan_source(
         binding(IndexProvenance::LocalFirstWitness),
@@ -98,9 +98,9 @@ fn off_retains_zero_outcomes_and_refuses_a_witness_instead_of_skipping_it() {
     assert_eq!(plan.after().bounds()[1].last_complete_sequence.get(), 4);
     assert_eq!(
         plan.chunks().each_ref().map(|chunk| chunk.row_count()),
-        [1, 1, 1, 1, 1, 1, 1, 6, 0, 0]
+        [1, 1, 1, 1, 1, 1, 1, 6, 0, 0, 0]
     );
-    assert_eq!(&wire[8..], &[0, 0]);
+    assert_eq!(&wire[8..], &[0, 0, 0]);
     assert_ne!(
         plan.chunks()[8].rows_digest(),
         plan.chunks()[9].rows_digest()

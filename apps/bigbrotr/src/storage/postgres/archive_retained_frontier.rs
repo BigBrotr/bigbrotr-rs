@@ -953,6 +953,7 @@ fn decode_current(
             number(row, 8)?,
             number(row, 9)?,
             number(row, 10)?,
+            number(row, 11)?,
         ],
         created: false,
     };
@@ -1014,7 +1015,7 @@ const CURRENT: &str = "SELECT
                 AND prior.dataset_id=r.dataset_id AND prior.consumer_role='archive' AND prior.sealed)))
         AND NOT EXISTS(SELECT 1 FROM control.consumer_frontier_revisions later WHERE later.consumer_id=c.consumer_id AND later.frontier_revision>c.current_revision),
     left(c.current_revision::text,21),left(c.current_topology_generation::text,21),substring(f.operation_id FROM 1 FOR 17),f.snapshot_id,
-    substring(f.request_digest FROM 1 FOR 33),left(f.dictionary_count::text,21),left(f.payload_count::text,21),left(f.eligibility_count::text,21),left(f.receive_count::text,21),left(f.provenance_count::text,21)
+    substring(f.request_digest FROM 1 FOR 33),left(f.dictionary_count::text,21),left(f.payload_count::text,21),left(f.eligibility_count::text,21),left(f.receive_count::text,21),left(f.provenance_count::text,21),left(f.measurement_count::text,21)
     FROM control.consumers c
     LEFT JOIN control.consumer_frontier_revisions r ON r.consumer_id=c.consumer_id AND r.frontier_revision=c.current_revision
     LEFT JOIN control.archive_frontier_snapshots f ON f.consumer_id=c.consumer_id AND f.frontier_revision=c.current_revision

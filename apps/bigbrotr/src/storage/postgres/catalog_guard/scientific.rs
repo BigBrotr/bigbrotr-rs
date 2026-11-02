@@ -2,6 +2,7 @@
 //! PG object hash and an immutable version marker cannot replace these checks.
 //! Install holds every native table lock; installed callers hold owner FOR UPDATE.
 use super::{CatalogIdentity, GuardError, backend, inspection::require};
+use bigbrotr_protocol::archive_batch::ARCHIVE_FAMILY_COUNT;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, sync::LazyLock};
@@ -26,8 +27,8 @@ static EXPECTED: LazyLock<Layout> = LazyLock::new(|| {
         result.schema_sha256,
         bigbrotr_model::Digest256::from_bytes(Sha256::digest(DECLARATION).into()).to_string()
     );
-    assert_eq!(result.tables.len(), 6);
-    assert_eq!(result.tables.values().map(Vec::len).sum::<usize>(), 203);
+    assert_eq!(result.tables.len(), ARCHIVE_FAMILY_COUNT + 1);
+    assert!(result.tables.values().all(|columns| !columns.is_empty()));
     result
 });
 fn hashes() -> [[u8; 32]; 3] {
@@ -63,13 +64,15 @@ pub(super) async fn installed(
 }
 
 async fn live(tx: &Transaction<'_>) -> Result<(), GuardError> {
+    let table_count = EXPECTED.tables.len();
+    let column_count: usize = EXPECTED.tables.values().map(Vec::len).sum();
     // Only declared placement/version and zero-inlining settings are selected.
     // A new persistent option requires explicit compatibility qualification.
-    require(tx, "SELECT count(*)<=12 AND count(*)=count(DISTINCT ROW(key,scope,scope_id)) AND count(*) FILTER(WHERE (key IS NOT NULL AND value IS NOT NULL AND ((key IN ('version','data_path','encrypted') AND scope IS NULL AND scope_id IS NULL) OR (key='created_by' AND value='DuckDB d8cdaa33fd' AND scope IS NULL AND scope_id IS NULL) OR (key='data_inlining_row_limit' AND value='0' AND ((scope IS NULL AND scope_id IS NULL) OR (scope='schema' AND scope_id=0) OR (scope='table' AND scope_id BETWEEN 1 AND 6))))) IS TRUE)=count(*) AND count(*) FILTER(WHERE key='created_by')=1 FROM (SELECT * FROM public.ducklake_metadata LIMIT 13)m", &[], GuardError::IncompatibleLayout).await?;
+    require(tx, &format!("SELECT count(*)<={} AND count(*)=count(DISTINCT ROW(key,scope,scope_id)) AND count(*) FILTER(WHERE (key IS NOT NULL AND value IS NOT NULL AND ((key IN ('version','data_path','encrypted') AND scope IS NULL AND scope_id IS NULL) OR (key='created_by' AND value='DuckDB d8cdaa33fd' AND scope IS NULL AND scope_id IS NULL) OR (key='data_inlining_row_limit' AND value='0' AND ((scope IS NULL AND scope_id IS NULL) OR (scope='schema' AND scope_id=0) OR (scope='table' AND scope_id BETWEEN 1 AND {}))))) IS TRUE)=count(*) AND count(*) FILTER(WHERE key='created_by')=1 FROM (SELECT * FROM public.ducklake_metadata LIMIT {})m", table_count+6, table_count, table_count+7), &[], GuardError::IncompatibleLayout).await?;
 
     require(tx, "SELECT count(*)=1 AND count(*) FILTER(WHERE (schema_id=0 AND schema_uuid<>'00000000-0000-0000-0000-000000000000'::uuid AND begin_snapshot=0 AND end_snapshot IS NULL AND schema_name='main' AND path='main/' AND path_is_relative) IS TRUE)=1 FROM (SELECT * FROM public.ducklake_schema LIMIT 2)s", &[], GuardError::IncompatibleLayout).await?;
-    let tables = tx.query("SELECT left(table_name,64),table_id,(table_id BETWEEN 1 AND 6 AND table_uuid<>'00000000-0000-0000-0000-000000000000'::uuid AND begin_snapshot=1 AND end_snapshot IS NULL AND schema_id=0 AND path=table_name||'/' AND path_is_relative) IS TRUE FROM public.ducklake_table LIMIT 7", &[]).await.map_err(backend)?;
-    if tables.len() != 6 {
+    let tables = tx.query(&format!("SELECT left(table_name,64),table_id,(table_id BETWEEN 1 AND {} AND table_uuid<>'00000000-0000-0000-0000-000000000000'::uuid AND begin_snapshot=1 AND end_snapshot IS NULL AND schema_id=0 AND path=table_name||'/' AND path_is_relative) IS TRUE FROM public.ducklake_table LIMIT {}", table_count, table_count+1), &[]).await.map_err(backend)?;
+    if tables.len() != table_count {
         return Err(GuardError::IncompatibleLayout);
     }
     let mut actual: BTreeMap<String, Vec<Column>> = BTreeMap::new();
@@ -89,15 +92,15 @@ async fn live(tx: &Transaction<'_>) -> Result<(), GuardError> {
     }
     require(
         tx,
-        "SELECT count(DISTINCT table_uuid)=6 FROM public.ducklake_table",
+        &format!("SELECT count(DISTINCT table_uuid)={table_count} FROM public.ducklake_table"),
         &[],
         GuardError::IncompatibleLayout,
     )
     .await?;
-    // At most204 bounded rows; unknown/oversized strings never cross the wire in
+    // Exactly the compiled layout plus one detection row; unknown/oversized strings never cross the wire in
     // full. SQL NULL must fail every required predicate, not disappear in bool_and.
-    let columns = tx.query("SELECT table_id,column_id,left(column_name,64),left(column_type,32),parent_column,nulls_allowed,(begin_snapshot=1 AND end_snapshot IS NULL AND column_order=column_id AND initial_default IS NULL AND default_value='NULL' AND default_value_type=CASE WHEN column_type IN ('struct','list') THEN '' ELSE 'literal' END AND default_value_dialect='duckdb' AND octet_length(column_name)<=64 AND octet_length(column_type)<=32) IS TRUE FROM public.ducklake_column ORDER BY table_id,column_id LIMIT 204", &[]).await.map_err(backend)?;
-    if columns.len() != 203 {
+    let columns = tx.query(&format!("SELECT table_id,column_id,left(column_name,64),left(column_type,32),parent_column,nulls_allowed,(begin_snapshot=1 AND end_snapshot IS NULL AND column_order=column_id AND initial_default IS NULL AND default_value='NULL' AND default_value_type=CASE WHEN column_type IN ('struct','list') THEN '' ELSE 'literal' END AND default_value_dialect='duckdb' AND octet_length(column_name)<=64 AND octet_length(column_type)<=32) IS TRUE FROM public.ducklake_column ORDER BY table_id,column_id LIMIT {}", column_count+1), &[]).await.map_err(backend)?;
+    if columns.len() != column_count {
         return Err(GuardError::IncompatibleLayout);
     }
     for row in columns {
@@ -129,8 +132,8 @@ async fn live(tx: &Transaction<'_>) -> Result<(), GuardError> {
     if actual != EXPECTED.tables {
         return Err(GuardError::IncompatibleLayout);
     }
-    require(tx,"SELECT count(*)=6 AND count(DISTINCT table_id)=6 AND count(*) FILTER(WHERE (table_id BETWEEN 1 AND 6 AND begin_snapshot=1 AND schema_version=1) IS TRUE)=6 FROM (SELECT * FROM public.ducklake_schema_versions LIMIT 7)s", &[], GuardError::IncompatibleLayout).await?;
-    require(tx,"SELECT EXISTS(SELECT 1 FROM (SELECT * FROM public.ducklake_snapshot ORDER BY snapshot_id DESC LIMIT 1)s WHERE (schema_version=1 AND next_catalog_id=7 AND next_file_id>=0 AND snapshot_id>=1 AND snapshot_time IS NOT NULL) IS TRUE)", &[], GuardError::IncompatibleLayout).await?;
+    require(tx,&format!("SELECT count(*)={table_count} AND count(DISTINCT table_id)={table_count} AND count(*) FILTER(WHERE (table_id BETWEEN 1 AND {table_count} AND begin_snapshot=1 AND schema_version=1) IS TRUE)={table_count} FROM (SELECT * FROM public.ducklake_schema_versions LIMIT {})s", table_count+1), &[], GuardError::IncompatibleLayout).await?;
+    require(tx,&format!("SELECT EXISTS(SELECT 1 FROM (SELECT * FROM public.ducklake_snapshot ORDER BY snapshot_id DESC LIMIT 1)s WHERE (schema_version=1 AND next_catalog_id={} AND next_file_id>=0 AND snapshot_id>=1 AND snapshot_time IS NOT NULL) IS TRUE)",table_count+1), &[], GuardError::IncompatibleLayout).await?;
     // These metadata classes can alter interpretation; version1 declares none.
     // Data/files/statistics and snapshot history are deliberately not scanned.
     for table in [
@@ -178,13 +181,13 @@ pub(super) async fn virgin(
             | "ducklake_column"
             | "ducklake_schema_versions" => continue,
             "ducklake_snapshot" => {
-                "count(*)=2 AND count(*) FILTER(WHERE (snapshot_id=0 AND schema_version=0 AND next_catalog_id=1 AND next_file_id=0 AND snapshot_time IS NOT NULL) IS TRUE)=1 AND count(*) FILTER(WHERE (snapshot_id=1 AND schema_version=1 AND next_catalog_id=7 AND next_file_id=0 AND snapshot_time IS NOT NULL) IS TRUE)=1"
+                format!("count(*)=2 AND count(*) FILTER(WHERE (snapshot_id=0 AND schema_version=0 AND next_catalog_id=1 AND next_file_id=0 AND snapshot_time IS NOT NULL) IS TRUE)=1 AND count(*) FILTER(WHERE (snapshot_id=1 AND schema_version=1 AND next_catalog_id={} AND next_file_id=0 AND snapshot_time IS NOT NULL) IS TRUE)=1",EXPECTED.tables.len()+1)
             }
             "ducklake_snapshot_changes" => continue,
             "ducklake_metadata" => {
-                "count(*)=4 AND count(*) FILTER(WHERE key='created_by' AND value='DuckDB d8cdaa33fd' AND scope IS NULL AND scope_id IS NULL)=1"
+                "count(*)=4 AND count(*) FILTER(WHERE key='created_by' AND value='DuckDB d8cdaa33fd' AND scope IS NULL AND scope_id IS NULL)=1".to_owned()
             }
-            _ => "count(*)=0",
+            _ => "count(*)=0".to_owned(),
         };
         require(
             tx,
@@ -203,4 +206,15 @@ pub(super) async fn virgin(
     let extra = format!("sha256:{}", EXPECTED.schema_sha256);
     require(tx,"SELECT count(*)=2 AND count(*) FILTER(WHERE (snapshot_id=0 AND changes_made='created_schema:\"main\"' AND author IS NULL AND commit_message IS NULL AND commit_extra_info IS NULL) IS TRUE)=1 AND count(*) FILTER(WHERE (snapshot_id=1 AND ARRAY(SELECT x FROM unnest(string_to_array(changes_made,','))x ORDER BY x COLLATE \"C\")=$1::text[] AND author='BigBrotr' AND commit_message='initialize archive schema 1' AND commit_extra_info=$2::text) IS TRUE)=1 FROM public.ducklake_snapshot_changes", &[&names,&extra],GuardError::ExistingData).await?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn compiled_six_family_layout_has_literal_seven_table_336_column_inventory() {
+        assert_eq!(EXPECTED.tables.len(), 7);
+        assert_eq!(EXPECTED.tables.values().map(Vec::len).sum::<usize>(), 336);
+        assert_eq!(EXPECTED.tables["measurement_facts"].len(), 133);
+    }
 }

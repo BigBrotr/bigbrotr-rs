@@ -54,11 +54,11 @@ fn batch(first: u64) -> AdmissionBatch {
     )
     .unwrap()
 }
-fn chunks() -> [IndexChunk; 10] {
+fn chunks() -> [IndexChunk; INDEX_TARGET_COUNT] {
     std::array::from_fn(|i| {
         IndexChunk::new(
             IndexTarget::ALL[i],
-            1,
+            INDEX_SCHEMA_VERSION,
             "all".to_owned(),
             Digest256::from_bytes([30 + i as u8; 32]),
             u64::from(i == 0),
@@ -83,11 +83,11 @@ fn independent_literal_metadata_and_source_commitments() {
         plan(IndexProvenance::LocalFirstWitness)
             .digest()
             .to_string(),
-        "aa7f2eef19d03e4e3704714e90e400c10b75bddce94485682b45452adac61e98"
+        "725a44d231cc358dccb0ed3f2c09de3ecf4eb91d34b11aaaabdb7bb57c28544e"
     );
     assert_eq!(
         plan(IndexProvenance::Off).digest().to_string(),
-        "4321a18b1a112a16a2d899e6da618dd6abfc7c67bfab89c2aecfcb02df094900"
+        "c2f7a4fc22d913dfb2d8f84ae46cef7bc799a32e0e3d3150c177453f54b897aa"
     );
 }
 
@@ -152,7 +152,24 @@ fn complete_canonical_membership_and_empty_targets_are_required() {
             .iter()
             .filter(|c| c.row_count() == 0)
             .count(),
-        9
+        INDEX_TARGET_COUNT - 1
+    );
+}
+
+#[test]
+fn provenance_off_still_accepts_an_independent_measurement_target() {
+    let mut complete = chunks();
+    complete[IndexTarget::MeasurementFacts as usize].row_count = 1;
+    assert!(
+        IndexPlan::new(
+            binding(IndexProvenance::Off),
+            0,
+            cut(0),
+            cut(2),
+            batch(1),
+            complete
+        )
+        .is_ok()
     );
 }
 
@@ -224,7 +241,7 @@ fn no_holes_partial_batches_or_unrelated_stream_advancement() {
 #[test]
 fn installation_schema_partition_and_semantics_are_digest_bound() {
     let original = plan(IndexProvenance::LocalFirstWitness);
-    for schema in [0, 2, u16::MAX] {
+    for schema in [0, 1, u16::MAX] {
         assert!(
             IndexChunk::new(
                 IndexTarget::Events,
@@ -241,7 +258,7 @@ fn installation_schema_partition_and_semantics_are_digest_bound() {
         assert!(
             IndexChunk::new(
                 IndexTarget::Events,
-                1,
+                INDEX_SCHEMA_VERSION,
                 partition.to_owned(),
                 Digest256::from_bytes([1; 32]),
                 0,

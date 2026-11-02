@@ -145,7 +145,7 @@ CREATE TABLE control.projection_plan_chunks (
     plan_digest control.digest32 NOT NULL,
     target text COLLATE "C" NOT NULL CHECK (target IN ('dictionaries', 'events',
         'event_eligibility_facts', 'event_receive_facts', 'event_id_index', 'event_author_index',
-        'event_time_index', 'event_tag_index', 'provenance_by_event', 'provenance_by_relay')),
+        'event_time_index', 'event_tag_index', 'provenance_by_event', 'provenance_by_relay', 'measurement_facts')),
     chunk_id control.digest32 NOT NULL,
     partition_key text COLLATE "C" NOT NULL CHECK (partition_key = 'all'),
     rows_digest control.digest32 NOT NULL,
@@ -331,7 +331,7 @@ BEGIN
     PERFORM control.require_current_index_owner(NEW.generation_id);
     IF plan.sealed OR NOT EXISTS (SELECT 1 FROM control.projection_chunks c
         WHERE c.generation_id = NEW.generation_id AND c.chunk_id = NEW.chunk_id
-            AND c.target = NEW.target AND c.target_schema_version = 1
+            AND c.target = NEW.target AND c.target_schema_version = 2
             AND c.chunk_ordinal = plan.frontier_revision AND c.topology_generation = plan.topology_generation
             AND c.owner_resource_id = plan.consumer_id AND c.owner_epoch = plan.origin_epoch
             AND c.owner_incarnation = plan.origin_incarnation AND c.state = 'prepared') THEN
@@ -352,10 +352,10 @@ BEGIN
     SELECT * INTO STRICT plan FROM control.projection_plans
         WHERE generation_id = wanted_generation AND plan_digest = wanted_plan;
     IF NOT plan.sealed OR (SELECT count(*) FROM control.projection_plan_chunks
-        WHERE generation_id = wanted_generation AND plan_digest = wanted_plan) <> 10
+        WHERE generation_id = wanted_generation AND plan_digest = wanted_plan) <> 11
         OR NOT EXISTS (SELECT 1 FROM control.topology_generations WHERE dataset_id = plan.dataset_id
             AND generation = plan.topology_generation AND sealed) THEN
-        RAISE EXCEPTION 'Index plan requires a sealed topology and all ten explicit targets' USING ERRCODE = '23514';
+        RAISE EXCEPTION 'Index plan requires a sealed topology and all eleven explicit targets' USING ERRCODE = '23514';
     END IF;
     SELECT count(*) INTO stream_count FROM control.topology_streams
         WHERE dataset_id = plan.dataset_id AND topology_generation = plan.topology_generation;
@@ -378,7 +378,7 @@ BEGIN
     IF EXISTS (SELECT 1 FROM control.projection_plan_chunks m JOIN control.projection_chunks c
         USING(generation_id, chunk_id) JOIN control.projection_generations g USING(generation_id)
         WHERE m.generation_id = wanted_generation AND m.plan_digest = wanted_plan AND
-        (c.target <> m.target OR c.target_schema_version <> 1 OR c.chunk_ordinal <> plan.frontier_revision
+        (c.target <> m.target OR c.target_schema_version <> 2 OR c.chunk_ordinal <> plan.frontier_revision
             OR c.state = 'invalid' OR c.topology_generation <> plan.topology_generation
             OR (g.provenance = 'off' AND m.target IN ('provenance_by_event','provenance_by_relay') AND c.row_count <> 0)
             OR (SELECT count(*) FROM control.projection_chunk_bounds b

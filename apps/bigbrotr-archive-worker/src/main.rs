@@ -48,6 +48,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let inspect_receipt = arguments.len() == 8 && arguments[1] == "inspect-receipt";
     let inspect_receipt_group = arguments.len() == 8 && arguments[1] == "inspect-receipt-group";
     let inspect_cut = arguments.len() == 9 && arguments[1] == "inspect-cut";
+    let read_measurement = arguments.len() == 9 && arguments[1] == "read-measurement";
     let inspect_membership = arguments.len() == 9 && arguments[1] == "inspect-membership";
     if !inspect_engine
         && !inspect_batch
@@ -62,8 +63,9 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         && !read_visibility
         && !inspect_membership
         && !inspect_cut
+        && !read_measurement
     {
-        return Err("usage: bigbrotr-archive-worker {read-visibility BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-cut BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | inspect-membership BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | {read-event,query-event} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_ROW_BYTES | initialize-reserved-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | {inspect-receipt,inspect-receipt-group} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
+        return Err("usage: bigbrotr-archive-worker {read-visibility BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | {inspect-cut,read-measurement} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | inspect-membership BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | {read-event,query-event} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_ROW_BYTES | initialize-reserved-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | {inspect-receipt,inspect-receipt-group} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
     }
     let number = |i: usize| -> Result<u64, Box<dyn std::error::Error>> {
         Ok(arguments[i].to_str().ok_or("invalid limit")?.parse()?)
@@ -75,7 +77,16 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     };
     let engine = Engine::open(Path::new(&arguments[3]), limits)?;
     engine.load_bundle(Path::new(&arguments[2]))?;
-    let inspection = if inspect_cut {
+    let inspection = if read_measurement {
+        let request = bigbrotr_archive_worker::measurement::MeasurementRequest::read(
+            std::io::stdin().lock(),
+        )?;
+        serde_json::to_value(engine.read_measurement(
+            &request,
+            usize::try_from(number(7)?)?,
+            usize::try_from(number(8)?)?,
+        )?)?
+    } else if inspect_cut {
         let request = bigbrotr_archive_worker::cut::CutRequest::read(std::io::stdin().lock())?;
         serde_json::to_value(engine.inspect_cut(
             &request,
@@ -150,7 +161,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             let digest = prepared.publish(request)?;
             serde_json::json!({"format":"bigbrotr-native-publication/1", "batch_digest":digest})
         } else {
-            serde_json::json!({"format":"bigbrotr-private-preparation/1",
+            serde_json::json!({"format":bigbrotr_protocol::archive_batch::PREPARATION_FORMAT,
             "first":prepared.batch().first(), "last":prepared.batch().last(),
             "batch_digest":prepared.batch().digest(), "facts":prepared.batch().records().len(),
             "staged_counts":prepared.counts()?})
@@ -177,6 +188,8 @@ fn main() -> ExitCode {
         Err(error) => {
             if error.downcast_ref::<bigbrotr_protocol::archive_event::EventReadError>()
                 == Some(&bigbrotr_protocol::archive_event::EventReadError::ResourceLimit)
+                || error.downcast_ref::<bigbrotr_protocol::archive_measurement::MeasurementReadError>()
+                    == Some(&bigbrotr_protocol::archive_measurement::MeasurementReadError::ResourceLimit)
             {
                 return ExitCode::from(bigbrotr_protocol::archive_event::RESOURCE_LIMIT_EXIT_CODE);
             }

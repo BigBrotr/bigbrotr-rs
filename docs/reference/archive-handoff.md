@@ -56,7 +56,7 @@ is not termination.
 
 ## Private native preparation
 
-`PreparedBatch` consumes an isolated `Engine`. It creates five private scientific
+`PreparedBatch` consumes an isolated `Engine`. It creates six private scientific
 staging tables plus an empty technical receipt table with explicit typed schemas
 and feeds each decoded fact through the
 [row adapter](archive-format.md), checking native append and flush results.
@@ -82,9 +82,9 @@ It reads one framed batch from stdin through EOF and emits one bounded diagnosti
 result after successful preparation. Per-fact limits currently use
 `FactDecodeLimits::default()`: 2 MiB encoded, 8 MiB requested allocation, 65,536
 tag nodes and 256 KiB per retained string. Staged counts are ordered dictionary,
-event, eligibility, receive, provenance. Source u64 wrappers retain their existing
+event, eligibility, receive, provenance, measurement. Source u64 wrappers retain their existing
 decimal-string JSON representation. The result is explicitly
-`bigbrotr-private-preparation/1`, never an archive receipt. No partial stdout
+`bigbrotr-private-preparation/2`, never an archive receipt. No partial stdout
 result is emitted for invalid input. The application parent now supervises this
 command; full publisher admission, process-crash exclusion and catalog recovery
 remain separate required work.
@@ -165,7 +165,7 @@ uses the separate `bigbrotr/archive-batch/1` domain and maximal source ranges; i
 does not reuse the transport/admission digest. The caller must resolve the actual
 retained topology and complete admission authority before future publication;
 the Rocks creation manifest is not an implicit current-topology source. The
-private child framing/result remain version 1 and contain no topology authority.
+private child framing remains version 1; the six-count result is version 2 and contains no topology authority.
 This input digest is not a stage-content readback, commit or protection receipt.
 
 On error/drop, the parent sends SIGKILL and polls for reaping for 300 ms. Native
@@ -371,7 +371,7 @@ or mismatching snapshot, and no successful Absent result.
 
 The same bounded full receipt scan must finish with Present. The reader then
 examines source identity, stored digest, schema/kind and native filename columns
-across all five scientific families. It includes both the expected source ranges
+across all six scientific families. It includes both the expected source ranges
 and every row attributed to that attempt's original family filenames. Thus a
 target copied to another file and an extra foreign/out-of-range row in an original
 file both refuse. Total membership has one detection row beyond the expected
@@ -389,9 +389,9 @@ does not defend against
 privileged concurrent namespace changes or establish historical inode custody.
 Unregistered orphan files do not form native membership or protection evidence.
 
-The private response `bigbrotr-native-membership/1` binds snapshot, batch digest,
+The private response `bigbrotr-native-membership/2` binds snapshot, batch digest,
 attempt and ordinal and reports counts in dictionary/payload/eligibility/receive/
-provenance order, plus populated family files and one receipt file. Typed closed
+provenance/measurement order, plus populated family files and one receipt file. Typed closed
 parent decoding checks those bindings and counts after positive worker reap.
 The input remains at most32KiB/1024 ranges. `max_facts` bounds complete membership;
 allocation admission charges two overlapping reference buffers, bounded native/
@@ -513,7 +513,7 @@ normal Control authorization and use the bounded cache without starting a
 physical dependency probe. The
 observer loads original input locators on joined blocking work, acquires a
 catalog barrier and fresh reader pin, verifies the exact published snapshot with
-the existing native complete-cut reader, and compares all five family counts
+the existing native complete-cut reader, and compares all six family counts
 with the stored frontier. It then rechecks the current selection, releases only
 its known-joined pin, rolls back the barrier and joins the catalog driver before
 promoting the observation. A published snapshot may legitimately precede the
@@ -552,7 +552,7 @@ A dictionary visible above another stream's
 bound cannot supply closure. Native memory, joins, metadata and spill remain
 inside the process grant/deadline; row limits alone do not bound engine metadata.
 
-`bigbrotr-native-cut/1` returns the actual snapshot, five family counts and a
+`bigbrotr-native-cut/2` returns the actual snapshot, six family counts and a
 request binding. Its SHA256 preimage is ASCII `bigbrotr/archive-cut-inspection/1`
 plus NUL, dataset16, topology u64, bound count u64, each bound `(shard u32,epoch
 u64,through u64)`, receipt count u64, then each receipt `(dataset16,schema u16,
@@ -562,6 +562,17 @@ byte0/1 and its u64 when present. All integers are big-endian, and collection
 order is retained. This private transport binding is not a new scientific cut
 identity, persisted manifest or protection certificate. The literal fixture is
 [independently assembled](../../tests/fixtures/protocol/archive-cut.json).
+
+The sixth family adds the six A05 dictionary references and access-scope
+visibility agreement. Its actual typed row and exact prior target are rebuilt
+and rehashed inside the same selected cut before resolution comparison. Inline
+children add no independent fact or vote. The private `read-measurement` command
+uses that same complete-cut transaction and emits `bigbrotr-native-measurement/1`
+with one exact original fact. It requires an explicit snapshot and does not add a
+public endpoint, pin authority or availability reducer. Current count formats
+fail closed on prior five-count responses; the cut request digest recipe remains
+version1 because its input fields have not changed. These A05 paths and the new
+six-count protocols still require exact-source native qualification.
 
 [Native qualification](../implementation/evidence/p02-archive-cut-native-20260920.json)
 at `354de75` passes 54 selected Rust tests, two complete signed cuts at snapshots 3/4,
@@ -798,10 +809,13 @@ lineage bound also bounds the number of immediate topology steps.
 Frontier intent records are local recovery inputs, not capture or publication
 authority. Before any frontier transaction, synchronize its original nonzero
 operation ID, expected revision, exact observed `CutRead`, snapshot, digest and
-family counts under the existing coordinator binding. The selected version 1
-record uses the `BBFRONT\x01` magic, coordinator digest, dataset/catalog/operation
+family counts under the existing coordinator binding. The selected version 2
+record uses the `BBFRONT\x02` magic, coordinator digest, dataset/catalog/operation
 identities, big-endian revision/snapshot/counts/JSON length, canonical complete
-`CutRead` JSON and a domain-separated SHA-256 checksum. Its filename is
+`CutRead` JSON and a domain-separated SHA-256 checksum. The fixed header is188
+bytes: six u64 family counts start at136, followed by the u32 JSON length at184.
+The checksum domain is `bigbrotr/archive-frontier-intent/2` plus NUL. Five-count
+version1 records are refused; they are never padded or silently adopted. Its filename is
 `frontier-<32 lowercase operation hex>.intent`. Reject partial bytes, mismatched
 names, unknown versions, unsafe links and incompatible identities; preserve them
 without repair. A matching complete retry synchronizes the existing bytes.

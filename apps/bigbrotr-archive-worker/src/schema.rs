@@ -1,18 +1,21 @@
 //! Closed scientific declarations shared by private staging and explicit native
 //! initialization. This module never adopts, migrates or authorizes a catalog.
+use bigbrotr_protocol::archive_batch::{ARCHIVE_FAMILIES, ARCHIVE_FAMILY_COUNT};
 use duckdb::Connection;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::sync::LazyLock;
 
 const DECLARATION: &str = include_str!("../../../contracts/archive/v1/schema.json");
-pub(crate) const TABLES: [&str; 5] = [
-    "dictionaries",
-    "events",
-    "event_eligibility_facts",
-    "event_receive_facts",
-    "provenance_facts",
-];
+pub(crate) const TABLES: [&str; ARCHIVE_FAMILY_COUNT] = {
+    let mut tables = [""; ARCHIVE_FAMILY_COUNT];
+    let mut i = 0;
+    while i < ARCHIVE_FAMILY_COUNT {
+        tables[i] = ARCHIVE_FAMILIES[i].0;
+        i += 1;
+    }
+    tables
+};
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Schema {
@@ -28,7 +31,7 @@ struct Table {
 static SCHEMA: LazyLock<Schema> = LazyLock::new(|| {
     let schema: Schema = serde_json::from_str(DECLARATION).expect("compiled archive schema");
     assert_eq!(schema.format, "bigbrotr-archive-schema/1");
-    assert_eq!(schema.tables.len(), 6);
+    assert_eq!(schema.tables.len(), ARCHIVE_FAMILY_COUNT + 1);
     for (actual, expected) in schema
         .tables
         .iter()
@@ -95,7 +98,7 @@ mod tests {
         engine
     }
     #[test]
-    fn six_tables_and_one_schema_transaction_survive_a_fresh_native_reopen() {
+    fn all_tables_and_one_schema_transaction_survive_a_fresh_native_reopen() {
         let home = tempfile::tempdir().unwrap();
         let temp = tempfile::tempdir().unwrap();
         let catalog = home.path().join("catalog.ducklake");
@@ -108,7 +111,7 @@ mod tests {
         let actual: String = engine.connection.query_row("SELECT string_agg(table_name, ',' ORDER BY table_name) FROM information_schema.tables WHERE table_catalog='archive'", [], |r|r.get(0)).unwrap();
         assert_eq!(
             actual,
-            "archive_commits,dictionaries,event_eligibility_facts,event_receive_facts,events,provenance_facts"
+            "archive_commits,dictionaries,event_eligibility_facts,event_receive_facts,events,measurement_facts,provenance_facts"
         );
         let snapshots: (u64,u64,u64) = engine.connection.query_row("SELECT count(*), max(snapshot_id), max(schema_version) FROM ducklake_snapshots('archive')", [], |r|Ok((r.get(0)?,r.get(1)?,r.get(2)?))).unwrap();
         assert_eq!(snapshots, (2, 1, 1));

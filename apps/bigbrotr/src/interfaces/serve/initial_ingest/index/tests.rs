@@ -52,7 +52,7 @@ fn accepted_profile_preserves_provenance_and_both_documents_actual_ceilings() {
     // still refuses a fifth row under the accepted four-row insert ceiling.
     assert!(small.source().max_records >= 5);
     assert_eq!(small.rows, 4);
-    let mut counts = [4, 1, 1, 1, 1, 1, 1, 0, 1, 1];
+    let mut counts = [4, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0];
     let wire = counts.map(|count| count * 128);
     check_family_bounds(&counts, &wire, small).unwrap();
     counts[0] = 5;
@@ -260,12 +260,12 @@ fn initial_cut_has_no_publication_and_advances_only_the_same_complete_stream() {
 }
 
 #[test]
-fn all_ten_family_outcomes_obey_counts_zero_and_checked_wire_ceiling_before_prepare() {
+fn all_eleven_family_outcomes_obey_counts_zero_and_checked_wire_ceiling_before_prepare() {
     let profile = profile(&root()).unwrap();
-    let mut counts = [0; 10];
-    let mut wire = [0; 10];
+    let mut counts = [0; INDEX_TARGET_COUNT];
+    let mut wire = [0; INDEX_TARGET_COUNT];
     check_family_bounds(&counts, &wire, profile).unwrap();
-    for i in 0..10 {
+    for i in 0..INDEX_TARGET_COUNT {
         counts[i] = profile.rows;
         wire[i] = profile.wire_bytes - WIRE_OVERHEAD;
         check_family_bounds(&counts, &wire, profile).unwrap();

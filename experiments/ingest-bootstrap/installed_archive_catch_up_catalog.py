@@ -30,9 +30,14 @@ def virgin_layout(catalog):
     tables={r['table_name']:r for r in catalog['public.ducklake_table']}
     assert set(tables)==set(declaration['tables'])
     leaves={};wanted=[];mapping_ids=set()
-    assert len(catalog['public.ducklake_column_mapping'])==len(tables)==6
+    populated={r['table_id'] for r in catalog['public.ducklake_data_file']}
+    assert len(tables)==7 and len(catalog['public.ducklake_column_mapping'])==len(populated)==6
     for name,columns in declaration['tables'].items():
-        table=tables[name];mapping=only(catalog['public.ducklake_column_mapping'],table_id=table['table_id'])
+        table=tables[name]
+        if table['table_id'] not in populated:
+            assert name=='measurement_facts'
+            continue
+        mapping=only(catalog['public.ducklake_column_mapping'],table_id=table['table_id'])
         mid=mapping['mapping_id'];assert type(mid) is int and mid>=0 and mid not in mapping_ids
         mapping_ids.add(mid)
         first=min(r['begin_snapshot'] for r in catalog['public.ducklake_data_file'] if r['table_id']==table['table_id'])
@@ -177,7 +182,11 @@ def verify_catalog(phase,science,*,virgin=False):
     counts={t:len(rows) for t,rows in science['tables'].items()}|{'archive_commits':end}
     assert len(b['public.ducklake_table_stats'])==6
     for name,count in counts.items():
-        tid=tables[name]['table_id'];row=only(b['public.ducklake_table_stats'],table_id=tid)
+        tid=tables[name]['table_id']
+        if count==0:
+            assert name=='measurement_facts' and not [r for r in b['public.ducklake_table_stats'] if r['table_id']==tid]
+            continue
+        row=only(b['public.ducklake_table_stats'],table_id=tid)
         data=[r for r in b['public.ducklake_data_file'] if r['table_id']==tid]
         latest=max(data,key=lambda r:r['begin_snapshot'])
         assert row==dict(table_id=tid,record_count=count,next_row_id=count,file_size_bytes=sum(r['file_size_bytes'] for r in data),xmin=latest['xmin'])

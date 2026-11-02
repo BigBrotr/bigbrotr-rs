@@ -77,7 +77,7 @@ def verify_added_frontier(case, op, revision):
     assert added('archive_frontier_snapshots',['consumer_id','frontier_revision'])==[
         dict(common,operation_id='\\x'+f'{op:02x}'*16,catalog_id=catalog,owner_epoch=epoch,
              owner_incarnation=incarnation,snapshot_id=3,request_digest='\\x'+expected['observation']['request_digest'],
-             dictionary_count=6,payload_count=1,eligibility_count=1,receive_count=1,provenance_count=1,xmin=xmin)]
+             dictionary_count=6,payload_count=1,eligibility_count=1,receive_count=1,provenance_count=1,measurement_count=0,xmin=xmin)]
     assert added('consumer_frontiers',['consumer_id','frontier_revision','shard_id','owner_epoch'])==[
         dict(common,shard_id=0,owner_epoch=1,last_complete_sequence=10,attestation_kind='archive-batch',
              attestation_digest='\\x'+expected['read']['receipts'][-1]['batch_digest'],xmin=xmin)]
@@ -239,7 +239,7 @@ def main(root, namespace, base_revision, operation_base, recovery_operation):
         expected=cut_expectation('normal')
         assert case['observed']['receipt']==dict(operation_id=f'{op:02x}'*16,revision=revision,
             snapshot_id=3,request_digest=expected['observation']['request_digest'],
-            family_counts=[6,1,1,1,1],created=created)
+            family_counts=[6,1,1,1,1,0],created=created)
     save()
     try:
         original=fixture('historical',0xf1,0,lookup=True);published(original,0xf1,1,False);unchanged(original);passed(original)

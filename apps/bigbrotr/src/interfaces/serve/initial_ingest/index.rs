@@ -29,7 +29,7 @@ use bigbrotr::{
             state::IndexState,
         },
         postgres::{
-            IndexProvenance, IndexSession, PreparedIndexPlan,
+            INDEX_TARGET_COUNT, IndexProvenance, IndexSession, PreparedIndexPlan,
             control_owner::{ControlSession, OwnerError},
             ingest_registry::{ControlOwner, InitialRegistration},
         },
@@ -445,7 +445,7 @@ impl Index {
             super::super::fresh_process_incarnation()
                 .map_err(|_| failed("fresh identity unavailable"))
         };
-        let mut uuids = [[0; 16]; 10];
+        let mut uuids = [[0; 16]; INDEX_TARGET_COUNT];
         for id in &mut uuids {
             *id = *fresh()?.as_bytes();
         }
@@ -953,7 +953,11 @@ fn check_plan_bounds(planned: &PlannedBatch, profile: Profile) -> Result<()> {
     let counts = std::array::from_fn(|i| planned.plan().chunks()[i].row_count());
     check_family_bounds(&counts, planned.wire_bytes(), profile)
 }
-fn check_family_bounds(counts: &[u64; 10], wire: &[u64; 10], profile: Profile) -> Result<()> {
+fn check_family_bounds(
+    counts: &[u64; INDEX_TARGET_COUNT],
+    wire: &[u64; INDEX_TARGET_COUNT],
+    profile: Profile,
+) -> Result<()> {
     for (&count, bytes) in counts.iter().zip(wire) {
         if count > profile.rows
             || (count == 0 && *bytes != 0)

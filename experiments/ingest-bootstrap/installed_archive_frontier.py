@@ -3,7 +3,7 @@ import hashlib
 
 ARCHIVE_TABLES = {'archive_attempts', 'archive_owner_sessions', 'archive_frontier_snapshots',
     'archive_frontier_batches', 'consumers', 'consumer_frontier_revisions', 'consumer_frontiers'}
-COUNTS = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count')
+COUNTS = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count', 'measurement_count')
 
 
 def clean(row):
@@ -121,7 +121,7 @@ def validate(state, catalog, setup, wanted):
             consumer_role='archive', topology_generation=topology, previous_revision=n-1 if n>1 else None,
             owner_resource_id=catalog_id, owner_epoch=1, owner_incarnation=control['process_incarnation'],
             created_at_us=revision['created_at_us'], sealed=True)
-        counts = (8, 1, 1, 1, 1) if count == 4 else (through, 0, 0, 0, 0)
+        counts = (8, 1, 1, 1, 1, 0) if count == 4 else (through, 0, 0, 0, 0, 0)
         assert clean(snapshot) == dict(operation_id=snapshot['operation_id'], consumer_id=catalog_id,
             frontier_revision=n, dataset_id=dataset, topology_generation=topology, catalog_id=catalog_id,
             owner_epoch=1, owner_incarnation=control['process_incarnation'], snapshot_id=count+1,

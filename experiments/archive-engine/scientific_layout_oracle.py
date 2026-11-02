@@ -13,7 +13,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[2]
 TYPES = {'BLOB':'blob', 'USMALLINT':'uint16', 'UINTEGER':'uint32',
-         'UBIGINT':'uint64', 'BIGINT':'int64', 'VARCHAR':'varchar'}
+         'UBIGINT':'uint64', 'BIGINT':'int64', 'VARCHAR':'varchar', 'BOOLEAN':'boolean'}
 
 # Frozen independent query from scientific_guard_cases.layout_cases (91af8a9).
 # Kept separate from the product wire projection and its overflow sentinel.

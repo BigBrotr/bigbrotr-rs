@@ -2,7 +2,7 @@
 use crate::engine::Engine;
 use crate::rows::{RowError, RowLimits, Rows};
 use bigbrotr_model::{AdmissionBatch, FactPayload};
-use bigbrotr_protocol::archive_batch::{self, Limits};
+use bigbrotr_protocol::archive_batch::{self, ARCHIVE_FAMILY_COUNT, Limits};
 use std::{fmt, io::Read, sync::atomic::AtomicBool};
 
 use crate::schema;
@@ -86,6 +86,9 @@ impl PreparedBatch {
                     ("event_receive_facts", Rows::receive(&facts, rows))
                 }
                 FactPayload::Provenance(_) => ("provenance_facts", Rows::provenance(&facts, rows)),
+                FactPayload::Measurement(_) => {
+                    ("measurement_facts", Rows::measurements(&facts, rows))
+                }
             };
             converted?.append(
                 &mut engine
@@ -102,8 +105,8 @@ impl PreparedBatch {
     }
     /// Read actual native relation counts for bounded diagnostics. This is not
     /// content verification, a catalog receipt or publication authority.
-    pub fn counts(&self) -> Result<[u64; 5], PrepareError> {
-        let mut counts = [0; 5];
+    pub fn counts(&self) -> Result<[u64; ARCHIVE_FAMILY_COUNT], PrepareError> {
+        let mut counts = [0; ARCHIVE_FAMILY_COUNT];
         for (i, table) in schema::TABLES.iter().enumerate() {
             counts[i] = self
                 .engine
@@ -250,7 +253,7 @@ mod tests {
             }
         }
         assert_eq!(facts.len(), 17);
-        let mut counts = [0; 5];
+        let mut counts = [0; ARCHIVE_FAMILY_COUNT];
         // The expanded literal corpus crosses the existing16-record local cap.
         // Keep that cap and exercise both bounded preparations.
         for facts in facts.chunks(limits().max_records) {
@@ -280,6 +283,6 @@ mod tests {
                 assert_eq!(row, ("import".into(), 9, 1));
             }
         }
-        assert_eq!(counts, [13, 1, 1, 1, 1]);
+        assert_eq!(counts, [13, 1, 1, 1, 1, 0]);
     }
 }

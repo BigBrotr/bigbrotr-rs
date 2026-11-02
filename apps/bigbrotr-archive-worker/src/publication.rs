@@ -21,6 +21,7 @@ pub enum PublicationError {
     ExistingData,
     MissingDictionary,
     ConflictingDictionary,
+    InvalidMeasurement,
     PreparedFiles,
     Native,
     CommitUnknown,
@@ -124,6 +125,16 @@ impl PreparedBatch {
             }
         }
         dictionary_closure(c)?;
+        c.execute_batch("CREATE TEMP VIEW publication_measurements AS SELECT * FROM stage.measurement_facts UNION ALL SELECT * FROM archive.main.measurement_facts WHERE source_record_id IN (SELECT prior_unknown.source_record_id FROM stage.measurement_facts WHERE prior_unknown IS NOT NULL)")
+            .map_err(|_| PublicationError::Native)?;
+        crate::measurement::validate_rows(
+            c,
+            "stage.measurement_facts",
+            "publication_measurements",
+            "publication_dictionaries",
+            self.batch.records().len(),
+        )
+        .map_err(|_| PublicationError::InvalidMeasurement)?;
         let counts = self.counts().map_err(|_| PublicationError::Native)?;
         for (table, count) in schema::TABLES
             .into_iter()

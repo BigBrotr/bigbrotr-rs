@@ -344,6 +344,7 @@ fn envelope(facts: &[&Fact]) -> Result<Columns, RowError> {
 }
 
 mod dictionary;
+mod measurement;
 mod metadata;
 
 #[cfg(test)]

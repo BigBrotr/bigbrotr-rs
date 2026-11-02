@@ -244,8 +244,8 @@ def archive_science(native,*,compacted=False,live_epoch=3,provenance=True,retain
         {(1,n) for n in range(1,13 if provenance else 9)}|{(live_epoch,n) for n in range(1,11 if provenance else 6)})
     if retained_epoch2: expected_facts={(1,n) for n in range(1,313)}|{(2,n) for n in range(1,11)}
     assert set(facts)==expected_facts
-    assert [len(tables[t]) for t in TABLES]==([73,62,62,62,63] if retained_epoch2 else [12,4,4,4,4] if compacted else
-        [13,2,2,2,3] if provenance else [7,2,2,2,0])
+    assert [len(tables[t]) for t in TABLES]==([73,62,62,62,63,0] if retained_epoch2 else [12,4,4,4,4,0] if compacted else
+        [13,2,2,2,3,0] if provenance else [7,2,2,2,0,0])
     ds=bytes.fromhex(tables['events'][0]['source_record_id']['dataset_id']);batches=[]
     ranges_by_epoch=([(1,2,[(1,2),(3,3),(4,7),(8,12),(13,17),(18,22),(23,27)]),(2,2,[(1,1)])]
         if compacted else [(1,0,[(1,2),(3,3),(4,7),(8,12)]),(live_epoch,live_epoch-1,[(1,4),(5,9),(10,10)])])

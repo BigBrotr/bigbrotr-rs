@@ -196,7 +196,7 @@ def schedule_checked(phase):
     assert instant(b['holder_start'])==instant(h['backend_start'])
     assert b['waiting_locks']==[dict(relation='control.archive_frontier_snapshots',mode='RowExclusiveLock',granted=False)]
     # Match the actual query, not just a generic blocked Control session.
-    assert b['query']=="INSERT INTO control.archive_frontier_snapshots(operation_id,consumer_id,frontier_revision,dataset_id,topology_generation,catalog_id,owner_epoch,owner_incarnation,snapshot_id,request_digest,dictionary_count,payload_count,eligibility_count,receive_count,provenance_count) VALUES ($1::bytea,$2::bytea,$3::text::numeric,$4::bytea,$5::text::numeric,$2::bytea,$6::text::numeric,$7::bytea,$8::bigint,$9::bytea,$10::text::numeric,$11::text::numeric,$12::text::numeric,$13::text::numeric,$14::text::numeric)"
+    assert b['query']=="INSERT INTO control.archive_frontier_snapshots(operation_id,consumer_id,frontier_revision,dataset_id,topology_generation,catalog_id,owner_epoch,owner_incarnation,snapshot_id,request_digest,dictionary_count,payload_count,eligibility_count,receive_count,provenance_count,measurement_count) VALUES ($1::bytea,$2::bytea,$3::text::numeric,$4::bytea,$5::text::numeric,$2::bytea,$6::text::numeric,$7::bytea,$8::bigint,$9::bytea,$10::text::numeric,$11::text::numeric,$12::text::numeric,$13::text::numeric,$14::text::numeric,$15::text::numeric)"
     times=[b['server_us'],schedule['action_before_us'],schedule['action_after_us'],schedule['terminal_observed_us'],schedule['release_before_us'],schedule['release_after_us']]
     for at in times:clock(at,window)
     assert times==sorted(times) and current['acquired_at_us']<=instant(b['query_start'])<=times[0]
@@ -232,17 +232,17 @@ def journal_checked(before,after,science,revision):
     candidates=set(files)-expected;name,=candidates
     assert re.fullmatch('frontier-[0-9a-f]{32}\\.intent',name)
     raw=bytes.fromhex(records[name]);operation=bytes.fromhex(name[9:-7]);pg=after['control'];consumer=only(pg['consumers'])
-    assert 214<=len(raw)<=65536 and operation!=bytes(16)
+    assert 222<=len(raw)<=65536 and operation!=bytes(16)
     receipts=receipts_for(pg,science)[:4];ds=pg['datasets'][0]['dataset_id'];catalog=consumer['consumer_id']
     digest=cut_digest(ds,1,receipts,[(1,12),(2,0)],8)
-    assert raw[:8]==b'BBFRONT\x01' and raw[8:40]==bytes.fromhex(binding)
+    assert raw[:8]==b'BBFRONT\x02' and raw[8:40]==bytes.fromhex(binding)
     assert raw[40:88]==binary(ds)+binary(catalog)+operation and raw[88:104]==be(revision)+be(8)
-    assert raw[104:136]==bytes.fromhex(digest) and raw[136:176]==b''.join(be(n) for n in (8,1,1,1,1))
-    n=int.from_bytes(raw[176:180],'big');assert len(raw)==180+n+32 and raw[-32:]==bytes.fromhex(sha(b'bigbrotr/archive-frontier-intent/1\0'+raw[:-32]))
+    assert raw[104:136]==bytes.fromhex(digest) and raw[136:184]==b''.join(be(n) for n in (8,1,1,1,1,0))
+    n=int.from_bytes(raw[184:188],'big');assert len(raw)==188+n+32 and raw[-32:]==bytes.fromhex(sha(b'bigbrotr/archive-frontier-intent/2\0'+raw[:-32]))
     expectation=dict(dataset_id=ds[2:],topology_generation='1',bounds=[dict(shard_id=0,owner_epoch=e,complete_through=c) for e,c in ((1,12),(2,0))],
         receipts=[dict(r,dataset_id=r['dataset_id'].lower(),topology_generation=str(r['topology_generation']),batch_digest=r['batch_digest'].lower(),attempt_id=list(bytes.fromhex(r['attempt_id']))) for r in receipts],snapshot_id=8)
     expectation['receipts']=[{k:r[k] for k in ('dataset_id','schema_version','topology_generation','batch_digest','record_count','input_ranges','attempt_id','publication_ordinal')} for r in expectation['receipts']]
-    assert raw[180:-32]==json.dumps(expectation,separators=(',',':')).encode()
+    assert raw[188:-32]==json.dumps(expectation,separators=(',',':')).encode()
     assert not any(binary(s['operation_id'])==operation for s in pg['archive_frontier_snapshots'])
     for name,raw in records.items():
         item=files[name];assert item['mode']==0o600 and item['links']==1 and item['sha256']==sha(bytes.fromhex(raw))

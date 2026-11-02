@@ -451,9 +451,9 @@ def publication(io, initial, published, initialized, native, readback, transcrip
     require(prior == endpoints[-1] and consumer['current_revision'] == revisions[-1]['frontier_revision'],
             'full current positive frontier')
     selected = snapshots[-1]
-    counts = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count')
+    counts = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count', 'measurement_count')
     require([selected[key] for key in counts] == [len(wanted['tables'][key]) for key in
-            ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts', 'provenance_facts')],
+            ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts', 'provenance_facts', 'measurement_facts')],
             'complete native family counts')
     require(max(row['snapshot_id'] for row in catalog['public.ducklake_snapshot']) == selected['snapshot_id'],
             'actual catalog final snapshot')

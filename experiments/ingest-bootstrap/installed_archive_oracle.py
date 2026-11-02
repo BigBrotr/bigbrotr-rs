@@ -8,7 +8,7 @@ import hashlib
 from bootstrap_oracle import cbor
 from installed_sync_oracle import decode, expected as native_expected
 
-TABLES = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts', 'provenance_facts')
+TABLES = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts', 'provenance_facts', 'measurement_facts')
 DESCRIPTOR_FIELDS = ('event_id class url clock vantage software method_id public_key route_class '
     'software_version label visibility_scope_id input algorithm capability output_unit '
     'failure_taxonomy algorithm_version protocol_revision format format_version '
@@ -96,7 +96,7 @@ def expected(state, report, event, dictionary_time, received, recorded, resoluti
         tables[table].append(row)
     assert [f['sequence'] for f in facts] == list(range(1, 313 if boundary else 13 if provenance else 9))
     assert {t: len(v) for t, v in tables.items()} == dict(zip(TABLES,
-        (68, 61, 61, 61, 61) if boundary else (8, 1, 1, 1, 1) if provenance else (5, 1, 1, 1, 0)))
+        (68, 61, 61, 61, 61, 0) if boundary else (8, 1, 1, 1, 1, 0) if provenance else (5, 1, 1, 1, 0, 0)))
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
     topology = int(report['topology_generation'])
     batches = []

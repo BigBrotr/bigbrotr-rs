@@ -1,11 +1,10 @@
 # Archive row format
 
 Status: implementation in progress under P02-T03/T04. The private `Rows` adapter
-converts the five existing immutable fact families to bounded Arrow batches
+converts the six implemented immutable fact families to bounded Arrow batches
 and explicitly flushes a native appender. It grants no admission, scope, catalog
-publication, protection or export authority. Later fact families, dictionary closure,
-transaction receipts, production parent supervision and standalone export
-manifests are still required. A diagnostic Parquet file is not a published archive.
+publication, protection or export authority. Standalone export manifests and the remaining installed Monitor journey
+are still required. A diagnostic Parquet file is not a published archive.
 
 The owning [data contract](../specification/data-contracts.md) and
 [relation catalog](../specification/storage-catalog.md) define scientific meaning.
@@ -43,13 +42,14 @@ in order, are:
 | `archive.event_eligibility_facts` / `Rows::eligibility` | `event_id` binary32, `body_digest` binary32, `sig` binary64, `first_eligible_at` i64, `origin` closed text, `import_lineage` qualified reference or null |
 | `archive.event_receive_facts` / `Rows::receive` | `event_id` binary32, `received_at` i64, `observer_id` qualified reference, `clock_quality` struct, `corrects` source identity or null |
 | `archive.provenance_facts` / `Rows::provenance` | `event_id` binary32, `endpoint_id`, `observer_id`, `access_scope_id` qualified references, `received_at` i64, `clock_quality`, `verification_method_id` qualified reference, `corrects` source identity or null |
+| `archive.measurement_facts` / `Rows::measurements` | One closed compound A05 attempt: typed stable context/profile/clock, state, exact prior FactRef, nullable observed execution/open/read/counters, terminal moment/reason and teardown |
 | `archive.dictionaries` / `Rows::dictionaries` | `reference` qualified reference, `normalization_version` u16, `descriptor_schema` closed text, `descriptor_version` u16, `descriptor_value` typed struct |
 
 Clock quality contains `clock_id` qualified reference, `resolution_us` u64,
 `uncertainty_us` u64 or null and `anomaly_flags` u32. Unknown uncertainty stays null;
 measured zero stays zero. Corrections preserve the entire source identity.
 
-`descriptor_value` is a closed wide struct for the seven
+`descriptor_value` is a closed wide struct for the nine
 [descriptor schemas](../specification/dictionary-descriptors.md). Its fields in
 order are `event_id` binary32; `class`, `url`, `clock`, `vantage`, `software` text;
 `method_id` qualified reference; `public_key` binary32; `route_class`,
@@ -113,12 +113,12 @@ handoff/staging changes require their own validation.
 ## Explicit initial scientific schema
 
 The compiled [schema-1 declaration](../../contracts/archive/v1/schema.json) owns
-native SQL types for the five existing families and `archive_commits`. Private
-staging consumes the same five scientific definitions. The finite private
+native SQL types for the six implemented families and `archive_commits`. Private
+staging consumes the same six scientific definitions. The finite private
 `initialize-catalog` operation requires an exclusively reserved, empty PostgreSQL
 database and an existing canonical empty local data directory. It checks the
 catalog before DuckLake ATTACH, disables native automatic migration and persistent
-secret storage, and creates all six relations in one native transaction. It does
+secret storage, and creates all seven relations in one native transaction. It does
 not adopt or retry an existing catalog. Snapshot author/message plus the declaration
 SHA-256 aid inspection; they are not an archive receipt or scientific readiness.
 
@@ -141,7 +141,7 @@ scientific compatibility; the explicitly named native-only foundation path canno
 adopt a scientific installation. Every inspection/activation checks live nested
 metadata under the owner lock, independently of PG structural hashes. The
 [independent oracle](../../experiments/archive-engine/scientific_layout_oracle.py)
-derives all 203 expected native column rows from the closed declaration and can
+derives all 336 expected native column rows from the closed declaration and can
 compare separately collected PG rows.
 
 Installed recovery, publication and the CLI journey remain required. A failed or
@@ -160,6 +160,42 @@ native ALTER/DROP/rollback, all selected schema/NULL/metadata refusals, installa
 rollback, lost guard COMMIT and two directly observed SQL lock orders. Those lock
 cases use PG statements; no scientific native publisher or batch receipt is
 qualified. Two fixture failures and their corrected independent oracles are retained.
+
+## Compound passive-attempt retention
+
+A05 is one source fact and one `measurement_facts` row; execution, OPEN, READ,
+counters and terminal children are inline typed structs. They own no separate
+source, digest or measurement vote. `prior_unknown` retains the complete source
+identity and canonical digest. The original unknown is never rewritten by a
+resolution. Missing child structs, observed moments with both samples null, and
+measured zero remain distinct; signed UTC is never cast to an unsigned clock.
+`rx_ws_bytes` preserves actual plaintext WebSocket bytes read, including buffered
+or rejected tails; `rx_payload_bytes` preserves consumed payload octets. Declared
+potential frame length is not counted as actual received payload.
+
+`Preparation::read_measurement` accepts an owned `MeasurementRead`, actual
+`ReaderCustody`, SELECT-only route/credentials, split `WorkerBudgets` and the
+complete fact bound. `ArchivedMeasurement` retains the grant and custody and
+exposes the exact request, cut observation, canonical fact and actual catalog
+identity. Pure route/limit preflights precede launch; cancellation/deadline, full
+clean EOF and positive reap precede decoding/delivery. The caller builds the
+`CutRead` from retained published expectations and holds its real matching reader
+pin and current scope authority. The API creates neither.
+
+The private `read-measurement` command requires an exact FactRef and an explicit
+complete pinned `CutRead`. In one native transaction it validates the selected
+cut, dictionary shape/access visibility and actual prior-record closure, then
+selects at most two rows by complete source identity and reconstructs the exact
+canonical A05 digest. A conflicting source duplicate refuses even if one stored
+digest matches. Resolution checks compare the actual named unknown, immutable
+attempt/context/profile/clock identity, visibility and retained observations.
+Raw conflicting terminals stay inspectable; no availability reducer or public
+read authorization is introduced here. The installed caller must supply current
+authority, actual custody, pin and supervised grants through delivery.
+
+These A05 schema/row/read changes are source implementation with authored literal,
+Parquet and restart controls. Rust/native/engine qualification has not run for
+this slice; earlier five-family reports do not qualify the added family.
 
 ## Exact historical signed-event hydration
 

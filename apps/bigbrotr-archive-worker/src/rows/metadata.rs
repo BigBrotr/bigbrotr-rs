@@ -116,7 +116,7 @@ impl Rows {
     }
 }
 
-fn select<'a, T>(
+pub(super) fn select<'a, T>(
     facts: &[&'a Fact],
     limits: RowLimits,
     get: impl Fn(&'a FactPayload) -> Option<&'a T>,
@@ -134,7 +134,7 @@ fn select<'a, T>(
     }
     Ok(values)
 }
-fn clock(
+pub(super) fn clock(
     values: impl ExactSizeIterator<Item = ClockQuality> + Clone,
 ) -> Result<ArrayRef, RowError> {
     nullable_structure(

@@ -884,7 +884,7 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
     index.exact(sorted(r['frontier_revision'] for r in after['consumer_frontier_revisions'] if r['consumer_id']==catalog),[1,2,3,4])
     original=index.only(before['archive_frontier_snapshots'],frontier_revision=2)
     for revision,cuts,members,counts in ((3,[(1,3),(2,0)],receipts[:2],[original[k] for k in source.COUNTS]),
-            (4,[(1,312),(2,10)],receipts,[73,62,62,62,63])):
+            (4,[(1,312),(2,10)],receipts,[73,62,62,62,63,0])):
         head=index.only(after['consumer_frontier_revisions'],consumer_id=catalog,frontier_revision=revision)
         assert head['previous_revision']==revision-1 and head['topology_generation']==1
         snapshot=index.only(after['archive_frontier_snapshots'],frontier_revision=revision)
@@ -909,10 +909,10 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
                 index.exact(row,dict(consumer_id=catalog,frontier_revision=revision,attempt_id=row['attempt_id'],xmin=head['xmin']))
     assert len({r['operation_id'] for r in after['archive_frontier_snapshots']})==len(after['archive_frontier_snapshots'])
     frontier=index.only(after['archive_frontier_snapshots'],frontier_revision=4)
-    index.exact(report,dict(format='bigbrotr-archive-catch-up/1',dataset_id=consumer['dataset_id'][2:],catalog_id=catalog[2:],
+    index.exact(report,dict(format='bigbrotr-archive-catch-up/2',dataset_id=consumer['dataset_id'][2:],catalog_id=catalog[2:],
         terminal_epoch=2,issued_attempts_before=issued_before,new_attempts=new_attempts,frontier_revision=4,snapshot_id=68,
         operation_id=list(index.raw(frontier['operation_id'],16)),request_digest=frontier['request_digest'][2:],
-        family_counts=[73,62,62,62,63],new_frontier_revisions=2,recovery_basis='closed-producer-floor-v3',compacted_requests='64'))
+        family_counts=[73,62,62,62,63,0],new_frontier_revisions=2,recovery_basis='closed-producer-floor-v3',compacted_requests='64'))
     return receipts
 
 

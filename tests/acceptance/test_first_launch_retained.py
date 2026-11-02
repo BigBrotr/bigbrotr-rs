@@ -297,9 +297,9 @@ def compacted_archive_fixture(science,*,schedule='uninterrupted'):
     catalog_after={'bigbrotr_archive.attempts':[imported(r) for r in attempts if r['ordinal']!=3],
         'bigbrotr_archive.owner':[dict(enabled=False,ordinal=69 if grouped else 68)]}
     final=after['archive_frontier_snapshots'][-1]
-    report=dict(format='bigbrotr-archive-catch-up/1',dataset_id=ds[2:],catalog_id=catalog[2:],terminal_epoch=2,
+    report=dict(format='bigbrotr-archive-catch-up/2',dataset_id=ds[2:],catalog_id=catalog[2:],terminal_epoch=2,
         issued_attempts_before=issued_before,new_attempts=65 if schedule=='uninterrupted' else 64,frontier_revision=4,snapshot_id=68,operation_id=list(index.raw(final['operation_id'])),
-        request_digest=final['request_digest'][2:],family_counts=[73,62,62,62,63],new_frontier_revisions=2,
+        request_digest=final['request_digest'][2:],family_counts=[73,62,62,62,63,0],new_frontier_revisions=2,
         recovery_basis='closed-producer-floor-v3',compacted_requests='64')
     census=dict(format='bigbrotr-independent-installed-archive-read/1',tables={**copy.deepcopy(science['tables']),'archive_commits':receipts})
     return prefix,parked,before,after,report,catalog_before,catalog_after,census
@@ -738,7 +738,7 @@ class RetainedBoundaryControls(unittest.TestCase):
     def test_current_scope_does_not_silently_expand_old_encoder(self):
         with tempfile.TemporaryDirectory() as temporary:
             state,before,report,events,wires,dump,wanted=saturation_fixture(Path(temporary))
-            rows=index.expected_rows(wanted,bytes.fromhex('66'*16),schema,counts=(68,61,61,61,61,61,61,0,61,61))
+            rows=index.expected_rows(wanted,bytes.fromhex('66'*16),schema,counts=(68,61,61,61,61,61,61,0,61,61,0))
             self.assertEqual(sum(map(len,rows.values())),556)
             with self.assertRaises(AssertionError):index.expected_rows(wanted,bytes.fromhex('66'*16),schema)
             encoded=fixture()[3]
@@ -751,7 +751,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             custody=root/'index';custody.mkdir()
             state,actual,_=metadata_fixture(custody,science=wanted,retained_boundary=True)
             result=index.publication(state,state,actual,wanted,schema,custody,retained_boundary=True)
-            self.assertEqual((result['frontier_revision'],result['source_cut'],result['committed_chunks']),(64,312,640))
+            self.assertEqual((result['frontier_revision'],result['source_cut'],result['committed_chunks']),(64,312,704))
             with self.assertRaises(AssertionError):index.validate_metadata(state,custody,complete=True)
             for mutate in (lambda s:s['projection_plans'][-1].update(source_last=313),
                 lambda s:s['index_frontier_plans'][-1].update(engine_receipt_digest='\\x'+'00'*32),
@@ -1469,7 +1469,7 @@ class ClosedReclamationControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             first,encoded,native_rows_value,science=retained_successor_fixture(Path(directory))
             self.assertEqual(sum(map(len,science['tables'].values())),322)
-            self.assertEqual([len(rows) for rows in science['tables'].values()],[73,62,62,62,63])
+            self.assertEqual([len(rows) for rows in science['tables'].values()],[73,62,62,62,63,0])
             self.assertEqual(len(science['batches']),67)
             projected=index.expected_rows(science,bytes.fromhex('66'*16),schema,counts=case.topology.RETAINED_COUNTS)
             self.assertEqual(sum(map(len,projected.values())),572)

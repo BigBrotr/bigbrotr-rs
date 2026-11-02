@@ -11,7 +11,7 @@ from types import SimpleNamespace
 
 ENDPOINT = 'ws://127.0.0.1:7447/installed-live-fixture'
 SELECTOR_SHA256 = '64f3d2ad64cf6960aaa9908e8b85b21205ca89786cb2c21dacb3c4e8e4d1938f'
-COUNTS = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count')
+COUNTS = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count', 'measurement_count')
 PROGRESS_FIELDS = ('progress_request_id', 'progress_event_ordinal', 'progress_wire_sequence', 'progress_input_sha256')
 # This maintained peer sends signed time1 on both pages. The second page must
 # overlap that second, then the repeated boundary leaves coverage pending.
@@ -27,8 +27,8 @@ def profile(provenance=True):
     assert type(provenance) is bool
     return dict(initial_cut=12 if provenance else 8, successor_cut=10 if provenance else 5,
         successor_requests=3 if provenance else 2, snapshot=8 if provenance else 7,
-        initial_counts=[8, 1, 1, 1, 1] if provenance else [5, 1, 1, 1, 0],
-        counts=[13, 2, 2, 2, 3] if provenance else [7, 2, 2, 2, 0],
+        initial_counts=[8, 1, 1, 1, 1, 0] if provenance else [5, 1, 1, 1, 0, 0],
+        counts=[13, 2, 2, 2, 3, 0] if provenance else [7, 2, 2, 2, 0, 0],
         old_coordinates=(3, 4, 8, 9, 10, 11) if provenance else (3, 4, 5, 6, 7, 8))
 
 
@@ -552,7 +552,7 @@ def bridge(state, initial_receipts, *, provenance=True):
 def catch_up_report(report, state, *, retry, provenance=True):
     selected = profile(provenance)
     frontier = only(state['archive_frontier_snapshots'], frontier_revision=6)
-    expected = dict(format='bigbrotr-archive-catch-up/1', dataset_id=only(state['datasets'])['dataset_id'][2:],
+    expected = dict(format='bigbrotr-archive-catch-up/2', dataset_id=only(state['datasets'])['dataset_id'][2:],
         catalog_id=only(state['consumers'],consumer_role='archive')['consumer_id'][2:], terminal_epoch=2,
         issued_attempts_before=4 + selected['successor_requests'] if retry else 4,
         new_attempts=0 if retry else selected['successor_requests'],

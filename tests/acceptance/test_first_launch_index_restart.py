@@ -224,7 +224,7 @@ class RestartIndexControls(unittest.TestCase):
             check.backlog(before,root)
             check.recovered(before,after,root)
             check.recovered(after,retry,root,retry=True)
-            self.assertEqual(index.publication(retry,retry,rows,science,schema,root,owner_count=3)['committed_chunks'],40)
+            self.assertEqual(index.publication(retry,retry,rows,science,schema,root,owner_count=3)['committed_chunks'],44)
             self.assertEqual([r['origin_epoch'] for r in retry['projection_plans']],[1,1,1,2])
             self.assertEqual([r['owner_epoch'] for r in retry['index_frontier_plans']],[1,1,2,2])
             with self.assertRaises((AssertionError,ValueError)):

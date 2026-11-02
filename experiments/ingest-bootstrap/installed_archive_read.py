@@ -46,9 +46,9 @@ def sql_path(value):
 def census_limits(profile):
     """Fixed probe envelopes, independent of observed rows or product limits."""
     assert type(profile) is str and profile in ('default', 'closed-reclamation'), 'native-reader-profile'
-    counts = (16, 16, 16, 16, 16, 8) if profile == 'default' else (73, 62, 62, 62, 63, 67)
+    counts = (16, 16, 16, 16, 16, 16, 8) if profile == 'default' else (73, 62, 62, 62, 63, 0, 67)
     return dict(zip(('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts',
-                     'provenance_facts', 'archive_commits'), counts))
+                     'provenance_facts', 'measurement_facts', 'archive_commits'), counts))
 
 
 def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
@@ -98,11 +98,11 @@ def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
             assert set_config(configuration, key.encode(), value.encode()) == 0, 'native-reader-config'
         assert open_db(None, C.byref(database), configuration, C.byref(error)) == 0, 'native-reader-open'
         assert connect(database, C.byref(connection)) == 0, 'native-reader-connect'
-        def execute(sql, label, maximum=0):
+        def execute(sql, label, maximum=None):
             result = Result()
             try:
                 assert query(connection, sql.encode(), C.byref(result)) == 0, 'native-reader-' + label
-                if maximum == 0:
+                if maximum is None:
                     return None
                 length = count(C.byref(result))
                 assert column_count(C.byref(result)) == 1 and length <= maximum, 'native-reader-row-bound'
@@ -150,7 +150,8 @@ def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
             events='hex(event_id) AS event_id,hex(pubkey) AS pubkey,created_at,kind,tags,content,ref_value(event_ordinal) AS event_ordinal',
             event_eligibility_facts='hex(event_id) AS event_id,hex(body_digest) AS body_digest,hex(sig) AS sig,first_eligible_at,origin,ref_value(import_lineage) AS import_lineage',
             event_receive_facts='hex(event_id) AS event_id,received_at,ref_value(observer_id) AS observer_id,clock_value(clock_quality) AS clock_quality,source_value(corrects) AS corrects',
-            provenance_facts='hex(event_id) AS event_id,ref_value(endpoint_id) AS endpoint_id,ref_value(observer_id) AS observer_id,ref_value(access_scope_id) AS access_scope_id,received_at,clock_value(clock_quality) AS clock_quality,ref_value(verification_method_id) AS verification_method_id,source_value(corrects) AS corrects')
+            provenance_facts='hex(event_id) AS event_id,ref_value(endpoint_id) AS endpoint_id,ref_value(observer_id) AS observer_id,ref_value(access_scope_id) AS access_scope_id,received_at,clock_value(clock_quality) AS clock_quality,ref_value(verification_method_id) AS verification_method_id,source_value(corrects) AS corrects',
+            measurement_facts='hex(attempt_id) AS attempt_id,subject_kind,ref_value(endpoint_id) AS endpoint_id,ref_value(observer_id) AS observer_id,ref_value(route_id) AS route_id,ref_value(access_scope_id) AS access_scope_id,ref_value(method_id) AS method_id,profile,clock_value(clock_quality) AS clock_quality,state_kind,CASE WHEN prior_unknown IS NULL THEN NULL ELSE struct_pack(source_record_id:=source_value(prior_unknown.source_record_id),payload_digest:=hex(prior_unknown.payload_digest)) END AS prior_unknown,CASE WHEN observed IS NULL THEN NULL ELSE struct_pack(execution:=observed.execution,open:=observed.open,read:=struct_pack(request_flushed:=observed.read.request_flushed,first_valid_event:=CASE WHEN observed.read.first_valid_event IS NULL THEN NULL ELSE struct_pack(event_id:=hex(observed.read.first_valid_event.event_id),received:=observed.read.first_valid_event.received,verified:=observed.read.first_valid_event.verified) END,eose:=observed.read.eose,eose_prefix_verified:=observed.read.eose_prefix_verified,auth_observed:=observed.read.auth_observed,correlated_closed:=observed.read.correlated_closed),counters:=observed.counters) END AS observed,ended,termination,teardown')
         order = ('source_record_id.dataset_id,source_record_id.shard_id,source_record_id.owner_epoch,source_record_id.sequence'
             if full_stream_order else 'source_record_id.sequence')
         tables = {name: execute(f'SELECT to_json(r) FROM (SELECT {common},{fields} FROM archive.{name} ORDER BY {order} LIMIT {limits[name]+1}) r', name, limits[name])

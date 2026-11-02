@@ -116,20 +116,20 @@ BEGIN
         VALUES(pg_temp.id(60),pg_temp.digest(100+revision),pg_temp.id(1),pg_temp.id(50),revision,revision-1,
             0,7,1,first_sequence,last_sequence,pg_temp.digest(200+revision),owner_number,incarnation,0);
     FOREACH target IN ARRAY ARRAY['dictionaries','events','event_eligibility_facts','event_receive_facts',
-        'event_id_index','event_author_index','event_time_index','event_tag_index','provenance_by_event','provenance_by_relay'] LOOP
+        'event_id_index','event_author_index','event_time_index','event_tag_index','provenance_by_event','provenance_by_relay','measurement_facts'] LOOP
         ordinal:=ordinal+1;
         IF target=omitted THEN CONTINUE; END IF;
         INSERT INTO control.projection_chunks(generation_id,chunk_id,dataset_id,storage_incarnation,
             table_identity_digest,target,target_schema_version,topology_generation,chunk_ordinal,row_count,
             owner_resource_id,owner_epoch,owner_incarnation,prepared_at_us)
-            VALUES(pg_temp.id(60),pg_temp.digest(1000+revision*10+ordinal),pg_temp.id(1),pg_temp.id(61),pg_temp.digest(62),
-                target,CASE WHEN wrong_schema THEN 2 ELSE 1 END,0,revision,CASE WHEN target='dictionaries' THEN 2 WHEN bad_witness AND target='provenance_by_event' THEN 1 ELSE 0 END,
+            VALUES(pg_temp.id(60),pg_temp.digest(1000+revision*16+ordinal),pg_temp.id(1),pg_temp.id(61),pg_temp.digest(62),
+                target,CASE WHEN wrong_schema THEN 1 ELSE 2 END,0,revision,CASE WHEN target='dictionaries' THEN 2 WHEN bad_witness AND target='provenance_by_event' THEN 1 ELSE 0 END,
                 pg_temp.id(50),owner_number,incarnation,0);
         INSERT INTO control.projection_plan_chunks VALUES(pg_temp.id(60),pg_temp.digest(100+revision),target,
-            pg_temp.digest(1000+revision*10+ordinal),'all',pg_temp.digest(2000+revision*10+ordinal));
+            pg_temp.digest(1000+revision*16+ordinal),'all',pg_temp.digest(2000+revision*16+ordinal));
         INSERT INTO control.projection_chunk_bounds VALUES
-            (pg_temp.id(60),pg_temp.digest(1000+revision*10+ordinal),pg_temp.id(1),0,0,1,0),
-            (pg_temp.id(60),pg_temp.digest(1000+revision*10+ordinal),pg_temp.id(1),0,7,1,last_sequence);
+            (pg_temp.id(60),pg_temp.digest(1000+revision*16+ordinal),pg_temp.id(1),0,0,1,0),
+            (pg_temp.id(60),pg_temp.digest(1000+revision*16+ordinal),pg_temp.id(1),0,7,1,last_sequence);
     END LOOP;
     UPDATE control.projection_plans SET sealed=true WHERE frontier_revision=revision;
 END;
@@ -141,8 +141,8 @@ SELECT pg_temp.expect_error('source_hole','23514',$$SELECT pg_temp.prepare(1,2,3
 BEGIN;
 SELECT pg_temp.prepare(1,1,2);
 COMMIT;
-SELECT pg_temp.assert_true('prepared_all_ten_zero_outputs_retained',
-    (SELECT count(*)=10 AND count(*) FILTER(WHERE row_count=0)=9 AND bool_and(state='prepared') FROM control.projection_chunks)
+SELECT pg_temp.assert_true('prepared_all_eleven_zero_outputs_retained',
+    (SELECT count(*)=11 AND count(*) FILTER(WHERE row_count=0)=10 AND bool_and(state='prepared') FROM control.projection_chunks)
     AND (SELECT current_revision IS NULL FROM control.consumers WHERE consumer_id=pg_temp.id(50)));
 SELECT pg_temp.expect_error('second_pending_plan','23514',$$SELECT pg_temp.prepare(2,3,4)$$);
 SELECT pg_temp.expect_error('rewrite_sealed_source','23514',$$UPDATE control.projection_plans SET source_batch_digest=pg_temp.digest(999)$$);
@@ -221,14 +221,14 @@ BEGIN;
 SELECT pg_temp.publish(1);
 COMMIT;
 SELECT pg_temp.assert_true('old_plan_published_by_current_owner',
-    (SELECT count(*)=10 AND bool_and(owner_epoch=1 AND state='committed') FROM control.projection_chunks)
+    (SELECT count(*)=11 AND bool_and(owner_epoch=1 AND state='committed') FROM control.projection_chunks)
     AND (SELECT owner_epoch=2 AND plan_digest=pg_temp.digest(101) FROM control.index_frontier_plans)
     AND (SELECT current_revision=1 FROM control.consumers));
 BEGIN;
 SELECT pg_temp.prepare(2,3,4);
 COMMIT;
 SELECT pg_temp.assert_true('new_chunks_keep_new_origin',
-    (SELECT count(*)=10 AND bool_and(owner_epoch=2 AND owner_incarnation=pg_temp.id(52))
+    (SELECT count(*)=11 AND bool_and(owner_epoch=2 AND owner_incarnation=pg_temp.id(52))
         FROM control.projection_chunks WHERE chunk_ordinal=2)
     AND (SELECT owner_epoch=1 FROM control.projection_generations));
 SELECT pg_temp.expect_error('source_close_cannot_erase_prepared_bound','23514',$$UPDATE control.source_streams SET state='closing' WHERE shard_id=7;

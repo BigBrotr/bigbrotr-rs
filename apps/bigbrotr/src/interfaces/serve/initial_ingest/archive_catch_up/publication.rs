@@ -6,6 +6,7 @@ use bigbrotr::storage::{
     rocks::store::PendingBatchHeader,
 };
 use bigbrotr_model::ArchiveBatch;
+use bigbrotr_protocol::archive_batch::ARCHIVE_FAMILY_COUNT;
 
 #[allow(clippy::too_many_arguments)]
 pub(super) async fn run(
@@ -320,7 +321,7 @@ pub(super) async fn run(
         .receipt
         .ok_or_else(|| error("missing final frontier delivery"))?;
     created_frontiers += u64::from(result.created);
-    let mut report = json!({"format":"bigbrotr-archive-catch-up/1", "dataset_id":coordinator.identity().dataset(),
+    let mut report = json!({"format":"bigbrotr-archive-catch-up/2", "dataset_id":coordinator.identity().dataset(),
         "catalog_id":coordinator.identity().catalog(), "terminal_epoch":proof.verified_through(),
         "issued_attempts_before":issued, "new_attempts":planned,
         "frontier_revision":receipt.revision,"snapshot_id":receipt.snapshot_id,
@@ -481,7 +482,10 @@ async fn resolve_intents(
 
 // The snapshot can advance while this exact prefix remains unchanged. A changed
 // family distribution is corrupt retained metadata, never a new-revision reason.
-fn require_current_counts(retained: [u64; 5], observed: [u64; 5]) -> Result<()> {
+fn require_current_counts(
+    retained: [u64; ARCHIVE_FAMILY_COUNT],
+    observed: [u64; ARCHIVE_FAMILY_COUNT],
+) -> Result<()> {
     if retained != observed {
         return Err(error(
             "retained frontier family counts differ from actual original prefix",
@@ -496,13 +500,20 @@ mod tests {
 
     #[test]
     fn changed_current_family_distribution_refuses_even_with_an_equal_total() {
-        let original = [3, 2, 2, 4, 1];
+        let original = [3, 2, 2, 4, 1, 2];
         assert!(require_current_counts(original, original).is_ok());
-        for changed in [[2, 3, 2, 4, 1], [3, 2, 1, 4, 2], [3, 2, 2, 5, 0]] {
+        for changed in [
+            [2, 3, 2, 4, 1, 2],
+            [3, 2, 1, 4, 2, 2],
+            [3, 2, 2, 5, 0, 2],
+            [3, 2, 2, 4, 2, 1],
+        ] {
             assert_eq!(original.iter().sum::<u64>(), changed.iter().sum::<u64>());
             assert!(require_current_counts(original, changed).is_err());
         }
-        assert!(require_current_counts([0; 5], [0; 5]).is_ok());
-        assert!(require_current_counts(original, [0; 5]).is_err());
+        assert!(
+            require_current_counts([0; ARCHIVE_FAMILY_COUNT], [0; ARCHIVE_FAMILY_COUNT]).is_ok()
+        );
+        assert!(require_current_counts(original, [0; ARCHIVE_FAMILY_COUNT]).is_err());
     }
 }
