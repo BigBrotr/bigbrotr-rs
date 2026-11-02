@@ -79077,9 +79077,9 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root sole integrator; all local engines/compiler/tests terminal. Current publication journal is local; no second push to supersede active551 CI.",
-        "source_work": "Original seed worktree clean at8129ef53 and preserved; source integrated and pushed on551 main.",
-        "review": "Bounded Astra read-only design of remaining connected refusal gates; Sol prepares source-bound CI acquisition/verification. No new engine/build/test campaign.",
+        "integrator": "Root sole integrator; local77394acf portable fixture correction16controlsPASS, unpublished. Existing checkpoint journal update pending. No engine/compiler active.",
+        "source_work": "Connected guard sourcea2dc2177 committed/clean in its worktree and integrated locally454f4de0;53 controls/rustfmt and independent Astra source review PASS. Compile/Clippy/new connected execution NOT_RUN. Separate Sol implements same-job continuation in work/m2-finite-job-adoption-20261102; independent Sol owns its fixture/oracle worktree. Both remain partial/unintegrated.",
+        "review": "Astra approved current guard source, bounded deferred-hook injection and explicit settled-job succession architecture. New acquisition continuation production/oracle code will need critical review before build/engine qualification.",
         "hosted": "One Root watcher61745,60s interval/7500s bound; remote run41529949800 source551/push/attempt1 has scopePASS and three foundation jobs running."
       },
       "resources": "b05 builder79279, Rust65458, observer13418 and portable92240 all reaped0; containers stopped/PID0/no OOM. Compiler cache released/reacquired; protected four ELF bytes/fullstat unchanged. Three installed cases64800/13174/63559 all reaped0; respectively20/20/24 owned containers stopped and5/5/9 recorded processes absent. Peer owners joined; borrowed bridge1699209a preserved. No cleanup; original data, failures, .research and source worktrees retained. New source16ad watcher15724/driver2031539/GH2031542 is active; no local engine or compiler activity.",
@@ -79174,10 +79174,14 @@
         "tool": 61745,
         "run": 41529949800,
         "source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca",
-        "state": "ROOT_OWNED_READ_ONLY_RUNNING",
+        "state": "ROOT_WATCHER61745_ACTIVE; MAC_PARTIAL_FAILURE_SEALED; REMAINING_LINUX_RUNNING_AT_OBSERVATION",
         "identity": {
           "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/watch-identity.json",
           "sha256": "636ef8990dc53b8d95dc609f9105be24660211a9a7a543ce369400f3e52538cb"
+        },
+        "partial_macos_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/partial-macos-receipt.json",
+          "sha256": "46dfb88c30e2ee14f15fa6028f89e88d0eab3868916c2e690395593eab5fcb31"
         }
       },
       "next_ack_source": {

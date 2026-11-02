@@ -20,7 +20,7 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = 'a3e51472ad7a5832bedc2a00173d91b373d8bdde'
+REVIEWED_PRODUCT = '454f4de03c63384368a9f9beab861006741e8d61'
 # Git objects bind product code/dependencies/configuration while permitting
 # documentation/acceptance-only changes. Independent review covered the changed
 # dispatch, Sync ownership, shared session/transport and relevant caller paths.
@@ -38,11 +38,11 @@ REVIEWED_PRODUCT = 'a3e51472ad7a5832bedc2a00173d91b373d8bdde'
 # entrypoints and dependency/configuration objects. Test fixtures also normalize
 # owned temporary roots without changing the production selection guard.
 # The later apps delta contains only the exact cfg(test) owner hook and private
-# Monitor outcome seed. Its reviewed test-only custody cannot enter the release
+# Monitor outcome/connected-guard fixtures. Their reviewed test-only custody cannot enter the release
 # tutorial; all selected entrypoints and the other six objects remain unchanged.
 # This exclusion does not qualify general egress, Monitor internals or runtime.
 REVIEWED_CODE = {
-    'apps': '372aa296e6638eb61db2b4f8aec956baed6bfdb7',
+    'apps': '0cac6ffc863a4e3d510ecd49bd1a84a9ec2796b3',
     'crates': '410f3dfbbd137be2f2809949520db0de0345a3ed',
     'Cargo.toml': '56ae310a952923810287d83b2c88349e3485f33b',
     'Cargo.lock': '133ff51c1c8bf71000fe7e99066bb08d4a48f31c',
@@ -63,7 +63,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed producta3e51472; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product454f4de0; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Ordinary Monitor startup without explicit initial --monitor-once and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]

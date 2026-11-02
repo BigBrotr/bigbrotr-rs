@@ -8,7 +8,10 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and demonstrated capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **551cb56f** before this publication journal. Canonical main/origin
+`work/m2-finite-history-20261101`, observed HEAD **454f4de0** after integrating the reviewed guard source and local
+portable correction; current
+P01/inventory/checkpoint updates are pending integration with the next coherent
+increment. Canonical main/origin
 and actual remote main are independently verified **551cb56f** after the authorized
 fast-forward/push. The verified proxy correction, private Control-owned seed,
 maintained builder/controls, reviewed diagnostic fix and qualification are published.
@@ -75,6 +78,15 @@ nonselected alternate workflow SKIP jobs are not required executions or PASS.
 The corrected full three-platform execution, especially Mac build/Rust/Native,
 remains necessary; a control-only green run cannot replace it.
 
+Actual551 Mac job completed FAIL at21:39:52Z: acceptance671 collected,657PASS,
+1 distinct failing case/two subtest failures,13SKIP; commands2PASS/1FAIL/6NOT_RUN,
+all12 Native NOT_RUN. Partial receipt **46dfb88c** binds the scanned artifact.
+Its artifact test compared Darwin /var alias with the canonical /private/var
+path returned by the unchanged verifier. Local **77394acf** normalizes the owned
+fixture root and adds a positive symlink-root case;16 controls PASS. No corrected
+Mac run or product rebuild is claimed. Root watcher61745 remains active for the
+Linux jobs; preserve the original551 failure and avoid a superseding push.
+
 ## Open gates, custody and next action
 
 P04-T07 Steps2/6 and P02 still own connected selected-invalid-binding/no-fallback,
@@ -93,9 +105,15 @@ unchanged at qualification. No local engine/compiler is active; the single read-
 Preserve original failures, data, .research, worktrees and borrowed bridge.
 October31 space recovery is reconciled; no cleanup was started.
 
-**Next Root action:** save this publication journal locally, then observe/qualify
-the actual new full foundation run without cancelling it. In parallel,
-close the three bounded connected refusal responsibilities above, then choose the
+**Next Root action:** preserve/seal the actual551 full run without cancelling it.
+The source-only connected guard extension original**a2dc2177** is integrated at
+**454f4de0**, with53 focused Python controls/rustfmt PASS and independent Astra
+critical source approval. Rust compilation/Clippy and the connected case remain
+NOT_RUN. Prepare its separately attributed test-only artifact using the maintained
+builder, preserving unchanged b05 product/observer and the four protected ELF pins;
+then qualify the real PG/Native case. retain the local773 portable correction in the
+next coherent publication. Close the reachable connected refusal responsibilities
+above, then choose the
 next useful M2 increment by actual dependencies. Finite same-job continuation,
 funded reopen beyond64, admission cost, ClickHouse decoding/transport, coordinator
 maintenance and all later selected work retain their existing owners and gates;

@@ -567,6 +567,27 @@
               "audit_note": "Root post-run custody audit initially compared the observer ELF scalar command field against its full input-map result. Corrected only metadata shape using the independently retained same-product observer map; original command/result unchanged, then actual custody audit PASS."
             },
             "limits": "This qualifies only exact-existing-outcome/C3 preservation and retry, not selected-invalid-binding, authority, paired capacity, fleet scheduling, renewal, retirement or full M2. Default Rust suites still ignore the connected seed. Maintained builder/input procedure is documented; private retained caches are optional accelerators."
+          },
+          "connected_guard_qualification": {
+            "status": "SOURCE_REVIEW_APPROVED_COMPILE_AND_CONNECTED_NOT_RUN",
+            "source": "a2dc217712eaecd51ca8de585a6f617f551a18ab",
+            "integrated": "454f4de03c63384368a9f9beab861006741e8d61",
+            "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-connected-guards-20261102",
+            "review": "Independent Astra reviewed complete private Rust/SQL fixtures, changed Python runtime/oracles/controls and relevant actual resolver/authority/capacity/checkpoint boundaries; approved source only, not runtime PASS. Actual model/effort verified from recorded session_meta/turn_context.",
+            "source_checks": "53 targeted Python controls PASS (10 new/16 existing/27 ACK); rustfmt edition2024 and diff check PASS.",
+            "reviewed_source_sha256": {
+              "apps/bigbrotr/src/storage/postgres/monitor_outcome_seed.rs": "8ac0c30ebaf9d2fee3e9a40f6b61fbacafbc1eded504363e491b4ed6d645ea89",
+              "experiments/relay-source/monitor_guards.sql": "7ffb98a7555276951c180db73e0ff447a3825461fc99522cdc74547a0da536a5",
+              "tests/acceptance/cases/first_launch_monitor_ack_recovery.py": "22e908716814c979351e12ba03d59792c3314cf12a6ab015715f0124b874b6ee",
+              "tests/acceptance/cases/first_launch_monitor_ack_recovery_oracle.py": "996082a52245d1e34209888d37bf425fa14684b7e5dee006790caa4fa143d7f0",
+              "tests/acceptance/cases/first_launch_monitor_outcome_seed.py": "eec9100de150f66965ae00716ef7f2470ddcde4097dbf0fcd2f9fa03730ed265"
+            },
+            "scope": "Actual connected library resolver refusals with genuine owner/borrowed actual-login backend and explicit isolated binding corruption; ordinary installed ACK/retry positive. SQL hook immediate/deferred/capacity pairs remain distinct from valid stale-owner workflow or installed resolver exhaustion. Production runtime unchanged; separately rebuilt test-only artifact required.",
+            "not_run": [
+              "Rust compilation/strict Clippy for new private fixture",
+              "p04-monitor-connected-guards real PG/Native case"
+            ],
+            "later_owners": "Genuine prepared/active-prefix, noncontiguous-tail, retirement workflow and wider evidence-only/mixed-history capacity remain existing P04/P02 owners; no fabricated completed scope."
           }
         }
       }

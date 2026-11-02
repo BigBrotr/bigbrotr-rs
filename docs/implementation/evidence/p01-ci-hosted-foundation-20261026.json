@@ -2860,7 +2860,22 @@
         "state": "ROOT_OWNED_READ_ONLY_RUNNING"
       },
       "qualification": "Required36 foundation commands and12 mandatory Native controls per platform remain pending actual terminal/public audit. Source-declared671 acceptance/43 proxy/13 export; new cfg(test) seed ignored by default, actual connected execution recorded separately in P02. Alternate nonselected workflow jobs SKIP are not required executions or PASS.",
-      "next": "Preserve this run; Root reaps watcher, acquire exact-source artifacts/logs and verify actual three-platform gates/public outputs using the prepared retained observer. f4ad remains latest full hosted PASS until success."
+      "next": "Preserve this run; Root reaps watcher, acquire exact-source artifacts/logs and verify actual three-platform gates/public outputs using the prepared retained observer. f4ad remains latest full hosted PASS until success.",
+      "partial_macos_failure": {
+        "status": "FAIL_FIXTURE_CANONICAL_TEMPORARY_ROOT_PATH_ALIAS",
+        "receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/partial-macos-receipt.json",
+          "sha256": "46dfb88c30e2ee14f15fa6028f89e88d0eab3868916c2e690395593eab5fcb31"
+        },
+        "detail": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/partial-macos-failure.json",
+          "sha256": "731667351f29b4fdbd0cda7d4a5aa6d195869e1c235ee1d6a689a4e8a89f366c"
+        },
+        "counts": "671 acceptance collected:657PASS/1 distinct failed case (two subtest failures)/13SKIP. Commands2PASS/1FAIL/6NOT_RUN; export/proxy/build/Clippy/Rustdoc/Rust and12 mandatory Native NOT_RUN.",
+        "classification": "Artifact admission correctly returns canonical paths. Synthetic fixture expected Darwin /var alias instead of /private/var; no product/provenance defect observed.",
+        "local_correction": "77394acf normalizes owned fixture root and adds a positive compiled-root symlink alias case.16 targeted controls PASS. Local only; no corrected Mac execution yet. Original551 FAIL remains unchanged.",
+        "scope": "One completed actual-source platform artifact, safe/digest-verified and zero scanner candidates. Full-run status/remaining Linux jobs not qualified by this partial receipt."
+      }
     }
   }
 }
