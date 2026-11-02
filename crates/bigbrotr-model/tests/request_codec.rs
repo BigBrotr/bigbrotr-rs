@@ -114,6 +114,7 @@ fn frozen_mutation_requests_preserve_original_identity_and_attribution() {
                     input
                 );
             }
+            MutationIntent::Measurement(_) => panic!("old literal changed its input family"),
         }
     }
 }

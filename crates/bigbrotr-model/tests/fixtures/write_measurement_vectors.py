@@ -168,8 +168,8 @@ negative = [
 ]
 
 
-def row(name, value):
-    raw = encoded(value)
+def row(name, value, domain="fact"):
+    raw = b"bigbrotr/" + domain.encode("ascii") + b"/1\0" + cbor(value)
     digest = hashlib.sha256(raw).hexdigest()
     external = subprocess.check_output(["openssl", "dgst", "-sha256"], input=raw).decode().split()[-1]
     assert external == digest
@@ -179,17 +179,44 @@ def row(name, value):
         if isinstance(item, list):
             return list(map(portable, item))
         return item
-    return {"name": name, "domain": "fact", "value": portable(value),
+    return {"name": name, "domain": domain, "value": portable(value),
             "preimage_hex": raw.hex(), "sha256": digest}
+
+
+def request(measurement, policy=7, scope=None, sequence=3):
+    return [[bytes([4])*16, 2, sequence], "admit-evidence", 1,
+            [policy, ref(4) if scope is None else scope, "measurement/1", measurement]]
+
+
+requests = [(name, request(value[5])) for name, value in positive]
+requests += [
+    ("changed-request", request(empty[5], sequence=4)),
+    ("zero-policy", request(empty[5], policy=0)),
+    ("changed-visibility", request(empty[5], scope=ref(4, 2))),
+    ("changed-attempt", request(altered(empty, [5, 0], bytes([5])*16)[5])),
+]
+base_request = request(empty[5])
+invalid_requests = [
+    ("unknown-evidence-tag", altered(base_request, [3, 2], "measurement/2")),
+    ("wrong-visibility-kind", altered(base_request, [3, 1, 1], 1)),
+    ("foreign-visibility", altered(base_request, [3, 1, 0], bytes([9])*16)),
+    ("unknown-operation-version", altered(base_request, [2], 2)),
+    ("unknown-operation", altered(base_request, [1], "measure")),
+    ("unknown-measurement-state", altered(base_request, [3, 3, 4, 0], 4)),
+    ("evidence-body-extra-field", base_request[:3] + [base_request[3]+[None]]),
+    ("evidence-body-missing-payload", base_request[:3] + [base_request[3][:3]]),
+]
 
 
 output = {
     "format": "independent-measurement-vectors/1",
     "valid": [row(*value) for value in positive],
     "invalid": [row(*value) for value in negative],
+    "requests": [row(name, value, "producer-request") for name, value in requests],
+    "invalid_requests": [row(name, value, "producer-request") for name, value in invalid_requests],
 }
 with tempfile.NamedTemporaryFile(mode="w", suffix=".json") as reference_input:
-    vectors = output["valid"] + output["invalid"]
+    vectors = [vector for key in ("valid", "invalid", "requests", "invalid_requests") for vector in output[key]]
     json.dump({"vectors": vectors}, reference_input)
     reference_input.flush()
     reference = Path(__file__).resolve().parents[4] / "experiments/identity-contract/reference.mjs"
@@ -197,7 +224,7 @@ with tempfile.NamedTemporaryFile(mode="w", suffix=".json") as reference_input:
     assert len(checked) == len(vectors)
     for expected, actual in zip(vectors, checked):
         assert all(expected[key] == actual[key] for key in ("name", "preimage_hex", "sha256"))
-for vector in output["valid"] + output["invalid"]:
+for vector in vectors:
     del vector["domain"]
     del vector["value"]
 Path(__file__).with_name("measurement-v1.json").write_text(json.dumps(output, indent=2) + "\n")

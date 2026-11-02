@@ -4,8 +4,8 @@
 use super::{CodecError, CompareWriter, CountWriter, FactDecodeLimits, FactReader};
 use crate::{
     Digest256, EventIntent, EventOrigin, EvidenceIntent, EvidenceIntentError, EvidenceIntentLimits,
-    LocalObservation, ObservedTime, ProducerEpoch, ProducerRequestId, ProducerSlotId,
-    RequestSequence, Signature, SignedEvent, WitnessContext, fingerprint,
+    LocalObservation, MeasurementEvidenceIntent, ObservedTime, ProducerEpoch, ProducerRequestId,
+    ProducerSlotId, RequestSequence, Signature, SignedEvent, WitnessContext, fingerprint,
 };
 use minicbor::{Decoder, Encoder};
 use sha2::{Digest, Sha256};
@@ -20,6 +20,7 @@ const PREFIX: &[u8] = b"bigbrotr/producer-request/1\0";
 pub enum MutationIntent {
     Event(EventIntent),
     Evidence(EvidenceIntent),
+    Measurement(MeasurementEvidenceIntent),
 }
 #[derive(Debug, Clone, Copy)]
 pub struct RequestDecodeLimits {
@@ -102,9 +103,7 @@ pub fn decode_request(
     }
     let intent = match operation {
         "admit" => MutationIntent::Event(reader.event_intent()?),
-        "admit-evidence" => {
-            MutationIntent::Evidence(reader.evidence_intent(limits.max_dictionaries)?)
-        }
+        "admit-evidence" => reader.evidence_intent(limits.max_dictionaries)?,
         _ => return Err(CodecError::IncompatibleSchema),
     };
     if reader.decoder.position() != input.len() {
@@ -114,6 +113,9 @@ pub fn decode_request(
     match &intent {
         MutationIntent::Event(intent) => fingerprint::request(Some(id), intent, &mut encoder),
         MutationIntent::Evidence(intent) => fingerprint::evidence_request(id, intent, &mut encoder),
+        MutationIntent::Measurement(intent) => {
+            fingerprint::measurement_request(id, intent, &mut encoder)
+        }
     }
     .map_err(|_| CodecError::NonCanonical)?;
     if !encoder.into_writer().0.is_empty() {
@@ -170,10 +172,25 @@ impl FactReader<'_> {
         }
         .map_err(CodecError::InvalidFact)
     }
-    fn evidence_intent(&mut self, max_dictionaries: usize) -> Result<EvidenceIntent, CodecError> {
-        self.array(3)?;
+    fn evidence_intent(&mut self, max_dictionaries: usize) -> Result<MutationIntent, CodecError> {
+        let arity = self.decoder.array()?;
+        if !matches!(arity, Some(3 | 4)) {
+            return Err(CodecError::IncompatibleSchema);
+        }
         let policy = self.decoder.u16()?;
         let scope = self.reference()?;
+        if arity == Some(4) {
+            self.literal("measurement/1")?;
+            let measurement = self.measurement()?;
+            return MeasurementEvidenceIntent::new(
+                policy,
+                scope,
+                measurement,
+                self.limits.max_encoded_bytes,
+            )
+            .map(MutationIntent::Measurement)
+            .map_err(evidence_error);
+        }
         let count = self.decoder.array()?.ok_or(CodecError::Malformed)?;
         let count = usize::try_from(count)
             .ok()
@@ -213,13 +230,18 @@ impl FactReader<'_> {
                 max_validation_scratch_bytes: scratch,
             },
         )
-        .map_err(|e| match e {
-            EvidenceIntentError::AllocationFailed => CodecError::AllocationFailed,
-            EvidenceIntentError::EntryCountLimit
-            | EvidenceIntentError::EncodedIntentLimit
-            | EvidenceIntentError::EncodedRequestLimit => CodecError::InputLimit,
-            EvidenceIntentError::ValidationScratchLimit => CodecError::AllocationLimit,
-            _ => CodecError::InvalidValue,
-        })
+        .map(MutationIntent::Evidence)
+        .map_err(evidence_error)
+    }
+}
+
+fn evidence_error(error: EvidenceIntentError) -> CodecError {
+    match error {
+        EvidenceIntentError::AllocationFailed => CodecError::AllocationFailed,
+        EvidenceIntentError::EntryCountLimit
+        | EvidenceIntentError::EncodedIntentLimit
+        | EvidenceIntentError::EncodedRequestLimit => CodecError::InputLimit,
+        EvidenceIntentError::ValidationScratchLimit => CodecError::AllocationLimit,
+        _ => CodecError::InvalidValue,
     }
 }

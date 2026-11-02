@@ -35,9 +35,7 @@ impl fmt::Display for EvidenceIntentError {
             Self::WrongVisibilityScope => {
                 "evidence intent scope is not a visibility dictionary reference"
             }
-            Self::ForeignDataset => {
-                "evidence intent scope and dictionary mappings require one dataset"
-            }
+            Self::ForeignDataset => "evidence intent scope and payload require one dataset",
             Self::DuplicateDefinition => {
                 "evidence intent defines the same qualified mapping more than once"
             }

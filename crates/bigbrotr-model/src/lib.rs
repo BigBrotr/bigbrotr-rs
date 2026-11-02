@@ -12,6 +12,7 @@ pub mod fact;
 mod fingerprint;
 pub mod identity;
 pub mod measurement;
+pub mod measurement_intent;
 pub mod read;
 pub mod receipt_codec;
 pub mod scalar;
@@ -41,6 +42,7 @@ pub use identity::{
     ReauthenticationId, RecoveryGenerationId, RouteId, SelectorId, Signature,
 };
 pub use measurement::Measurement;
+pub use measurement_intent::MeasurementEvidenceIntent;
 pub use scalar::{
     CompleteThrough, DurationUs, ObservedTime, Ordinal, OwnerEpoch, PolicyEpoch, ProducerEpoch,
     RequestSequence, Sequence, TopologyGeneration,
