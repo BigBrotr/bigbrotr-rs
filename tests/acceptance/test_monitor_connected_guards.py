@@ -41,6 +41,7 @@ def sql_fixture():
         'evidence-before','evidence-after','closing-valid-before','closing-valid-after',
         'capacity-deps-16384','capacity-bytes-exact','deferred-current')})
     expected.update(expired='BB001',**{'pending-other-id':'BB001','closing-slot':'P0002','closing-epoch':'P0002'})
+    expected.update({name:'42501' for name in ('refusal-immutable','immutable-owner','immutable-context','delete-intent')})
     catalog=[dict(table=table,trigger=trigger,type=kind,enabled='O',security_definer=False,
         deferrable=deferred,initially_deferred=deferred) for table,trigger,kind,deferred in (
             ('producer_checkpoints','producer_checkpoint_guard',31,False),
@@ -101,11 +102,12 @@ class ConnectedGuardControls(unittest.TestCase):
 
     def test_sql_matrix_requires_exact_codes_positive_pairs_complete_phase_and_actual_owning_error(self):
         rows,observations=sql_fixture();oracle.guard_sql_results(rows,observations,'ab'*32,300000,100)
-        for change in ('missing-result','wrong-code','missing-positive','retained-charge','early-failure','partial-head',
+        for change in ('missing-result','wrong-code','wrong-privilege-layer','missing-positive','retained-charge','early-failure','partial-head',
                 'wrong-error','wrong-context','wrong-backend','disabled-trigger','late-order','deferral-mode'):
             actual=copy.deepcopy(rows);seen=copy.deepcopy(observations)
             if change=='missing-result':actual.pop('closing-zero-source')
             elif change=='wrong-code':actual['closing-slot']='23514'
+            elif change=='wrong-privilege-layer':actual['refusal-immutable']='23514'
             elif change=='missing-positive':actual['capacity-deps-16384']='23514'
             elif change=='retained-charge':seen['closing']['retained_bytes']+=1
             elif change=='early-failure':seen['deferred-historical']['updated']=0

@@ -569,7 +569,7 @@
             "limits": "This qualifies only exact-existing-outcome/C3 preservation and retry, not selected-invalid-binding, authority, paired capacity, fleet scheduling, renewal, retirement or full M2. Default Rust suites still ignore the connected seed. Maintained builder/input procedure is documented; private retained caches are optional accelerators."
           },
           "connected_guard_qualification": {
-            "status": "PASS_TEST_ARTIFACT_AND_PURE_VALIDATOR_CONNECTED_NOT_RUN",
+            "status": "PASS_TEST_ARTIFACT_R1_FIXTURE_FAIL_CORRECTION_APPROVED_RERUN_NOT_RUN",
             "source": "a2dc217712eaecd51ca8de585a6f617f551a18ab",
             "integrated": "454f4de03c63384368a9f9beab861006741e8d61",
             "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-connected-guards-20261102",
@@ -633,6 +633,19 @@
                 "seconds": 64.18206563801505
               },
               "pure_validator": "1PASS/0FAIL/0ignored/707filtered; no ignored connected test or whole-library claim"
+            },
+            "first_connected_attempt": {
+              "status": "FAIL_FIXTURE_WRONG_PRIVILEGE_LAYER",
+              "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/connected-r1-failure-receipt.json",
+              "receipt_sha256": "4f1bf034d55d24f3967d36208ba2ce43be1dbaf33aca593c88a421fb87864555",
+              "counts": "12collected/6executed/1FAIL/6NOT_RUN; cleanupPASS. All16 containers stopped/PID0/noOOM, two recorded processes absent, borrowed bridge unchanged.",
+              "cause": "Old fixture expected immutable-trigger23514 for an UPDATE forbidden by packaged column ACL; actual42501 is the required production denial. No new Rust resolver phase was executed.",
+              "correction": "Contract-based correction retains actual privileges: remove fixture DELETE grant; precheck all four forbidden writes lack effective privilege; require42501 in SQL and independent oracle.23514 is not an acceptable substitute for these ACL cases. Foreign dataset corruption now XORs its byte to guarantee a changed value.53 Monitor controls PASS and independent Astra source review approved one bounded real rerun; no product/Rust artifact change.",
+              "reviewed_correction_sha256": {
+                "experiments/relay-source/monitor_guards.sql": "7ce179f301c206446d01775b7766dc530cbd4bd96096daa5ed3de2fd274ed60e",
+                "tests/acceptance/cases/first_launch_monitor_ack_recovery_oracle.py": "6db20109b8429d9705bc177a9af3d38a3cde96ffbc09a8665e0436a9ca24020a",
+                "tests/acceptance/test_monitor_connected_guards.py": "4e7050627fd6b497e229595fa58d64c70b40ff966ec5ca565cb10ef7104c857c"
+              }
             }
           }
         }

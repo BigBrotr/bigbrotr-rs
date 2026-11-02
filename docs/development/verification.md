@@ -828,8 +828,10 @@ Other connected refusal guards remain required under P04-T07 Steps2/6 and P02.
 
 ### Exercise connected Monitor recovery refusals
 
-`p04-monitor-connected-guards` is a source-only extension awaiting separate Rust
-fixture compilation/Clippy and real connected qualification (**NOT_RUN**).
+`p04-monitor-connected-guards` uses a separately compiled Rust fixture with strict
+Clippy; its current build and connected execution status are recorded in P02's
+`initial_measurement_c3_repair.connected_guard_qualification`. Build success
+alone does not qualify any of the connected stages.
 It reuses the preceding private library-test builder, qualified product/observer,
 shared Monitor recovery runtime, independent science/receipt oracle and original
 120s peer/proxy limits. It adds no production API or fault switch. Select it only
@@ -876,7 +878,11 @@ The case installs the attributed
 [`monitor_guards.sql`](../../experiments/relay-source/monitor_guards.sql) hooks
 before the original real dispatch/reservation. Recursion skips fixture hooks
 alone. Existing dispatch/reservation refusals retain their positive rollback
-pairs. The genuine closing dependency10 insertion additionally exercises immediate
+pairs. Four forbidden dispatch/refusal writes must return SQLSTATE42501 under
+the unchanged packaged ACL: only `UPDATE(attempt_id)` is granted for dispatch row
+locks. The hook first checks effective privileges and does not add DELETE or
+forbidden column grants. These cases prove ACL refusal before a later immutable
+trigger; SQLSTATE23514 cannot substitute. The genuine closing dependency10 insertion additionally exercises immediate
 acceptance/refusals, without forcing deferred constraints against C3 plus ten
 children. Direct SQL capacity calls pair16384/16385 dependencies with byte
 headroom, and exactly32MiB/one byte over with fixed jobs/dependencies. The baseline

@@ -123,9 +123,15 @@ The original final audit assertion confused generic result PASS with the separat
 artifact profile label; corrected only the schema expectation, with original
 audit note retained. No build/test rerun was needed.
 Preserve unchanged b05 product/observer; next assemble current maintained source
-and execute the explicit twelve-stage p04-monitor-connected-guards with declared
+and rerun the explicit twelve-stage p04-monitor-connected-guards with declared
 `--monitor-guard-corruption dispatch-clock` and this test-only artifact. All product
-guards must be restored before measured resolver operations; preserve failures. retain the local773 portable correction in the
+guards must be restored before measured resolver operations; preserve failures.
+First attempt Root97670 is FAIL before new guard phases: old SQL fixture expected
+23514 where packaged ACL correctly gives42501. Receipt **4f1bf034** retains the
+original; all16 containers stopped/PID0/noOOM, two recorded processes absent,
+bridge preserved. Reviewed correction removes fixture DELETE widening and checks
+actual four denied privileges;53 controls PASS. This is SQL/oracle-only, so reuse
+qualified Rust artifactfaf30d0c without rebuild. Six new phases remain NOT_RUN. retain the local773 portable correction in the
 next coherent publication. Close the reachable connected refusal responsibilities
 above, then choose the
 next useful M2 increment by actual dependencies. Finite same-job continuation,

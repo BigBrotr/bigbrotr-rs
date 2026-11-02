@@ -442,7 +442,8 @@ def guard_sql_results(rows, observations, digest, retained_bytes, backend):
     """Literal SQLSTATE pairs plus the exact deferred owning refusal, not any failure."""
     groups=(
         ('valid-before foreign-context wrong-kind zero-domain missing-byte profile ceiling owner expired pending-other-id closed-permits-new refusal-immutable immutable-owner immutable-context delete-intent valid-after',
-            {'valid-before':'ZX001','valid-after':'ZX001','expired':'BB001','pending-other-id':'BB001','closed-permits-new':'ZX001'}),
+            {'valid-before':'ZX001','valid-after':'ZX001','expired':'BB001','pending-other-id':'BB001','closed-permits-new':'ZX001',
+                'refusal-immutable':'42501','immutable-owner':'42501','immutable-context':'42501','delete-intent':'42501'}),
         ('evidence-before missing-dispatch unknown-dispatch mixed-acquisition changed-generation changed-route missing-resolution closed-evidence-refused evidence-noio-exclusion evidence-after',
             {'evidence-before':'ZX001','evidence-after':'ZX001'}),
         ('closing-valid-before closing-dataset closing-slot closing-epoch closing-zero-source closing-zero-sequence closing-valid-after',

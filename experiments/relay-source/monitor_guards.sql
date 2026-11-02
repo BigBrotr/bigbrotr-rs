@@ -12,13 +12,22 @@ BEGIN
     IF current_user<>'bigbrotr_control' OR session_user<>'bigbrotr_control' THEN
         RAISE EXCEPTION 'monitor fixture requires actual Control login';
     END IF;
+    -- The packaged login has only the attempt_id UPDATE column for row locks.
+    -- These forbidden writes exercise its real ACL, before immutable triggers.
+    IF has_column_privilege(current_user,'control.measurement_dispatch_refusals','reason','UPDATE')
+        OR has_column_privilege(current_user,'control.measurement_dispatches','issuer_epoch','UPDATE')
+        OR has_column_privilege(current_user,'control.measurement_dispatches','context_bytes','UPDATE')
+        OR has_table_privilege(current_user,'control.measurement_dispatches','DELETE') THEN
+        RAISE EXCEPTION 'monitor fixture requires unchanged packaged write privileges';
+    END IF;
     FOREACH mode IN ARRAY ARRAY['valid-before','foreign-context','wrong-kind','zero-domain','missing-byte',
         'profile','ceiling','owner','expired','pending-other-id','closed-permits-new','refusal-immutable','immutable-owner','immutable-context','delete-intent','valid-after'] LOOP
         candidate:=NEW; expected:='23514';
         SELECT count(*) INTO count_before FROM control.measurement_dispatches;
         IF mode LIKE 'valid-%' OR mode='closed-permits-new' THEN expected:='ZX001';
         ELSIF mode='pending-other-id' THEN expected:='BB001';
-        ELSIF mode='foreign-context' THEN candidate.context_bytes:=set_byte(candidate.context_bytes,0,128);
+        ELSIF mode IN ('refusal-immutable','immutable-owner','immutable-context','delete-intent') THEN expected:='42501';
+        ELSIF mode='foreign-context' THEN candidate.context_bytes:=set_byte(candidate.context_bytes,0,get_byte(candidate.context_bytes,0)#128);
         ELSIF mode='wrong-kind' THEN candidate.context_bytes:=set_byte(candidate.context_bytes,17,8);
         ELSIF mode='zero-domain' THEN candidate.context_bytes:=overlay(candidate.context_bytes placing decode(repeat('00',16),'hex') from 19 for 16);
         ELSIF mode='missing-byte' THEN candidate.context_bytes:=substring(candidate.context_bytes from 1 for 293);
@@ -60,8 +69,7 @@ CREATE TRIGGER zz_monitor_fixture BEFORE INSERT ON control.measurement_dispatche
 GRANT USAGE ON SCHEMA monitor_fixture TO bigbrotr_control;
 GRANT SELECT,INSERT ON monitor_fixture.results TO bigbrotr_control;
 GRANT EXECUTE ON FUNCTION monitor_fixture.dispatch_checks() TO bigbrotr_control;
--- This isolated fixture alone may reach the retained-row deletion refusal.
-GRANT DELETE ON control.measurement_dispatches TO bigbrotr_control;
+-- Do not broaden the product login's permissions to reach a later guard layer.
 
 CREATE FUNCTION monitor_fixture.evidence_checks() RETURNS trigger
 LANGUAGE plpgsql SET search_path=pg_catalog AS $$

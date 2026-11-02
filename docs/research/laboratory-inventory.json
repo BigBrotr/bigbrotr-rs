@@ -79266,6 +79266,14 @@
         "pure_validator": {
           "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59/validator-unit/terminal.json",
           "sha256": "e4c430e9c09f9f718fe3b0ffc70f6e4598a622a08cedc1936cbb4ec63b547a3e"
+        },
+        "first_connected_attempt": {
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-b05b0a26/acceptance-connected-guards-r1",
+          "root_tool": 97670,
+          "status": "FAIL_FIXTURE_WRONG_SQL_PRIVILEGE_LAYER_CLEANUP_PASS",
+          "failure_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/connected-r1-failure-receipt.json",
+          "failure_receipt_sha256": "4f1bf034d55d24f3967d36208ba2ce43be1dbaf33aca593c88a421fb87864555",
+          "state": "16containers stopped/PID0/noOOM, two recorded children absent, bridge preserved. No new resolver phase executed. Original private SQL diagnostic retained, not published."
         }
       }
     }
