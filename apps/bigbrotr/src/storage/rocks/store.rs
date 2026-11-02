@@ -93,6 +93,9 @@ mod dictionary_preparation;
 mod evidence_append;
 #[path = "measurement_append.rs"]
 mod measurement_append;
+#[cfg(test)]
+#[path = "measurement_append_tests.rs"]
+mod measurement_append_tests;
 pub use dictionary_preparation::{DictionaryPreparation, PreparedDictionaries};
 #[cfg(test)]
 #[path = "dictionary_append_tests.rs"]
