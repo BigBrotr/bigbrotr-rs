@@ -1,11 +1,12 @@
 """Declared populated islands, empty spans and same-second ID progression."""
 import hashlib
+import errno
 import json
 import socket
 import time
 
 from installed_sync_client import publish
-from linear_capped_transport import exchange_page, IMPORT_SHA256, WINDOW_SHA256
+from linear_capped_transport import accept_nowait, exchange_page, IMPORT_SHA256, WINDOW_SHA256
 
 
 PROFILE = dict(format='bigbrotr-linear-window-fixture/1', requests=8, scopes=1)
@@ -41,14 +42,31 @@ def corpus(directory):
 
 
 def relay(directory, listener, finished, errors):
-    number, nonces = 0, set()
+    number, nonces, completed = 0, set(), False
     try:
         assert json.loads((directory / 'linear-window-profile.json').read_text()) == PROFILE
         events = corpus(directory)
         while not finished.is_set():
+            probe = number == 8 and not completed
             try:
-                connection, remote = listener.accept()
+                connection, remote = accept_nowait(listener) if probe else listener.accept()
+            except BlockingIOError as error:
+                if not probe or error.errno not in (errno.EAGAIN, errno.EWOULDBLOCK):
+                    raise
+                if finished.is_set():
+                    continue
+                # Prior accepts and source EOF belong to this same listener.
+                # Probe kernel accept directly; Darwin cannot query SO_ACCEPTCONN.
+                listening = listener.fileno() >= 0
+                assert listening, 'window listener closed before completion'
+                publish(directory, 'linear-window-peer-complete.json', dict(
+                    format=PROFILE['format'], requests=8, listener_closed=False,
+                    listening=listening, completed_at_us=time.time_ns() // 1000))
+                completed = True
+                continue
             except socket.timeout:
+                if probe:
+                    raise
                 continue
             number += 1
             with connection:
@@ -58,11 +76,6 @@ def relay(directory, listener, finished, errors):
                 exchange_page(directory, connection, number,
                     dict(kinds=[1], since=lower, until=upper - 1, limit=3),
                     [events[index] for index in PAGES[number - 1]], nonces)
-                if number == 8:
-                    publish(directory, 'linear-window-peer-complete.json', dict(
-                        format=PROFILE['format'], requests=8, listener_closed=False,
-                        listening=listener.getsockopt(socket.SOL_SOCKET, socket.SO_ACCEPTCONN) == 1,
-                        completed_at_us=time.time_ns() // 1000))
     except BaseException as error:
         errors.append(type(error).__name__ + ': ' + str(error))
         publish(directory, 'relay-error.json', dict(error=errors[-1]))

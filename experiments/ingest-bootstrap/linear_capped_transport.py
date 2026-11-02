@@ -1,5 +1,6 @@
 """Six literal capped pages; private socket evidence, never cursor authority."""
 import base64
+import errno
 import hashlib
 import json
 import math
@@ -96,14 +97,39 @@ def exchange_page(directory,connection,number,predicate,values,nonces,**labels):
     return trace
 
 
+def accept_nowait(listener):
+    """Reach kernel accept without a timeout poll; restore the owned mode."""
+    timeout=listener.gettimeout()
+    try:
+        listener.setblocking(False)
+        return listener.accept()
+    finally:
+        listener.settimeout(timeout)
+
+
 def relay(directory,listener,finished,errors):
-    number=0;nonces=set()
+    number=0;nonces=set();completed=False
     try:
         assert json.loads((directory/'linear-capped-profile.json').read_text())==PROFILE
         events=corpus(directory)
         while not finished.is_set():
-            try:connection,remote=listener.accept()
-            except socket.timeout:continue
+            probe=number==6 and not completed
+            try:connection,remote=accept_nowait(listener) if probe else listener.accept()
+            except BlockingIOError as error:
+                if not probe or error.errno not in (errno.EAGAIN,errno.EWOULDBLOCK):raise
+                if finished.is_set():continue
+                # The same listener accepted every page through source EOF.
+                # A direct empty-queue accept now proves it still listens;
+                # SO_ACCEPTCONN getsockopt is unsupported on Darwin.
+                listening=listener.fileno()>=0
+                assert listening,'capped listener closed before completion'
+                publish(directory,'capped-peer-complete.json',dict(format=PROFILE['format'],requests=6,
+                    listener_closed=False,listening=listening,completed_at_us=time.time_ns()//1000))
+                completed=True
+                continue
+            except socket.timeout:
+                if probe:raise
+                continue
             number+=1
             with connection:
                 assert number<=6,'bounded continuation opened a seventh socket'
@@ -115,10 +141,6 @@ def relay(directory,listener,finished,errors):
                 exchange_page(directory,connection,number,
                     dict(kinds=[1],since=23 if scope==0 else 0,until=upper-1,limit=3),
                     values,nonces,scope_number=scope,scope_turn=turn)
-                if number==6:
-                    publish(directory,'capped-peer-complete.json',dict(format=PROFILE['format'],requests=6,
-                        listener_closed=False,listening=listener.getsockopt(socket.SOL_SOCKET,socket.SO_ACCEPTCONN)==1,
-                        completed_at_us=time.time_ns()//1000))
     except BaseException as error:
         errors.append(type(error).__name__+': '+str(error));publish(directory,'relay-error.json',dict(error=errors[-1]))
     finally:

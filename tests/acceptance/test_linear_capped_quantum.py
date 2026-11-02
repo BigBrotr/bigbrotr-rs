@@ -1,6 +1,7 @@
 """Capped continuation false-PASS controls; no product or engine execution."""
 import base64
 import copy
+import errno
 import hashlib
 import json
 from pathlib import Path
@@ -11,7 +12,7 @@ import tempfile
 import threading
 import time
 import unittest
-from unittest.mock import Mock,patch
+from unittest.mock import MagicMock,Mock,patch
 
 from test_first_launch import ROOT,arguments
 from test_first_launch_restart import fixture as signed_fixture
@@ -439,12 +440,18 @@ class CappedQuantumControls(unittest.TestCase):
                         return (1,quantum.wire_json(['CLOSE',ident])) if self.frames==2 else (8,b'')
                 def accept():
                     number=len(accepted)+1
-                    if number==7 and failure!='seventh-socket':finished.set();raise socket.timeout()
+                    if number==7 and failure!='seventh-socket':
+                        if not (root/'capped-peer-complete.json').exists():
+                            raise BlockingIOError(errno.EWOULDBLOCK,'empty listener queue')
+                        finished.set();raise socket.timeout()
                     accepted.append(number);return Connection(number),('127.0.0.1',12345)
-                listener=Mock();listener.accept.side_effect=accept;listener.getsockopt.return_value=1;errors=[]
+                listener=Mock();listener.accept.side_effect=accept;listener.fileno.return_value=12;errors=[]
+                listener.gettimeout.return_value=.05
+                listener.getsockopt.side_effect=OSError(errno.ENOPROTOOPT,'unsupported socket option')
                 with patch.object(peer,'read_frame',side_effect=lambda connection:connection.frame()),patch.object(peer,'send_frame'):
                     peer.relay(root,listener,finished,errors)
                 listener.close.assert_called_once()
+                listener.getsockopt.assert_not_called()
                 self.assertEqual(bool(errors),failure is not None)
                 if failure is None:
                     wires=[base.load(path) for path in sorted(root.glob('relay-closed-*.json'))]
@@ -453,6 +460,53 @@ class CappedQuantumControls(unittest.TestCase):
                     self.assertTrue(completion['listening']);self.assertFalse(completion['listener_closed'])
                     joined=base.load(root/'capped-peer-joined.json')
                     self.assertEqual((joined['requests'],joined['errors'],joined['listener_closed']),(6,0,True))
+
+    def test_nonblocking_accept_distinguishes_real_listener_nonlistener_and_closed_socket(self):
+        for state in ('listening','bound','closed'):
+            with self.subTest(state=state),socket.socket(socket.AF_INET,socket.SOCK_STREAM) as listener:
+                listener.bind(('127.0.0.1',0));listener.settimeout(.05)
+                if state=='listening':listener.listen(1)
+                elif state=='closed':listener.close()
+                with self.assertRaises(OSError) as caught:peer.accept_nowait(listener)
+                if state=='listening':
+                    self.assertIsInstance(caught.exception,BlockingIOError)
+                    self.assertIn(caught.exception.errno,(errno.EAGAIN,errno.EWOULDBLOCK))
+                else:
+                    self.assertEqual(caught.exception.errno,errno.EINVAL if state=='bound' else errno.EBADF)
+                self.assertEqual(listener.gettimeout(),.05)
+
+    def test_finite_completion_requires_exact_kernel_empty_queue_and_live_owner(self):
+        import linear_window_transport as window
+        for transport,profile_name,profile,count,marker in (
+                (peer,'linear-capped-profile.json',dict(format='bigbrotr-linear-capped-fixture/2',requests=6,
+                    scopes=2,requested_limit=3,relay_limit=2),6,'capped-peer-complete.json'),
+                (window,'linear-window-profile.json',dict(format='bigbrotr-linear-window-fixture/1',
+                    requests=8,scopes=1),8,'linear-window-peer-complete.json')):
+            for outcome in ('empty','other-errno','timeout','closed-fd','finished'):
+                with self.subTest(transport=transport.__name__,outcome=outcome),tempfile.TemporaryDirectory() as temporary:
+                    root=Path(temporary);corpus_fixture(root);base.save(root/profile_name,profile)
+                    finished=threading.Event();calls=[];errors=[]
+                    listener=Mock();listener.fileno.return_value=12;listener.gettimeout.return_value=.05
+                    listener.getsockopt.side_effect=OSError(errno.ENOPROTOOPT,'unsupported socket option')
+                    def accept():
+                        calls.append(True)
+                        if len(calls)<=count:return MagicMock(),('127.0.0.1',12345)
+                        if len(calls)>count+1:
+                            finished.set();raise socket.timeout()
+                        if outcome=='finished':finished.set()
+                        if outcome=='closed-fd':listener.fileno.return_value=-1
+                        if outcome=='timeout':raise socket.timeout('unexpected nonblocking timeout')
+                        raise BlockingIOError(errno.EINVAL if outcome=='other-errno' else errno.EWOULDBLOCK,'probe')
+                    listener.accept.side_effect=accept
+                    with patch.object(transport,'exchange_page'):
+                        transport.relay(root,listener,finished,errors)
+                    self.assertEqual((root/marker).exists(),outcome=='empty')
+                    self.assertEqual(bool(errors),outcome in ('other-errno','timeout','closed-fd'))
+                    listener.close.assert_called_once();listener.getsockopt.assert_not_called()
+                    listener.setblocking.assert_called_once_with(False)
+                    listener.settimeout.assert_called_once_with(.05)
+                    if outcome=='empty':
+                        self.assertIs(base.load(root/marker)['listening'],True)
 
     def test_real_local_socket_peer_serves_six_literal_pages_and_joins_owned_listener(self):
         from installed_sync_client import exact
@@ -493,8 +547,8 @@ class CappedQuantumControls(unittest.TestCase):
                         self.assertEqual(receive(connection),(8,b''));self.assertEqual(connection.recv(1),b'')
                 completion=root/'capped-peer-complete.json';deadline=time.monotonic()+1
                 while not completion.exists() and time.monotonic()<deadline:time.sleep(.01)
-                self.assertTrue(completion.exists());self.assertTrue(base.load(completion)['listening'])
-                self.assertEqual(listener.getsockopt(socket.SOL_SOCKET,socket.SO_ACCEPTCONN),1)
+                self.assertTrue(completion.exists(),errors);self.assertTrue(base.load(completion)['listening'])
+                self.assertTrue(worker.is_alive());self.assertGreaterEqual(listener.fileno(),0)
             finally:
                 finished.set();worker.join(4)
                 self.assertFalse(worker.is_alive());self.assertEqual(listener.fileno(),-1)

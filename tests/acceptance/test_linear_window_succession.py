@@ -371,9 +371,10 @@ class WindowSuccessionControls(unittest.TestCase):
                 deadline = time.monotonic() + 1
                 while not complete.exists() and time.monotonic() < deadline:
                     time.sleep(.01)
-                self.assertTrue(complete.exists())
+                self.assertTrue(complete.exists(), errors)
                 self.assertTrue(json.loads(complete.read_text())['listening'])
-                self.assertEqual(listener.getsockopt(socket.SOL_SOCKET, socket.SO_ACCEPTCONN), 1)
+                self.assertTrue(worker.is_alive())
+                self.assertGreaterEqual(listener.fileno(), 0)
             finally:
                 finished.set()
                 worker.join(4)
