@@ -72,8 +72,8 @@ class CiSelectionControls(unittest.TestCase):
         output = Path('/test-output')
         checks = ci.commands(output, 'Linux', 'x86_64', 2)
         names = [name for name, _ in checks]
-        self.assertEqual(names[:7], ['toolchain', 'format', 'install-deny', 'dependency-policy',
-                                    'acceptance-controls', 'export-profile-controls', 'exact-source-build'])
+        self.assertEqual(names[:8], ['toolchain', 'format', 'install-deny', 'dependency-policy',
+                                    'acceptance-controls', 'export-profile-controls', 'fault-proxy-controls', 'exact-source-build'])
         commands = dict(checks)
         self.assertEqual(commands['install-deny'],
                          ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked',
@@ -85,7 +85,7 @@ class CiSelectionControls(unittest.TestCase):
 
     def test_policy_scope_and_packaged_worker_test_order_are_preserved(self):
         ci = CiControls().load()
-        common = ['toolchain', 'format', 'acceptance-controls', 'export-profile-controls', 'exact-source-build',
+        common = ['toolchain', 'format', 'acceptance-controls', 'export-profile-controls', 'fault-proxy-controls', 'exact-source-build',
                   'clippy', 'rust-doc', 'rust-tests']
         for system, architecture in [('Linux', 'x86_64'), ('Linux', 'aarch64'),
                                      ('Darwin', 'arm64'), ('Darwin', 'x86_64')]:
@@ -112,7 +112,7 @@ class CiSelectionControls(unittest.TestCase):
         cases += [(system, architecture, failed)
                   for system, architecture in [('Linux', 'x86_64'), ('Linux', 'aarch64'),
                                                ('Darwin', 'arm64'), ('Darwin', 'x86_64')]
-                  for failed in ['acceptance-controls', 'export-profile-controls']]
+                  for failed in ['acceptance-controls', 'export-profile-controls', 'fault-proxy-controls']]
         for system, architecture, failed in cases:
             with self.subTest(system=system, architecture=architecture, failed=failed), tempfile.TemporaryDirectory() as directory:
                 output = Path(directory)/'receipt'
@@ -137,6 +137,7 @@ class CiSelectionControls(unittest.TestCase):
         self.assertTrue(documentation_only(['README.md', 'docs/implementation/progress.md',
                                            'docs/research/laboratory-inventory.json']))
         for path in ['docs/reference/configuration.md', 'docs/tutorials/first-event.md',
+                     'docs/operations/monitor.md',
                      'docs/research/probe.py', 'tools/ci.py', '.github/workflows/ci.yml',
                      'Cargo.lock', 'contracts/config/schema.json', 'new-owner.txt']:
             with self.subTest(path=path):
@@ -153,20 +154,30 @@ class CiSelectionControls(unittest.TestCase):
     def test_control_scope_covers_only_explicit_nonproduct_inputs(self):
         from tools.ci_changes import controls_only
         for path in ['tests/acceptance/test_ci.py', 'tests/acceptance/cases/first_launch_retained.py',
+                     'experiments/archive-engine/native_commit_proxy.py',
+                     'experiments/archive-engine/native_commit_proxy_tests.py',
                      'experiments/identity-contract/signed_fixture.py',
                      'experiments/ingest-bootstrap/installed_archive_export_client.py',
                      'experiments/ingest-bootstrap/installed_archive_export_oracle.py',
                      'experiments/ingest-bootstrap/test_installed_archive_profile.py',
-                     'docs/development/verification.md']:
+                     'experiments/ingest-bootstrap/installed_passive_monitor_client.py',
+                     'experiments/ingest-bootstrap/installed_sync_oracle.py',
+                     'docs/development/verification.md', 'docs/operations/monitor.md']:
             with self.subTest(path=path):
                 self.assertTrue(controls_only(['docs/implementation/progress.md', path]))
         for path in ['apps/bigbrotr/src/main.rs', 'Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml',
                      'tools/build.py', 'tools/ci.py', 'tools/ci_changes.py',
                      '.github/workflows/ci.yml', 'contracts/release/archive-engine.json',
                      'tests/acceptance/linux/Dockerfile', 'experiments/unknown/probe.py',
+                     'experiments/archive-engine/native_commit_proxy_extra.py',
+                     'experiments/archive-engine/native_commit_proxy_tests.rs',
+                     'experiments/ingest-bootstrap/installed_passive_monitor.py',
+                     'experiments/ingest-bootstrap/installed_sync_client.py',
+                     'config/recipes/acceptance.toml', 'vendor/native/probe.py',
+                     'docs/operations/unknown.md', 'docs/specification/operations-contract.md',
                      'docs/tutorials/first-event.md', 'contracts/config/schema.json']:
             with self.subTest(path=path):
-                self.assertFalse(controls_only(['tests/acceptance/test_ci.py', path]))
+                self.assertFalse(controls_only(['docs/operations/monitor.md','tests/acceptance/test_ci.py', path]))
         self.assertFalse(controls_only([]))
 
     def test_complete_git_diff_keeps_deleted_and_renamed_code(self):
@@ -215,22 +226,36 @@ class CiSelectionControls(unittest.TestCase):
             base = commit('base')
             tests = root/'tests/acceptance'; tests.mkdir(parents=True)
             (tests/'test_example.py').write_text('# portable control\n')
+            helpers=['experiments/archive-engine/native_commit_proxy.py',
+                     'experiments/archive-engine/native_commit_proxy_tests.py',
+                     'experiments/ingest-bootstrap/installed_passive_monitor_client.py',
+                     'experiments/ingest-bootstrap/installed_sync_oracle.py']
+            for name in helpers:
+                path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('# portable helper\n')
+            monitor=root/'docs/operations/monitor.md';monitor.parent.mkdir(parents=True)
+            monitor.write_text('# Monitor operating status\n')
             controls = commit('controls')
             result = select(base, controls, root)
             self.assertFalse(result['foundation']); self.assertTrue(result['controls'])
+            self.assertEqual(set(result['paths']),{'tests/acceptance/test_example.py','docs/operations/monitor.md',*helpers})
             (tests/'test_example.py').unlink()
+            (root/helpers[1]).unlink()
             deleted = commit('delete control')
-            self.assertTrue(select(controls, deleted, root)['controls'])
+            result=select(controls, deleted, root)
+            self.assertTrue(result['controls']);self.assertFalse(result['foundation'])
+            self.assertEqual(set(result['paths']),{'tests/acceptance/test_example.py',helpers[1]})
             (root/'product.rs').rename(tests/'test_product.py')
             mixed = commit('rename product to control')
             result = select(deleted, mixed, root)
             self.assertTrue(result['foundation']); self.assertFalse(result['controls'])
+            self.assertTrue(select(base, mixed, root)['foundation'])
 
     def test_control_track_shares_checks_with_the_full_track(self):
         ci = CiControls().load()
         expected = [
             ('acceptance-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'acceptance']),
             ('export-profile-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'export-profile']),
+            ('fault-proxy-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'fault-proxy']),
         ]
         self.assertEqual(ci.control_commands(), expected)
         for system, architecture in [('Linux', 'x86_64'), ('Linux', 'aarch64'), ('Darwin', 'arm64')]:
@@ -252,8 +277,9 @@ class CiSuiteControls(unittest.TestCase):
     def run_fixture(self, scope, source):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            path = (root/'tests/acceptance/test_fixture.py' if scope == 'acceptance' else
-                    root/'experiments/ingest-bootstrap/test_installed_archive_profile.py')
+            path = root/{'acceptance':'tests/acceptance/test_fixture.py',
+                         'export-profile':'experiments/ingest-bootstrap/test_installed_archive_profile.py',
+                         'fault-proxy':'experiments/archive-engine/native_commit_proxy_tests.py'}[scope]
             path.parent.mkdir(parents=True)
             if source is not None:
                 path.write_text(source)
@@ -262,7 +288,7 @@ class CiSuiteControls(unittest.TestCase):
                                   capture_output=True, text=True, timeout=10)
 
     def test_empty_required_suites_fail_with_the_unittest_summary(self):
-        for scope in ['acceptance', 'export-profile']:
+        for scope in ['acceptance', 'export-profile', 'fault-proxy']:
             for source in [None, '']:
                 with self.subTest(scope=scope, source=source):
                     result = self.run_fixture(scope, source)
@@ -277,7 +303,7 @@ class Fixture(unittest.TestCase):
     @unittest.skip('finite unrelated platform control')
     def test_skipped(self): self.fail('must remain skipped')
 '''
-        for scope in ['acceptance', 'export-profile']:
+        for scope in ['acceptance', 'export-profile', 'fault-proxy']:
             with self.subTest(scope=scope):
                 result = self.run_fixture(scope, source)
                 self.assertEqual(result.returncode, 0, result.stderr)
@@ -285,14 +311,17 @@ class Fixture(unittest.TestCase):
                 self.assertIn('OK (skipped=1)', result.stderr)
 
     def test_failed_suite_is_not_success_or_an_empty_execution(self):
-        result = self.run_fixture('acceptance', '''import unittest
+        source = '''import unittest
 class Fixture(unittest.TestCase):
     def test_negative(self): self.assertEqual(6 * 7, 41)
-''')
-        self.assertEqual(result.returncode, 1)
-        self.assertIn('FAILED (failures=1)', result.stderr)
-        self.assertNotIn('no discovered', result.stderr)
-        self.assertNotIn('no executed', result.stderr)
+'''
+        for scope in ['acceptance', 'export-profile', 'fault-proxy']:
+            with self.subTest(scope=scope):
+                result = self.run_fixture(scope, source)
+                self.assertEqual(result.returncode, 1)
+                self.assertIn('FAILED (failures=1)', result.stderr)
+                self.assertNotIn('no discovered', result.stderr)
+                self.assertNotIn('no executed', result.stderr)
 
     def test_all_skipped_suite_fails_after_retaining_its_skip_summary(self):
         for source in [
@@ -307,7 +336,7 @@ class Fixture(unittest.TestCase):
     def setUpClass(cls): raise unittest.SkipTest('finite class prerequisite')
     def test_skipped(self): self.fail('must remain skipped')
 ''', "import unittest\nraise unittest.SkipTest('finite module prerequisite')\n"]:
-            for scope in ['acceptance', 'export-profile']:
+            for scope in ['acceptance', 'export-profile', 'fault-proxy']:
                 with self.subTest(source=source, scope=scope):
                     result = self.run_fixture(scope, source)
                     self.assertEqual(result.returncode, 1)
@@ -329,11 +358,13 @@ class B(unittest.TestCase):
         self.assertIn('skipped=1, expected failures=1', result.stderr)
 
     def test_import_error_keeps_its_error_meaning(self):
-        result = self.run_fixture('export-profile', "raise ImportError('finite required helper absent')\n")
-        self.assertEqual(result.returncode, 1)
-        self.assertIn('FAILED (errors=1)', result.stderr)
-        self.assertIn('finite required helper absent', result.stderr)
-        self.assertNotIn('no executed', result.stderr)
+        for scope in ['acceptance', 'export-profile', 'fault-proxy']:
+            with self.subTest(scope=scope):
+                result = self.run_fixture(scope, "raise ImportError('finite required helper absent')\n")
+                self.assertEqual(result.returncode, 1)
+                self.assertIn('FAILED (errors=1)', result.stderr)
+                self.assertIn('finite required helper absent', result.stderr)
+                self.assertNotIn('no executed', result.stderr)
 
 
 if __name__ == '__main__':

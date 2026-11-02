@@ -29,6 +29,7 @@ WORKSPACE_COMMANDS = {
 CONTROL_SUITES = {
     'acceptance': ('tests/acceptance', 'test_*.py'),
     'export-profile': ('experiments/ingest-bootstrap', 'test_installed_archive_profile.py'),
+    'fault-proxy': ('experiments/archive-engine', 'native_commit_proxy_tests.py'),
 }
 
 
@@ -126,7 +127,8 @@ def documentation_commands(output):
 
 def control_commands():
     return [('acceptance-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'acceptance']),
-            ('export-profile-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'export-profile'])]
+            ('export-profile-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'export-profile']),
+            ('fault-proxy-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'fault-proxy'])]
 
 
 def commands(output, system, architecture, jobs, native_source_reference=None):

@@ -11,11 +11,16 @@ DOCUMENTATION_ROOTS = ('docs/planning/', 'docs/implementation/', 'docs/research/
                        'docs/reviews/', 'docs/engineering/')
 DOCUMENTATION_FILES = {'README.md', 'AGENTS.md', 'PLAN.md'}
 CONTROL_FILES = {
+    'experiments/archive-engine/native_commit_proxy.py',
+    'experiments/archive-engine/native_commit_proxy_tests.py',
     'experiments/identity-contract/signed_fixture.py',
     'experiments/ingest-bootstrap/installed_archive_export_client.py',
     'experiments/ingest-bootstrap/installed_archive_export_oracle.py',
     'experiments/ingest-bootstrap/test_installed_archive_profile.py',
+    'experiments/ingest-bootstrap/installed_passive_monitor_client.py',
+    'experiments/ingest-bootstrap/installed_sync_oracle.py',
     'docs/development/verification.md',
+    'docs/operations/monitor.md',
 }
 
 

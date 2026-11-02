@@ -239,8 +239,8 @@ or failed prerequisite cannot produce PASS; the command group is killed/joined.
 The 120-minute command deadline fits the existing bounded CI track.
 
 For an explicitly allowlisted portable-control-only diff, Actions runs the same
-acceptance/export-profile Python controls and documentation checks on all three
-foundation platforms through `tools/ci.py --controls-only`. The native compiler
+acceptance/export-profile/fault-proxy Python controls and documentation checks on
+all three foundation platforms through `tools/ci.py --controls-only`. The native compiler
 smoke checks and platform-specific syscall controls remain; product/worker
 compilation and native-engine downloads are unnecessary for that scope. Full
 native CI remains required for product/build/workflow/selector inputs and unknown

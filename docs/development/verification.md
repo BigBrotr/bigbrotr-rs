@@ -19,22 +19,30 @@ python3 tools/ci.py --documentation-only --output .research/ci-docs
 ```
 
 Portable Python controls under `tests/acceptance`, the explicitly listed signed
-fixture/export-client/oracle/profile helpers, and this verification guide can
-instead select the control matrix on Linux amd64/arm64 and macOS:
+fixture/export helpers, passive Monitor client, bounded original-input decoder,
+native fault proxy and its controls, and this verification guide can instead
+select the control matrix on Linux amd64/arm64 and macOS. The exact Monitor
+operations guide is also a control-track exception; other operating, specification
+and tutorial paths retain their existing foundation gate:
 
 ```sh
 python3 tools/ci.py --controls-only --output .research/ci-controls
 ```
 
-It runs the same acceptance and export-profile controls as full CI plus the
-documentation checks, with declared native compiler/library, OpenSSL, Node and
-Linux strace prerequisites. Both required suites refuse empty discovery or an
+It runs the same acceptance, export-profile and fault-proxy controls as full CI
+plus the documentation checks, with declared native compiler/library, OpenSSL,
+Node and Linux strace prerequisites. All three required suites refuse empty discovery or an
 entirely skipped execution on every supported Python version. Tiny native-tool
 smoke probes remain real; no product, worker or Rust workspace build is required,
 and no native engine assets are downloaded. `tools/ci_changes.py` owns the explicit
 allowlist; changes to that selector, the runner, workflow, compiler inputs or unknown helpers retain full
 CI. A changed verifier still needs its affected installed path under the task's
 real-engine qualification; a control-matrix PASS does not supply that evidence.
+
+The proxy suite is also available as
+`python3 -B tools/ci.py --control-suite fault-proxy`.
+It exercises the maintained proxy with synthetic PostgreSQL framing over loopback
+sockets; it does not qualify a PostgreSQL engine, product or installed fault journey.
 
 Selection uses the complete Git diff (including deletions and both rename paths),
 not a truncated provider file list. Missing comparisons, empty diffs and manual
@@ -63,7 +71,8 @@ The native archive worker additionally needs the exact
 [engine bundle](../../packaging/archive-worker/README.md). Shared CI prepares it
 in a fresh sibling `<output>-native-inputs` directory; retain/inventory that root
 with the run. After toolchain, formatting and selected dependency-policy gates,
-the Python acceptance and export-profile controls run before the fresh exact-source release build.
+the Python acceptance, export-profile and fault-proxy controls run before the fresh
+exact-source release build.
 They use temporary fixtures and the declared native tools, including the native
 C/C++ smoke check and Linux syscall/process observers; they do not require a
 compiled product. A control failure leaves the build and later checks NOT_RUN.
