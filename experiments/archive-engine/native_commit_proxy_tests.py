@@ -15,7 +15,7 @@ import sys
 import unittest
 
 from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
-                                IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, gap_write_refusal)
+                                IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, failure_kind, gap_write_refusal)
 
 
 def gap_error(**changes):
@@ -39,6 +39,17 @@ def ordinary_proxy(**changes):
 
 
 class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
+    def test_failure_labels_never_render_arbitrary_exception_payloads(self):
+        for error,kind in ((ValueError('budget'),'traffic-budget'),
+                (ValueError('unsupported-session-query-profile'),'unsupported-session-profile'),
+                (ValueError('bind-formats'),'bind-profile'),
+                (AssertionError('private SQL and auth bytes'),'protocol-assertion'),
+                (ValueError('private SQL and auth bytes'),'unexpected-proxy-failure'),
+                (RuntimeError('private SQL and auth bytes'),'unexpected-proxy-failure'),
+                (ConnectionResetError('private SQL and auth bytes'),None),
+                (asyncio.CancelledError(),None),(None,None)):
+            self.assertEqual(failure_kind(error),kind)
+
     def test_index_target_requires_exact_current_statement_and_bound_plan3(self):
         source = Path(__file__).resolve().parents[2]/'apps/bigbrotr/src/storage/postgres/index_publication/adapter.rs'
         self.assertEqual(source.read_text().count(INDEX_PUBLICATION_QUERY.decode()),1)
@@ -564,6 +575,31 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def test_measurement_graceful_stop_retains_safe_session_failure_and_exact_frame_ceiling(self):
+        for kind in ('traffic-budget','unsupported-session-profile','bind-profile'):
+            with self.subTest(kind=kind):
+                async with SocketProxy(self,'after-complete',target='control-measurement-checkpoint',unexpected=1) as proxy:
+                    connection=await proxy.connect('bigbrotr_control','bigbrotr_control')
+                    if kind=='traffic-budget':
+                        connection[3].write(message(b'Z',b'I')*20000)
+                        await connection[3].drain()
+                    elif kind=='unsupported-session-profile':
+                        connection[3].write(message(b's',b'private SQL and auth bytes'))
+                        await connection[3].drain()
+                    else:
+                        await self.exchange(connection,b'P',b'checkpoint\0'+MEASUREMENT_CHECKPOINT_QUERY+b'\0\0\0',[(b'1',b'')])
+                        connection[1].write(message(b'B',b'\0checkpoint\0'+bytes(6)+b'private SQL and auth bytes'))
+                        await connection[1].drain()
+                    await asyncio.wait_for(connection[0].read(),3)
+                    self.assertEqual(await asyncio.wait_for(connection[2].read(),3),b'')
+                    await proxy.stop()
+                    terminal=proxy.events[-1]
+                    self.assertEqual(terminal['failure_kinds'],{kind:1})
+                    self.assertEqual(terminal['measurement_updates_complete'],0)
+                    self.assertEqual(terminal['faults'],0)
+                    if kind=='traffic-budget':self.assertEqual(terminal['frames'],20001)
+                    self.assertNotIn('private SQL and auth bytes',json.dumps(proxy.events))
+
     async def held_second_plan(self, proxy):
         connection = await proxy.connect('bigbrotr_control', 'bigbrotr_control')
         await self.prepare_gap_statement(connection)

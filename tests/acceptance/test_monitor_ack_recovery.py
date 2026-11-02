@@ -179,3 +179,33 @@ class MonitorAckRecoveryControls(unittest.TestCase):
         runtime.launch.assert_called_once_with('monitor-checkpoint-reply-loss','app','serve','--file',
             '/etc/bigbrotr/instance.toml','--roles','control,ingest,monitor','--initialize-ingest',
             '--monitor-once','/var/lib/bigbrotr/monitor-once.json')
+
+    def test_proxy_finalizer_retains_diagnostics_and_preserves_primary_failure(self):
+        for failed,code,timeout in ((False,0,False),(True,3,False),(False,3,False),(True,-15,True)):
+            with self.subTest(failed=failed,code=code,timeout=timeout),tempfile.TemporaryDirectory() as temporary:
+                runtime=object.__new__(case.MonitorAckRecoveryRuntime)
+                runtime.resources={'cleanup_errors':[]};runtime.proxy_send=Mock()
+                proxy=Mock();proxy.process.poll.return_value=None;proxy.process.returncode=code
+                terminal=dict(event='terminal',unexpected=int(code!=0),frames=20001 if code==3 else 0,
+                    failure_kinds={'traffic-budget':1} if code==3 else {})
+                proxy.stdout=(json.dumps(terminal)+'\n').encode();proxy.stderr=b'';proxy.overflow=False
+                proxy.wait.side_effect=TimeoutError() if timeout else None;proxy.wait.return_value=code
+                runtime.proxy_event=Mock(return_value=terminal);runtime.fault_proxy=proxy
+                output=Path(temporary)
+                original=AssertionError('primary fixture event deadline')
+                if failed:
+                    with self.assertRaises(AssertionError) as caught:
+                        try:raise original
+                        finally:runtime.finish_fault_proxy(output,failed=True)
+                    self.assertIs(caught.exception,original)
+                elif code:
+                    with self.assertRaisesRegex(ValueError,'checkpoint proxy did not terminate cleanly'):
+                        runtime.finish_fault_proxy(output,failed=False)
+                else:runtime.finish_fault_proxy(output,failed=False)
+                runtime.proxy_send.assert_called_once_with(proxy,'stop\n');proxy.wait.assert_called_once_with(5)
+                proxy.stop.assert_called_once_with()
+                self.assertIsNone(runtime.fault_proxy)
+                self.assertEqual(json.loads((output/'proxy-terminal.json').read_text()),dict(exit_code=code,overflow=False))
+                self.assertEqual((output/'proxy.stdout').read_bytes(),proxy.stdout)
+                self.assertEqual(bool(runtime.resources['cleanup_errors']),bool(code))
+                if not timeout:self.assertEqual(json.loads((output/'proxy-report.json').read_text()),terminal)

@@ -78,6 +78,23 @@ def unexpected_failure(error):
         (ConnectionError, asyncio.IncompleteReadError, asyncio.CancelledError))
 
 
+def failure_kind(error):
+    """Closed diagnostics only; arbitrary exception text may contain wire data."""
+    if not unexpected_failure(error):
+        return None
+    if type(error) is ValueError:
+        if error.args == ('budget',):
+            return 'traffic-budget'
+        if error.args == ('unsupported-session-query-profile',):
+            return 'unsupported-session-profile'
+        if error.args in tuple((name,) for name in (
+                'bind-name','bind-length','bind-formats','bind-value','bind-results')):
+            return 'bind-profile'
+    if isinstance(error, AssertionError):
+        return 'protocol-assertion'
+    return 'unexpected-proxy-failure'
+
+
 def gap_write_refusal(body):
     """Return only fixed optional identifiers from this fixture's exact error."""
     fields = body.split(b'\0')
@@ -1068,7 +1085,11 @@ class Proxy:
         # Normal peer close/reset following deliberate truncation is expected.
         failures = (self.completed_unexpected if self.profile == 'ordinary-reader'
                     else sum(unexpected_failure(r) for r in outcomes))
-        self.emit('terminal', unexpected=failures)
+        diagnostic = {}
+        if self.target == 'control-measurement-checkpoint':
+            kinds = [kind for result in outcomes if (kind := failure_kind(result)) is not None]
+            diagnostic['failure_kinds'] = {kind:kinds.count(kind) for kind in sorted(set(kinds))}
+        self.emit('terminal', unexpected=failures, **diagnostic)
         return 0 if not failures else 3
 
 

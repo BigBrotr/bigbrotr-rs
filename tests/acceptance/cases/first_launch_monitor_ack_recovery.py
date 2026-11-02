@@ -42,6 +42,35 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         return self.launch('monitor-checkpoint-reply-loss','app','serve','--file','/etc/bigbrotr/instance.toml',
             '--roles','control,ingest,monitor','--initialize-ingest','--monitor-once','/var/lib/bigbrotr/monitor-once.json')
 
+    def finish_fault_proxy(self, output, *, failed):
+        """Retain a graceful diagnostic before forced cleanup; preserve failure."""
+        proxy=self.fault_proxy;problem=None
+        try:
+            if proxy.process.poll() is None:
+                self.proxy_send(proxy,'stop\n')
+            code=proxy.wait(5)
+            terminal=self.proxy_event(proxy,'terminal',1)
+            save(output/'proxy-report.json',terminal)
+            require(code==0 and terminal['unexpected']==0 and not proxy.stderr and not proxy.overflow,
+                'checkpoint proxy did not terminate cleanly')
+        except Exception as error:
+            problem=error
+            save(output/'proxy-stop-failure.json',dict(error_type=type(error).__name__))
+            self.resources['cleanup_errors'].append(dict(resource='measurement-checkpoint-proxy',error=type(error).__name__))
+        finally:
+            try:
+                proxy.stop()
+            except Exception as error:
+                self.resources['cleanup_errors'].append(dict(resource='measurement-checkpoint-proxy',error='forced join '+type(error).__name__))
+                if problem is None:problem=error
+            finally:
+                (output/'proxy.stdout').write_bytes(proxy.stdout)
+                (output/'proxy.stderr').write_bytes(proxy.stderr)
+                save(output/'proxy-terminal.json',dict(exit_code=proxy.process.returncode,overflow=proxy.overflow))
+                self.fault_proxy=None
+        if problem is not None and not failed:
+            raise problem
+
     def checkpoint_reply_loss(self):
         output=self.root/'passive-checkpoint-reply-loss';output.mkdir(mode=0o700)
         self.direct_recipe=self.config.read_text()
@@ -82,16 +111,10 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
                 and all(row['state'] in ('selected','parked') for row in monitor), 'lost reply reported completion or repeated work')
             self.wait(lambda:(self.home/'relay-complete.json').exists(),'one passive source teardown',5,client=self.client)
             require(not (self.home/'relay-error.json').exists(), 'peer failed')
-            self.proxy_send(self.fault_proxy,'stop\n')
-            require(self.fault_proxy.wait(5)==0 and not self.fault_proxy.stderr and not self.fault_proxy.overflow,
-                'checkpoint proxy did not terminate cleanly')
         finally:
+            failed=sys.exception() is not None
             self.config.write_text(self.direct_recipe)
-            self.fault_proxy.stop()
-            (output/'proxy.stdout').write_bytes(self.fault_proxy.stdout)
-            (output/'proxy.stderr').write_bytes(self.fault_proxy.stderr)
-            save(output/'proxy-terminal.json',dict(exit_code=self.fault_proxy.process.returncode,overflow=self.fault_proxy.overflow))
-            self.fault_proxy=None
+            self.finish_fault_proxy(output,failed=failed)
         exclusion=output/'old-owner-exclusion';exclusion.mkdir(mode=0o700)
         self.backend_absence(exclusion)
         self.before_recovery,self.catalog=self.capture(output,'committed')

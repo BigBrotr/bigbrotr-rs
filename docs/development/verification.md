@@ -555,6 +555,10 @@ PG C4/outcome4 and physical Native I4/A3/R0, with ten Facts, four PendingBatch
 headers and four original receipts. A parked/CommitUnknown result is required;
 it cannot pass as a completed Monitor report.
 
+Failure cleanup requests a bounded graceful proxy stop before forced termination,
+retaining final counters and fixed failure categories without SQL/authentication
+payloads. A cleanup failure preserves the original stage failure.
+
 The old process/native worker and PG backend must be positively excluded. The
 original Ingest owner must remain active/draining with an unretired role. Installed
 default `ingest recover` then closes the original producer and completes ACK4
