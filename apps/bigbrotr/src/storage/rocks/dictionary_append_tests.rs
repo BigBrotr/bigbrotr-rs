@@ -1501,20 +1501,14 @@ fn passive_route_and_method_mappings_intern_append_reopen_and_refuse_conflicts()
     let prepared = preparation.finish().unwrap();
     assert_eq!(prepared.intent().dictionaries().len(), 4);
     assert_eq!(rows(&store), before);
-    assert_eq!(
-        append(&mut store, &b, 2, prepared.intent())
-            .unwrap()
-            .receipt()
-            .batch()
-            .unwrap()
-            .records()
-            .len(),
-        4
-    );
+    let original_intent = prepared.intent().clone();
+    let appended = append(&mut store, &b, 2, &original_intent).unwrap();
+    assert_eq!(appended.receipt().batch().unwrap().records().len(), 4);
+    let original_receipt = appended.receipt().encode_persistent(8192).unwrap();
+    drop(appended);
     drop(prepared);
-    drop(store);
-    let mut store =
-        IngestStore::reopen(&path, manifest, native(), grant(&b, 0, 128 * MIB)).unwrap();
+    // Fresh preparation and admission need the funded owning lifetime. A raw
+    // reopen permits exact retained replay, not a new intake/recovery proof.
     let before = rows(&store);
     let mut preparation = store
         .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
@@ -1524,13 +1518,11 @@ fn passive_route_and_method_mappings_intern_append_reopen_and_refuse_conflicts()
     }
     let prepared = preparation.finish().unwrap();
     assert_eq!(rows(&store), before);
-    assert!(
-        append(&mut store, &b, 3, prepared.intent())
-            .unwrap()
-            .receipt()
-            .batch()
-            .is_none()
-    );
+    let reused_intent = prepared.intent().clone();
+    let reused = append(&mut store, &b, 3, &reused_intent).unwrap();
+    assert!(reused.receipt().batch().is_none());
+    let reused_receipt = reused.receipt().encode_persistent(8192).unwrap();
+    drop(reused);
     drop(prepared);
     let before = rows(&store);
     let conflict = evidence(
@@ -1546,6 +1538,25 @@ fn passive_route_and_method_mappings_intern_append_reopen_and_refuse_conflicts()
             .unwrap(),
         ],
     );
-    assert!(append(&mut store, &b, 4, &conflict).is_err());
+    assert!(matches!(
+        append(&mut store, &b, 4, &conflict),
+        Err(AdmissionError::StateMismatch)
+    ));
     assert_eq!(rows(&store), before);
+    let original_inputs = inputs(&path);
+    drop(store);
+    let mut store =
+        IngestStore::reopen(&path, manifest, native(), grant(&b, 0, 128 * MIB)).unwrap();
+    for (sequence, intent, expected) in [
+        (2, &original_intent, &original_receipt),
+        (3, &reused_intent, &reused_receipt),
+    ] {
+        let replayed = append(&mut store, &b, sequence, intent).unwrap();
+        assert_eq!(
+            &replayed.receipt().encode_persistent(8192).unwrap(),
+            expected
+        );
+    }
+    assert_eq!(rows(&store), before);
+    assert_eq!(inputs(&path), original_inputs);
 }
