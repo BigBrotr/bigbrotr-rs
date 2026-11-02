@@ -272,16 +272,16 @@
           }
         },
         "initial_measurement_c3_repair": {
-          "status": "APPROVED_EB384_SOURCE_STRICT_PREFLIGHT_PASS_OPTIMIZED_BUILD_RUNNING",
+          "status": "LIVE_ISSUANCE_DEFECT_CORRECTED_SOURCE_APPROVED_NEW_QUALIFICATION_NOT_RUN",
           "tasks": "P04-T07 Steps2/6; P02 producer-progress/recovery",
           "original": "f12db3545764bf8beee477281eb6649741969a02",
           "source_controls": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102/.research/measurement-c3-repair-source-controls/source-controls.json",
           "source_controls_sha256": "a6ec0a4677c12ec85023112b49d5ae9e96df2b904a49777d02115c56a72141f0",
           "scope": "BorrowedactualhistoricalMeasurementNativewitness; freshControl atomicoriginaloutcome+genericcheckpointrepair; separatefundedsnapshot/preclaimoverlap; current0044narrowclosingdependencyguard. ExistingfinalfullprefixconfirmedACK unchanged. No generalresolution/successor/retirement qualification.",
           "review": "Astra approvedcombinedsource througha01 aftercompletef12/286/fundingdelta andowning/callerreview. Closedthree missingprobecallers, resolution/unsupportedcopy-onlyselection andtouchedfixtureinputfundingmismatch. Historicalwitness/root/sequence/manifest/length/deps, atomicity, currentControl/SQLnarrowclosingguard, cancellation/unknownandunchangedfinalACK approved. NativeR0 restrictionmatchespriorinitialresolver; compact/successorotherAPIsunchanged.",
-          "checks": "Sourcecontrols/changedRustfmt/tracked4calleraudit/checksumdiscriminatorPASS. Rootauthenticatedintegratedcode/migrationblobs,all9selectedNOSTRpaths/dependency/configobjects; boundedAstraSyncsecuritypinreuseapproved,14tutorialcontrolsPASS. Compilation/Rust/examples/native/PG/installedALLNOT_RUN.",
+          "checks": "Original source/Rustfmt/caller/checksum controls PASS; eb384 strict/optimized build PASS but actual library FAIL exposed liveissuancegap, later targetsNOT_RUN. See qualification and live_issuance_correction; corrected77cc source approved,14tutorialcontrolsPASS, Rust/installedqualificationNOT_RUN.",
           "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102",
-          "next": "Freezeexactintegratedsource; qualifyfreshworker-boundreleaseafterall-target/strictClippy/Rustdoc, affectedunfilteredRust/nativeandrequiredexamples, exact-parentobserver, thennewplainC3repair+qualifiedC4regression onfreshledger. Keepactualconnectedrefusal/rollback/lostrepairCOMMIT/existing-outcomeC3gatesexplicit, no wholeP02barrier.",
+          "next": "Freeze corrected source and reconciled tutorial pin; reuse existing verified builder/cache/native inputs, rerun affected strict/build and four unfiltered Rust targets. After actual PASS, build exact-parent observer and qualify plainC3, oldC4regression, repair-fault journey on fresh matchingledgers. Connected refusal/existing-outcome4C3 and remaining P04/P02 tasks remain explicit.",
           "originals": [
             "f12db3545764bf8beee477281eb6649741969a02",
             "28643e3c9bfa618d27934ce2ac48312942a7be77",
@@ -322,19 +322,38 @@
             "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/eb384d20",
             "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-eb384d20",
             "source_files": 4274,
-            "strict": "ActualalltargetPASS7.377s/ClippyPASS20.404s/RustdocPASS3.672s; optimizedworker-parentbuildRUNNING. Rustassertions/PG/installedNOT_RUN.",
+            "strict": "Actual all-target/strict Clippy/Rustdoc PASS; worker-bound optimized build PASS and independently audited. Library701PASS/1FAIL/3dedicatedignored/0filtered; later3Rusttargets/observer/installedNOT_RUN.",
             "builder": {
               "tool": 76832,
               "container": "959c33fb74e092115eb9a5fcfc3c6baaf05b21e2d882b76e19158399488e4698",
               "launcher_pid": 1968542,
-              "cache": "heldexclusively",
-              "scope": "2CPU/6GiB/512PIDs/noNetwork/readOnlyroot, existingqualifiednativeassets, original4ELFfullstat/O_NOATIMEguards. Maintainednative-source-reference readonlycc8 verifiesidenticalvendor/compiler/target/assetsbeforetimestampreuse; no workspaceRust/sourcecheckskip."
+              "cache": "released; tool76832 reaped0, stopped/PID0/noOOM, original4 bytes/fullstat unchanged",
+              "scope": "2CPU/6GiB/512PIDs/noNetwork/readOnlyroot, existingqualifiednativeassets, original4ELFfullstat/O_NOATIMEguards. Maintainednative-source-reference readonlycc8 verifiesidenticalvendor/compiler/target/assetsbeforetimestampreuse; no workspaceRust/sourcecheckskip.",
+              "elapsed_seconds": 180.4183401420014
             },
             "original_failures": {
               "inventory": "7e8r1Rootprepincorrectlyinventoriedcheckout.git; maintainedbuilderrefusedbeforeCargo. CorrectexpectedinventoryderivedfromactualGitarchivemembers, allsourcehashesmatchmaintainedexport; originalFAIL/logsretained.",
               "clippy": "7e8r2alltargetPASS281.806s thenstrictClippyFAIL12.237s on3NoDropdrops; Rustdoc/release/testsNOT_RUN. Container5ed3d0stopped/PID0/noOOM/cache released,original4guardsPASS; preservedclippy-failure-receipt.json."
             },
-            "timing_scope": "Consecutivealreadyrequiredlocalchecks7e8r2/eb384:281.806s vs7.377s alltarget withwarmverifiedcache/native timestampreuse. Sourcesdiffer3no-opdrops+Pythonharness/pin; observedbuildtimings, no productperformanceclaim."
+            "timing_scope": "Consecutivealreadyrequiredlocalchecks7e8r2/eb384:281.806s vs7.377s alltarget withwarmverifiedcache/native timestampreuse. Sourcesdiffer3no-opdrops+Pythonharness/pin; observedbuildtimings, no productperformanceclaim.",
+            "build_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/eb384d20/build-receipt.json",
+            "build_receipt_sha256": "8e05bae4be644c593fdcd0bc626f29f110dd50e784e4ade391513e26828b2bf2",
+            "rust_failure": {
+              "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/eb384d20/library/failure-receipt.json",
+              "receipt_sha256": "d5b0690fd64a67c2f8b7a5733538c0b126e9307318c30eb80be384f21dddb477",
+              "tool": 3687,
+              "classification": "PRODUCT_INTERNAL_AUTHORITY_SEPARATION_DEFECT",
+              "cause": "Historical basis has current coordinates but its original outcome has no live issuance stamp; shared live validation and ACK-target conversion missed that distinction. Actual runtime recovery never requests that conversion; native ACK additionally rejects live target against closing producer. Failure demonstrates API separation gap, not unauthorized persisted ACK.",
+              "resources": "Container9ba5697d stopped/PID0/noOOM; launcher1975608 absent, tool reaped1, cache released/reacquired; protected4 ELF bytes/fullstat unchanged."
+            }
+          },
+          "live_issuance_correction": {
+            "source": "77cc045a1e884b692872755a830b607a949e4e32",
+            "scope": "Require borrowed mutation copy.checkpoint()==Some(basis.stamp) at shared live validation and ACK conversion. Reuse existing issuance evidence; no new format/representation/budget or historical reducer change. Certification without mutation request retains validation but cannot mint ACK.",
+            "critical_review": "Astra approved actual3file diff againstb6eca: live constructors, historical copy/reducer/complete-prefix ACK and positive certification remain correct. Original failed assertion retained; new direct historical ACK-target refusal checks all3originals with valid coordinates.",
+            "checks": "Declared-image targeted Rustfmt PASS; first missing-CARGO_HOME invocation ENV_FAIL before source parse retained in source-review.14tutorialcontrolsPASS; all9selectedNOSTRpaths/othercodeobjects authenticated, boundedAstraSyncexclusionreuseapproved. Corrected-sourceRust/installedNOT_RUN.",
+            "source_review": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101/.research/live-issuance-boundary/source-review.json",
+            "source_review_sha256": "4be8a364b57cd8b4c1eddc722ba3cf9ef4e7709b7315bebabe0e5666972fc056"
           }
         }
       }

@@ -343,7 +343,9 @@ that outcome; C4 retry preserves checkpoint/dependency row identities. A separat
 snapshot grant is funded beside input/outcome grants before claim or closing.
 Current0044 narrowly permits closing dependency growth for this retained initial
 Monitor tail; acquisition progress remains OPEN-only and changed old0044 ledgers
-are refused. Compilation, Rust tests and connected qualification remain NOT_RUN until the
+are refused. The first actual library run exposed a shared live-issuance validation
+gap; the reviewed correction preserves historical repair and separate complete-prefix ACK.
+Corrected-source Rust and connected qualification remain NOT_RUN until their
 new-source receipts exist. Staged-before-PG, lost RAM, durable start, successors,
 renewal, repeated scheduling and retirement remain outside this extension.
 
