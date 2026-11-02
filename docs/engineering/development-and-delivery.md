@@ -98,6 +98,14 @@ existing runner supports it, protected by its exclusive lock. Source inputs and
 qualified executables/manifests remain outside that cache. A cache hit never
 replaces an input hash check. Separate trusted and untrusted build contexts.
 
+`tools/build.py` and `tools/ci.py` optionally accept `--native-source-reference`
+for timestamp preparation from a trusted prior build. Under exclusive source
+custody, identical native contents, membership, modes, compiler, profile and
+declared build inputs are verified before preserving vendor timestamps. A
+mismatch refuses reuse; older references with different helpers also refuse.
+This neither restores nor authorizes a compiled cache, and gives a fresh target
+no timestamp-only speedup. The default build remains independent of a reference.
+
 After a useful slice, retain evidence essential to current conclusions, open
 problem reproducers, unique data, unintegrated work and safe resumption. Under Q40,
 not every attempt, dataset copy or internal compatibility fixture needs permanent

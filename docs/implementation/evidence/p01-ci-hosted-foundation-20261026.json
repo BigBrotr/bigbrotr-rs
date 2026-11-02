@@ -2233,7 +2233,7 @@
   },
   "native_cache_followthrough_20261101": {
     "tasks": "P01-T01Steps5/6;P08-T11Step2",
-    "status": "Measured invalidation mechanism; cache correction NOT_IMPLEMENTED; no native speedup claim.",
+    "status": "Optional verified timestamp preparation implemented and source/control reviewed; actual compiled-cache reuse and measured benefit remain OPEN.",
     "source_revisions": [
       "78c8e31339e760c16bcfa036dabff38dcdf86544",
       "96d6c868e3ac02e768284a81add568e9b6802b79"
@@ -2251,6 +2251,20 @@
       "archive_bytes": 486500500,
       "finding": "1713 native vendor entries and toolchain inputs remain byte-identical to8f. Exported unchanged-file mtimes advance16:30:59 to20:01:31UTC; mtime-based watched inputs provide the existing sufficient invalidation mechanism. Container source path/Cargo path fingerprint unchanged.",
       "limits": "Phase includes bindgen, compilation and archiving. Retained8f comparison artifact is a different library-test profile/dependency context; exact first dirty trigger/equal-command duplication and causal savings are not established. No cache mutation or extra experiment performed."
+    },
+    "timestamp_preparation": {
+      "originals": [
+        "c4c13550088b9734648feeb6c8ae4f15dccb5905",
+        "a185a7fdeb35402d22cad9d503f44896914308fb"
+      ],
+      "integrated": [
+        "05f928ec",
+        "872b037b"
+      ],
+      "scope": "Maintained optional build/CI argument verifies exact vendor bytes/modes/membership, relevant Cargo/helpers/native/compiler/profile/assets and retained source identities; only copied vendor timestamps change under exclusive custody. Both compiler probes use actual Cargo source cwd. Default fresh build unchanged.",
+      "review": "Independent Astra approved correcteda185 after identifying and closing post-inventory inode substitution and caller-CWD compiler selection defects in originalc4. Trusted exclusive custody is required; not atomic defense against a concurrent malicious writer.",
+      "controls": "Independent11 timestamp and10 workspace controls PASS, including tested external fullstat preservation and foreign-cwd compiler probe; no build/engine/protected ELF access.",
+      "limits": "No compiled-target restoration/ownership, cache hit, hosted execution or speedup qualified. Conservative helper equality rejects old references including5c85bb4c/f474b5a0; a new helper-qualified reference is required before opt-in use. Fresh targets gain no timestamp-only benefit; measure reuse in already-needed future runs."
     }
   },
   "previous_verified_hosted_executions": [
