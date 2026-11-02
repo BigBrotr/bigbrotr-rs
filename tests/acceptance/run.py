@@ -203,7 +203,7 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index", "p04-monitor-ack-recovery", "p04-monitor-native-outcome-recovery", "p04-monitor-native-outcome-faults"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index", "p04-monitor-ack-recovery", "p04-monitor-native-outcome-recovery", "p04-monitor-native-outcome-faults", "p04-monitor-existing-outcome-recovery"])
     parser.add_argument("--binary", type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -212,6 +212,7 @@ def main():
                         help="p01-first-launch: detached candidate manifest beside its bundle")
     parser.add_argument("--native-observer-build", type=Path,
                         help="finite64, Index outage, linear quantum or passive Monitor: declared exact-source native observer build")
+    parser.add_argument("--monitor-outcome-seed-build", type=Path, help="existing-outcome Monitor case: separately attributed private library-test build")
     parser.add_argument("--compose-network",
                         help="p01-first-launch: borrow an existing local bridge; never remove it")
     parser.add_argument("--evidence", required=True, type=Path)
@@ -226,6 +227,8 @@ def main():
     parser.add_argument("--retained-archive-schedule", choices=("uninterrupted", "unbound-publication-loss", "grouped-publication-loss"),
                         help="closed-reclamation Archive fault schedule; default is unique unbound publication loss")
     args = parser.parse_args()
+    if args.monitor_outcome_seed_build is not None and args.case!='p04-monitor-existing-outcome-recovery':
+        parser.error('--monitor-outcome-seed-build is only for p04-monitor-existing-outcome-recovery')
     if args.linear_quantum_fault is not None and args.case!='p03-linear-quantum':
         parser.error('--linear-quantum-fault is only for p03-linear-quantum')
     if args.linear_quantum_scenario is not None and args.case!='p03-linear-quantum':
@@ -240,9 +243,9 @@ def main():
         parser.error("--retained-archive-schedule is only for p01-first-launch-closed-reclamation")
     if (args.case == "p01-first-launch-initial-renewal-stop") != (args.renewal_stop_outcome is not None):
         parser.error("--renewal-stop-outcome is required only for p01-first-launch-initial-renewal-stop")
-    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index", "p04-monitor-ack-recovery", "p04-monitor-native-outcome-recovery", "p04-monitor-native-outcome-faults"):
+    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index", "p04-monitor-ack-recovery", "p04-monitor-native-outcome-recovery", "p04-monitor-native-outcome-faults", "p04-monitor-existing-outcome-recovery"):
         parser.error("--native-observer-build is only for finite64, Index outage, linear quantum or passive Monitor")
-    installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index", "p04-monitor-ack-recovery", "p04-monitor-native-outcome-recovery", "p04-monitor-native-outcome-faults")
+    installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index", "p04-monitor-ack-recovery", "p04-monitor-native-outcome-recovery", "p04-monitor-native-outcome-faults", "p04-monitor-existing-outcome-recovery")
     if not installed and args.binary is None:
         parser.error("--binary is required for offline cases")
     if not installed and (args.candidate_manifest or args.compose_network):

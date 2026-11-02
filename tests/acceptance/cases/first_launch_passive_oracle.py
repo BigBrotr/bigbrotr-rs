@@ -335,7 +335,7 @@ def inspection_pin(before, after, catalog_id):
         owner['dataset_id'],0,0,1,1,10)
 
 
-def _checkpoint(state, initialized, receipts, *, through):
+def _checkpoint_values(state, initialized, receipts, *, through):
     """The two explicit initial prefixes share bytes, never observed head selection."""
     assert type(through) is int and through in (3,4)
     dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
@@ -366,12 +366,26 @@ def _checkpoint(state, initialized, receipts, *, through):
     for source, digest in expected:
         body += source[0]+b''.join(n.to_bytes(8,'big') for n in source[1:])+digest
     assert raw(head['checkpoint_digest'],32) == hashlib.sha256(body).digest()
+    verdict = dict(generic_checkpoint=through,checkpoint_revision=through,checkpoint_dependencies=count,
+        checkpoint_sha256=hashlib.sha256(body).hexdigest(),acquisition_progress=0)
+    return verdict,head,rows[-1]
+
+
+def _checkpoint(state, initialized, receipts, *, through):
+    verdict,head,last = _checkpoint_values(state,initialized,receipts,through=through)
     outcome = only(state['producer_outcomes'],request_sequence=through)
-    assert head['xmin'] == outcome['xmin'] == rows[-1]['xmin'], 'outcome and checkpoint must commit together'
+    assert head['xmin'] == outcome['xmin'] == last['xmin'], 'outcome and checkpoint must commit together'
     for field in ('resource','epoch','incarnation'):
         assert head['issuer_'+field] == outcome['recorder_'+field]
-    return dict(generic_checkpoint=through,checkpoint_revision=through,checkpoint_dependencies=count,
-        checkpoint_sha256=hashlib.sha256(body).hexdigest(),acquisition_progress=0)
+    return verdict
+
+
+def checkpoint_existing_outcome(state, initialized, receipts):
+    """Seeded outcome4 predates the atomic head/dependency10 repair transaction."""
+    verdict,head,last = _checkpoint_values(state,initialized,receipts,through=4)
+    outcome = only(state['producer_outcomes'],request_sequence=4)
+    assert head['xmin'] == last['xmin'] and head['xmin'] != outcome['xmin']
+    return verdict
 
 
 def checkpoint(state, initialized, receipts):

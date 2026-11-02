@@ -693,6 +693,118 @@ probe or Sync work. Synthetic controls do not qualify these real transaction
 boundaries; exact-existing-outcome4/C3 and other connected refusal guards remain
 separate required gates.
 
+### Recover an existing Monitor outcome without rewriting it
+
+`p04-monitor-existing-outcome-recovery` is a separate nine-stage parameter of the
+same Monitor recovery runtime. Its Rust fixture compilation, ignored connected
+test and installed execution are **NOT_RUN** until independently qualified.
+
+```sh
+python3 -B tests/acceptance/run.py p04-monitor-existing-outcome-recovery \
+  --source-root /absolute/clean-fixture-and-acceptance-source \
+  --candidate-manifest /absolute/qualified-product/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
+  --monitor-outcome-seed-build /absolute/separate-test-compilation \
+  --evidence /absolute/fresh-private-evidence
+```
+
+The explicit seed is private `cfg(test)` code under the existing Control owner,
+named `storage::postgres::control_owner::monitor_outcome_seed::seed_exact_existing_outcome`.
+It is ignored by ordinary Rust suites because it requires the case's protected
+request, actual runtime PostgreSQL login and exclusive original Native store.
+Ordinary suite success does not execute or qualify it. In the existing isolated
+Linux x86_64 Rust1.98.1/native-toolchain runner, mount a fresh output at `/out`,
+an exact committed fixture export at `/out/build/source`, its ordinary
+`bigbrotr-source/1` manifest at `/out/build/source-manifest.json`, and the qualified
+parent's maintained `tools/build.py` source manifest read-only at
+`/inputs/parent-product-source-manifest.json`. The latter is declared product
+identity input; no private qualification capsule is required. Prepare the fixture
+export from its clean checkout with `git archive` and the maintained inventory
+functions (this procedure runs no compiler or engine):
+
+```sh
+python3 -B - <<'PY'
+import json, subprocess, tarfile
+from pathlib import Path
+from tools.build import file_hash, git, source_inventory
+root = Path.cwd()
+assert not git(root, 'status', '--porcelain', '--untracked-files=all')
+build = Path('/out/build')
+build.mkdir()
+source = build / 'source'
+source.mkdir()
+archive = build / 'source.tar'
+subprocess.run(['git', '-C', str(root), 'archive', '--format=tar', '--output', str(archive), 'HEAD'], check=True)
+with tarfile.open(archive) as bundle:
+    for member in bundle.getmembers():
+        name = Path(member.name)
+        assert not name.is_absolute() and '..' not in name.parts and (member.isdir() or member.isfile())
+    bundle.extractall(source, **({'filter': 'fully_trusted'} if hasattr(tarfile, 'fully_trusted_filter') else {}))
+manifest = dict(format='bigbrotr-source/1', revision=git(root, 'rev-parse', 'HEAD'),
+    tree=git(root, 'rev-parse', 'HEAD^{tree}'), archive_sha256=file_hash(archive), files_sha256=source_inventory(source))
+(build / 'source-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+PY
+```
+
+Provide the lockfile-pinned Cargo dependencies in the run-local Cargo home with
+`CARGO_HOME=/out/build/cargo-home cargo fetch --locked --manifest-path
+/out/build/source/Cargo.toml` before this offline build; a verified cache can
+accelerate that acquisition. The maintained compile-only selection produces the retained
+library ELF and its identity receipt, runs strict Clippy for all `bigbrotr` targets
+including `cfg(test)`, and exits before any test or runtime fault path:
+
+```sh
+python3 -B /out/build/source/experiments/ingest-succession/native.py \
+  monitor-outcome-seed --parent-product-manifest /inputs/parent-product-source-manifest.json
+```
+
+Its underlying compile check is `cargo test --locked --offline --release -p
+bigbrotr --lib --no-run --message-format=json`. A separate installed execution
+selects the ignored test explicitly; the acceptance driver supplies these exact
+arguments inside the ordinary app recipe:
+
+```sh
+BIGBROTR_MONITOR_OUTCOME_SEED=/fixture/request.json \
+  /fixture/seed storage::postgres::control_owner::monitor_outcome_seed::seed_exact_existing_outcome \
+  --ignored --exact --nocapture --test-threads=1
+```
+
+The installed case supplies that request only after its independent C3/Native I4
+gate. It retains the existing `bigbrotr-test-tool-artifact/1` library-target
+receipt and ELF under `artifacts/`, the fixture source manifest under `build/`,
+and an exact copy of the parent product manifest as
+`build/parent-product-source-manifest.json`. The admission checks source/tree,
+compiler/native tools, Cargo test-target metadata and ELF bytes. Product inputs
+may differ only by the exact `cfg(test)` owner-module suffix and its new private
+fixture file. This permits reuse of the unchanged qualified product and its
+observer while attributing the seed compilation separately. No product API or
+release capability is added.
+
+Before source work, the maintained v3 policy literal plus enumerated
+acceptance/Monitor overrides must equal every normalized `config show` setting
+and its independently reported policy digest. Integer diagnostics are checked
+against strings generated from the known typed literal; arbitrary database or
+diagnostic values never choose the expected document. Both complete document,
+revision and digest pairs and deployment roots are frozen. The manifest is
+independently encoded from the initialized registration before measurement
+selection and compared with actual Native bytes before the seed runs.
+
+The seed uses genuine `ControlSession::acquire`, normal closing/historical
+custody, bounded original request4 replay and full policy validation. It compares
+the encoded original receipt with the Python reconstruction, calls the existing
+`record_recovered`, and commits only outcome4 while retaining exact C3/nine
+dependencies. Its one Native closing write belongs to this explicit fixture
+phase; the fixture is not counted as a production copy. The actual owner releases
+and joins before the next ordinary installed recovery.
+
+That fresh recovery must preserve every seeded outcome byte, recorder,
+`recorded_at` and xmin. Only C4 and dependency10 share the new recovery transaction
+and fresh Control attribution; they must not borrow outcome4's older xmin. Native
+ACK adds one write, and exact retry rewrites neither store. Missing-outcome and
+old C4/A3 cases retain their stricter original bindings. The peer stays within
+the same120s envelope with one connection and no replacement probe or Sync work.
+Other connected refusal guards remain required under P04-T07 Steps2/6 and P02.
+
 ### Same-store installed Index restart with backlog
 
 `p01-first-launch-index-restart` selects a separate fresh variant with the same

@@ -10,13 +10,15 @@ import sys
 sys.dont_write_bytecode = True
 SOURCE = Path('/out/build/source')
 sys.path.insert(0, str(SOURCE))
-from tools.build import clean_environment, file_hash, native_toolchain
+from tools.build import clean_environment, file_hash, native_toolchain, verify_cargo_configuration
 from tools.ci import execute
 from tools.archive_bundle import build_environment, install_bundle, native_target, verify_bundle
 
 build = SOURCE.parent
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'], ['producer-ack'], ['producer-ack-fault'], ['producer-floor'])
+monitor_outcome_seed = (len(sys.argv) == 4 and sys.argv[1:3] ==
+                        ['monitor-outcome-seed', '--parent-product-manifest'])
+assert monitor_outcome_seed or sys.argv[1:] in ([], ['lineage'], ['schema'], ['replay'], ['history'], ['history-probe'], ['transition'], ['transition-probe'], ['writer'], ['writer-followup'], ['recovery'], ['installed'], ['archive-components'], ['archive-installed'], ['producer-progress'], ['producer-ack'], ['producer-ack-fault'], ['producer-floor'])
 producer_floor = sys.argv[1:] == ['producer-floor']
 producer_ack_fault = sys.argv[1:] == ['producer-ack-fault']
 producer_ack = sys.argv[1:] == ['producer-ack']
@@ -43,6 +45,20 @@ def sources():
 
 
 assert sources() == manifest['files_sha256']
+if monitor_outcome_seed:
+    # This compile-only profile accepts a declared product manifest, not a
+    # private qualification capsule or an installed release executable.
+    parent_input = Path(sys.argv[3])
+    assert parent_input.is_absolute() and parent_input.is_file() and not parent_input.is_symlink()
+    assert parent_input.stat().st_size <= 8 * 1024**2
+    parent_bytes = parent_input.read_bytes()
+    parent = json.loads(parent_bytes)
+    sys.path.insert(0, str(SOURCE / 'tests/acceptance'))
+    from cases.first_launch_monitor_outcome_seed import parent_sources
+    parent_sources(manifest, parent, SOURCE)
+    verify_cargo_configuration(SOURCE, SOURCE, manifest['files_sha256'], build / 'cargo-home')
+    with (build / 'parent-product-source-manifest.json').open('xb') as stream:
+        stream.write(parent_bytes)
 env = clean_environment()
 selected, native = native_toolchain(env, 2)
 env.update(selected)
@@ -118,19 +134,22 @@ if producer_floor:
                          'compacted successor compatibility and crash/restore qualification NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 artifacts = Path('/out/artifacts')
-if producer_ack_fault:
+if producer_ack_fault or monitor_outcome_seed:
     # A new private test fixture needs only this ELF. Keep the installed product
     # artifacts and their qualification independent of this native fault case.
     identity['scope'] = ('Native ACK test-target compilation and library Clippy, then '
                          'one traced ACK fsync EIO and fresh-process replay. '
                          'No connected PG authority, media failure or power-loss qualification.')
+    if monitor_outcome_seed:
+        identity['scope'] = ('Private Monitor existing-outcome seed library-test compilation and all-target '
+                             'Clippy only. Tests, Native writes, PostgreSQL and installed recovery NOT_RUN.')
     artifacts.mkdir()
     checks = Path('/out/build-checks')
     result = execute([
         ('compile', ['cargo', 'test', '--locked', '--offline', '--release', '-p',
                      'bigbrotr', '--lib', '--no-run', '--message-format=json']),
         ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p',
-                    'bigbrotr', '--lib', '--', '-D', 'warnings']),
+                    'bigbrotr', '--all-targets' if monitor_outcome_seed else '--lib', '--', '-D', 'warnings']),
     ], checks, SOURCE, env, identity, 1800)
     compiled = {}
     log = checks / 'compile.log'
@@ -157,9 +176,14 @@ if producer_ack_fault:
     assert sources() == manifest['files_sha256']
     assert all(file_hash(Path(tool['path'])) == tool['sha256'] for tool in native['tools'].values())
     built = result['status'] == 'PASS' and set(executables) == {'bigbrotr-library-tests'}
+    if monitor_outcome_seed:
+        assert (build / 'parent-product-source-manifest.json').read_bytes() == parent_bytes
+        parent_sources(manifest, parent, SOURCE)
     receipt = dict(identity, executables_sha256=executables,
-                   status='PASS_PRODUCER_ACK_FAULT_BUILD_ONLY' if built else 'FAIL',
-                   tests_executed=0, clippy_scope='library; cfg(test) fixture compiled, not linted')
+                   status=('PASS_MONITOR_OUTCOME_SEED_BUILD_ONLY' if monitor_outcome_seed
+                           else 'PASS_PRODUCER_ACK_FAULT_BUILD_ONLY') if built else 'FAIL',
+                   tests_executed=0, clippy_scope=('all bigbrotr targets including cfg(test)' if monitor_outcome_seed
+                           else 'library; cfg(test) fixture compiled, not linted'))
     if built:
         context = dict(format='bigbrotr-test-tool-artifact/1',
                        kind='TEST_ONLY_COMPILATION_NOT_RELEASE',
@@ -177,6 +201,11 @@ if producer_ack_fault:
     qualification_path = Path('/out/qualification.json')
     qualification_path.write_text(json.dumps(qualification, indent=2) + '\n')
     assert built
+    if monitor_outcome_seed:
+        qualification['status'] = receipt['status']
+        qualification_path.write_text(json.dumps(qualification, indent=2) + '\n')
+        print(json.dumps(qualification))
+        sys.exit(0)
     try:
         runtime = execute([('ack-fsync', [sys.executable, '-B',
             str(SOURCE / 'experiments/archive-engine/publication_sync_cases.py'),

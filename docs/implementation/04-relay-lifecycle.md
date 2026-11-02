@@ -368,6 +368,16 @@ withholding Native ACK until fresh direct completion; all ten real stages pass
 on the same b05 product. [Fault verification](../development/verification.md#preserve-uncertainty-across-monitor-checkpoint-repair-faults)
 fixes the independent state, custody and write-count expectations without widening
 the same peer/proxy limits.
+The source-only `p04-monitor-existing-outcome-recovery` parameter adds the distinct
+exact-outcome4/C3 preservation obligation. Its private ignored `cfg(test)` seed
+uses genuine Control/native recovery custody and independently reconstructed
+receipt bytes, committing only an explicit fixture outcome. Ordinary installed
+recovery must retain that row's recorder/timestamp/xmin while atomically advancing
+only C4 and dependency10 under fresh Control, followed by exact retry. The
+[verification command and separate fixture provenance](../development/verification.md#recover-an-existing-monitor-outcome-without-rewriting-it)
+preserve the unchanged product and old strict oracles. Fixture compilation and
+connected execution remain NOT_RUN; the other required refusal boundaries stay
+open, and this does not close Steps2/6 or their broader P02 obligations.
 
 - [ ] **1. Separate schedule and measurement identity.** Maintain due/claim/deferral records in bounded operations state; acquire budget before external work. A stable attempt ID and method/profile bind actual endpoint/route/observer/access context. Persist a bounded dispatch intent before action to make ambiguity recoverable, without treating that intent as proof the action began.
 - [ ] **2. Implement honest crash recovery.** Record actual start/end and monotonic duration when observed, plus terminal evidence receipt. After a crash with only intent, retain execution-unknown and nullable actual start; with durably recoverable proof of start but missing completion, retain completion-unknown. Neither becomes a fabricated timeout or success/failure vote. A local start timestamp observed only in lost RAM is not recovered proof of start. Retry is a new attempt; retrying an evidence write resolves the original receipt. Preserve unresolved dispatch intent through the correctness horizon until terminal/unknown recovery is durably linked; operational display TTL cannot delete that obligation.

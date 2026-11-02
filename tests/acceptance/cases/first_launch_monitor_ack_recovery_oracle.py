@@ -191,12 +191,7 @@ def _repaired_sql(before, after, initialized, receipts, cbor, *, retry, complete
     new=sorted(after['producer_outcomes'],key=lambda r:r['request_sequence'])
     assert [row['request_sequence'] for row in old]==[1,2,3]
     assert [row['request_sequence'] for row in new]==[1,2,3,4] and new[:3]==old
-    prior=passive.only(before['producer_checkpoints']);head=passive.only(after['producer_checkpoints'])
-    mutable={'checkpoint_revision','complete_through_request','dependency_count','checkpoint_digest',
-        'committed_at_us','issuer_resource','issuer_epoch','issuer_incarnation','xmin'}
-    assert {k:v for k,v in head.items() if k not in mutable}=={k:v for k,v in prior.items() if k not in mutable}
-    assert head['xmin']!=prior['xmin']
-    control=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    head,control=_advanced_head(before,after,receipts,completed=completed)
     for key,column in (('resource','resource_id'),('epoch','epoch'),('incarnation','process_incarnation')):
         assert head['issuer_'+key]==new[3]['recorder_'+key]==control[column]
     for row,field in ((head,'committed_at_us'),(new[3],'recorded_at_us')):
@@ -209,11 +204,76 @@ def _repaired_sql(before, after, initialized, receipts, cbor, *, retry, complete
         recorder_resource=control['resource_id'],recorder_epoch=control['epoch'],
         recorder_incarnation=control['process_incarnation'],recorded_at_us=new[3]['recorded_at_us'],xmin=head['xmin'])
     assert new[3]==expected
+
+
+def _advanced_head(before, after, receipts, *, completed=True):
+    prior=passive.only(before['producer_checkpoints']);head=passive.only(after['producer_checkpoints'])
+    mutable={'checkpoint_revision','complete_through_request','dependency_count','checkpoint_digest',
+        'committed_at_us','issuer_resource','issuer_epoch','issuer_incarnation','xmin'}
+    assert {k:v for k,v in head.items() if k not in mutable}=={k:v for k,v in prior.items() if k not in mutable}
+    assert head['xmin']!=prior['xmin']
+    control=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    for key,column in (('resource','resource_id'),('epoch','epoch'),('incarnation','process_incarnation')):
+        assert head['issuer_'+key]==control[column]
+    upper=control['released_at_us'] if completed else control['lease_expires_at_us']
+    assert type(head['committed_at_us']) is int and control['acquired_at_us']<=head['committed_at_us']<=upper
     old_dependencies=sorted(before['producer_checkpoint_dependencies'],key=lambda r:r['source_sequence'])
     dependencies=sorted(after['producer_checkpoint_dependencies'],key=lambda r:r['source_sequence'])
     assert dependencies[:9]==old_dependencies and len(dependencies)==10
     expected=dict(old_dependencies[-1],source_sequence=10,payload_digest='\\x'+receipts[3][4][0][1].hex(),xmin=head['xmin'])
     assert dependencies[-1]==expected
+    return head,control
+
+
+def seeded_terminal(state, initialized, selection, originals, receipts, cbor, decode, *, repaired):
+    """Four actual SQL copies, independently reconstructed; C3 and C4 stay distinct."""
+    refs,measurement=original_measurement(state,initialized,selection,originals,decode)
+    actual=passive.retained(state,initialized,{'measurement':{'payload_digest':receipts[3][4][0][1].hex()}},
+        refs,measurement,originals,cbor,decode)
+    assert [cbor(value) for value in actual]==[cbor(value) for value in receipts]
+    if repaired:passive.checkpoint_existing_outcome(state,initialized,actual)
+    else:passive.checkpoint_before_terminal(state,initialized,actual[:3])
+    return actual
+
+
+def seeded_outcome(before, after, initialized, receipts, cbor):
+    """The explicit test-only seed inserts only outcome4 and closes native custody."""
+    _recovery_tables(before,after,pg_changed=True)
+    recovered_owners(before,after)
+    for table in ('producer_checkpoints','producer_checkpoint_dependencies'):
+        assert after[table]==before[table], 'seed advanced '+table
+    passive.checkpoint_before_terminal(before,initialized,receipts[:3])
+    passive.checkpoint_before_terminal(after,initialized,receipts[:3])
+    old=sorted(before['producer_outcomes'],key=lambda row:row['request_sequence'])
+    new=sorted(after['producer_outcomes'],key=lambda row:row['request_sequence'])
+    assert [row['request_sequence'] for row in old]==[1,2,3]
+    assert [row['request_sequence'] for row in new]==[1,2,3,4] and new[:3]==old
+    control=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda row:row['epoch'])
+    assert type(new[3]['recorded_at_us']) is int and control['acquired_at_us']<=new[3]['recorded_at_us']<=control['released_at_us']
+    assert new[3]['xmin'] not in {row['xmin'] for row in old}
+    encoded=b'bigbrotr/receipt/1\0'+cbor(receipts[3])
+    expected=dict(old[2],request_sequence=4,request_digest='\\x'+receipts[3][2].hex(),
+        outcome_bytes='\\x'+encoded.hex(),outcome_sha256='\\x'+hashlib.sha256(encoded).hexdigest(),
+        recorder_resource=control['resource_id'],recorder_epoch=control['epoch'],
+        recorder_incarnation=control['process_incarnation'],recorded_at_us=new[3]['recorded_at_us'],xmin=new[3]['xmin'])
+    assert new[3]==expected
+
+
+def repaired_existing(before, after, initialized, receipts, *, retry=False):
+    _recovery_tables(before,after,pg_changed=True)
+    _recovered_owners(before,after,initial_open=False,completed=True)
+    assert after['producer_outcomes']==before['producer_outcomes'], 'repair rewrote the seeded outcome or original history'
+    if retry:
+        passive.checkpoint_existing_outcome(before,initialized,receipts)
+        passive.checkpoint_existing_outcome(after,initialized,receipts)
+        for table in ('producer_checkpoints','producer_checkpoint_dependencies'):
+            assert after[table]==before[table], 'exact retry rewrote '+table
+    else:
+        passive.checkpoint_before_terminal(before,initialized,receipts[:3])
+        passive.checkpoint_existing_outcome(after,initialized,receipts)
+        head,control=_advanced_head(before,after,receipts)
+        outcome=passive.only(after['producer_outcomes'],request_sequence=4)
+        assert outcome['recorder_epoch']<control['epoch'] and outcome['xmin']!=head['xmin']
 
 
 def repair_rollback(before, after, initialized, receipts):

@@ -107,6 +107,9 @@ def check_container(info, entry, owner, project, state):
         expected['/run/operator'] = state / 'secrets/operator'
     if entry['service'] == 'index-initialize':
         expected['/run/index-initialize'] = state / 'secrets/index-initialize'
+    if 'monitor_outcome_seed' in entry:
+        from cases.first_launch_monitor_outcome_seed import mounts as seed_mounts
+        expected.update(seed_mounts(info,entry))
     mounts = {item['Destination']: item for item in info['Mounts']}
     require({item['Destination'] for item in info['Mounts'] if item['Type'] == 'bind'} == set(expected),
             'unexpected container bind mount')
@@ -1347,7 +1350,7 @@ def first_launch(args, checks, inputs):
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
     renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     linear_quantum = getattr(args,'case',None)=='p03-linear-quantum'
-    monitor_recovery = getattr(args,'case',None) in ('p04-monitor-ack-recovery','p04-monitor-native-outcome-recovery','p04-monitor-native-outcome-faults')
+    monitor_recovery = getattr(args,'case',None) in ('p04-monitor-ack-recovery','p04-monitor-native-outcome-recovery','p04-monitor-native-outcome-faults','p04-monitor-existing-outcome-recovery')
     passive_monitor = monitor_recovery or getattr(args,'case',None) in ('p04-passive-monitor','p04-passive-monitor-index')
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
@@ -1380,6 +1383,8 @@ def first_launch(args, checks, inputs):
                 from cases.first_launch_monitor_ack_recovery import NATIVE_OUTCOME_STAGES as PASSIVE_STAGES, NATIVE_OUTCOME_LIMITS as PASSIVE_LIMITS
             if args.case=='p04-monitor-native-outcome-faults':
                 from cases.first_launch_monitor_ack_recovery import REPAIR_FAULT_STAGES as PASSIVE_STAGES, REPAIR_FAULT_LIMITS as PASSIVE_LIMITS
+            if args.case=='p04-monitor-existing-outcome-recovery':
+                from cases.first_launch_monitor_ack_recovery import EXISTING_OUTCOME_STAGES as PASSIVE_STAGES, EXISTING_OUTCOME_LIMITS as PASSIVE_LIMITS
         runtime_type = PassiveMonitorRuntime
         args.case_limits = PASSIVE_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
@@ -1431,6 +1436,8 @@ def first_launch(args, checks, inputs):
             if args.case=='p04-monitor-native-outcome-faults':
                 operations += [('monitor_outcome_rollback',runtime.rollback_repair),
                     ('monitor_outcome_commit_loss',runtime.lose_repair_commit)]
+            if args.case=='p04-monitor-existing-outcome-recovery':
+                operations += [('monitor_existing_outcome_seed',runtime.seed_existing_outcome)]
             operations += [(PASSIVE_STAGES[-3],runtime.recover_ack),(PASSIVE_STAGES[-2],runtime.retry_ack)]
         for current, operation in operations:
             operation()

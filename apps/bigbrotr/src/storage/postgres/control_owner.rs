@@ -712,3 +712,7 @@ fn fresh_id() -> Result<[u8; 16], OwnerError> {
     }
     Ok(bytes)
 }
+
+#[cfg(test)]
+#[path = "monitor_outcome_seed.rs"]
+mod monitor_outcome_seed;
