@@ -79054,19 +79054,23 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "5991291899659ebeee3143099bff6974f71a77e2",
-      "state": "Local not pushed; actual installed5c85bb4c first passive path and restart inspection PASS. Later structural Clippy corrections pending qualification. Root sole integrator; full M2/recovery/ClickHouse qualification open.",
+      "observed_source": "7ad5b67a",
+      "state": "Local not pushed. Installed5c passive/restart PASS; f474 exact build/Clippy PASS, library697PASS/1FAIL/3ignored (eight critical Native controlsPASS), RustdocFAIL corrected comment only. Remaining5-suite continuation active; realCH NOT_STARTED pending oracle correction.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
         ".research/m2-monitor-passive-driver-20261102",
-        ".research/m2-monitor-archive-20261102"
+        ".research/m2-monitor-archive-20261102",
+        ".research/p01-native-source-timestamps-20261102",
+        ".research/m2-passive-index-acceptance-20261102",
+        ".research/m2-current-control-inventory-20261102"
       ],
       "active_assignments": {
-        "native_timestamp_review": "Astra/xhigh source-only independent recheck of optional P01 timestamp helper a185a7fd in .research/p01-native-source-timestamps-20261102; not integrated or used.",
-        "measurement_clickhouse_prep": "Sol/xhigh bounded read-only preparation of maintained real ClickHouse measurement intake qualification; no engine/build launch."
+        "measurement_clickhouse_prep": "Sol/xhigh correcting canonical CBOR bool/signed commitment oracle and independent frozen vectors in .research/m2-passive-index-acceptance-20261102; no engines.",
+        "current_control_inventory": "Sol/xhigh source-only diagnosis of failed dictionary route reopen PendingQuota(RecoveryBlocked) in .research/m2-current-control-inventory-20261102; its85-table reconciliation integrated7ad5.",
+        "native_timestamp_review": "Astra/xhigh finished timestamp/tutorial source reviews; blocked f110 passiveIndex on bool/int canonical-oracle defect beforeengine; targeted correction recheck pending."
       },
-      "resources": "At recording no owned compiler/engine or hosted watcher is running; all build/strict and18 installed containers terminal/PID0/noOOM, locks released, original4ELF guards unchanged. Borrowed bridge retained; no cleanup.",
+      "resources": "At recording tool89102 owns runningdc54b5a0 finalArchive-worker assertions with cache115 exclusively locked. Earlier f474build57082 reaped0 and strict77468/library20714 reaped1, stopped/PID0/noOOM, all guards passed andcache released betweenruns. Separate native-build4control container stopped/PID0/noOOM.18 installedcontainers remain stopped, borrowedbridge preserved. No cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79084,25 +79088,37 @@
           ".research/m2-monitor-core-product-d1ae816a",
           ".research/m2-monitor-core-product-3fde120f",
           ".research/m2-monitor-core-product-5c85bb4c",
-          ".research/m2-monitor-core-product-214e72cb"
+          ".research/m2-monitor-core-product-214e72cb",
+          ".research/m2-monitor-core-product-f474b5a0"
         ],
         "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102.core_compilation",
         "latest_verified_build": {
-          "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
-          "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/5c85bb4c",
-          "receipt_sha256": "193668f4df6be8af84e662c4198750e69f7ffb5aacfb217b40f399e745e00158",
-          "state": "Build tool5701 reaped0; original4ELF/fullstat intact; maintained installed passive/restart journey subsequently PASS, see owning P02 receipt."
+          "source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/f474b5a0",
+          "receipt_sha256": "2617c028f4dc2cd2ba589ed167fabb72f6f3fb682ddc1ae71cfd97c17100bc8b",
+          "state": "Tool57082 reaped0; e4a606ed exited0/PID0/noOOM/cache released, protected4ELF fullstat intact."
         },
         "latest_strict": {
-          "source": "214e72cbad540e9fb87d2f53bff8d552ecfe9c5f",
-          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-214e72cb",
-          "state": "Tool2788 reaped1; all-target check PASS, strict Clippy one diagnostic FAIL;59912918 correction pending qualification. Container stopped/PID0/noOOM/cache released, all original4ELF fullstat guards PASS."
+          "source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-f474b5a0-workspace",
+          "state": "Tool77468 reaped1; ClippyPASS, RustdocFAIL on unquotedtype, doc-only65acc correction pending fullRustdoc. f4a73f63 stopped/PID0/noOOM/cache released, guardsPASS."
         },
         "installed_acceptance": {
           "source": "5c85bb4c0f84f04c0d38f29b2b0efc149a8be989",
           "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-5c85bb4c/acceptance-passive-r1",
           "receipt_sha256": "608ccad187e2ca4d180e7603c479874fc4221401d08a5398f9c6377cbb0fafd5",
           "state": "7/7 stages PASS, all18 owned containers stopped/PID0/noOOM; borrowed bridge retained. No new ClickHouse/negative/recovery qualification inferred."
+        },
+        "library": {
+          "source": "f474b5a0",
+          "receipt_sha256": "5445416fd1172e190ac432ec7635c53d053c67103d281f7e63e3e5783aab890a",
+          "state": "Tool20714 reaped1;1aa50450 exited1/PID0/noOOM/cache released.697PASS1FAIL3ignored, eight Native controls PASS; originalfailure preserved."
+        },
+        "remaining_assertions": {
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-f474b5a0-workspace-r3",
+          "container": "dc54b5a080a2caa2c74bddc25253d757df3e83564d6f369602bcd5d547591c63",
+          "tool": 89102,
+          "state": "Active finalArchive-worker tests; other4 groupsPASS, exactparentguards retained. No engine installedclaim."
         }
       }
     }

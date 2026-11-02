@@ -7,7 +7,7 @@ Capability-first execution is reconciled in Q38/the guide; one existing plan.
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source **59912918**, clean before this
+`work/m2-finite-history-20261101`. Observed source **7ad5b67a**, clean before this
 recording update. Canonical main/origin remain clean at pushed **a37f7829**.
 New Monitor work is local and not pushed; qualification is incomplete.
 
@@ -39,24 +39,44 @@ Monitor source still needs its publication scan and actual hosted qualification.
 The first passive path's Native, PG44 least-privilege dispatch, driver, Archive
 sixth family, Index eleventh target and installed inspection are integrated
 locally and critically reviewed. The P02 report owns source/review boundaries.
-Pure model70/81PASS and fixture14PASS remain valid within unchanged scope.
-Actual installed5c85bb4c proves the positive normal path; dedicated Rust/native,
-negative authority/replay/corruption, and real-pipe assertions are **NOT_RUN**.
-Real ClickHouse measurement intake/readback is **NOT_RUN**.
+Pure model70/81PASS and installed5c85bb4c remain valid within exact scope.
+Actual f474b5a0 all-target/strict Clippy and maintained worker/parent build PASS;
+source/native/worker receipt is in P02 `core_compilation.latest_verified_build`.
+The new optional P01 native timestamp tool is integrated6d2c258f, independently
+reviewed with21 controls PASS; it has not been used for a build/cache speedup.
 
-Latest verified build5c85bb4c passed all-target compilation and the maintained
-worker-before-parent release build with exact source/native/worker verification.
-Its later strict Clippy failed on five structural diagnostics, correctedfd23b094.
-Next214e72cb passed all-target compilation but failed Clippy on one large-enum
-diagnostic;59912918 documents the bounded inline-Cut exception without changing
-behavior or adding a hot-path allocation. That attempt's release/assertions were
-NOT_RUN. Original compiler/lint failures and logs remain in P02's `core_compilation`.
-The next source must pass strict checks before the optimized build and assertions.
+Actual unfiltered f474 library: **697PASS/1FAIL/3ignored/0filtered**. All eight
+new real Native measurement admission/replay/corruption/authority controls pass
+once. The sole dictionary-route reopen test refuses PendingQuota(RecoveryBlocked);
+source diagnosis is active, classification still UNKNOWN. Original logs remain.
+A separate continuation passed binary232, Monitor wire12, catalog entrypoint16
+and all Protocol suites; Archive-worker native tests are still running.
+Clippy passed again; Rustdoc failed on unquoted Mutex<State> HTML.65accd30 changes
+only backtick markup, without rebuilding the unchanged product. Corrected full
+Rustdoc still requires execution. Do not infer whole-library/workspace PASS.
 
-The remaining first-increment gates are affected Rust/native/pipe assertions,
-real ClickHouse intake/readback, final source-review pin/control reconciliation,
-and public/hosted qualification of a coherent candidate. Do not convert source
-review, compilation, fixture tests or a positive journey into broader PASS.
+The new maintained `p04-passive-monitor-index` harness is integrated8fc31ea1.
+Before engine launch Astra caught an independent-oracle defect: bootstrap CBOR
+encodes bool as integer, corrupting expected measurement chunks and downstream
+commitments; the synthetic fixture shared the encoder. Author is reconciling
+canonical bool/signed encoding with independent frozen vectors. **Real ClickHouse
+run remains NOT_STARTED** until targeted review closes this blocker.
+
+Schema44's two new tables also invalidated shared83-table acceptance fences.
+The current exact85-name inventory, missing/extra/same-count substitution refusals
+and affected callers/exports are reconciled8fc31ea1/7ad5b67a. The original full
+portable613 run31FAIL/2ERROR/2SKIP is retained. Agent's corrected source audit:
+622collected/621run, zero FAIL/ERROR,2 existing strace skips, native-build probe
+explicitly NOT_RUN. Separately the unchanged native-build controls passed4/4 in
+the declared compiler image; missing LLVM on the host was ENVIRONMENT. New tests
+still require their final integrated portable/hosted gates.
+
+The remaining first-increment gates are the dictionary fixture diagnosis/fix,
+remaining Archive-worker result, canonical Index oracle correction/review and
+actual ClickHouse intake/readback, plus current-source Rustdoc/public/hosted
+qualification. The tutorial pin was critically reviewed for the changed selected
+Sync paths, with14 affected controls PASS; no general egress claim. Do not turn
+source review, fixture tests or a positive journey into broader PASS.
 
 The five-second policy authority ceiling remains enforced; nominal15s checks are
 not renewable15s grants. Full lost-RAM/durable-start/renewal and repeated scheduling
@@ -78,23 +98,23 @@ assigned there. All selected later milestones remain in scope.
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns resource
 paths. All original implementation worktrees/source commits remain retained.
-At recording no owned compiler/engine or hosted watcher is running. Build5701,
-strict72506 and preflight2788 are reaped; their containers are exited/PID0/noOOM,
-cache released. All18 installed-case containers are stopped/PID0/noOOM; listener
-closed and final queue empty. Borrowed bridge remains intact. All4 original ELF
-bytes and complete recorded stat fields passed required no-atime guards.
-No cleanup performed; preserve .research, unique data and original failures.
+At recording the guarded f474 workspace-r3 container is running its final
+Archive-worker tests (owned dc54b5a0, tool89102). Earlier f474 build57082 and strict/
+library tools77468/20714 are reaped0/1/1, their containers stopped/PID0/noOOM,
+cache released before r3 reacquired it. Earlier18 installed-case containers and
+the separate native-build-control container are stopped/PID0/noOOM. Borrowed
+bridge remains intact. Required guards preserved all4 original ELF bytes/fullstat.
+No cleanup; preserve .research, unique data and original failures.
 
-Root is the only integrator. Two bounded agents are active:
+Root is the only integrator. Sol/xhigh authors in separate retained worktrees
+are correcting the canonical Index oracle and diagnosing the dictionary reopen
+failure. Astra/xhigh completed the scoped critical reviews; real ClickHouse is
+held for its targeted correction recheck. All source/custody paths remain in the
+inventory and owning P01/P02 reports.
 
-- Astra/xhigh independently rechecks optional P01 timestamp helpera185a7fd in
-  `.research/p01-native-source-timestamps-20261102`; not integrated or used.
-- Sol/xhigh prepares the smallest maintained real ClickHouse measurement proof;
-  read-only initially, no build/engine launch.
-
-**Next Root action:** freeze corrected source, run existing guarded all-target and
-strict Clippy preflight, then maintained release build and affected Rust/native
-suites. In parallel prepare the real ClickHouse qualification, checking changed
-schema/role/budget/source-completion premises before launch. Reuse installed5c
-and model/fixture evidence only for their actual unchanged scope; integrate and
-push a coherent qualified result, then advance the next useful M2 capability.
+**Next Root action:** observe/reap the existing Archive-worker run, close the
+bounded dictionary test diagnosis and canonical oracle blocker, then execute the
+reviewed maintained ClickHouse case using the verified f474 product and separately
+attributed current harness/assembly. Repeat only invalidated checks; preserve the
+original FAIL/NOT_RUN results. Complete integrated portable/current-source hosted
+qualification and push a coherent result before advancing the next M2 capacity.
