@@ -752,8 +752,9 @@ Provide the lockfile-pinned Cargo dependencies in the run-local Cargo home with
 `CARGO_HOME=/out/build/cargo-home cargo fetch --locked --manifest-path
 /out/build/source/Cargo.toml` before this offline build; a verified cache can
 accelerate that acquisition. The maintained compile-only selection produces the retained
-library ELF and its identity receipt, runs strict Clippy for all `bigbrotr` targets
-including `cfg(test)`, and exits before any test or runtime fault path:
+library ELF and its identity receipt. It first runs strict Clippy for all
+`bigbrotr` targets including `cfg(test)`, then builds the test executable, and
+exits before any test or runtime fault path:
 
 ```sh
 python3 -B /out/build/source/experiments/ingest-succession/native.py \

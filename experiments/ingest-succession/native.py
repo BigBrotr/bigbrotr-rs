@@ -145,12 +145,16 @@ if producer_ack_fault or monitor_outcome_seed:
                              'Clippy only. Tests, Native writes, PostgreSQL and installed recovery NOT_RUN.')
     artifacts.mkdir()
     checks = Path('/out/build-checks')
-    result = execute([
-        ('compile', ['cargo', 'test', '--locked', '--offline', '--release', '-p',
-                     'bigbrotr', '--lib', '--no-run', '--message-format=json']),
-        ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p',
-                    'bigbrotr', '--all-targets' if monitor_outcome_seed else '--lib', '--', '-D', 'warnings']),
-    ], checks, SOURCE, env, identity, 1800)
+    compile_check = ('compile', ['cargo', 'test', '--locked', '--offline', '--release', '-p',
+                                'bigbrotr', '--lib', '--no-run', '--message-format=json'])
+    clippy_check = ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p',
+                              'bigbrotr', '--all-targets' if monitor_outcome_seed else '--lib',
+                              '--', '-D', 'warnings'])
+    # All-target Clippy checks this fixture's cfg(test) before the more costly
+    # release test executable. Keep the older ACK profile's separate scope.
+    ordered_checks = ([clippy_check, compile_check] if monitor_outcome_seed
+                      else [compile_check, clippy_check])
+    result = execute(ordered_checks, checks, SOURCE, env, identity, 1800)
     compiled = {}
     log = checks / 'compile.log'
     for line in log.read_text().splitlines() if log.exists() else []:
