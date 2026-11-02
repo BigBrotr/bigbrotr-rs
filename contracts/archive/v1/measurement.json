@@ -1,0 +1,96 @@
+{
+  "format": "bigbrotr-measurement-contract/1",
+  "record_kind": "measurement",
+  "record_schema_version": 1,
+  "status": "Closed model/canonical codec; native admission, physical Archive layout and Index consumers require integration qualification.",
+  "envelope": "Existing Fact: SourceRecordId, record_kind, record_schema_version, visibility QualifiedRef, recorded_at, payload. SHA-256 uses the existing bigbrotr/fact/1\\0 domain.",
+  "encoding": "Deterministic CBOR profile 1. Exact definite arrays, shortest integers, native booleans, required explicit nulls. No maps, floats, arbitrary JSON, exception text or extension slots.",
+  "model_memory": "Measurement owns one fixed boxed record allocated through checked reservation. Decoder charges its required logical bytes before allocation. Callers separately fund inline values, input/output and every clone; allocator overhead/process RSS require runtime qualification. Canonical bytes do not include this ownership detail.",
+  "arrays": {
+    "payload": ["attempt_id:nonzero bytes16", "context", "profile", "ClockQualityV1", "state"],
+    "context": ["subject", "observer:QualifiedRef(kind 2)", "direct_route:QualifiedRef(kind 6)", "access:QualifiedRef(kind 3)", "passive_method:QualifiedRef(kind 5)"],
+    "subject": ["0:RelayEndpoint", "endpoint:QualifiedRef(kind 1)"],
+    "moment": ["observed_at:i64|null", "elapsed_since_first_call_return_us:u64|null"],
+    "observed": ["execution", "open", "read", "counters"],
+    "execution": ["destination_code", "connect_call_result", "observed_after_return_at:i64|null"],
+    "open": ["tcp_connected:moment|null", "tls_completed:moment|null", "websocket_opened:moment|null"],
+    "read": ["request_flushed:moment|null", "first_valid_event|null", "eose_delivery:moment|null", "eose_prefix_verified:bool", "auth_observed:bool", "correlated_closed:bool"],
+    "first_valid_event": ["event_id:bytes32", "decoder_delivery:moment", "verification_completion:moment"],
+    "counters": ["rx_physical_frames:u64", "rx_messages:u64", "event_candidates:u64", "rx_ws_bytes:u64", "rx_payload_bytes:u64", "tx_ws_bytes:u64"],
+    "terminal": ["observed", "ended:moment", "termination", "teardown_code"],
+    "FactRef": ["SourceRecordId", "payload_digest:bytes32"]
+  },
+  "state_arrays": {
+    "execution_unknown": [0],
+    "completion_unknown": [1, "observed"],
+    "terminal": [2, "terminal"],
+    "resolution": [3, "prior_unknown:FactRef", "terminal"]
+  },
+  "connect_call_result_arrays": {
+    "accepted": [0],
+    "immediate_error": [1, "connect_error_code"]
+  },
+  "termination_arrays": {
+    "eose": [0],
+    "closed": [1],
+    "deadline": [2, "phase_code"],
+    "authority_interruption": [3, "phase_code"],
+    "cancelled": [4, "phase_code"],
+    "failed": [5, "phase_code", "failure_code"],
+    "limit": [6, "limit_code"]
+  },
+  "codes_in_zero_based_order": {
+    "destination": ["dns_resolver", "relay"],
+    "connect_error": ["permission", "resources", "address", "refused", "unreachable", "timed_out", "other"],
+    "phase": ["dns", "socket_setup", "tcp_connect", "tls", "websocket", "request_write", "response_read", "verification", "teardown"],
+    "failure": ["local_permission", "local_resources", "local_configuration", "dns_unavailable", "connect_failed", "tls_failed", "upgrade_failed", "transport", "decode", "invalid_event", "disconnected"],
+    "limit": ["message_framed_bytes", "normalized_event_bytes", "rx_physical_frames", "rx_messages", "event_candidates", "rx_ws_bytes", "tx_ws_bytes", "dns_bounds"],
+    "teardown": ["not_attempted", "completed", "failed", "interrupted"]
+  },
+  "profile_fields_in_order": [
+    ["version", 1],
+    ["base_cadence_us", 300000000],
+    ["overall_timeout_us", 15000000],
+    ["open_timeout_us", 10000000],
+    ["relay_connections", 1],
+    ["requests", 1],
+    ["active_requests", 1],
+    ["tries", 1],
+    ["sole_filter_kind", 1],
+    ["request_limit", 1],
+    ["compression_disabled_code", 0],
+    ["max_message_framed_bytes", 2097152],
+    ["max_normalized_event_bytes", 262144],
+    ["max_rx_physical_frames", 64],
+    ["max_rx_messages", 32],
+    ["max_event_candidates", 3],
+    ["max_rx_ws_bytes", 4194304],
+    ["max_tx_ws_bytes", 65536],
+    ["dns_exchange_timeout_us", 2000000],
+    ["dns_max_exchanges_per_family", 9],
+    ["dns_max_frame_bytes", 4096],
+    ["dns_max_addresses", 64],
+    ["auth_response_disabled_code", 0],
+    ["effective_authority_ceiling_us", "positive u64 <= 5000000; immutable per attempt"]
+  ],
+  "profile_interpretation": [
+    "One exact REQ filter {kinds:[1],limit:1}; generated subscription identity is correlation, not another profile.",
+    "Open timeout begins at authorized connector entry and ends at validated upgrade. Open observation elapsed times instead anchor after the first externally directed connect syscall returned, including a DNS resolver connect.",
+    "Nominal timeout is not authorization. Effective authority ceiling is fixed with intent, not changing remaining time or a renewal promise. Its expiry is authority interruption, not remote timeout. Cleanup may make terminal elapsed time exceed the I/O authority ceiling.",
+    "No compression, signed AUTH response, publication, implicit retry or address fallback. DNS transport is TCP; inherited limits do not implement DNS catalog measurements.",
+    "The event cap is normalized signed-event JSON size. Raw JSON with ignored extensions remains subject to the larger message/parser limits.",
+    "All physical WS header/payload traffic, including controls, unrelated/rejected input and teardown, contributes to aggregate limits. Actual observed counters are not declared potential lengths and are not clipped to caps. No arithmetic equality between independent counters/caps is imposed by this representation."
+  ],
+  "proof_and_resolution": [
+    "Constructors validate structure only. A trusted adapter observes the actual externally directed connect syscall return (accepted or immediate error) and samples afterward; intent, timestamp, socket allocation, future construction and generic first poll are not that proof. No packet/remote-receipt inference follows.",
+    "ExecutionUnknown has no fabricated actual timing. CompletionUnknown has an actual-start claim and fixed partial observations, but no terminal reason. Runtime production of CompletionUnknown requires durably recoverable trusted start evidence; a lost RAM capture still recovers ExecutionUnknown.",
+    "UTC samples can be null or regress; elapsed samples use a separate monotonic clock and cannot invert known phase order. Zero UTC and zero elapsed are valid and distinct from null. Known completion with unavailable timing is a non-null moment containing null fields.",
+    "REQ anchor is completed local flush. EVENT and EOSE anchors are decoder completion before parsing/verification, not kernel arrival. EOSE delivery may precede prefix verification. Positive EOSE requires eose_prefix_verified. First valid event retains both original delivery and verification completion. Empty EOSE has no first-event value.",
+    "Resolution requires the exact prior unknown FactRef, same dataset, visibility, attempt ID, subject/observer/route/access/method, immutable profile and clock ID. Quality details may change. Same-stream target sequence must be earlier; cross-stream recovery requires consumer-verified causality.",
+    "Resolution preserves previously known start/call result, phase moments, first event identity, true flags and nondecreasing counters; null samples can be filled. It cannot target a terminal or another resolution. The helper validates the supplied target, not target availability, durable authority, causal completeness or conflict freedom.",
+    "Consumers apply the selected cut before resolution, retain unresolved uncertainty, count the same attempt once and expose competing terminal conflicts. They must not select by latest recorded_at/arrival. Resolution FactRefs are strong dependencies, separate from dictionary refs and event corrects.",
+    "All six payload dictionary references and envelope visibility are required. Resolve exact endpoint/observer/direct-route/access/passive-method/clock descriptors; parsing a namespace does not establish a mapping, allocation, scope or dispatch permission."
+  ],
+  "future_subjects": "RecipientMetadataHttp remains selected P04-T14 work; future subjects and catalog child types require versioned closed producer/consumer contracts.",
+  "qualification": "Independent literal vectors cover this layout. Rust execution, admission/replay, physical Archive/Index integration, trusted runtime capture, crash behavior and full Monitor scheduling are separate gates; this contract does not mark those tasks complete."
+}

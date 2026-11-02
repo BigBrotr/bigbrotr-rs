@@ -1,5 +1,6 @@
 //! Closed profile-1 recipes, not a general CBOR serializer. Only named typed
 //! fields can reach the codec; no generic values, floats or extension bags.
+mod measurement;
 pub(crate) mod selector;
 use crate::{
     AdmissionBatch, ArchiveBatch, ClockQuality, DictionaryDescriptor, DictionaryEntry, Digest256,
@@ -337,6 +338,14 @@ impl DictionaryEntry {
     }
 }
 
+/// Shared closed A05 payload recipe; no fact envelope or owner-assigned fields.
+pub(crate) fn measurement_payload<W: Write>(
+    value: &crate::Measurement,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    measurement::encode(value, encoder)
+}
+
 pub(crate) fn fact<W: Write>(
     value: &Fact,
     encoder: &mut Encoder<W>,
@@ -387,6 +396,7 @@ pub(crate) fn fact<W: Write>(
             reference(value.verification_method_id, encoder)?;
             correction(value.corrects, encoder)?;
         }
+        FactPayload::Measurement(value) => measurement_payload(value, encoder)?,
     }
     Ok(())
 }

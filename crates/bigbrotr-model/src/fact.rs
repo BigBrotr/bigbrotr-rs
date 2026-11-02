@@ -2,8 +2,8 @@
 //! cryptographic validity nor allocation, policy, correction or commit authority.
 use crate::{
     ClockQuality, DatasetId, DictionaryDescriptor, DictionaryEntry, DictionaryKind, Digest256,
-    EventBody, EventId, FactRef, ObservedTime, QualifiedRef, Signature, SourceRecordId,
-    source::SourceError,
+    EventBody, EventId, FactRef, Measurement, ObservedTime, QualifiedRef, Signature,
+    SourceRecordId, source::SourceError,
 };
 use std::fmt;
 
@@ -11,6 +11,7 @@ use std::fmt;
 pub enum FactError {
     Reference(SourceError),
     InvalidCorrectionOrder,
+    InvalidResolutionOrder,
     ProvenanceContext,
 }
 impl fmt::Display for FactError {
@@ -23,6 +24,9 @@ impl fmt::Display for FactError {
             Self::ProvenanceContext => {
                 f.write_str("network witness context must match the current provenance policy")
             }
+            Self::InvalidResolutionOrder => f.write_str(
+                "a measurement resolution must name a prior record when in the same source stream",
+            ),
         }
     }
 }
@@ -101,6 +105,7 @@ pub enum FactPayload {
     EventEligibility(EventEligibility),
     EventReceive(EventReceive),
     Provenance(Provenance),
+    Measurement(Measurement),
 }
 impl FactPayload {
     pub const fn record_kind(&self) -> &'static str {
@@ -110,6 +115,7 @@ impl FactPayload {
             Self::EventEligibility(_) => "event-eligibility",
             Self::EventReceive(_) => "event-receive",
             Self::Provenance(_) => "provenance",
+            Self::Measurement(_) => "measurement",
         }
     }
     /// Optional event subject, including an event dictionary mapping. Presence
@@ -124,6 +130,7 @@ impl FactPayload {
             Self::EventEligibility(value) => Some(value.event_id),
             Self::EventReceive(value) => Some(value.event_id),
             Self::Provenance(value) => Some(value.event_id),
+            Self::Measurement(_) => None,
         }
     }
     pub const fn corrects(&self) -> Option<SourceRecordId> {
@@ -133,45 +140,52 @@ impl FactPayload {
             _ => None,
         }
     }
-    // Each position carries its expected dictionary kind; retaining the pair
-    // prevents a same-dataset endpoint being accepted as a clock or observer.
-    fn references(&self) -> [Option<(QualifiedRef, DictionaryKind)>; 5] {
-        use DictionaryKind as K;
-        match self {
-            Self::Dictionary(value) => [value.descriptor().reference(), None, None, None, None],
-            Self::EventPayload(value) => [
-                Some((value.event_ordinal, K::Event)),
-                None,
-                None,
-                None,
-                None,
-            ],
-            Self::EventEligibility(value) => [
-                value
-                    .origin
-                    .import_lineage()
-                    .map(|r| (r, K::DatasetLineage)),
-                None,
-                None,
-                None,
-                None,
-            ],
-            Self::EventReceive(value) => [
-                Some((value.observer_id, K::Observer)),
-                Some((value.clock_quality.clock_id(), K::Observer)),
-                None,
-                None,
-                None,
-            ],
-            Self::Provenance(value) => [
-                Some((value.endpoint_id, K::Endpoint)),
-                Some((value.observer_id, K::Observer)),
-                Some((value.access_scope_id, K::AccessScope)),
-                Some((value.clock_quality.clock_id(), K::Observer)),
-                Some((value.verification_method_id, K::Method)),
-            ],
+    fn references(&self) -> PayloadReferences<'_> {
+        PayloadReferences {
+            payload: self,
+            position: 0,
         }
     }
+}
+
+/// Allocation-free typed traversal, with no shared fixed-slot ceiling. Both
+/// constructor validation and the dependency iterator consume this exact walker.
+struct PayloadReferences<'a> {
+    payload: &'a FactPayload,
+    position: usize,
+}
+impl Iterator for PayloadReferences<'_> {
+    type Item = (QualifiedRef, DictionaryKind);
+    fn next(&mut self) -> Option<Self::Item> {
+        use DictionaryKind as K;
+        let item = match (self.payload, self.position) {
+            (FactPayload::Dictionary(v), 0) => v.descriptor().reference(),
+            (FactPayload::EventPayload(v), 0) => Some((v.event_ordinal, K::Event)),
+            (FactPayload::EventEligibility(v), 0) => {
+                v.origin.import_lineage().map(|r| (r, K::DatasetLineage))
+            }
+            (FactPayload::EventReceive(v), 0) => Some((v.observer_id, K::Observer)),
+            (FactPayload::EventReceive(v), 1) => Some((v.clock_quality.clock_id(), K::Observer)),
+            (FactPayload::Provenance(v), 0) => Some((v.endpoint_id, K::Endpoint)),
+            (FactPayload::Provenance(v), 1) => Some((v.observer_id, K::Observer)),
+            (FactPayload::Provenance(v), 2) => Some((v.access_scope_id, K::AccessScope)),
+            (FactPayload::Provenance(v), 3) => Some((v.clock_quality.clock_id(), K::Observer)),
+            (FactPayload::Provenance(v), 4) => Some((v.verification_method_id, K::Method)),
+            (FactPayload::Measurement(v), position) => v.references().nth(position),
+            _ => None,
+        };
+        if item.is_some() {
+            self.position += 1;
+        }
+        item
+    }
+}
+
+fn typed_references(
+    visibility: QualifiedRef,
+    payload: &FactPayload,
+) -> impl Iterator<Item = (QualifiedRef, DictionaryKind)> {
+    std::iter::once((visibility, DictionaryKind::VisibilityScope)).chain(payload.references())
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -189,14 +203,26 @@ impl Fact {
         payload: FactPayload,
     ) -> Result<Self, FactError> {
         let dataset = source_record_id.dataset_id;
-        visibility_scope_id.require(dataset, DictionaryKind::VisibilityScope)?;
         if let FactPayload::Dictionary(entry) = &payload {
             entry
                 .reference()
                 .require(dataset, entry.descriptor().kind())?;
         }
-        for (reference, kind) in payload.references().into_iter().flatten() {
+        for (reference, kind) in typed_references(visibility_scope_id, &payload) {
             reference.require(dataset, kind)?;
+        }
+        if let FactPayload::Measurement(value) = &payload
+            && let Some(target) = value.prior_unknown()
+        {
+            let target = target.source_record_id;
+            if target.dataset_id != dataset {
+                return Err(SourceError::ForeignDataset.into());
+            }
+            if target.stream() == source_record_id.stream()
+                && target.sequence >= source_record_id.sequence
+            {
+                return Err(FactError::InvalidResolutionOrder);
+            }
         }
         if let Some(corrects) = payload.corrects() {
             if corrects.dataset_id != dataset {
@@ -241,13 +267,7 @@ impl Fact {
     /// A dictionary mapping defines its own reference; only its envelope and
     /// descriptor references enter this dependency iterator.
     pub fn dictionary_refs(&self) -> impl Iterator<Item = QualifiedRef> {
-        std::iter::once(self.visibility_scope_id).chain(
-            self.payload
-                .references()
-                .into_iter()
-                .flatten()
-                .map(|(reference, _)| reference),
-        )
+        typed_references(self.visibility_scope_id, &self.payload).map(|(reference, _)| reference)
     }
     pub fn fact_ref(&self) -> FactRef {
         FactRef {

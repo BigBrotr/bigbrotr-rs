@@ -55,7 +55,7 @@ nullable variant-specific fields do not mean an unknown value equals zero.
 | `archive.imported_claims` | One attributable typed source assertion with source dataset/record/artifact, subject, validation/trust/time basis | Importer through ingest; accepted evidence; never local witness by implication |
 | `archive.dataset_lineage` | Immutable source-dataset/artifact descriptor and format/fidelity interpretation | Import/export through archive publication; while referenced; no local file secrets or per-delivery import logs |
 | `archive.dictionaries` | Typed immutable mapping `(dataset_id, dictionary_kind, allocation_domain, ordinal)` to its canonical identity/value and normalization version | Ingest/ArchivePublisher; while referenced; endpoint, observer, access, visibility, method, route and HTTP resource descriptors; export closure |
-| `archive.measurement_facts` | Immutable executed-attempt result or attributable resolution: attempt ID, typed subject, method, clock, request/transport context, outcome and bounded typed child checks | Monitor through ingest; permanent; one actual compound attempt is one sampling unit despite child fields |
+| `archive.measurement_facts` | One A05 family: execution-unknown, completion-unknown, terminal and immutable unknown-to-terminal resolution naming an exact prior FactRef; stable attempt/context/profile, occurrence clock quality and fixed typed open/read observations | Monitor through ingest; permanent; cut before resolution, count an attempt once, exclude unknowns from outcome denominators and expose conflicting terminals |
 | `archive.availability_selections` | One immutable finite experiment selection: exact bounded pairs or reproducible descriptor, source cut, method/seed and scope | Explicit availability job through ingest; provenance required; permanent while evidence refers to it |
 | `archive.availability_facts` | Executed event/endpoint child result linked to selection and actual request attempt; served, singleton-not-served or unknown with method | Provenance required; permanent scientific evidence; batching/retries do not manufacture negative votes |
 | `archive.document_objects` | One logical `ObjectId` with original bounded bytes, length and content digest | ArchivePublisher; while any retained fact/snapshot/export/backup refers to it; no default per-JSON-key indexes |
@@ -74,8 +74,9 @@ every full population forever while keeping public scientific output lineage.
 
 Measurement resolutions remain immutable facts. Their method schema defines an
 allowed resolution of a named prior unknown fact; it does not overwrite it.
-Reduction selects the applicable terminal evidence after the cut and counts the
-original attempt once. Conflicting terminal evidence is surfaced as a conflict,
+Reduction first restricts all unknown, terminal and resolution records to the
+selected cut, then resolves eligible targets and counts the original attempt
+once. Conflicting terminal evidence is surfaced as a conflict,
 not resolved by whichever duplicate arrived last. P02/P04 fixtures include an
 unknown cut, a later resolution and a pinned read of the earlier cut.
 

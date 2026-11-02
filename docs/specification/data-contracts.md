@@ -244,22 +244,64 @@ binding is explicitly restricted, never silently disclosed in a dictionary.
 
 ## A05 — Executed measurements
 
-A measured attempt requires permits and evidence that its declared external
-action began. A recovered pre-dispatch intent with unknown execution is retained
-as a coverage uncertainty record, not counted as an executed measurement. It records `attempt_id`, `subject`,
-`observer_id`, `route_id`, `access_scope_id`, `method_id/version`,
-`started_at`, `ended_at` when known, `duration_us`, `clock_quality`,
-`outcome`, structured error class, measurement values and document references.
-Outcomes distinguish success, remote refusal, timeout, local failure and
-interrupted/unknown completion. Deferred queue entries are not attempts.
+A05 is one immutable family containing execution-unknown, completion-unknown,
+terminal and unknown-to-terminal resolution records. A measured attempt requires
+permits and attributable evidence that its declared external action began.
+Execution-unknown preserves a recovered dispatch intent with uncertain execution;
+completion-unknown requires durably recoverable actual-start evidence, but has no
+known terminal result. Neither unknown state enters measured outcome denominators.
+Positively known pre-I/O refusals and queue deferrals remain operational state.
+The fact envelope supplies dataset/source identity, visibility and recorded time.
+The payload supplies a nonzero 16-byte `attempt_id`, typed subject, observer,
+route, access and method references, immutable effective profile, occurrence
+`clock_quality`, nullable actual timing and bounded typed observations. Clock
+identity occurs once inside quality; resolution requires the same clock identity
+but may improve uncertainty/anomaly observations. Terminal reasons distinguish
+correlated EOSE/CLOSED, deadline, authority interruption, cancellation, typed
+failure and a specific limit; partial open/read observations survive independently.
 
-`MeasurementSubject` is a closed tagged union: `RelayEndpoint { endpoint_id }`
-or `RecipientMetadataHttp { recipient_pubkey, profile_event_id, http_resource_id }`.
-The latter records P04-T14 issuer lookup against an exact signed profile version;
+The first constructible `MeasurementSubject` is `RelayEndpoint { endpoint_id }`.
+The selected later `RecipientMetadataHttp { recipient_pubkey, profile_event_id,
+http_resource_id }` records P04-T14 issuer lookup against an exact signed profile version;
 it never creates a fake relay, null endpoint relation or relay availability vote.
 Each variant requires its complete references and scope; executed non-relay HTTP
 evidence belongs here alongside relay measurements.
 Future subjects require a versioned schema and a real producer/consumer contract.
+
+The first `measurement/1` layout is fixed in
+[`contracts/archive/v1/measurement.json`](../../contracts/archive/v1/measurement.json).
+It uses `direct-route/1`, `passive-ws-read/1` and inline typed open/read children;
+it implements no generic catalog child or arbitrary JSON payload. One connection,
+one REQ, one active REQ and one try use exactly `kinds:[1],limit:1`, compression
+disabled and no signed AUTH response. Nominal cadence is 300s, overall timeout
+15s, and open timeout 10s from authorized connector entry through validated
+upgrade. The immutable per-attempt authority ceiling is positive and at most 5s;
+actual shrinking authority may interrupt earlier. A full 15s authorized operation
+requires P04's later refresh work, not an increased lease constant.
+
+The profile retains a 2,097,152-byte framed-message limit, a 262,144-byte normalized
+signed-event limit (raw event JSON can be larger), 64 received physical frames,
+32 logical messages, three event candidates, 4MiB cumulative received WS bytes and
+64KiB transmitted WS bytes. Controls, unrelated/rejected input and teardown count.
+Actual counters are never synthesized from declared payload lengths or clipped to
+limits; an offending header/read can cross a cap before refusal. DNS transport
+remains TCP, with 2s per exchange, at most nine exchanges per family, a 4KiB frame
+and 64 addresses, inside the shrinking attempt deadline; these bounds do not claim
+DNS catalog checks.
+
+The execution witness names an actual externally directed connect syscall that
+returned, its resolver/relay destination role and accepted/immediate-error class.
+DNS can be first; literal addresses bypass it. Socket allocation, intent, future
+construction, first poll and a pre-I/O timestamp are insufficient. This witness
+does not prove a packet or remote receipt. Its UTC sample is taken after return
+and remains nullable; durations use a separate monotonic anchor. UTC rollback
+does not invert monotonic duration. Open observation starts at this first external
+call; its timer's earlier authorized-entry origin is distinct. REQ timing starts
+after completed flush. EVENT/EOSE times are decoder-completed delivery before
+parsing/verification, not kernel arrival; verification completion has a separate
+moment. Positive EOSE additionally requires the ordered-prefix verification
+barrier, which may occur later. Empty EOSE has no first-event ID/RTT. AUTH followed
+by EOSE is not a global refusal; an event followed by timeout retains that event.
 
 For scheduled probes, retain the effective base cadence and probe profile at the
 attempt, including request limits/deadline. Adaptive retry delay is operational
@@ -296,8 +338,17 @@ then admits terminal evidence through the shared contract. A crash in between
 leaves execution/completion unknown: actual start/end are nullable and a recovered
 intent does not prove that a packet was sent. Preserve that uncertainty in scope
 coverage, excluding it from measured success/failure denominators. Never invent
-a timeout from an absent terminal result. A late attributable terminal record
-resolves the same attempt identity rather than creating a second sample. The
+a timeout from an absent terminal result. RAM-only start capture lost on crash
+still yields execution-unknown; initial production may use that conservative
+path while synced-start production remains P04-T07 recovery work. A late
+attributable terminal record names the prior unknown with its exact `FactRef`
+(source identity and digest), preserving attempt/context/profile, known timing,
+first event and true flags, with nondecreasing counters. Unknown timing fields may
+be filled. Same-dataset targets must precede a resolution when in the same stream;
+cross-stream recovery additionally needs consumer-verified causality. Resolutions
+cannot target terminal/resolution records or produce another unknown. Apply the
+selected cut before resolving, count once and expose conflicting terminals;
+never select the last arrival. This is distinct from event `corrects`. The
 additional intent/terminal writes are included in the M-sized monitor budget.
 
 ## A06 — Content-addressed source documents
@@ -416,7 +467,7 @@ These are operator-configurable retention classes, not archive-format fields.
 | A02 provenance | Exact Rocks key/min/receipt + immutable Parquet facts | Yes when enabled | Two narrow CH orders; scoped optional export |
 | A03 claims/lineage | Source originals + Parquet typed assertions | Accepted evidence | Origin-aware CH interpretation; attributed export |
 | A04 dictionaries | Immutable archive mappings; PG mutable registry separate | While referenced | Compact local lookup; required export mappings |
-| A05 measurements | Durable dispatch intent + attributable terminal Parquet facts | Yes | CH selected fields/history; scoped measurement export |
+| A05 measurements | Durable dispatch intent + immutable unknown, terminal and resolution Parquet facts | Yes | CH selected fields/history; cut-relative scoped measurement export; unknowns excluded from outcome denominators |
 | A06 objects | Namespaced deduplicated Parquet object rows | While referenced | Parsed hot fields + lookup; include objects in standalone export |
 | A07 coverage | Durable PG workflow + immutable evidence summaries | Useful evidence; work queues bounded | CH scoped coverage; no public control-state dump |
 | A08 derived | Published CH/artifact generations, manifest in PG | Pinned/useful generations | Read generation; explicit reproducible research export |

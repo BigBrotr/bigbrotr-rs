@@ -79,7 +79,9 @@ fn frozen_facts_decode_losslessly_and_reencode_exactly() {
             "aa".repeat(32)
         );
         match fact.payload() {
-            FactPayload::Dictionary(_) => panic!("event fixture contains a dictionary"),
+            FactPayload::Dictionary(_) | FactPayload::Measurement(_) => {
+                panic!("event fixture contains another family")
+            }
             FactPayload::EventPayload(value) => {
                 assert_eq!(value.body.created_at.0, u64::MAX);
                 assert_eq!(value.body.pubkey.to_string(), "bb".repeat(32));

@@ -20,6 +20,7 @@ use minicbor::{Decoder, Encoder, encode::Write};
 use sha2::{Digest, Sha256};
 use std::{fmt, mem::size_of};
 
+mod measurement;
 pub mod request;
 
 const FACT_PREFIX: &[u8] = b"bigbrotr/fact/1\0";
@@ -623,7 +624,12 @@ impl<'a> FactReader<'a> {
         let kind = self.decoder.str()?;
         if !matches!(
             kind,
-            "event-payload" | "event-eligibility" | "event-receive" | "provenance" | "dictionary"
+            "event-payload"
+                | "event-eligibility"
+                | "event-receive"
+                | "provenance"
+                | "dictionary"
+                | "measurement"
         ) || self.decoder.u16()? != 1
         {
             return Err(CodecError::IncompatibleSchema);
@@ -636,6 +642,7 @@ impl<'a> FactReader<'a> {
         let recorded_at = ObservedTime::new(self.decoder.i64()?);
         let payload = match kind {
             "dictionary" => FactPayload::Dictionary(self.dictionary()?),
+            "measurement" => FactPayload::Measurement(self.measurement()?),
             "event-payload" => {
                 self.array(7)?;
                 FactPayload::EventPayload(EventPayload {

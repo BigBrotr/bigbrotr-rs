@@ -299,6 +299,12 @@ Core fact payload field order:
 * `provenance/1`: `[event_id,endpoint_id,observer_id,access_scope_id,received_at,
   clock_quality,verification_method_id,corrects]`.
 * `dictionary/1`: `[QualifiedRef,normalization_version,descriptor_schema,descriptor_version,descriptor_value]`.
+* `measurement/1`: `[attempt_id:bytes16,context,profile,ClockQualityV1,state]`.
+  Attempt IDs are nonzero. The closed arrays, codes, nullable fields and inline
+  first passive-read profile are fixed by the
+  [measurement contract](../../contracts/archive/v1/measurement.json); all four
+  states use the same fact family/domain. Resolution's prior `FactRef` includes
+  its digest and is separate from dictionary dependencies and event corrections.
 * `ClockQualityV1`: `[clock_id:QualifiedRef,resolution_us:u64,
   uncertainty_us:u64|null,anomaly_flags:u32]`. Clock ID uses an observer descriptor;
   bit 0 is detected rollback, bit 1 unsynchronized, bit 2 coarse resolution;
