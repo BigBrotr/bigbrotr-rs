@@ -2570,6 +2570,52 @@
       "source_controls": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102/.research/ci-proxy-controls/source-controls.json",
       "source_controls_sha256": "b45c3a7de50c0d7da0e5f0a0005dba0b0dc08e5c80b38b9596614478cb82581c",
       "limit": "Newresultingrevision actualhosted36foundationcommands stillNOT_RUN; no coverage/source/suitecrossmixing."
+    },
+    "recovery_followthrough_publication": {
+      "source": "f4ad5fda635eed725ccba65e3d0f2d3e1421e76f",
+      "status": "PUSHED_MAIN_ACTUAL_HOSTED_GATE_PENDING",
+      "push_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/push-receipt.json",
+      "push_receipt_sha256": "59a2c48bc7eb2e5d13985874cc066a339679d20eeee78c784591a41670f6f842",
+      "source_admission": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-source-f4ad5fda-20261102/publication-admission.json",
+      "source_admission_sha256": "118a79b193e9c0895ea2cbda65b70de447029f50648bcde8e13b5dd7fcb0841d",
+      "source_scan": "61 new commit/blob objects across10commits,18,691,063bytes;25historicalpaths,zero sensitive/rawstore/LFS or newunclassifiedcredentials. Sixpatternoccurrences/twoknownfingerprints haveunchanged publiclinecontext ormethodAST. Bounded/asynchronous limits retained.",
+      "local_checks": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/local-checks.json",
+      "local_checks_sha256": "af7b053a1b7bcd975dd2f92b105405278224676082de8235eb2d88262c481327",
+      "local_scope": "Declaredcompilerimage636acceptance+13export+41proxyPASS/zeroSKIP;3maintaineddocscommandsPASS. Hostinitial636collected/1ERROR/2SKIP was missingllvm-config; originalFAIL and5NOT_RUN retained, no sourcecheckweakened. No product/nativeengine/cache/protectedELF mounts/build. NewRusttesthelper andactualMac stillrequirehostedexecution.",
+      "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696",
+      "attempt": 1,
+      "event": "push",
+      "initial_jobs": {
+        "scope": {
+          "id": 125435742878,
+          "state": "PASS"
+        },
+        "linux_amd64": {
+          "id": 125435969476,
+          "state": "RUNNING"
+        },
+        "linux_arm64": {
+          "id": 125435969506,
+          "state": "RUNNING"
+        },
+        "macos": {
+          "id": 125435969590,
+          "state": "QUEUED"
+        }
+      },
+      "observation": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation",
+      "watcher": {
+        "tool": 80126,
+        "driver_pid": 1946407,
+        "driver_start_ticks": "36720694",
+        "pid": 1946468,
+        "start_ticks": "36720827",
+        "interval_seconds": 60,
+        "bound_seconds": 7500,
+        "state": "READ_ONLY_RUNNING_AGENT_IDLE_ROOT_CUSTODY"
+      },
+      "declarations": "4272 exactsourcefiles;36foundationcommands16/11/9,scope20,acceptance636including17shimcases,export13,faultproxy41,mandatoryNative11. Exactnewsource/attempt1; no crossmixingold33checks/oldfailures.",
+      "next": "Observe existing watcher without superseding push; onterminal wake ci_recovery_publication_sol for acquisition, exactmanifest/compiler/native/worker/checklist/requiredtest/publicoutput audit. No newfoundationPASS inferred."
     }
   }
 }

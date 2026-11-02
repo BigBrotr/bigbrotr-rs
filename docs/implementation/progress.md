@@ -7,9 +7,9 @@ One existing plan, coherent capability increments, Root sole integrator.
 ## Revision and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed HEAD **da68f902** plus current coherent
-P01/inventory/checkpoint and tutorial-pin updates. Canonical main/origin remain
-**d32b6527**. Its hosted run is terminal FAIL; no hosted execution is active.
+`work/m2-finite-history-20261101`. Observed HEAD **f4ad5fda** is integrated/pushed as clean canonical main/origin.
+Only current P01/inventory/checkpoint records follow locally while its hosted run
+executes; do not publish microscopic updates that cancel its ref concurrency.
 
 The unchanged product **cc8bdcf8**, tree **10949ae4**, and exact-source observer
 qualified the new **`p04-monitor-ack-recovery`: 8/8 stages PASS**, zero FAIL/SKIP/
@@ -75,6 +75,20 @@ all three platforms remain. Author20 CI+41 proxy controls PASS; Astra independen
 20 CI controls PASS and reviewed selection/failure semantics. This tooling change
 itself requires the new actual 36-command foundation matrix, currently NOT_RUN.
 
+New coherent **f4ad5fda** is pushed and independently admitted:61 objects across
+10 commits, no new/unclassified source credentials or sensitive/raw-store/LFS paths.
+Declared-image shared controls **636 acceptance+13 export+41 proxy PASS**, zeroSKIP;
+all three documentation checks PASS. Original host missing-llvm-config FAIL remains
+separate. No product rebuild was needed for runtime-unchanged fixtures/tooling.
+[Actual new run41491599696](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696)
+is **PENDING**, exactf4ad/push/attempt1: scope125435742878PASS, Linux jobs
+125435969476/125435969506RUNNING, Mac125435969590QUEUED at initial observation.
+Required foundation36 (16/11/9), source4272, Native11 and new fault-proxy41 controls
+are pinned to this source; no old-run evidence is relabeled. Watcher **80126**, gh
+PID1946468/start36720827, driver1946407/start36720694,60s/7500s bound. Agent setup
+is complete/idle; Root owns process custody and can wake it at a natural terminal
+boundary. P01 `recovery_followthrough_publication` owns receipts and declarations.
+
 ## Active work, resources and next action
 
 Two independent, partial M2 source assignments remain unintegrated:
@@ -93,15 +107,15 @@ Two independent, partial M2 source assignments remain unintegrated:
 
 Both assignments are source/cheap-controls only: no engines/build/cache/protected
 ELF/remote/push. Root owns integration and the current Mac fixture correction.
-Sol ci_recovery_publication_sol prepares bounded source admission and the next
-read-only hosted observer from existing tools, waiting for the exact candidate.
+Sol ci_recovery_publication_sol completed source admission/observer setup and is
+idle; its one bounded read-only watcher remains active under Root custody.
 
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns custody.
 All local compiler/installed processes are terminal and cache custody is released;
 protected four ELF guards remain source-scoped valid. Original data, failures,
 .research/worktrees and borrowed bridge are retained; no cleanup. Recovery
-3r1/15r2/15r3/20r4 containers are stopped. Only bounded source/control work is active.
+3r1/15r2/15r3/20r4 containers are stopped. Only bounded source/control work and the one read-only hosted watcher are active.
 
 NativeI4/PGC3 is the next bounded P04-T07 Steps2/6/P02 capability, not an all-P02
 barrier. Full staged-before-PG/lost-RAM/durable-start/renewal/repeated scheduling
@@ -110,8 +124,9 @@ keep the dormant attribution veto and originals. Fleet/catalog/methods, capacity
 operations and Q40 admission-cost/ClickHouse/coordinator work retain their owners.
 No selected later work is removed or claimed complete.
 
-**Next Root action:** commit this coherent recovery/CI/Mac-fixture increment, run
-the shared portable checks, obtain source publication admission, push main, and
-observe the actual new CI without superseding it. Then integrate/critically review
-the independent C3 product/oracle work and qualify the changed product through its
-relevant native and installed paths. Goal ACTIVE and incomplete.
+**Next Root action:** critically review the independent C3 product/oracle work,
+then qualify the changed product through focused/native and installed recovery
+paths. Observe the existing f4ad CI without superseding it; wake
+ci_recovery_publication_sol at its terminal boundary for actual artifact/public
+output audit. Keep this local checkpoint unpublished until a coherent boundary.
+Goal ACTIVE and incomplete; all selected requirements remain.
