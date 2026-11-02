@@ -316,8 +316,9 @@ class ExistingOutcomeControls(unittest.TestCase):
         tree=ast.parse(owner.read_text())
         branch=next(node for node in tree.body if isinstance(node,ast.If)
             and ast.unparse(node.test)=='producer_ack_fault or monitor_outcome_seed')
-        for status in ('PASS','FAIL'):
-            with self.subTest(status=status),tempfile.TemporaryDirectory() as directory:
+        for failure in (None,'clippy','compile'):
+            status='PASS' if failure is None else 'FAIL'
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as directory:
                 out=Path(directory);source=out/'build/source';source.mkdir(parents=True)
                 build=source.parent;(build/'target').mkdir()
                 executable=build/'target/synthetic-test';executable.write_bytes(b'\x7fELFsynthetic; never executed')
@@ -328,16 +329,17 @@ class ExistingOutcomeControls(unittest.TestCase):
                     selected=Path(value)
                     return out/selected.relative_to('/out') if selected.is_relative_to('/out') else selected
                 def execute(steps,checks,*args):
-                    self.assertEqual([name for name,_ in steps],['compile','clippy'])
-                    self.assertEqual(steps[0][1],['cargo','test','--locked','--offline','--release','-p',
-                        'bigbrotr','--lib','--no-run','--message-format=json'])
-                    self.assertEqual(steps[1][1],['cargo','clippy','--locked','--offline','--release','-p',
+                    self.assertEqual([name for name,_ in steps],['clippy','compile'])
+                    self.assertEqual(steps[0][1],['cargo','clippy','--locked','--offline','--release','-p',
                         'bigbrotr','--all-targets','--','-D','warnings'])
+                    self.assertEqual(steps[1][1],['cargo','test','--locked','--offline','--release','-p',
+                        'bigbrotr','--lib','--no-run','--message-format=json'])
                     checks.mkdir()
                     artifact=dict(reason='compiler-artifact',executable=str(executable),
                         target=dict(name='bigbrotr',kind=['lib'],src_path=str(source/'apps/bigbrotr/src/lib.rs')),
                         profile=dict(test=True))
-                    (checks/'compile.log').write_text(json.dumps(artifact)+'\n')
+                    if failure!='clippy':
+                        (checks/'compile.log').write_text(json.dumps(artifact)+'\n')
                     return dict(status=status)
                 commands=Mock(side_effect=execute);parents=Mock()
                 namespace=dict(producer_ack_fault=False,monitor_outcome_seed=True,identity=dict(source='ab'*20,source_manifest_sha256='ef'*32),
