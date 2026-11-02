@@ -248,6 +248,13 @@ mod tests {
         std::fs::write(path, bytes).unwrap();
         std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600)).unwrap();
     }
+    fn protected_directory() -> (tempfile::TempDir, PathBuf) {
+        let temp = tempfile::tempdir().unwrap();
+        // Platform temporary roots may contain aliases such as macOS /var.
+        let root = temp.path().canonicalize().unwrap();
+        std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o700)).unwrap();
+        (temp, root)
+    }
     #[test]
     fn selection_uses_exact_management_identities_and_rejects_ambiguous_fields() {
         let valid = document();
@@ -275,12 +282,11 @@ mod tests {
     }
     #[test]
     fn absent_path_arms_then_atomic_file_is_consumed_once() {
-        let temp = tempfile::tempdir().unwrap();
-        std::fs::set_permissions(temp.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
-        let path = temp.path().join("source.json");
+        let (_temp, root) = protected_directory();
+        let path = root.join("source.json");
         let mut selected = SelectionPath::prepare(&path).unwrap();
         assert!(selected.poll().unwrap().is_none());
-        let staging = temp.path().join("staging");
+        let staging = root.join("staging");
         write(&staging, &serde_json::to_vec(&document()).unwrap());
         std::fs::rename(staging, &path).unwrap();
         assert!(selected.poll().unwrap().is_some());
@@ -290,13 +296,12 @@ mod tests {
     #[test]
     fn unsafe_or_malformed_first_selection_never_rearms() {
         for bad in ["symlink", "mode", "hardlink", "oversize", "malformed"] {
-            let temp = tempfile::tempdir().unwrap();
-            std::fs::set_permissions(temp.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
-            let path = temp.path().join("source.json");
+            let (_temp, root) = protected_directory();
+            let path = root.join("source.json");
             let mut selected = SelectionPath::prepare(&path).unwrap();
             match bad {
                 "symlink" => {
-                    write(&temp.path().join("other"), b"{}");
+                    write(&root.join("other"), b"{}");
                     symlink("other", &path).unwrap();
                 }
                 "mode" => {
@@ -306,7 +311,7 @@ mod tests {
                 }
                 "hardlink" => {
                     write(&path, b"{}");
-                    std::fs::hard_link(&path, temp.path().join("other")).unwrap();
+                    std::fs::hard_link(&path, root.join("other")).unwrap();
                 }
                 "oversize" => write(&path, &vec![b' '; 4097]),
                 _ => write(&path, b"{}"),
@@ -319,17 +324,17 @@ mod tests {
     }
     #[test]
     fn replaced_or_noncanonical_parent_is_refused() {
-        let temp = tempfile::tempdir().unwrap();
-        let parent = temp.path().join("parent");
+        let (_temp, root) = protected_directory();
+        let parent = root.join("parent");
         std::fs::create_dir(&parent).unwrap();
         std::fs::set_permissions(&parent, std::fs::Permissions::from_mode(0o700)).unwrap();
         let mut selected = SelectionPath::prepare(&parent.join("source.json")).unwrap();
-        std::fs::rename(&parent, temp.path().join("old")).unwrap();
+        std::fs::rename(&parent, root.join("old")).unwrap();
         std::fs::create_dir(&parent).unwrap();
         std::fs::set_permissions(&parent, std::fs::Permissions::from_mode(0o700)).unwrap();
         assert!(selected.poll().is_err());
-        symlink(&parent, temp.path().join("alias")).unwrap();
-        assert!(SelectionPath::prepare(&temp.path().join("alias/source.json")).is_err());
+        symlink(&parent, root.join("alias")).unwrap();
+        assert!(SelectionPath::prepare(&root.join("alias/source.json")).is_err());
         assert!(SelectionPath::prepare(Path::new("relative/source.json")).is_err());
         std::fs::set_permissions(&parent, std::fs::Permissions::from_mode(0o750)).unwrap();
         assert!(SelectionPath::prepare(&parent.join("source.json")).is_err());
