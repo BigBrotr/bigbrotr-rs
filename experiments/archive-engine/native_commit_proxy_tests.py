@@ -13,6 +13,7 @@ import struct
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 
 from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
                                 IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, failure_kind, gap_write_refusal)
@@ -260,6 +261,107 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
 
 
 class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
+    async def test_terminal_accounts_joined_sessions_and_refuses_late_admission(self):
+        for malformed, connections, late in ((False, 1, False), (True, 1, False),
+                                              (True, 2, False), (True, 1, True)):
+            for callback_first in (False, True):
+                with self.subTest(malformed=malformed, connections=connections,
+                                  callback_first=callback_first, late=late):
+                    proxy = ordinary_proxy()
+                    events = []
+                    proxy.emit = lambda event, **fields: events.append(dict(event=event, **fields))
+                    loop = asyncio.get_running_loop()
+                    control = None
+                    finished = 0
+                    acceptor = None
+                    rejected = asyncio.Event()
+                    writers = []
+                    original_session = proxy.session
+
+                    class Writer:
+                        closed = False
+                        def close(self):
+                            self.closed = True
+                            rejected.set()
+                        async def wait_closed(self): pass
+
+                    class Socket:
+                        def getsockname(self): return ('127.0.0.1', 1)
+
+                    class Server:
+                        sockets = [Socket()]
+                        def close(self):
+                            if late:
+                                # An attached transport may still have its
+                                # connection_made callback queued at close.
+                                loop.call_soon(admit)
+                        async def wait_closed(self):
+                            if late:
+                                await rejected.wait()
+
+                    class Transport:
+                        def close(self): pass
+
+                    async def session(*args, **kwargs):
+                        nonlocal finished
+                        try:
+                            await original_session(*args, **kwargs)
+                        finally:
+                            finished += 1
+                            if finished == connections:
+                                # Select both legal callback orders without a
+                                # timer. The direct feed queues run()'s wakeup
+                                # before this Task's completion callback.
+                                if callback_first:
+                                    loop.call_soon(control.feed_data, b'stop\n')
+                                else:
+                                    control.feed_data(b'stop\n')
+
+                    async def healthy_peer(*_args): pass
+                    if not malformed:
+                        proxy.connected_session = healthy_peer
+
+                    def admit():
+                        for _ in range(connections):
+                            reader = asyncio.StreamReader()
+                            reader.feed_data(struct.pack('!I', 7))
+                            writer = Writer()
+                            writers.append(writer)
+                            acceptor(reader, writer)
+
+                    async def start_server(accept, *_args, **_kwargs):
+                        nonlocal acceptor
+                        acceptor = accept
+                        if not late:
+                            admit()
+                        return Server()
+
+                    async def connect_read_pipe(factory, _pipe):
+                        nonlocal control
+                        protocol = factory()
+                        control = protocol._stream_reader
+                        if late:
+                            control.feed_data(b'stop\n')
+                        return Transport(), protocol
+
+                    proxy.session = session
+                    with patch.object(asyncio, 'start_server', start_server), \
+                            patch.object(loop, 'connect_read_pipe', connect_read_pipe):
+                        expected = connections if malformed and not late else 0
+                        self.assertEqual(await proxy.run(), 3 if expected else 0)
+                        self.assertEqual(events[-1], dict(event='terminal', unexpected=expected))
+                        self.assertEqual(proxy.completed_unexpected, expected)
+                        self.assertEqual((proxy.tasks, proxy.writers, proxy.report['active_connections']),
+                                         ([], [], 0))
+                        self.assertTrue(all(writer.closed for writer in writers))
+                        self.assertEqual(proxy.report['connections'], 0 if late else connections)
+                        # Observe late callbacks explicitly; this barrier is not
+                        # a production delay or part of the accounting fix.
+                        barrier = loop.create_future()
+                        loop.call_soon(barrier.set_result, None)
+                        await barrier
+                        self.assertEqual((proxy.completed_unexpected, proxy.tasks), (expected, []))
+
     async def test_stop_or_peer_close_cannot_hide_an_already_failed_pump(self):
         for stop in (False, True):
             with self.subTest(stop=stop):
@@ -1109,14 +1211,15 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
         )
         packets = [struct.pack('!I',len(startup)+4)+startup for startup in malformed]
         packets += [struct.pack('!I',7), struct.pack('!I',65537)]
-        for packet in packets:
-            async with SocketProxy(self, 'hold-reader-query', profile='ordinary-reader', unexpected=1) as proxy:
-                client, sender = await asyncio.open_connection('127.0.0.1', proxy.port)
-                proxy.connections.append(sender)
-                sender.write(packet)
-                await sender.drain()
-                self.assertEqual(await asyncio.wait_for(client.read(), 3), b'')
-                self.assertTrue(proxy.accepted.empty())
+        for packet_index, packet in enumerate(packets):
+            with self.subTest(packet=packet_index):
+                async with SocketProxy(self, 'hold-reader-query', profile='ordinary-reader', unexpected=1) as proxy:
+                    client, sender = await asyncio.open_connection('127.0.0.1', proxy.port)
+                    proxy.connections.append(sender)
+                    sender.write(packet)
+                    await sender.drain()
+                    self.assertEqual(await asyncio.wait_for(client.read(), 3), b'')
+                    self.assertTrue(proxy.accepted.empty())
 
     async def test_deferred_reader_forwards_baseline_and_foreign_database_then_holds_once(self):
         async with SocketProxy(self, 'hold-reader-query') as proxy:

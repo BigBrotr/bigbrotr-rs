@@ -1045,14 +1045,22 @@ class Proxy:
                 await asyncio.gather(writer.wait_closed(), upstream_writer.wait_closed(), return_exceptions=True)
 
     async def run(self):
+        stopping = False
+
         def completed(task):
             # Only the ordinary profile reuses connection slots. Do not retain
             # every completed Task/writer until the end of its serial journey.
-            self.tasks.remove(task)
+            try:
+                self.tasks.remove(task)
+            except ValueError:
+                return
             if not task.cancelled() and unexpected_failure(task.exception()):
                 self.completed_unexpected += 1
 
         def accept(reader, writer):
+            if stopping:
+                writer.close()
+                return
             task = asyncio.create_task(self.session(reader, writer, connected_armed=self.armed))
             self.tasks.append(task)
             if self.profile == 'ordinary-reader':
@@ -1072,12 +1080,20 @@ class Proxy:
                 else:
                     raise ValueError('control-budget')
         finally:
+            stopping = True
             server.close()
             transport.close()
-            for task in self.tasks:
+            joined = tuple(self.tasks)
+            for task in joined:
                 if not task.done():
                     task.cancel()
-            outcomes = await asyncio.gather(*self.tasks, return_exceptions=True)
+            outcomes = await asyncio.gather(*joined, return_exceptions=True)
+            if self.profile == 'ordinary-reader':
+                # Already-done tasks may join without yielding to their queued
+                # completion callbacks. Account before publishing the terminal
+                # result; a later callback must not count the same task twice.
+                for task in joined:
+                    completed(task)
             for writer in self.writers:
                 writer.close()
             await asyncio.gather(*(w.wait_closed() for w in self.writers), return_exceptions=True)

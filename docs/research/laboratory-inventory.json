@@ -79055,7 +79055,7 @@
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
       "observed_source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
-      "state": "Qualified coherent C3 source is pushed to main/origin16ad. Its actual new hosted run41512656056 is in progress; f4ad remains preceding fully verified hosted baseline. Pending existing-outcome fixture stays in separate source worktree.",
+      "state": "Main/origin16ad remains current; actual Mac proxy verifier FAIL is retained while Linux runs. Root has a critically approved source-only proxy accounting/admission correction and43 controls PASS, not pushed. Separate seed fixture source work remains partial.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79077,7 +79077,7 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root; one bounded read-only hosted watcher15724, no local compiler/engine.",
+        "integrator": "Root owns watcher15724 and verified proxy fix/evidence changes; no compiler or engine.",
         "source_work": "Sol measurement_clickhouse_prep owns work/m2-monitor-c3-guards-20261102 in its separate worktree, base b05. Test-only existing-outcome seed/oracle work is partial and NOT_RUN, not integrated.",
         "review": "Astra approved corrected issuance boundary and the next fixture architecture/closed full-document validator in principle; concrete fixture diff review pending.",
         "hosted": "CI Sol prepares new16ad acquirer/declarations; Root alone owns long watcher. Previous f4ad terminal/public scan sealed."
@@ -79178,7 +79178,7 @@
         "start_ticks": "37534337",
         "run": 41512656056,
         "source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
-        "state": "ROOT_READ_ONLY_RUNNING;60s interval/7500s bound. Source4274/full36/native12 declared. All prior watchers terminal; no duplicate observer."
+        "state": "Root watcher15724 remains active; actual16ad Mac failure sealed separately, Linux still running. Do not cancel or claim Mac product/Rust execution. Corrected-source full qualification remains required."
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",

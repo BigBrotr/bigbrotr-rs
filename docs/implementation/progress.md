@@ -8,10 +8,10 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and demonstrated M2 capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **16adbee0** before this
-publication-custody journal. Canonical main/origin and GitHub main are independently
-verified **16adbee0** after the authorized fast-forward/push. Root has only current
-P01/inventory/checkpoint journal edits; product and acceptance match qualified b05.
+`work/m2-finite-history-20261101`, observed HEAD **27339a35** before the current
+proxy-fix/evidence commit. Canonical main/origin and GitHub main are independently
+verified **16adbee0** after the authorized fast-forward/push. Root has the two proxy helper/control edits and current P01/inventory/checkpoint
+updates; the BigBrotr product remains qualified b05.
 Do not push this journal immediately and cancel the active same-ref CI run.
 
 Corrected product **b05b0a26**, tree **a9dc791d**, passes all three real installed
@@ -73,6 +73,23 @@ are source-bound. Root watcher **15724**, driver2031539/GH2031542 with verified
 start ticks37534335/37534337,60s/7500s bound, is the only active observer. On terminal
 wake ci_recovery_publication_sol for acquisition/public audit. Do not supersede it.
 
+Actual16ad Mac job125508351877 now **FAILS** early fault-proxy controls:
+acceptance642PASS/13 Linux-only SKIP, export13PASS, proxy41PASS/1FAIL.
+Exact-source build/Clippy/Rustdoc/Rust tests and all12 mandatory Native are NOT_RUN.
+Failure receipt **4ae87282** binds the original artifact; no raw packet/terminal
+was captured. Linux and watcher15724 remain running, never cancelled.
+
+Astra independently reproduced a verifier race with actual run/session/cleanup:
+completed task accounting can lag terminal output; a queued accept can also follow
+listener closure and escape the snapshot. Root's minimal correction uses the
+existing task list idempotently, counts joined tasks before terminal and refuses
+late admission after stopping. Admitted malformed sessions still require exit3;
+late unadmitted transports close without sessions. No timeout/limit/oracle weakening.
+Astra approved the actual delta; exact-final43 proxy controls PASS. Receipt in
+`ci-observation/terminal-accounting-race/root-fix-receipt.json` owns source/test
+hashes, original failure and deterministic evidence. The helper-only fix is local;
+no product rebuild or corrected hosted execution has been performed.
+
 ## Remaining work and custody
 
 P04-T07 Steps2/6 and P02 retain exact-existing-outcome4/C3 preservation and connected
@@ -99,8 +116,10 @@ agent and one Root read-only CI watcher are active; no new engines. Preserve all
 worktrees and borrowed bridge. October31 space recovery is already reconciled;
 no cleanup was started.
 
-**Next Root action:** keep actual16ad CI under the owned watcher and seal its
-terminal/public audit when ready. Review the bounded existing-outcome fixture as
+**Next Root action:** preserve running16ad Linux jobs and seal actual terminal
+CI/public audit. Commit the reviewed proxy correction without superseding that
+run. Ensure the next coherent source obtains full Mac build/Rust/Native proof; a
+control-only green run cannot replace these missing changed-product gates. Review the bounded existing-outcome fixture as
 Sol completes source work, then qualify its test-only artifact and real same-backend
 seed/recovery with independent critical review before engines. Reuse unchanged b05
 product where its scope remains valid. Keep connected gates explicit. Admission

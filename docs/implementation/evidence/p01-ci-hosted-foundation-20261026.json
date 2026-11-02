@@ -2765,7 +2765,7 @@
     },
     "c3_reconciliation_publication": {
       "source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
-      "status": "PUSHED_ACTUAL_RUN_IN_PROGRESS",
+      "status": "PARTIAL_MAC_VERIFIER_FAILURE_LINUX_RUNNING",
       "source_admission": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-source-16adbee0-20261102/publication-admission.json",
       "source_admission_sha256": "2bffc77440aab2046d2f85078e44286fc517374d23735d76c6505344eba1d73e",
       "source_scope": "15 outgoing commits/98 objects/32,309,989 bytes across36 historical paths; zero sensitive/raw/private-capture/LFS/nontext inputs or new/unclassified credential candidates. Eleven matches are two known nonsecret fingerprints; bounded scanning limits apply.",
@@ -2794,7 +2794,22 @@
         "bound_seconds": 7500,
         "state": "ROOT_OWNED_READ_ONLY_RUNNING"
       },
-      "next": "Root owns watcher; wake CI Sol for terminal acquisition/public audit. No second push that supersedes current run. Real changed-source CI remains pending; f4ad is only the previous verified baseline."
+      "next": "Let existing Linux jobs and Root watcher finish; preserve partial Mac FAIL/NOT_RUN. Integrate verified proxy correction with the next coherent source increment, then ensure full changed-product Mac qualification still executes: a control-only green run alone cannot close its missing build/Rust/Native gate.",
+      "partial_macos_failure": {
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation/partial-macos-failure.json",
+        "receipt_sha256": "4ae8728223c9ba799f48e3793b36a14fa5f62019c8bae499dfe899db3386b94b",
+        "classification": "Verifier terminal-accounting and late-admission defects; no BigBrotr product failure or Mac Rust execution inferred.",
+        "actual": "Mac acceptance642PASS/13 Linux-only SKIP; export13PASS; proxy41PASS/1FAIL. Build/Clippy/Rustdoc/Rust tests and all12 mandatory Native NOT_RUN. Artifact13174391172/6members scanned with zero candidates.",
+        "original_capture_limit": "The failing packet and raw terminal event were not retained by the old test; do not claim the precise actual interleaving was captured."
+      },
+      "proxy_correction": {
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation/terminal-accounting-race/root-fix-receipt.json",
+        "receipt_sha256": "de48f8f862b51eb5cbd406d2047f7fc7981e09471445a33f33aaf6d0f5b9b9cd",
+        "source_sha256": "1146035256becc6cf9194e185037f46d0e01efc01508e2f926a32e7d51c23808",
+        "tests_sha256": "1fb90e32c73c755e02210a3718f93131a70e3329c1a1be99649499c25bac83a4",
+        "scope": "Idempotent accounting using existing task list; freeze/join snapshot and account synchronously before terminal; refuse late accept once stopping. No waits, limits, expected-exit or protocol weakening.",
+        "review_and_checks": "Astra approved complete actual delta; exact-final43 proxy controls PASS4.102s. Added deterministic regression and packet subTest labels. No engine/product rebuild required for this helper-only change. Real corrected-source hosted qualification pending."
+      }
     }
   }
 }
