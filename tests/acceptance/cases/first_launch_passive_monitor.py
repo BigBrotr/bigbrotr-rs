@@ -66,6 +66,19 @@ def inspection_records(stdout, stderr, code):
 
 
 class PassiveMonitorRuntime(Runtime):
+    def passive_launch(self):
+        return self.launch('passive-monitor','app','serve','--file','/etc/bigbrotr/instance.toml',
+            '--roles','control,ingest,monitor,archive','--initialize-ingest','--monitor-once','/var/lib/bigbrotr/monitor-once.json')
+
+    def passive_source_completed(self, output):
+        pass
+
+    def passive_publication(self, entry, output, remaining):
+        pass
+
+    def passive_inspected(self, document, measurement, encoded, output, after):
+        pass
+
     def load_helpers(self):
         super().load_helpers()
         import installed_passive_monitor_client
@@ -102,8 +115,7 @@ class PassiveMonitorRuntime(Runtime):
         before, _ = self.capture(output,'before')
         require(not before['producer_requests'] and not before['measurement_dispatches'], 'Monitor setup not fresh')
         self.before_us = time.time_ns()//1000
-        entry = self.launch('passive-monitor','app','serve','--file','/etc/bigbrotr/instance.toml',
-            '--roles','control,ingest,monitor,archive','--initialize-ingest','--monitor-once','/var/lib/bigbrotr/monitor-once.json')
+        entry = self.passive_launch()
         first = self.wait(lambda:self.logs(entry,output),'armed passive Monitor',20,entry=entry)[0]
         require(first['state'] == 'initialized' and first['ready'] is False
             and first['acquisition'] == 'not-started'
@@ -143,7 +155,8 @@ class PassiveMonitorRuntime(Runtime):
                 return records[-1]
         self.report = self.wait(terminal,'admitted compound measurement',remaining(20),entry,self.client)
         self.wait(lambda:(self.home/'relay-complete.json').exists(),'passive CLOSE/WSclose/EOF',remaining(5),entry,self.client)
-        self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.consumer_frontiers WHERE last_complete_sequence=10") == '1',
+        self.passive_source_completed(output)
+        self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.consumer_frontiers f JOIN control.consumers c USING(consumer_id) WHERE c.consumer_role='archive' AND f.frontier_revision=c.current_revision AND f.last_complete_sequence=10") == '1',
             'complete measurement Archive frontier',remaining(60),entry,self.client)
         self.published, self.catalog = self.capture(output,'published')
         self.refs = oracle.completed(self.report,self.published,self.initialized,self.selection)
@@ -152,6 +165,7 @@ class PassiveMonitorRuntime(Runtime):
         self.receipts = [self.decode(oracle.raw(row['outcome_bytes']).split(b'\0',1)[1])
             for row in sorted(self.published['producer_outcomes'],key=lambda row:row['request_sequence'])]
         self.cut = oracle.publication(self.published,self.initialized,self.ids['catalog'],self.receipts,self.cbor,self.cut_digest)
+        self.passive_publication(entry,output,remaining)
         remaining(1)  # SQL/capture/oracle time belongs to the same finite gate.
         save(output/'monitor-completed.json',self.report)
         (self.home/'observed.continue').write_text('exact outcome and published cut checked\n')
@@ -223,6 +237,7 @@ class PassiveMonitorRuntime(Runtime):
         for table in ('measurement_dispatches','producer_requests','producer_outcomes'):
             require(after[table] == before[table], 'typed inspection changed retained '+table)
         oracle.inspection_pin(before,after,self.ids['catalog'])
+        self.passive_inspected(document,measurement,encoded,output,after)
         self.backend_absence(output)
         self.source_unchanged()
         save(output/'independent-verdict.json',dict(status='PASS',attempt_id=self.report['attempt_id'],

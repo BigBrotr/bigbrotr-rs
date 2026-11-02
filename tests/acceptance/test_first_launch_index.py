@@ -388,6 +388,17 @@ class InitialIndexControls(unittest.TestCase):
             changed=copy.deepcopy(state);changed[table][0][field]=value
             with self.subTest(table=table),self.assertRaises(AssertionError):check.ordinary_unchanged(state,changed)
 
+    def test_current_ordinary_inventory_matches0044_and_refuses_extra_missing_or_substituted_tables(self):
+        self.assertEqual(check.CONTROL_TABLES,base.expected_tables(ROOT,{}))
+        self.assertEqual(len(check.CONTROL_TABLES),85)
+        state,_=ordinary_fixture()
+        for change in (lambda s:s.pop('measurement_dispatches'),
+                lambda s:s.update(untracked_control_relation=[]),
+                lambda s:(s.pop('measurement_dispatch_refusals'),s.update(untracked_control_relation=[]))):
+            changed=copy.deepcopy(state);change(changed)
+            # Even matching before/after keys and equal counts cannot pass.
+            with self.assertRaises(AssertionError):check.ordinary_unchanged(changed,copy.deepcopy(changed))
+
     def test_ordinary_completion_requires_every_phase_original_limits_and_restored_identity(self):
         phases=['setup','positive','missing','narrow','restored']
         timing=dict(mode='ordinary-readiness/1',original_limit_seconds=40,export_limit_seconds=12,

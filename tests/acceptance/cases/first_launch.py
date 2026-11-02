@@ -1347,7 +1347,7 @@ def first_launch(args, checks, inputs):
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
     renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     linear_quantum = getattr(args,'case',None)=='p03-linear-quantum'
-    passive_monitor = getattr(args,'case',None)=='p04-passive-monitor'
+    passive_monitor = getattr(args,'case',None) in ('p04-passive-monitor','p04-passive-monitor-index')
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
         from cases.first_launch_tutorial import TutorialRuntime, LIMITS as TUTORIAL_LIMITS
@@ -1371,6 +1371,8 @@ def first_launch(args, checks, inputs):
         args.case_limits=QUANTUM_LIMITS
     if passive_monitor:
         from cases.first_launch_passive_monitor import PassiveMonitorRuntime, STAGES as PASSIVE_STAGES, LIMITS as PASSIVE_LIMITS
+        if args.case == 'p04-passive-monitor-index':
+            from cases.first_launch_passive_index import PassiveIndexRuntime as PassiveMonitorRuntime, LIMITS as PASSIVE_LIMITS
         runtime_type = PassiveMonitorRuntime
         args.case_limits = PASSIVE_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'

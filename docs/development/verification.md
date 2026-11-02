@@ -424,13 +424,13 @@ the original first-launch resource owner and retention rules.
 Both accepted policy documents must enable Index with `batch_max_rows=4`, the
 largest per-target family in one literal source batch. Readback is scoped to that
 batch's source range; the cumulative dictionary census still contains eight rows.
-The 160-column inventory and largest 35-column insertion description require
+The schema2 inventory of185 columns and largest35-column insertion description require
 their independent metadata limits above this smaller data-row ceiling.
-While the combined owner remains alive, the observer captures all 81 Control tables
-in one repeatable-read transaction and all ten CH families. Independent signed
+While the combined owner remains alive, the observer captures all85 Control tables
+in one repeatable-read transaction and all eleven CH families. Independent signed
 source and C API expectations verify all typed fields, four source batches,
-40 committed target outcomes, metadata/row/engine digests and the exact
-shard 0/epoch 1/cut 12 frontier. The independent schema census checks all 160 columns.
+44 committed target outcomes, metadata/row/engine digests and the exact
+shard0/epoch1/cut12 frontier. The independent schema census checks all185 columns.
 The fixture's empty tags require an explicit zero `event_tag_index` outcome;
 nonempty signed-tag engine acceptance remains separate. Unfiltered captures are
 retained; Index owner/session/plan/head validation precedes the existing source
@@ -458,6 +458,58 @@ They do not qualify a direct RocksDB/native census, Index restart, remote or pin
 cleanup uncertainty, column-TTL refusal, an Index query interface, independent
 service outages, capacity or complete M1. Terminal overall readiness remains
 explicitly unqualified; earlier failures retain their original outcomes.
+
+### One passive measurement through the real Index
+
+`p04-passive-monitor-index` extends the maintained
+[`p04-passive-monitor` source journey](../operations/monitor.md) with the same
+owned ClickHouse setup and least-privilege accounts as the initial Index case:
+
+```sh
+python3 -B tests/acceptance/run.py p04-passive-monitor-index \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/passive-monitor-index
+```
+
+Use a new evidence directory and the existing candidate, engine-image, port,
+completion-space and protected-data prerequisites above. Optional
+`--compose-network` borrows an existing bridge and preserves it. The installed
+product uses the packaged Control grants and an explicitly mounted Index
+initializer credential; the ordinary writer must refuse DDL. Acceptance-only
+source changes can reuse an unchanged verified product artifact with separately
+recorded assembly and acceptance identities.
+
+The source remains one enrollment and one passive WebSocket attempt. Four actual
+producer outcomes and the peer's completed CLOSE/close/EOF boundary must exist
+before waiting for either consumer. The atomic source ranges are1..2,3,4..9,10.
+The third range contains six dictionary facts, so both accepted documents require
+`indexer.batch_max_rows=6`; the four-row event profile cannot admit that unchanged
+batch. Application and native process envelopes remain the existing acceptance
+profile. This is an admission ceiling, not a measured capacity result.
+
+Archive must publish revision4/snapshot5/cut10 with family counts9,0,0,0,0,1.
+Index must independently publish revision4/cut10, all44 schema2 target outcomes,
+nine dictionary rows and one compound measurement row; the other nine targets
+are explicitly empty. Exact fields, nested null/presence, source digests, chunk
+digests, plan metadata and engine receipts are compared with separate passive
+expectations. Only bounded unpredictable clock scalars parameterize those
+expectations, and every complete fact preimage must match an original producer
+receipt. The event cut12 expectations remain separate.
+
+The original passive publication deadline, same-data PostgreSQL restart and
+installed standalone measurement inspector still apply. Index metadata, table
+UUIDs, all185 columns and complete raw rows must remain unchanged through that
+restart and inspection. Index/ClickHouse restart, physical readiness, corruption,
+outage/unknown recovery, native census, repeated scheduling, fleet and capacity
+remain separate gates. The case has no fault injection or new product interface.
+
+Portable fixture and refusal controls:
+
+```sh
+python3 -B -m unittest discover -s tests/acceptance -p 'test_passive_index.py'
+python3 -B -m unittest discover -s tests/acceptance -p 'test_passive_monitor.py'
+python3 -B -m unittest discover -s tests/acceptance -p 'test_first_launch_index.py'
+```
 
 ### Same-store installed Index restart with backlog
 

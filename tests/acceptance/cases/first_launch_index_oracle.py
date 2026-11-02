@@ -24,6 +24,35 @@ PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0))
 INDEX_TABLES = ('projection_generations', 'index_owner_sessions', 'projection_plans',
                 'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds', 'index_frontier_plans', 'index_frontier_handoffs')
+# Closed current Control inventory through0044. Compared with the migration
+# inventory by fixture controls; equal counts cannot hide a replaced relation.
+#0043 owns acquisition_quanta;0044 adds the two measurement dispatch relations.
+CONTROL_TABLES = frozenset('''
+    acquisition_gaps acquisition_jobs acquisition_progress acquisition_quanta
+    acquisition_scope_commands acquisition_scopes acquisition_selectors allocation_domains
+    archive_attempts archive_coordinators archive_frontier_batches archive_frontier_snapshots
+    archive_owner_sessions archive_persistence archive_pin_recoveries archive_snapshot_pins
+    artifact_files artifacts browser_sessions config_revisions consumer_frontier_revisions
+    consumer_frontiers consumers cursor_key_lifecycle cursor_key_materials cursor_key_transitions
+    cursor_keyrings cursor_keys datasets export_execution_units export_jobs export_resume_commands
+    import_checkpoints import_record_closures index_frontier_handoffs index_frontier_plans
+    index_owner_sessions ingest_activations ingest_successions ingest_terminal_transactions
+    initial_ingest_activations initial_ingest_successions job_admissions job_input_bounds jobs
+    local_accounts local_credentials login_buckets management_audit management_commands
+    measurement_dispatch_refusals measurement_dispatches network_routes owner_challenges
+    owner_epochs policy_revisions principal_grants principals producer_checkpoint_dependencies
+    producer_checkpoints producer_epochs producer_input_bindings producer_outcomes producer_requests
+    producer_slots projection_chunk_bounds projection_chunks projection_generations
+    projection_plan_chunks projection_plans reauthentication_proofs relay_access_contexts
+    relay_endpoints relay_enrollment_changes relay_enrollments relay_registration_commands
+    retention_claims role_instances schema_versions scope_grant_changes scope_grants snapshot_leases
+    source_streams topology_generations topology_streams
+'''.split())
+
+
+def control_inventory(state):
+    """Reject missing, extra or substituted current0044 Control relations."""
+    assert set(state) == CONTROL_TABLES
 
 
 def exact(actual, expected):
@@ -387,8 +416,8 @@ def retained_input_bytes(row, batch, initialization):
 def ordinary_unchanged(before, after):
     # Status may renew Control and the coalesced probe may add/release pins.
     # Every source/publication/job/auth row is otherwise unchanged in this barrier.
-    exact(sorted(before), sorted(after))
-    assert len(before) == 83
+    control_inventory(before)
+    control_inventory(after)
     for table in before.keys() - {'owner_epochs','snapshot_leases','archive_snapshot_pins','retention_claims'}:
         exact(before[table], after[table])
 
