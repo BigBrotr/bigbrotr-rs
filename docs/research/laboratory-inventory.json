@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "d32b6527114bfe587bae839b1d4d6527bab7bf96",
-      "state": "KnownACK capability qualified and integrated/pushed main/origind32, canonicalclean. Actualnewhosted41468529978running; scopePASS, foundationspending. All local engine/compiler custody released. Next bounded recovery mapping read-only, not new runtime qualification.",
+      "observed_source": "054dcd648ae363ab4dbd3acc56d57febb886dc4b",
+      "state": "KnownACK qualified/pushedd32; local source-only recovery harness dd7081+054 composition correction retained. New installedr1fixtureFAIL/r2eventdeadlineFAIL, causeunknown, recovery/retryNOT_RUN. No local engines/compiler remain active.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79066,14 +79066,17 @@
         ".research/m2-current-control-inventory-20261102",
         ".research/m2-measurement-ack-20261102",
         ".research/m2-monitor-ack-harness-bcd07e7d",
-        ".research/m2-monitor-ack-harness-8ae83c47"
+        ".research/m2-monitor-ack-harness-8ae83c47",
+        ".research/m2-monitor-ack-recovery-20261102",
+        ".research/m2-monitor-ack-recovery-harness-dd7081e0",
+        ".research/m2-monitor-ack-recovery-harness-054dcd64"
       ],
       "active_assignments": {
-        "current_control_inventory": "Sol/xhigh bounded source-only C4persisted/nativeA3 installed recovery fault journey + exactgenericcheckpoint proxy selector/oracle in .research/m2-monitor-ack-recovery-20261102, branchwork/m2-monitor-ack-recovery-20261102, basedd32. No productAPI expansion/build/engine/cache/ELF/push; criticalreview before Root realexecution.",
+        "current_control_inventory": "Sol/xhigh source-only diagnosis of actualr2 Registry(Backend)/missingcheckpoint event; preserve graceful proxy diagnostics without widening bounds. Existing recoveryworktree, no engine/build/cache/ELF/push; Root integrates.",
         "native_timestamp_review": "Astra/xhigh original ACK and oracle correction approved; no active source/build/engine assignment.",
-        "measurement_clickhouse_prep": "Sol/xhigh read-only watcher/acquisition/scans for exactd32/run41468529978. Session39437/PID1886253(driver1886247),60s/7500sbound; no cancel/dispatch/settings/push."
+        "measurement_clickhouse_prep": "Sol/xhigh read-only exactd32/run41468529978 Mac attempt2 watcher65527/PID1902888(driver1902885),60s/7500sbound; Linux attempt1 sealed successful. No rerun/settings/cancel/push."
       },
-      "resources": "All owned local compiler/test/installed processes terminal, cache released. cc8parent/lib/probe and r1all17+r2all20 containers/data retained, old19Index+18passive retained; borrowedbridge1699209a unchanged. Originalfailures/captures/worktrees preserved. CI watcher39437/PID1886253 active read-only; no active product runtime/compiler, no cleanup.",
+      "resources": "All local compiler/test/installed processes terminal; cache released. cc8knownACKr1/r2 data retained; new ACKrecoveryr1 threecontainers andr2 fifteencontainers stopped/PID0/noOOM; private source/captures/logs/failures retained. Borrowed bridge1699209a unchanged. Only hostedobserver65527/PID1902888 active; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79161,12 +79164,12 @@
         }
       },
       "hosted_observer": {
-        "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/ci-observation",
-        "pid": 1886253,
-        "driver_pid": 1886247,
-        "tool": 39437,
+        "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/macos-targeted-retry/attempt-2-observation",
+        "pid": 1902888,
+        "driver_pid": 1902885,
+        "tool": 65527,
         "run": 41468529978,
-        "state": "READ_ONLY_RUNNING exactd32; scopePASS/Linux foundationsactive. Mac125355892462CANCELLED beforesteps due providerarm64 runneracquisition, all8checksNOT_RUN. Currentwatcher39437/1886253 unchanged, no rerun/cancel assigned."
+        "state": "READ_ONLY_RUNNING exactd32 attempt2; Mac125393619701 admitted/sharednativechecksactive. BothLinux fullPASS from sealedattempt1, originalMac providerfailure preserved. No freshMac checkPASS yet."
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",
@@ -79185,6 +79188,16 @@
           "installed_failure_receipt_sha256": "3de84c4e175b06a8005da3eec2956b7cb4ed310a923522993ee34c5864dbe941",
           "installed_success_receipt_sha256": "af54e56812dc43962935938fbcc56fec5178c3062146b9fd566100fc1bf3918f"
         }
+      },
+      "ack_recovery": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102",
+        "branch": "work/m2-monitor-ack-recovery-20261102",
+        "source": "247dbaaa9ac296523f7709902a619c5b1fb32582",
+        "integrated": "054dcd64",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/ack-recovery",
+        "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-cc8bdcf8",
+        "state": "r1FAIL fixturecomposition corrected, r2FAIL eventdeadline causeUNKNOWN; recovery/retryNOT_RUN. Productcc8/observer unchanged, all three+fifteencontainers stopped/noOOM and borrowedbridge preserved.",
+        "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102.control_dispatch.producer_ack_followthrough.ack_recovery"
       }
     }
   }

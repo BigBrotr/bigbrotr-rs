@@ -7,8 +7,10 @@ One existing plan, capability-first execution, Root sole integrator.
 ## Source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, HEAD **d32b6527**, now integrated/pushed as clean canonical main/origin.
-Only local CI/checkpoint records follow while the hosted run executes; keep these
+`work/m2-finite-history-20261101`, observed HEAD **054dcd64** plus current
+P01/P02/inventory/checkpoint updates. Canonical main/origin remain clean **d32b6527**.
+Local recovery harness **dd7081e0** and composition correction **054dcd64** follow;
+no product runtime change. Keep coherent local follow-through
 unpublished until a coherent boundary so they do not cancel its concurrency group.
 Actual new product is frozen **cc8bdcf8**, tree **10949ae4**; corrected harness
 **8ae83c47** changes only qualification/evidence after that product. Later CLI
@@ -67,6 +69,23 @@ signer/REQ-CLOSE exclusion. Pin reconciled with all artifact/vendor/negative che
 retained. The later integration-test-only role correction changes no runtime;
 14 affected tutorial controlsPASS. No product rebuild is needed for these changes.
 
+The new maintained **p04-monitor-ack-recovery** targets actual C4-persisted reply
+loss at physical I4/A3/R0, then installed default historical recovery and exact
+retry to closing I4/A4/R0, with original inputs/receipts/head xmins and one socket.
+Source **b67111dc** received bounded Astra critical approval; author proxy/focused
+controls and healthy retained-capture replayPASS. No new product binary is needed.
+Recovery **r1 FAIL** was a fixture removing the mandatory static Archive owner;
+original config refusal retained. Correction **247dbaaa/054dcd64** restores the
+qualified shared composition, keeps actual serving roles Control/Ingest/Monitor,
+and passes50 affected controls plus same-cc8-binary copied-config refusal/validation.
+Recovery **r2 FAIL**: bootstrapPASS, then selected Monitor parks with
+`Registry(Backend)` before the proxy checkpoint event; one source socket completed.
+Cause **UNKNOWN**. Proxy finally received SIGTERM and omitted terminal counters;
+preserve the failure and obtain bounded graceful diagnostics before rerunning.
+Recovery/retry **NOT_RUN**. All15 containers independently stopped/PID0/noOOM,
+cleanupPASS, borrowed bridge preserved. P02 `producer_ack_followthrough.ack_recovery`
+owns exact source/receipt identities, including original r1 and r2 failures.
+
 Earlier fae library698PASS/3dedicatedignored, corrected raw-reopen fixture and
 unchanged f474 remaining groups/installed proofs stay source-scoped. Old failures,
 including library metadata namespace parserCLI1 after CargoPASS, remain preserved;
@@ -85,25 +104,32 @@ Builder correction **de034ad3** explicitly preserves the validated own archive
 modes; host11+10 controls and critical reviewPASS. CLI fixture correction **4da3b0b9**
 checks mandatory initial roles without coupling to the optional-role list, retains
 exit3/empty output/config absence and adds credential-boundary rejection. All five
-original bad-role scenariosPASS on the actual audited cc8 release ELF; changed
-Cargo integration target still requires actual hosted execution.
+original bad-role scenariosPASS on the actual audited cc8 release ELF; both new
+hosted Linux targets subsequentlyPASS.
 
 [P01 evidence](evidence/p01-ci-hosted-foundation-20261026.json),
 `pending_monitor_publication_20261102`, owns terminal audit/public scans and next
 gate. Four artifacts/31logs: zero bounded credential candidates/provider alerts;
 asynchronous scanning limits remain. Old fully verified hosted baseline remains
-a37/run41366972298. The coherent increment is now pushed as **d32b6527** and
+a37/run41366972298. Coherent **d32b6527** was pushed15:07:43Z;
 [new run41468529978](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978)
-is active. ScopePASS; Linuxamd64/arm64RUNNING and MacQUEUED at the initial
-observation. Actual33 foundation commands/11 Native controls are pinned to final
-d32. Mac subsequently became CANCELLED before any step: provider arm64 runner
-acquisition capacity, empty runner, no artifact; all8Mac checks/11Native controls
-NOT_RUN. Linux continues. P01 binds the provider admission receipt; after Linux
-is terminal consider only a targeted same-source/platform Mac retry, not a whole
-run restart or coverage substitution. Watcher **tool39437/PID1886253** (driver1886247,60s/7500s bound) observes
-and scans actual outputs. Do not claim hostedPASS before completion. Source
-admission52objects has zero new unclassified candidates; exact known contexts
-were reused. P01 owns source/push receipts and scanner limits.
+attempt1 is terminal **FAILURE / INCOMPLETE_PROVIDER_ADMISSION**:
+both Linux foundation jobs fullPASS (amd6415/15, arm6410/10; each1573 Rust
+assertions, all11 Native controls,628+13 portable and practical40/65), scope20PASS.
+Mac125355892462 never acquired a runner: zero steps, no artifact, all8checks and
+11NativeNOT_RUN. Provider capacity, not billing/product/fixture/user cancellation.
+Original outcome and sealed source/artifact/public-output audits remain in P01.
+Three artifacts/31logs have zero new/unclassified bounded credential candidates.
+
+Only the missing Macjob was retried at identical source/platform/coverage,
+accepted16:14:11Z. **Attempt2 Mac125393619701 is ADMITTED/RUNNING** in shared native
+checks; setup/checkout/verified downloads complete. No MaccheckPASS claimed yet.
+[Actual Mac job](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978/job/125393619701).
+Watcher **tool65527/PID1902888** (driver1902885,60s/7500s) uses a separate attempt2
+observation folder. Linux/scope API aliases reuse original successful attempt1
+IDs/digests/times; they are not fresh executions. Preserve this run's ref concurrency:
+no main push until terminal. Source admission52objects has zero new unclassified
+candidates; scanner limits remain. P01 owns exact original/retry receipts and gates.
 
 ## Open requirements, custody and next action
 
@@ -120,20 +146,20 @@ cost/transport/coordinator follow-through retain their existing task owners.
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns exact
 resources. All compiler/test/installed processes are terminal and the cache is released.
-Old19Index/18passive plus new17r1/20r2 containers/data, failures/worktrees/.research
-and borrowed bridge1699209a are retained; no cleanup. Source/review agents are
-finished. Sol observes the new hosted run; Sol implements the bounded C4persisted/nativeA3 recovery fault journey and
-selector/oracle in `.research/m2-monitor-ack-recovery-20261102` (branch same name
-under `work/`, basedd32). Source-only: no product API expansion or engines/cache;
-Root integrates, Astra reviews critical oracle/selector before real runs.
+Old19Index/18passive plus knownACK17r1/20r2 and new recovery3r1/15r2
+containers/data, original failures/worktrees/.research and borrowedbridge1699209a
+remain retained; no cleanup. Root is the sole integrator. Sol diagnoses the bounded
+recovery fixture in `.research/m2-monitor-ack-recovery-20261102` without engines,
+cache, protected ELF access or push. Astra approved b671 selector/oracle; request
+another critical review only for a substantive delta or concrete uncertainty.
+Sol independently observes actual hosted Mac attempt2. Compiler cache is released.
 
-**Next Root action:** observe the actual selected d32 GitHub matrix/public
-outputs without superseding it, retaining old FAIL/NOT_RUN. In parallel finish and critically review
-the bounded P04-T07 Steps2/6/P02 journey for the existing default `ingest recover`
-C4-persisted/nativeA3 terminal case: fresh Control/positive old-writer exclusion,
-exact original outcome and no new socket. Read-only mapping distinguishes it from
-NativeI4/C3, which still lacks generic completion advancement; do not call that
-case closed. Review any new authority/oracle design before costly execution. Full lost-RAM/durable-start,
-renewal, repeated scheduling and retirement retain their separate gates. Do not
-supersede the new hosted run with immediate microscopic pushes.
+**Next Root action:** preserve the original recoveryr2FAIL and integrate/review a
+bounded graceful proxy diagnostic correction, then classify the missing checkpoint
+event before a fresh installed run with unchanged cc8 product/observer. Do not
+widen limits or fit expectations. Observe actual Mac completion/public outputs in
+parallel without superseding it. NativeI4/C3 is a separate still-open generic
+advancement case; full lost-RAM/durable-start, renewal, repeated scheduling and
+retirement retain their existing gates. After the bounded recovery slice, select
+the next useful M2 capability by real dependencies, not an all-P02 barrier.
 Goal ACTIVE and incomplete; no selected later work is removed.

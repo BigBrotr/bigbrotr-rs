@@ -217,6 +217,33 @@
             "replay_receipt_sha256": "e34aa064056088aab7fa0dc55745e00970243e28ea105d67c1a6fb6167279809",
             "reuse": "cc8 product/observer unchanged; only corrected Python assembly and relevant controls/replay repeated before fresh real run. Originalr1FAIL remains intact."
           }
+        },
+        "ack_recovery": {
+          "status": "SOURCE_REVIEWED_INSTALLED_R2_FAIL_CAUSE_UNKNOWN_RECOVERY_RETRY_NOT_RUN",
+          "tasks": "P04-T07 Steps2/6;P02 producer-progress/recovery",
+          "product": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
+          "source": "b67111dc03b2a04695d105188319674c9938085e",
+          "integrated": "dd7081e0",
+          "composition_fix": "247dbaaa9ac296523f7709902a619c5b1fb32582",
+          "composition_integrated": "054dcd64",
+          "scope": "Maintained p04-monitor-ack-recovery: actual generic C4 COMMIT reply loss followed by installed default historical ingest recover and exact retry. Requires original C4/I4/A3/R0 then closing I4/A4/R0, original inputs/receipts/checkpoint xmins, no replacement socket or Sync progress. No product runtime change/rebuild.",
+          "review": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/ack-recovery/source-review.json",
+          "review_sha256": "9682c43acd268dc957918e9222d96ba234be7c0098d23c892770b06a97be63b2",
+          "controls": "Author38proxy+231focused/legacy controls and Astra9 independent controlsPASS; critical selector/recovery oracle/CBOR/custody approved. Healthy retained capture replayPASS. Narrow sharedArchive composition correction50controls plus actual samecc8ELF copied-config negative/positivePASS.",
+          "r1": {
+            "status": "FAIL_FIXTURE_STATIC_ARCHIVE_DECLARATION",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/ack-recovery/installed-r1-receipt.json",
+            "receipt_sha256": "4c65c64c8a5b546585add38edffd07c74983a3919055a64922c32fa7e4b24b81",
+            "scope": "3PASS/1FAIL/3NOT_RUN and cleanupPASS; threecontainers stopped/noOOM. Original fixture improperly removed mandatory Archive declaration; product correctly refused. Source/fault/recovery NOT_RUN."
+          },
+          "r2": {
+            "status": "FAIL_CAUSE_UNKNOWN",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/ack-recovery/installed-r2-receipt.json",
+            "receipt_sha256": "da7cf1666ac17dffd5e247ab0ac4a53da95b3cbd68a57d48860c7569b088bc91",
+            "scope": "4preparatory stages+cleanupPASS, checkpoint reply-lossFAIL before selected event, recovery/retryNOT_RUN. Writer Registry(Backend), peer one source completed; forced proxy stop omitted terminal counters/task diagnostics.15containers independently stopped/PID0/noOOM, bridge preserved."
+          },
+          "next": "Obtain bounded graceful proxy failure diagnostics, classify concrete cause, fix pertinent setup/product boundary without changing required oracle/limits; reuse unchanged product/observer for fresh installed journey.",
+          "remaining": "NativeI4/C3 advancement is distinct and still lacks generic completion in default resolver; staged-before-PG/lostRAM/durablestart/renewal/repeated scheduling/reclamation and full M2 remain existing task gates."
         }
       }
     },

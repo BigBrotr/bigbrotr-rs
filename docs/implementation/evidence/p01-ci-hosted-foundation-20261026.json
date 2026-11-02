@@ -2504,7 +2504,7 @@
         "tool": 39437,
         "pid": 1886253,
         "driver_pid": 1886247,
-        "state": "READ_ONLY_RUNNING",
+        "state": "TERMINAL_REAPED_2026_11_02_16_07_23Z",
         "interval_seconds": 60,
         "bound_seconds": 7500
       },
@@ -2513,8 +2513,36 @@
         "job": 125355892462,
         "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/ci-observation/provider-admission.json",
         "receipt_sha256": "37cbd27560986a58c123f4df268c0c6d4000b6be1a47870dde2ef84b81f6ca95",
-        "scope": "Zero steps, empty runner/group, no macOS artifact; provider annotations identify macOSarm64 acquisition capacity after multiple attempts. All8selectedMac checks/build/Rust/11Native controlsNOT_RUN. Not billing, fixture/product failure or user cancellation. Linux remains active.",
-        "next": "Preserve current Linux runs; once terminal, consider targeted rerun of missing Macjob only, same source/platform/coverage. No settings/billing changes or platform substitution."
+        "scope": "Zero steps, empty runner/group, no macOS artifact; provider macOSarm64 acquisition capacity. All8Mac checks/build/Rust/11NativeNOT_RUN. BothLinux later completedPASS. No billing/product/fixture/usercancellation observed.",
+        "next": "Original outcome preserved; same-source targeted Mac retry admitted as attempt2, no Linux rerun."
+      },
+      "terminal_attempt_1": {
+        "status": "INCOMPLETE_PROVIDER_ADMISSION",
+        "foundation": "25PASS/8NOT_RUN; workflowFAILURE due solely selectedMac runner acquisition before any step; bothLinux fullPASS, scope20PASS. No observed billing/workflowdefinition/product/fixture failure.",
+        "audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/ci-observation/terminal-audit.json",
+        "audit_sha256": "4c3b2283f64122f21a4ea295ce64008a6666f4c0dd008eeae0b3e7b51ad5a609",
+        "linux_amd64": "Job125355892480:15/15checksPASS,1573RustPASS/4dedicatedignored/0filtered,all11NativePASS,628+13portable and practical40/65PASS.",
+        "linux_arm64": "Job125355892582:10/10checksPASS,1573RustPASS/3dedicatedignored/0filtered,all11NativePASS,628+13portable and practical40/65PASS.",
+        "public_outputs": "Threeactual/fourdeclared artifacts,505members+31logs;54occurrences/five knownnonsecret fingerprints,zero new/unclassified credential candidates. Asynchronous scan limits retained.",
+        "public_receipt_sha256": "2f4c4474c2fd86a101873ee90e34a7b6bfdc7a65240b2214ce14fa049bd897b3"
+      },
+      "macos_targeted_retry": {
+        "status": "ADMITTED_RUNNING_NO_CHECK_PASS_YET",
+        "attempt": 2,
+        "source": "d32b6527114bfe587bae839b1d4d6527bab7bf96",
+        "job": 125393619701,
+        "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978/job/125393619701",
+        "request": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/macos-targeted-retry/request-receipt.json",
+        "request_time_utc": "2026-11-02T16:14:11.517910+00:00",
+        "observation": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/macos-targeted-retry/attempt-2-observation",
+        "watcher": {
+          "tool": 65527,
+          "pid": 1902888,
+          "driver_pid": 1902885,
+          "interval_seconds": 60,
+          "bound_seconds": 7500
+        },
+        "scope": "Only missingMac job rerun at exactd32; setup/checkout/verifieddownloads complete, sharednativechecks active. API job aliases for Linux/scope reuse original successful attempt1 evidence; not fresh executions. No push until terminal to preserve ref concurrency. First invalid local gh syntax refused before sending, preserved separately; correct job-only request accepted."
       }
     }
   }
