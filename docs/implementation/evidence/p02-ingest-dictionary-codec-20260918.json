@@ -194,9 +194,11 @@
       "clickhouse_preflight": {
         "source": "f11024b87fdf917518a6512a92ceeaa9a0787b8d",
         "integrated": "8fc31ea1",
-        "status": "BLOCKED_ON_ORACLE_CORRECTION_BEFORE_ENGINE_RUN",
-        "finding": "Independent Astra caught bootstrap CBOR encoding bool as integer in new measurement chunk expectations; synthetic fixture shared the same error. Canonical[true,false,false]=83f5f4f4, not83010000. Fixed independent vector and canonical bool/signed encoding required before real ClickHouse. Author correcting; no product defect inferred.",
-        "engine": "NOT_RUN"
+        "status": "CRITICAL_ORACLE_REVIEW_APPROVED_ACTUAL_ENGINE_NOT_RUN",
+        "finding": "Original f110 shared CBOR encoded bool as int and refused negative UTC; synthetic metadata fixture shared it. Corrected bool-before-int and signedi64 domain, independent frozen vectors and wrong-encoding negative close the verifier defect without changing product or runtime limits.",
+        "engine": "NOT_RUN",
+        "correction": "97a9b708d204c4cb6bcfb4634e3947259d3904a4",
+        "review": "Independent Astra verified all three literal preimages/digests against Node, positive measurement chunk d5985e9f273396348c96da53d6e4e98be08245900a5e27457522d9130e688dea, bool/integer refusal and complete negative-UTC fact/chunk. Original56 event fact/chunk preimages unchanged;43 targeted controlsPASS. Original erroneous CBOR scope remains preserved."
       }
     },
     "installed_inspection": {
@@ -259,7 +261,7 @@
         "fd23b094",
         "59912918"
       ],
-      "runtime_tests": "Actual f474 unfiltered library697PASS/1FAIL/3ignored/0filtered; eight new critical Native controls PASS; five later assertion suites running separately. No whole-workspace PASS.",
+      "runtime_tests": "f474 library697PASS/1FAIL/3ignored; remaining five assertion groups394PASS/1dedicatedignored. Eight Native measurement controls and seven real-pipe/inspection controls pass. No whole-workspace PASS.",
       "release_build": "PASS_ACTUAL_5C85BB4C_BUILD_ONLY",
       "latest_verified_build": {
         "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
@@ -345,6 +347,14 @@
           "filtered": 0
         },
         "failure_classification": "UNKNOWN_PENDING_SOURCE_DIAGNOSIS"
+      },
+      "remaining_assertions": {
+        "status": "PASS_ONLY_REMAINING_5_UNFILTERED_ASSERTION_GROUPS",
+        "source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/f474b5a0/remaining-assertions-r3-receipt.json",
+        "receipt_sha256": "356af38e335bd1eb0e7645da05836c430ccf5588f94d189bc63b386253946254",
+        "counts": "Binary232PASS, Monitor wire12PASS, catalog entrypoint16PASS, Protocol56PASS/10summaries, Archive-worker78PASS/1dedicatedignored/9summaries. All unfiltered; earlier libraryFAIL/RustdocFAIL retained.",
+        "resources": "Tool89102 reaped0 after939.55s, dc54b5a0 exited0/PID0/noOOM/cache released; original4ELF fullstat unchanged."
       }
     },
     "operator_source": {

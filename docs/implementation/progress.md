@@ -7,7 +7,7 @@ Capability-first execution is reconciled in Q38/the guide; one existing plan.
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source **7ad5b67a**, clean before this
+`work/m2-finite-history-20261101`. Observed source **88b7330b**, clean before this
 recording update. Canonical main/origin remain clean at pushed **a37f7829**.
 New Monitor work is local and not pushed; qualification is incomplete.
 
@@ -50,7 +50,8 @@ new real Native measurement admission/replay/corruption/authority controls pass
 once. The sole dictionary-route reopen test refuses PendingQuota(RecoveryBlocked);
 source diagnosis is active, classification still UNKNOWN. Original logs remain.
 A separate continuation passed binary232, Monitor wire12, catalog entrypoint16
-and all Protocol suites; Archive-worker native tests are still running.
+and all Protocol suites; Archive-worker completed78PASS/1 dedicated ignored.
+All five continuation groups passed, unfiltered, without relabeling libraryFAIL.
 Clippy passed again; Rustdoc failed on unquoted Mutex<State> HTML.65accd30 changes
 only backtick markup, without rebuilding the unchanged product. Corrected full
 Rustdoc still requires execution. Do not infer whole-library/workspace PASS.
@@ -58,9 +59,9 @@ Rustdoc still requires execution. Do not infer whole-library/workspace PASS.
 The new maintained `p04-passive-monitor-index` harness is integrated8fc31ea1.
 Before engine launch Astra caught an independent-oracle defect: bootstrap CBOR
 encodes bool as integer, corrupting expected measurement chunks and downstream
-commitments; the synthetic fixture shared the encoder. Author is reconciling
-canonical bool/signed encoding with independent frozen vectors. **Real ClickHouse
-run remains NOT_STARTED** until targeted review closes this blocker.
+commitments; the synthetic fixture shared the encoder. Correction97a9b708 now preserves canonical bool/signed encoding. Astra verified
+three frozen vectors with Node and all56 original event preimages unchanged;
+43 controlsPASS. **Real ClickHouse run is next; currently NOT_STARTED.**
 
 Schema44's two new tables also invalidated shared83-table acceptance fences.
 The current exact85-name inventory, missing/extra/same-count substitution refusals
@@ -98,23 +99,22 @@ assigned there. All selected later milestones remain in scope.
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns resource
 paths. All original implementation worktrees/source commits remain retained.
-At recording the guarded f474 workspace-r3 container is running its final
-Archive-worker tests (owned dc54b5a0, tool89102). Earlier f474 build57082 and strict/
+At recording tool89102 is reaped0; its dc54b5a0 container is stopped/PID0/noOOM
+after all five remaining assertion groups passed. No owned compiler/engine runs. Earlier f474 build57082 and strict/
 library tools77468/20714 are reaped0/1/1, their containers stopped/PID0/noOOM,
 cache released before r3 reacquired it. Earlier18 installed-case containers and
 the separate native-build-control container are stopped/PID0/noOOM. Borrowed
 bridge remains intact. Required guards preserved all4 original ELF bytes/fullstat.
 No cleanup; preserve .research, unique data and original failures.
 
-Root is the only integrator. Sol/xhigh authors in separate retained worktrees
-are correcting the canonical Index oracle and diagnosing the dictionary reopen
-failure. Astra/xhigh completed the scoped critical reviews; real ClickHouse is
-held for its targeted correction recheck. All source/custody paths remain in the
+Root is the only integrator. Sol/xhigh is diagnosing the dictionary reopen
+fixture in its retained worktree. The Index oracle correction is committed and
+Astra/xhigh targeted re-review approved; it can proceed to actual ClickHouse. All source/custody paths remain in the
 inventory and owning P01/P02 reports.
 
-**Next Root action:** observe/reap the existing Archive-worker run, close the
-bounded dictionary test diagnosis and canonical oracle blocker, then execute the
-reviewed maintained ClickHouse case using the verified f474 product and separately
-attributed current harness/assembly. Repeat only invalidated checks; preserve the
+**Next Root action:** execute the reviewed maintained ClickHouse case using the
+verified f474 product and separately
+attributed frozen current harness/assembly, while closing the dictionary fixture
+diagnosis. Repeat only invalidated checks; preserve the
 original FAIL/NOT_RUN results. Complete integrated portable/current-source hosted
 qualification and push a coherent result before advancing the next M2 capacity.

@@ -79066,11 +79066,11 @@
         ".research/m2-current-control-inventory-20261102"
       ],
       "active_assignments": {
-        "measurement_clickhouse_prep": "Sol/xhigh correcting canonical CBOR bool/signed commitment oracle and independent frozen vectors in .research/m2-passive-index-acceptance-20261102; no engines.",
-        "current_control_inventory": "Sol/xhigh source-only diagnosis of failed dictionary route reopen PendingQuota(RecoveryBlocked) in .research/m2-current-control-inventory-20261102; its85-table reconciliation integrated7ad5.",
-        "native_timestamp_review": "Astra/xhigh finished timestamp/tutorial source reviews; blocked f110 passiveIndex on bool/int canonical-oracle defect beforeengine; targeted correction recheck pending."
+        "current_control_inventory": "Sol/xhigh source-only diagnosis of dictionary reopen fixture RecoveryBlocked; exact85-table reconciliation integrated7ad5.",
+        "measurement_clickhouse_prep": "Oracle97a9 complete, Astra targetedrecheck approved; Root owns actualClickHouse next.",
+        "native_timestamp_review": "Critical source/oracle reviews complete through97a9; no runtimequalification claim."
       },
-      "resources": "At recording tool89102 owns runningdc54b5a0 finalArchive-worker assertions with cache115 exclusively locked. Earlier f474build57082 reaped0 and strict77468/library20714 reaped1, stopped/PID0/noOOM, all guards passed andcache released betweenruns. Separate native-build4control container stopped/PID0/noOOM.18 installedcontainers remain stopped, borrowedbridge preserved. No cleanup.",
+      "resources": "No owned compiler/engine running atrecording. Tool89102 reaped0, dc54b5a0 exited0/PID0/noOOM/cache released; earlier strict/library/source guards retained. All18 installed5c containers and native-build-control container stopped; borrowedbridge preserved; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79118,7 +79118,7 @@
           "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-f474b5a0-workspace-r3",
           "container": "dc54b5a080a2caa2c74bddc25253d757df3e83564d6f369602bcd5d547591c63",
           "tool": 89102,
-          "state": "Active finalArchive-worker tests; other4 groupsPASS, exactparentguards retained. No engine installedclaim."
+          "state": "Tool89102 reaped0; five remaining groupsPASS, allunfiltered,394assertionsPASS/1dedicatedignored. Container stopped/PID0/noOOM/cache released; original4ELF guardsPASS. Originallibrary/RustdocFAIL separate."
         }
       }
     }
