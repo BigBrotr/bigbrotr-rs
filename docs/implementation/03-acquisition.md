@@ -220,8 +220,10 @@ positive continuation, pending-plan refusal and seal/adoption-COMMIT before/afte
 loss profiles, plus actual actor-grant withdrawal and genuine original-expiry
 refusals under fresh authority. One installed historical workflow-integrity
 refusal also proves actual INSERT→false coverage→rollback with conserved native
-evidence. Exact uncertain-seal retry remains a critical gate of these same tasks;
-later lost-candidate and zero-new-query handoffs remain explicit. Genuine origin
+evidence. Exact absent/present uncertain-seal retries also qualify real lock-based
+exclusion and immutable retained seals. These bounded integration gates are closed;
+main/hosted qualification and later lost-candidate/zero-new-query handoffs remain
+explicit in these same tasks. Genuine origin
 reservation without native issuance remains uncovered P02-T02 Step4/P03 execution
 work: the unchanged pre-resolution refusal guards this strictly settled profile,
 without requiring implementation of negative-outcome recovery before integration.

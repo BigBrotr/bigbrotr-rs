@@ -79582,9 +79582,31 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/m2-uncertain-seal-retry-20261103",
           "branch": "work/m2-uncertain-seal-retry-20261103",
           "base": "c584a7c2865a3b940e86db165e732920e438694c",
-          "state": "SOL_SOURCE_IMPLEMENTATION_ASTRA_REVIEW_INSTALLED_NOT_RUN",
+          "state": "QUALIFIED_BOTH_MODES_STOPPED_RETAINED",
           "owner": "Sol author; Root sole integrator/engine launcher; Astra critical review",
-          "scope": "Exact retry after absent/present seal uncertainty via real lock-based exclusion; no second lease wait/default/product changes. Preserve old proxy config and distinct prior/final backend observations."
+          "scope": "Exact retry after absent/present seal uncertainty via real lock-based exclusion; no second lease wait/default/product changes. Preserve old proxy config and distinct prior/final backend observations.",
+          "head": "1c205f8a4a56a56a4764a94f329a41cd1b64da5e",
+          "integrated": "3c2d51f6",
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/installed-pair-receipt.json",
+            "sha256": "d28013d87fc477136943f5373c4409ee95a2bf8d20ddd159f3ffb5a94b5fdaaf"
+          },
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a",
+          "cases": {
+            "r21": {
+              "root_tool": 45704,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-retry-before-r21",
+              "state": "QUALIFIED_STOPPED_RETAINED",
+              "custody_sha256": "a33aabe5da0e0ce254276a7ef787c4e6d54cb0afa320a18902cfdc1f379bca3a"
+            },
+            "r22": {
+              "root_tool": 22780,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-retry-after-r22",
+              "state": "QUALIFIED_STOPPED_RETAINED",
+              "custody_sha256": "c87b0a03197f354f8fabf2b9d1b46503de2312362a216b49ed0fd86e1bf0acff"
+            }
+          },
+          "resources": "Each22stopped/PID0/noOOM containers19compose+3native,7absent recorded processes,1116/1120absent commandPIDs and53sourcefiles; borrowedbridgeempty. Pinned94 control container990c4d7f stopped0/PID0/noOOM. ImmutableR21/R22 helper copies preserve actualbfb auditor/b393 invoke/c552 runner. No engines/compiler/cache work active; no cleanup. Original outcomes/source/mock/replay setup failures preserved."
         }
       }
     }

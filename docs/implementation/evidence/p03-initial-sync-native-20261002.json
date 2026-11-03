@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "CURRENT_A464_COMPILED_POSITIVE_COMMIT_UNCERTAINTY_AUTHORITY_AND_WORKFLOW_INTEGRITY_REFUSAL_QUALIFIED_M2_OPEN",
+    "status": "CURRENT_A464_BOUNDED_SETTLED_CONTINUATION_INTEGRATION_SAFETY_GATES_QUALIFIED_M2_OPEN",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Initial source-only review, before the separately recorded qualification: Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Exact absent/present uncertain-seal retry under existingP03-T01Step3/T05Steps2/4/7. Reuse original prefix/initialwait, positively join failed owner/driver/backend/proxy/observer, then fresh actual native/PG lock exclusion may fence still-unexpired failedControl; no second60s wait or administrative release. Preserve exact retained seal attribution/time/xmin and source closure/native86/original120s/root5s. Later handoff/capacity stay existing tasks.",
+    "next": "Integrate the qualified coherent settled-continuation slice into main and obtain actual current hosted CI. Then continue existing M2 tasks by dependency; zero-new-query handoff needs a real Sync-selected zero-work cut because control/ingest-only activation skips adoption. Lost-candidate/full500 and genuine origin reservation/unissued recovery remain their existing owners; no wholeP02/wholeM2 completion claim.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2721,7 +2721,7 @@
       },
       "result": "R14 Root45014/90.605s and R15 Root24190/90.252s both pass7/7 stages. Actual final UPDATE1 then COMMIT completion server0/1 and client0; both caller outcomes remain Quantum(CommitUnknown). Before-forward preserves exact unadopted seal/job revision2; after-complete commits all9 adoption fields and job revision3. Native85/86/91, all5 original inputs/history/progress and no new wire are verified. Whole attempts708/690ms fit5s; both fresh SQL leases remain valid and original120s duration is unchanged.",
       "source_fixes": "Canonical dictionary-key/row order only; values/types/xmins/multiplicity remain exact. Original synthetic setup failures and pre-normalization source controls retained; no product/runtime failure or native-format/default/limit change.",
-      "remaining": "Authority/originalexpiry and workflow-integrity refusal are now separately qualified. Exact uncertain-seal retry remains current safety gate; later candidate/zero-new-query/fullwalker/capacity remain separate."
+      "remaining": "Selected current integration safety gates now separately qualified including exact retry. Main/hosted integration and later handoff/capacity plus genuine-origin composition remain explicit existing owners."
     },
     "reserved_unissued_composition": {
       "status": "GENUINE_ORIGIN_COMPOSITION_UNCOVERED",
@@ -2741,7 +2741,7 @@
       },
       "result": "R17 actor-grant Root92671 reaped0/91.267s and R19 genuine-expiry Root63186 reaped0/147.382s each pass7/7; independent science and terminal custody PASS. Real Control helper Execute BB001/exact reason, no injected fault, fresh active Control/Ingest, whole startups701/692ms<5s. R19 crosses original120s deadline by actual PG observation before configuration/startup; actor/grants/metadata unchanged. Exact queued job2/unadoptedseal/full native85/86/91 and original inputs/history conserved; no successor request.",
       "preserved_uncertain_outcome": "R18 maintained7/7 PASS, but outer tool32214 reap/exit and cause remain UNKNOWN after supervisor disappearance; raw session RUNNING is preserved. All owned containers/processes were stopped/absent. Gap capsule retained; fresh identical R19 supplies the actual outer terminal qualification without reclassifying R18.",
-      "remaining": "Historical workflow-integrity refusal now separately qualifiedR20; exact uncertain-seal retry remains before current integration. Broader authority/handoff/capacity retain existing owners."
+      "remaining": "Selected current integration safety gates now separately qualified including exact retry. Main/hosted integration and later handoff/capacity plus genuine-origin composition remain explicit existing owners."
     },
     "continuation_integrity_refusal": {
       "owner": "P03-T01 Step3/P03-T05 Steps2/4/7/P02 succession",
@@ -2755,7 +2755,21 @@
       },
       "result": "R20 actualRoot58002 REAPED0/88.397s,7/7PASS, independent science9e15b4a9 and custody58483693. Original Q1/native85 authenticated before fixture-admin replica seed; only byte51 request4\u21925/newxmin changes. Actual Control backend3316/T executes seal INSERT0 1 then exact coverage SELECT false and rollback1, selectedCOMMIT/error/fault0. Natural4/empty stdout/exactInvalidMetadata; zero seals/adoptions/newwire. All63 native rows85\u219286/5originalinputs/history/progress/seededxmins/job2 preserved, whole638.209ms<5s, original120s deadline future.",
       "limits": "One metadata-corruption discriminator, not genuine origin reservation/unissued-native proof or broad corruption/capacity qualification. Source control91/59 actual pinned PASS;634 unchanged acceptance reused, no full725 run. Root prelaunch journey_files-shape setup error and independent read-setup errors retained, distinct from product; all197 scientific evidence hashes reconciled.",
-      "remaining": "Exact uncertain-seal retry is the remaining selected integration gate; broader handoff/capacity and genuine-origin composition remain their explicit existing owners."
+      "remaining": "Selected current integration safety gates now separately qualified including exact retry. Main/hosted integration and later handoff/capacity plus genuine-origin composition remain explicit existing owners."
+    },
+    "uncertain_seal_retry": {
+      "owner": "P03-T01 Step3/P03-T05 Steps2/4/7/P02 succession",
+      "status": "PASS_BOUNDED_INSTALLED_EXACT_UNCERTAIN_SEAL_RETRY_PAIR",
+      "source": "1c205f8a4a56a56a4764a94f329a41cd1b64da5e",
+      "source_tree": "b17dab642e50d5af2cd86b33cd15e50dbc5a2d74",
+      "integrated": "3c2d51f690dc7b6ee82eaea247c8e7dfe9adaa6f",
+      "qualification": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/installed-pair-receipt.json",
+        "sha256": "d28013d87fc477136943f5373c4409ee95a2bf8d20ddd159f3ffb5a94b5fdaaf"
+      },
+      "result": "R21 Root45704/90.759s and R22 Root22780/90.509s both actualREAPED0/7of7PASS; independent scienceadb98ca3/d6ba0aec and custodya33aabe5/c87b0a03. Original callerUnknown remains distinct from identical retryConfirmed. Actual native/PG exclusion fences still-unexpired Control3; newControl4 releases/retires. Absent mode creates one correctly attributedseal; present mode preserves entireoldseal including ID/sealer/time/xmin. Full63-row native85/86/86/source17/time/xmin/5originalinputs/history/progress/job2/original120s conserved; oneREQ/noadoption/newwire. Whole592/590ms retries<root5s,~54soriginalleft. Oldproxy/newdirect configbindings and distinct immutable prior/final backend observations preserved.",
+      "source_controls": "Current frozen1c pinned94 owningPASS; unchanged59proxy/634acceptance and14tutorial evidence reused, no full728 run. Source review6cd75604 found/corrected old pre-retry absence-path overwrite, final affected host1control/20subcases preserved separately from pre-fix94. Host mock/setup failures and independent admission-pointer/metadata setup failures retained; no product failure or predicate weakening.",
+      "remaining": "Selected settled-continuation integration safety gates now closed within recorded slices. Main/hosted qualification and later acquisition capabilities remain open; no lost-candidate/zero-new-query/origin-unissued/full500 qualification."
     }
   }
 }

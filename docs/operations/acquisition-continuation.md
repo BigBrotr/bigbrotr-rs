@@ -4,8 +4,9 @@ This development capability uses migration0045. Compiled qualification and the
 installed same-job continuation, pending-plan refusal and seal/adoption-COMMIT
 loss pairs, plus actor-grant and genuine original-expiry refusals,
 are recorded in the [acquisition evidence](../implementation/evidence/p03-initial-sync-native-20261002.json).
-One historical workflow-integrity refusal is also qualified. Exact uncertain-seal
-retry and later handoff profiles remain separate qualification gates. It preserves an
+One historical workflow-integrity refusal and the exact absent/present seal retry
+pair are also qualified. Hosted integration and later handoff profiles remain
+separate qualification gates. It preserves an
 existing finite job across native succession; it does not resume an old native writer.
 The [owning contract](../reference/producer-request-inputs.md#explicit-settled-finite-job-continuation-0045-source-under-qualification)
 defines the exact evidence, authority and remaining scope.
