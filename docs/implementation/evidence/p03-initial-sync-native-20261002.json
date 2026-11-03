@@ -2150,6 +2150,14 @@
       "sha256": "8841d720fb9c443a0768567c86ef7d548e3e8a9b077273a8b99899fbcb0b2a4d",
       "result": "Root42777 reaped1; all-target12.137sFAIL at BINtest2missing RuntimeContext imports, priorlibraryerrorscorrected. Release/strictClippy/Rustdoc/tests/installedNOT_RUN. Container43450e48 stopped/PID0/noOOM/launcherabsent/cacheRootreacquiredreleased/nooverlap/original4ELFfullstatO_NOATIMEguardPASS.",
       "correction": "a942a49f imports existing owner::RuntimeContext in two successor startup modules; no logic/protocol/SQL changes. Actual cheap preflight format/planningPASS before failed compilation."
+    },
+    "third_compile": {
+      "source": "6354d60fe0ee17f982d9042b8c8b925b7628bfaf",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/6354d60f/failure-receipt.json",
+      "sha256": "484bea48c70e34ee36e512ec87b9c2b6e56bf5d3a80a52d5cd6d417cd094f985",
+      "result": "Root92588 reaped1; all-targetPASS9.383s/strictClippyFAIL12.687s sole drop_non_drop; Rustdoc/release/tests/installedNOT_RUN. Builderd16e3ebd stopped/PID0/noOOM/cache released and launcherpost4ELFguardscompleted.",
+      "correction": "35bdff93 removes redundantdrop(read) after lastread.validate. ProgressRead holds borrowed store/scratch references, has noDrop; NLL ends immutable borrow before later mutable native checks. Every existing native/SQL/lease/deliverycheck unchanged.",
+      "reuse": "Same parameterized existing build preparer now accepts exactsource/revision/tree/q/runtime; no new framework or repeated historical audit."
     }
   }
 }

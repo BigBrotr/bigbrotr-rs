@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-2026-11-03, Tux (2026-11-03 00:07 UTC checkpoint). **Goal ACTIVE:** complete selected
+2026-11-03, Tux (2026-11-03 UTC checkpoint). **Goal ACTIVE:** complete selected
 P00–P10/M1–M5. Q37/Q38/Q40/Q41/Q42 apply; Root is sole integrator.
 Sol/xhigh operates by default; bounded critical reviews use Astra/xhigh.
 Public development does not authorize official releases, packages or deployment.
@@ -8,7 +8,7 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and qualified recovery capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **a942a49f** before this
+`work/m2-finite-history-20261101`, observed HEAD **35bdff93** before this
 checkpoint. Canonical main/origin/actual remote are **5a9b7cc4**, clean and pushed:
 qualified bounded Monitor recovery, connected fixtures and Mac path correction.
 The reviewed M2 production/oracle sources are integrated locally, not on main;
@@ -98,7 +98,11 @@ retaining the same61 records/checksums and authority. Second81ea6c28 compile rea
 RuntimeContext imports (12.137s). Correctiona942a49f imports that existing enum;
 no logic/protocol/SQL change. Both original failures remain in P03, second receipt
 8841d720; its builder43450e48/launcher/cache/4ELF guards are terminal/valid.
-Fresh compilation remains to verify. Original cheap preflight missing-CargoHome FAIL and corrected temporary-
+Candidate6354d60f then passed all-target9.383s, but strictClippy failed12.687s
+on one redundantdrop(read). Correction35bdff93 removes only that non-Drop view
+release; every validation retained. Original receipt484bea48/capsule6354d60f
+is preserved; Root92588 reaped1/builderstopped/cache released/4ELFpostguardsPASS.
+StrictClippy/Rustdoc/release and installed qualification still pending. Original cheap preflight missing-CargoHome FAIL and corrected temporary-
 home two-check PASS are preserved separately. Receipt4a697ef8 binds raw failures,
 stopped builder877dff45, absent launcher, cache release/reacquisition and unchanged
 original4ELF fullstat/bytes. Release/Clippy/Rustdoc/tests/installed **NOT_RUN**.
