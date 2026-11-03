@@ -392,7 +392,6 @@ impl ControlSession {
             adopted += 1;
         }
         read.validate().map_err(InitialEventError::Native)?;
-        drop(read);
         native.validate_delivery(input.cancelled, &mut lease, policy)?;
         initial_history::check_delivery(&mut lease, policy, input.cancelled)
             .map_err(InitialEventError::Compacted)?;
