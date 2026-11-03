@@ -148,7 +148,6 @@ impl Work<'_> {
             let count=self.operation(owner.seal_acquisition_continuations(
                 bigbrotr::storage::postgres::control_owner::AcquisitionContinuationSource::Successor(&proof),
                 self.request(),continuation_grant(self.budget)?,|d,h|self.validate(d,h))).await?;
-            drop(proof);
             Some(count)
         } else {
             self.operation(owner.close_activated_successor_source(

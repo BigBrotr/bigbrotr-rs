@@ -637,6 +637,16 @@ async fn connected(
     Ok((owner, report))
 }
 
+/// The complete selector/replay/native decode grant is reserved before sealing;
+/// no accepted process or producer limit is enlarged by continuation.
+pub(super) fn continuation_grant(
+    budget: &ResourceBudget,
+) -> Result<bigbrotr::storage::postgres::control_owner::QuantumGrant> {
+    use bigbrotr::storage::postgres::control_owner::QuantumGrant;
+    QuantumGrant::new(grant(budget, QuantumGrant::required_data_bytes(), 0)?)
+        .map_err(|e| (4, e.to_string()))
+}
+
 #[cfg(test)]
 mod checkpoint_capacity_tests {
     use super::*;
@@ -675,14 +685,4 @@ mod checkpoint_capacity_tests {
             assert_eq!(budget.snapshot().active_permits(), 0);
         }
     }
-}
-
-/// The complete selector/replay/native decode grant is reserved before sealing;
-/// no accepted process or producer limit is enlarged by continuation.
-pub(super) fn continuation_grant(
-    budget: &ResourceBudget,
-) -> Result<bigbrotr::storage::postgres::control_owner::QuantumGrant> {
-    use bigbrotr::storage::postgres::control_owner::QuantumGrant;
-    QuantumGrant::new(grant(budget, QuantumGrant::required_data_bytes(), 0)?)
-        .map_err(|e| (4, e.to_string()))
 }
