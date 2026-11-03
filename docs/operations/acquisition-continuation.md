@@ -94,3 +94,14 @@ the unadopted seal, old job and activated candidate; do not extend the deadline
 or infer permission to retry. These profiles cover exact actor-grant removal and
 genuine original expiry; other authority and lost-candidate operations retain
 their separate qualification gates.
+
+Sealing also requires every original job-bound mutation to occur in the retained
+page's exact effect binding. Authentic native payload/time targets and a valid
+cursor alone do not establish complete workflow coverage. A false post-insert
+coverage check returns `producer operation unavailable: Control(InvalidMetadata)`
+before COMMIT; preserve the original inputs/native proof and the refused SQL
+history rather than guessing a repair or retrying implicitly.
+The maintained `workflow-effect` refusal fixture isolates this join with one
+privileged metadata-corruption byte, and requires the actual executed INSERT and
+false Boolean SELECT on the same Control transaction. This fixture administration
+does not represent a genuine origin reservation or an unissued native mutation.

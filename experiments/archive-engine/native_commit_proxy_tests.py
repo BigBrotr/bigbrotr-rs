@@ -16,7 +16,21 @@ import unittest
 from unittest.mock import patch
 
 from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
-                                IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, failure_kind, gap_write_refusal,continuation_authority_refusal)
+                                IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, CoverageResultObserver,bind_result_format,Proxy, control_target_query, failure_kind, gap_write_refusal,continuation_authority_refusal)
+
+COVERAGE_QUERY=(b'SELECT control.acquisition_continuation_covers($1,$2,$3::text::numeric) AND EXISTS(SELECT 1 FROM control.acquisition_continuations '
+    b'WHERE job_id=$1 AND previous_job_revision=$4::text::numeric AND manifest_sha256=$5 AND last_quantum_number=$6::text::numeric '
+    b'AND enrollment_generation=$7::text::numeric AND route_id=$8 AND source_sequence=$9::text::numeric AND source_digest=$10)')
+
+
+def coverage_bind(name=b'coverage',result=1):
+    value=b'private-bind-value'
+    return b'\0'+name+b'\0'+struct.pack('!HHH',1,1,10)+(struct.pack('!i',len(value))+value)*10+(
+        struct.pack('!H',0) if result is None else struct.pack('!HH',1,result))
+
+
+def boolean_row(value,result=1):
+    return struct.pack('!Hi',1,1)+(bytes([int(value)]) if result==1 else b't' if value else b'f')
 
 AUTHORITY_QUERY=b'SELECT control.require_acquisition_continuation_authority($1,$2)'
 
@@ -468,6 +482,46 @@ class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
 
 
 class ClosedProfile(unittest.TestCase):
+    def test_coverage_boolean_uses_actual_bind_format_and_complete_single_execute(self):
+        for format in (0,1,None):
+            self.assertEqual(bind_result_format(coverage_bind(result=format)),format or 0)
+            observer=CoverageResultObserver()
+            observer.frontend(b'P',b'coverage\0'+COVERAGE_QUERY+b'\0\0\0');observer.backend(b'1',b'')
+            observer.frontend(b'B',coverage_bind(result=format));observer.backend(b'2',b'')
+            self.assertNotIn('private',repr(observer.__dict__))
+            observer.frontend(b'E',b'\0'*5)
+            self.assertFalse(observer.backend(b'D',boolean_row(False,format or 0)))
+            self.assertTrue(observer.backend(b'C',b'SELECT 1\0'));self.assertIs(observer.completed_value,False)
+            observer.frontend(b'S',b'');observer.backend(b'Z',b'T')
+            self.assertIsNone(observer.completed_value)
+        for row in (b'\0\1'+struct.pack('!i',-1),boolean_row(False)+b'extra',b'\0\0',boolean_row(False)[:-1]+b'f'):
+            observer=CoverageResultObserver();observer.frontend(b'P',b'coverage\0'+COVERAGE_QUERY+b'\0\0\0');observer.backend(b'1',b'')
+            observer.frontend(b'B',coverage_bind());observer.backend(b'2',b'');observer.frontend(b'E',b'\0'*5)
+            with self.assertRaises(ValueError):observer.backend(b'D',row)
+        for body in (coverage_bind()[:-1],coverage_bind()+b'x',coverage_bind()[:-4]+struct.pack('!HHH',2,1,1),coverage_bind(result=2)):
+            with self.assertRaises(ValueError):bind_result_format(body)
+        self.assertTrue(control_target_query('control-acquisition-coverage',COVERAGE_QUERY))
+        self.assertFalse(control_target_query('control-acquisition-coverage',COVERAGE_QUERY+b' OR true'))
+        for options in ({'mode':'before-forward'},{'mode':'after-complete'},{'lifetime_seconds':180},{'commit_ordinal':2},{'defer_arm':True}):
+            values=dict(mode='pass',target='control-acquisition-coverage');values.update(options)
+            with self.assertRaises(ValueError):Proxy(**values)
+
+    def test_coverage_clears_partial_rows_on_error_and_rejects_cached_unrelated_preparation(self):
+        observer=CoverageResultObserver()
+        observer.frontend(b'P',b'coverage\0SELECT 1\0\0\0');observer.backend(b'1',b'')
+        observer.frontend(b'S',b'');observer.backend(b'Z',b'I')
+        observer.frontend(b'P',b'coverage\0'+COVERAGE_QUERY+b'\0\0\0');observer.backend(b'E',authority_error())
+        observer.frontend(b'S',b'');observer.backend(b'Z',b'I')
+        observer.frontend(b'B',coverage_bind());observer.backend(b'2',b'');observer.frontend(b'E',b'\0'*5)
+        observer.backend(b'D',boolean_row(False));self.assertFalse(observer.backend(b'C',b'SELECT 1\0'))
+        observer.frontend(b'S',b'');observer.backend(b'Z',b'I')
+        observer.frontend(b'P',b'good\0'+COVERAGE_QUERY+b'\0\0\0');observer.backend(b'1',b'')
+        observer.frontend(b'B',coverage_bind(b'good'));observer.backend(b'2',b'');observer.frontend(b'E',b'\0'*5)
+        observer.backend(b'D',boolean_row(False));observer.frontend(b'S',b'')
+        observer.backend(b'E',authority_error());observer.backend(b'Z',b'I')
+        observer.frontend(b'B',coverage_bind(b'good'));observer.backend(b'2',b'');observer.frontend(b'E',b'\0'*5)
+        with self.assertRaises(ValueError):observer.backend(b'C',b'SELECT 1\0')
+
     def test_continuation_authority_profile_and_error_parser_require_exact_real_helper_reason(self):
         self.assertTrue(continuation_authority_refusal(authority_error()))
         for error in (authority_error(C=b'23514'),authority_error(M=b'Control authority expired'),authority_error(M=None),
@@ -746,6 +800,48 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def integrity_insert(self,c):
+        await self.exchange(c,b'P',b'seal\0INSERT INTO control.acquisition_continuations(x) VALUES ($1)\0\0\0',[(b'1',b'')])
+        await self.exchange(c,b'B',b'\0seal\0\0\0\0\0\0\0',[(b'2',b'')])
+        await self.exchange(c,b'E',b'\0'*5,[(b'C',b'INSERT 0 1\0')])
+        await self.exchange(c,b'S',b'',[(b'Z',b'T')])
+
+    async def coverage_execute(self,c,*,name=b'coverage',result=1,value=False,parse=True):
+        if parse:await self.exchange(c,b'P',name+b'\0'+COVERAGE_QUERY+b'\0\0\0',[(b'1',b'')])
+        await self.exchange(c,b'B',coverage_bind(name,result),[(b'2',b'')])
+        await self.exchange(c,b'E',b'\0'*5,[(b'D',boolean_row(value,result or 0)),(b'C',b'SELECT 1\0')])
+        await self.exchange(c,b'S',b'',[(b'Z',b'T')])
+
+    async def test_integrity_route_observes_insert_then_false_on_same_transaction_without_commit_or_payloads(self):
+        for result in (0,1,None):
+            async with SocketProxy(self,'pass',target='control-acquisition-coverage',deferred=False,profile='retained-catch-up') as proxy:
+                c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+                await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+                await self.integrity_insert(c);insert=await proxy.event('integrity-seal-insert-complete')
+                await self.coverage_execute(c,result=result)
+                false=await proxy.event('continuation-coverage-result');self.assertIs(false['value'],False)
+                self.assertEqual(false['backend_pid'],insert['backend_pid'])
+                await self.exchange(c,b'Q',b'ROLLBACK\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+                await proxy.stop();last=proxy.events[-1]
+                self.assertEqual([last[key] for key in ('integrity_inserts_complete','coverage_selects_complete','coverage_false',
+                    'coverage_true','coverage_unpaired','integrity_commits','integrity_server_commits','integrity_rollbacks','faults')],[1,1,1,0,0,0,0,1,0])
+                self.assertNotIn('private',json.dumps(proxy.events));self.assertNotIn(COVERAGE_QUERY.decode(),json.dumps(proxy.events))
+
+    async def test_integrity_selection_cannot_cross_sessions_or_transactions_and_commit_is_counted(self):
+        async with SocketProxy(self,'pass',target='control-acquisition-coverage',deferred=False) as proxy:
+            c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+            await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+            await self.integrity_insert(c);await proxy.event('integrity-seal-insert-complete')
+            other=await proxy.connect('bigbrotr_control','bigbrotr_control',backend_pid=7332)
+            await self.exchange(other,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+            await self.coverage_execute(other)
+            await self.exchange(c,b'Q',b'COMMIT\0',[(b'C',b'COMMIT\0'),(b'Z',b'I')])
+            await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+            await self.coverage_execute(c)
+            await proxy.stop();last=proxy.events[-1]
+            self.assertEqual((last['coverage_unpaired'],last['coverage_selects_complete'],last['integrity_commits'],last['integrity_server_commits']),(2,0,1,1))
+            self.assertFalse(any(value['event']=='continuation-coverage-result' for value in proxy.events))
+
     async def test_continuation_authority_observer_forwards_only_actual_execute_error_without_wire_data(self):
         async with SocketProxy(self,'pass',target='control-acquisition-authority',deferred=False,profile='retained-catch-up') as proxy:
             c=await proxy.connect('bigbrotr_control','bigbrotr_control')

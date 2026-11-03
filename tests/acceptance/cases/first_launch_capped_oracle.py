@@ -2,6 +2,7 @@
 import hashlib
 import re
 import copy
+import json
 
 from cases import first_launch_quantum_oracle as quantum
 from cases import first_launch_restart as source
@@ -541,6 +542,99 @@ def adoption_seal_fault_error(stdout,stderr):
 
 def adoption_unsettled_error(stdout,stderr):
     assert stdout=='' and stderr=='error: producer operation unavailable: Control(InvalidMetadata)\n'
+
+
+def integrity_effect_seed(state,events):
+    """One fixture-admin byte change, preserving native event/time targets and charge."""
+    job=source.only(state['jobs']);old=source.only(state['acquisition_quanta'],job_id=job['job_id'],quantum_number=1)
+    assert len(state['acquisition_quanta'])==1 and old['producer_epoch']==1 and old['query_number']==1
+    assert old['entry_kind']=='request' and old['quantum_profile']==2 and old['disposition']=='overlap'
+    assert (old['interval_lower'],old['interval_upper'],old['window_end'],old['continuation_upper'])==(0,86400,86400,24)
+    assert (old['retained_events'],old['classified_prefix'],old['checkpoint_before'],old['checkpoint_after'])==(2,2,3,5)
+    assert quantum.effects(old['effect_records'])==[(n,n,hashlib.sha256(quantum.wire_json(event)).digest(),2,request,
+        event['created_at'],1,bytes.fromhex(event['id'])) for n,event,request in ((1,events[0],4),(2,events[1],5))]
+    raw=bytearray(source.raw(old['effect_records']));assert len(raw)==186 and raw[51]==4
+    raw[51]=5
+    changed=dict(old,effect_records='\\x'+raw.hex())
+    assert old['charged_bytes']==1024+len(source.raw(old['request_predicate']))+len(source.raw(old['terminal_frame']))+186+256*(len(source.raw(old['dependencies']))//72)
+    assert old['charged_bytes']==5215
+    return old,changed
+
+
+def integrity_workflow_coverage(state):
+    """The0045 original-request/effect join tuple, independent of product codecs."""
+    job=source.only(state['jobs']);page=source.only(state['acquisition_quanta'],job_id=job['job_id'])
+    wanted=sorted((row for row in state['producer_requests'] if row['acquisition_job_id']==job['job_id']),key=lambda row:row['request_sequence'])
+    assert [row['request_sequence'] for row in wanted]==[4,5]
+    covered=[]
+    for request in wanted:
+        outcome=source.only(state['producer_outcomes'],producer_slot_id=request['producer_slot_id'],producer_epoch=request['producer_epoch'],request_sequence=request['request_sequence'])
+        matched=False
+        for row in state['acquisition_quanta']:
+            common=(row['job_id']==job['job_id'] and row['producer_slot_id']==request['producer_slot_id']
+                and row['producer_epoch']==request['producer_epoch'] and row['quantum_number']<=page['quantum_number']
+                and row['terminal_kind'] is not None and row['teardown_complete'] is True
+                and row['dataset_id']==request['dataset_id'] and row['scope_id']==request['acquisition_scope_id']
+                and row['request_id']==request['progress_request_id'] and outcome['dataset_id']==request['dataset_id']
+                and outcome['request_digest']==request['request_digest'] and outcome['manifest_sha256']==request['manifest_sha256'])
+            matched |= common and any(effect[4]==request['request_sequence'] and 2<=effect[3]<=4
+                and effect[0]==request['progress_event_ordinal'] and effect[1]==request['progress_wire_sequence']
+                and effect[2]==source.raw(request['progress_input_sha256']) and outcome['outcome_kind']==effect[3]-1
+                for effect in quantum.effects(row['effect_records']))
+        if matched:covered.append(request['request_sequence'])
+    return dict(covered_requests=covered,missing_requests=sorted({4,5}-set(covered)))
+
+
+def integrity_seed_sql(old):
+    identity=source.raw(old['quantum_id']);assert len(identity)==16
+    adoption_xid(old['xmin'])
+    body=source.raw(old['effect_records']);assert len(body)==186 and body[51]==4
+    return f"""BEGIN;
+        SET LOCAL lock_timeout='1s'; SET LOCAL statement_timeout='3s';
+        SELECT jsonb_build_object('stage','before','mode',current_setting('session_replication_role'),
+            'row',(SELECT to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text) FROM control.acquisition_quanta q
+                WHERE quantum_id=decode('{identity.hex()}','hex')));
+        SET LOCAL session_replication_role=replica;
+        WITH changed AS (UPDATE control.acquisition_quanta q SET effect_records=set_byte(effect_records,51,5)
+            WHERE quantum_id=decode('{identity.hex()}','hex') AND quantum_number=1 AND producer_epoch=1
+                AND effect_records=decode('{body.hex()}','hex') AND xmin::text='{old['xmin']}'
+            RETURNING to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text) AS item)
+        SELECT jsonb_build_object('stage','changed','count',count(*),'exact_one',1/((count(*)=1)::integer),'row',(jsonb_agg(item))->0) FROM changed;
+        COMMIT;
+        SELECT jsonb_build_object('stage','restored','mode',current_setting('session_replication_role'));"""
+
+
+def integrity_seed_receipt(text,old,changed):
+    before,updated,restored=[json.loads(line) for line in text.splitlines() if line.strip()]
+    source.exact(before,dict(stage='before',mode='origin',row=old),'integrity seed original differs')
+    source.exact(restored,dict(stage='restored',mode='origin'),'fixture-admin replica mode was not restored')
+    source.exact({key:value for key,value in updated.items() if key!='row'},dict(stage='changed',count=1,exact_one=1),'integrity seed UPDATE did not affect exactly one row')
+    row=updated['row'];adoption_xid(row['xmin']);assert row['xmin']!=old['xmin']
+    source.exact(row,dict(changed,xmin=row['xmin']),'integrity seed changed more than one effect byte/xmin')
+    return row
+
+
+def integrity_seed_rows(original,seeded,events):
+    old,changed=integrity_effect_seed(original,events)
+    row=source.only(seeded['acquisition_quanta'],quantum_id=old['quantum_id'])
+    adoption_xid(row['xmin']);assert row['xmin']!=old['xmin']
+    source.exact(row,dict(changed,xmin=row['xmin']),'unexpected seeded quantum')
+    wanted=copy.deepcopy(original);wanted['acquisition_quanta']=[row]
+    adoption_exact_tables(wanted,seeded)
+    assert integrity_workflow_coverage(original)==dict(covered_requests=[4,5],missing_requests=[])
+    assert integrity_workflow_coverage(seeded)==dict(covered_requests=[5],missing_requests=[4])
+
+
+def integrity_refusal(original,seeded,after,first,wires,events,before_us,returned_us,after_us,inserted,result):
+    integrity_seed_rows(original,seeded,events)
+    adoption_history(original,wires,events,first)
+    current=adoption_failed_seal_closure(seeded,after,first,before_us,returned_us,after_us)
+    common=dict(backend_pid=current['control_backend_pid'],role='bigbrotr_control',database='bigbrotr_control',executed=True,transaction='T')
+    for observed,event in ((inserted,'integrity-seal-insert-complete'),(result,'continuation-coverage-result')):
+        expected=dict(common,event=event)
+        if observed is result:expected['value']=False
+        source.exact({key:observed.get(key) for key in expected},expected,'executed seal/false coverage binding differs')
+    assert integrity_workflow_coverage(after)==dict(covered_requests=[5],missing_requests=[4])
 
 
 def adoption_xid(value,*,bits=32):

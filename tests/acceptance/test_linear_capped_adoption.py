@@ -418,7 +418,158 @@ def authority_fixture(root,profile):
     return retired,prepared,after,report,events,wires,first,dump,eligible,start,end,observed
 
 
+def integrity_fixture(root):
+    original,after,report,events,wires,first,_,closed,start,end=seal_fault_fixture(root,'before-forward')
+    seeded=copy.deepcopy(original);old,changed=check.integrity_effect_seed(original,events)
+    changed=dict(changed,xmin='107');seeded['acquisition_quanta']=[changed]
+    after['acquisition_quanta']=[copy.deepcopy(changed)]
+    common=dict(backend_pid=7331,role='bigbrotr_control',database='bigbrotr_control',executed=True,transaction='T')
+    inserted=dict(common,event='integrity-seal-insert-complete');result=dict(common,event='continuation-coverage-result',value=False)
+    return original,seeded,after,report,events,wires,first,closed,start,end,inserted,result
+
+
 class CappedAdoptionControls(unittest.TestCase):
+    def test_integrity_admin_seed_is_captured_before_write_and_restores_origin(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);original,seeded,_,report,events,_,_,_,start,*_=integrity_fixture(root)
+            old,changed=check.integrity_effect_seed(original,events)
+            text='\n'.join(json.dumps(value) for value in (dict(stage='before',mode='origin',row=old),
+                dict(stage='changed',count=1,exact_one=1,row=seeded['acquisition_quanta'][0]),dict(stage='restored',mode='origin')))
+            runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.adoption_before=original;runtime.events=events
+            runtime.args=SimpleNamespace(linear_quantum_integrity_refusal='workflow-effect')
+            def sql(database,query):
+                self.assertEqual(database,'bigbrotr_control')
+                self.assertEqual(json.loads((root/'continuation-integrity-refusal/seed-original-control.json').read_text()),original)
+                return text if 'SET LOCAL' in query else str(start)
+            runtime.sql=Mock(side_effect=sql);runtime.capture=Mock(return_value=(seeded,{}))
+            runtime.prepare_integrity_refusal()
+            self.assertEqual(runtime.sql.call_count,2);runtime.capture.assert_called_once_with(root/'continuation-integrity-refusal','seeded')
+            self.assertEqual(json.loads((root/'continuation-integrity-refusal/seed-observation.json').read_text())['setup_kind'],'fixture-admin-replica')
+
+    def test_integrity_selector_only_accepts_the_declared_profile_and_keeps_separate_pass_route(self):
+        spec=importlib.util.spec_from_file_location('integrity_runner_control',ROOT/'tests/acceptance/run.py')
+        runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+        common=['run.py','p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption','--linear-quantum-fault','plan-before']
+        with tempfile.TemporaryDirectory() as temporary:
+            tail=['--source-root',str(ROOT),'--evidence',str(Path(temporary)/'evidence'),'--linear-quantum-integrity-refusal','workflow-effect']
+            with patch.object(sys,'argv',common+tail),patch.object(sys,'stdout'),patch('cases.first_launch.first_launch') as launched:self.assertEqual(runner.main(),2)
+            self.assertEqual(launched.call_args.args[0].linear_quantum_integrity_refusal,'workflow-effect')
+        for prefix in (['run.py','p03-linear-quantum'],common[:-1]+['plan-after'],common+['--linear-quantum-trace-successor-sql'],
+                common+['--linear-quantum-seal-fault','before-forward'],common+['--linear-quantum-adoption-fault','after-complete'],
+                common+['--linear-quantum-authority-refusal','actor-grant']):
+            with tempfile.TemporaryDirectory() as temporary:
+                evidence=Path(temporary)/'evidence'
+                with patch.object(sys,'argv',prefix+['--source-root',str(ROOT),'--evidence',str(evidence),'--linear-quantum-integrity-refusal','workflow-effect']),\
+                        patch.object(sys,'stderr'),self.assertRaises(SystemExit) as raised:runner.main()
+                self.assertEqual(raised.exception.code,2);self.assertFalse(evidence.exists())
+        from installed import set_value
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.source=ROOT
+            runtime.config=root/'instance.toml';runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:15432"\n')
+            runtime.set_value=set_value;runtime.quantum_fault='plan-before';runtime.route=Mock();old=runtime.route
+            runtime.resources=dict(quantum_proxy=dict(status='joined',pid=42),cleanup_errors=[]);runtime.inputs={};runtime.record_resources=Mock()
+            route=Mock();route.process.pid=43;route.process.poll.return_value=0;route.wait.return_value=0
+            route.threads=[];route.stderr=b'';route.overflow=False;runtime.proxy_process=Mock(return_value=route)
+            runtime.proxy_event=Mock(side_effect=lambda *args:dict(runtime.integrity_proxy_binding,event='ready',port=12348))
+            runtime.start_integrity_proxy();self.assertIs(runtime.route,old);self.assertFalse(hasattr(runtime,'seal_route'))
+            self.assertEqual(runtime.inputs['integrity_proxy']['mode'],'pass');self.assertNotIn('commit_ordinal',runtime.inputs['integrity_proxy'])
+            terminal=dict(runtime.integrity_proxy_binding,event='terminal',unexpected=0,frames=0,connections=0,bytes=0)
+            route.stdout=(json.dumps(runtime.integrity_proxy_ready)+'\n'+json.dumps(terminal)+'\n').encode()
+            runtime.proxy_observation=Mock(return_value=dict(stdout=route.stdout.decode(),stderr='',overflow=False))
+            runtime.stop_integrity_proxy();self.assertEqual(runtime.resources['cleanup_errors'],[])
+            with self.assertRaises(ValueError):runtime.validate_integrity_refusal_terminal(terminal)
+
+    def test_integrity_seed_is_one_fixture_byte_and_exact_coverage_join_refuses_missing_request4(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            original,seeded,after,report,events,wires,first,closed,start,end,inserted,result=integrity_fixture(Path(temporary))
+            check.adoption_history(original,wires,events,first)
+            old,changed=check.integrity_effect_seed(original,events)
+            self.assertEqual([i for i,(a,b) in enumerate(zip(source.raw(old['effect_records']),source.raw(changed['effect_records']))) if a!=b],[51])
+            self.assertEqual(check.integrity_workflow_coverage(original),dict(covered_requests=[4,5],missing_requests=[]))
+            self.assertEqual(check.integrity_workflow_coverage(seeded),dict(covered_requests=[5],missing_requests=[4]))
+            check.integrity_seed_rows(original,seeded,events)
+            check.integrity_refusal(original,seeded,after,first,wires,events,start,end,end+5_000_000,inserted,result)
+            check.adoption_closed_native(first,'\\x'+report['producer_slot_id'],closed)
+            check.adoption_progress(after,report,events,wires,first,end+5_000_000,epoch=1)
+            with self.assertRaises((AssertionError,ValueError)):check.adoption_history(seeded,wires,events,first)
+            text='\n'.join(json.dumps(value) for value in (dict(stage='before',mode='origin',row=old),
+                dict(stage='changed',count=1,exact_one=1,row=seeded['acquisition_quanta'][0]),dict(stage='restored',mode='origin')))
+            self.assertEqual(check.integrity_seed_receipt(text,old,changed),seeded['acquisition_quanta'][0])
+            sql=check.integrity_seed_sql(old)
+            self.assertIn('SET LOCAL session_replication_role=replica',sql);self.assertIn('set_byte(effect_records,51,5)',sql)
+            self.assertIn("xmin::text='"+old['xmin']+"'",sql);self.assertNotIn('ALTER TABLE',sql);self.assertNotIn('charged_bytes=',sql)
+            for table,index,key,value in (('acquisition_quanta',0,'charged_bytes',old['charged_bytes']-93),
+                    ('acquisition_quanta',0,'effect_records','\\x'+source.raw(changed['effect_records'])[93:].hex()),
+                    ('acquisition_quanta',0,'checkpoint_after',6),('jobs',0,'xmin','999'),('producer_requests',3,'request_sequence',5)):
+                bad=copy.deepcopy(seeded);bad[table][index][key]=value
+                with self.subTest(table=table,key=key),self.assertRaises((AssertionError,ValueError)):check.integrity_seed_rows(original,bad,events)
+            for key,value in (('value',True),('executed',False),('backend_pid',7332),('role','postgres'),('transaction','I')):
+                with self.subTest(marker=key),self.assertRaises(AssertionError):
+                    check.integrity_refusal(original,seeded,after,first,wires,events,start,end,end+5_000_000,inserted,dict(result,**{key:value}))
+            for key,value in (('mode','replica'),('row',changed)):
+                rows=[json.loads(line) for line in text.splitlines()];rows[0][key]=value
+                with self.assertRaises(AssertionError):check.integrity_seed_receipt('\n'.join(json.dumps(row) for row in rows),old,changed)
+
+    def test_integrity_runtime_keeps_peer_until_executed_false_and_exact_native_closure(self):
+        for failure in (None,'unexecuted','true','commit','pid','native','diagnostic'):
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);original,seeded,after,report,events,wires,first,closed,start,end,inserted,result=integrity_fixture(root)
+                runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.home=root/'peer';runtime.home.mkdir()
+                runtime.state=root/'state';runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
+                runtime.adoption_before=original;runtime.integrity_seeded=seeded;runtime.adoption_first=first
+                runtime.initialized=report;runtime.events=events;runtime.integrity_route=Mock()
+                document_sha256=case.digest(runtime.config)
+                def finite(*args):
+                    (root/'bootstrap').mkdir();observed=root_configuration_report(document_sha256)
+                    publish(root/'bootstrap','integrity-root-config.stdout',observed);return observed
+                runtime.finite=Mock(side_effect=finite)
+                directory=runtime.state/'data/ingest/producer-inputs-v1';directory.mkdir(parents=True)
+                for number,data in enumerate(first['inputs'],1):
+                    (directory/f"{report['producer_slot_id']}-0000000000000001-{number:016x}.cbor").write_bytes(data)
+                runtime.adoption_original_files={'old-inputs':'exact'};runtime.files=Mock(return_value=runtime.adoption_original_files)
+                runtime.sql=Mock(side_effect=[str(start),str(end),str(end+5_000_000)])
+                runtime.launch=Mock(return_value=dict(id='ab'*32));runtime.docker=Mock(return_value=SimpleNamespace(stdout='4\n'))
+                runtime.inspect=Mock(return_value=dict(Id='ab'*32,State=dict(ExitCode=4,Pid=0,Running=False,OOMKilled=False)))
+                def logs(entry,output):
+                    (output/'serve.stdout').write_text('')
+                    (output/'serve.stderr').write_text('error: producer operation unavailable: Control('
+                        +('Backend' if failure=='diagnostic' else 'InvalidMetadata')+')\n')
+                runtime.logs=Mock(side_effect=logs)
+                runtime.integrity_proxy_binding=dict(mode='pass',target='control-acquisition-coverage',frame_limit=131072,
+                    connection_limit=64,wire_limit=64*1024*1024)
+                terminal=dict(runtime.integrity_proxy_binding,event='terminal',unexpected=0,frames=30,connections=1,bytes=1024,
+                    integrity_inserts_complete=int(failure!='unexecuted'),coverage_selects_complete=1,coverage_false=int(failure!='true'),
+                    coverage_true=int(failure=='true'),coverage_unpaired=0,integrity_commits=int(failure=='commit'),integrity_server_commits=0,
+                    integrity_rollbacks=0,integrity_errors=0,data_queries=1,data_commits=0,server_complete=0,client_complete=0,faults=0)
+                if failure=='pid':result['backend_pid']=7332
+                if failure=='true':result['value']=True
+                runtime.proxy_event=Mock(side_effect=[inserted,result])
+                def stop_proxy():
+                    publish(root,'integrity-proxy-terminal.json',terminal)
+                    publish(root,'integrity-proxy.json',dict(stdout='\n'.join(json.dumps(value) for value in (inserted,result))))
+                runtime.stop_integrity_proxy=Mock(side_effect=stop_proxy);runtime.backend_absence=Mock()
+                runtime.capture=Mock(return_value=(after,{}));runtime.wires=Mock(return_value=wires)
+                if failure=='native':closed['sequence']=87
+                def census(*args,**kwargs):
+                    runtime.stop_integrity_proxy.assert_called_once();runtime.backend_absence.assert_called_once()
+                    self.assertFalse((runtime.home/'continuation-integrity-refusal.continue').exists());return closed
+                runtime.client=Mock(pid=12345);runtime.client.poll.return_value=None;runtime.processes=[runtime.client]
+                runtime.owned_listeners=Mock(return_value=['listener']);runtime.loopback_listener=Mock()
+                (runtime.home/'client.stderr').write_text('')
+                publish(runtime.home,'client-result.json',dict(status='PASS',completion='continuation-integrity-refusal',job_status=None))
+                def joined(*,timeout):
+                    self.assertTrue((runtime.home/'continuation-integrity-refusal.continue').exists());return 0
+                runtime.client.wait.side_effect=joined
+                with patch.object(case.native,'census',side_effect=census),patch.object(case,'stop_process'),\
+                        patch.object(case.time,'CLOCK_BOOTTIME',7,create=True),patch.object(case.time,'clock_gettime_ns',side_effect=[1_000_000_000,2_000_000_000]):
+                    if failure is None:runtime.failed_seal(integrity=True)
+                    else:
+                        with self.assertRaises((AssertionError,ValueError)):runtime.failed_seal(integrity=True)
+                runtime.finite.assert_called_once_with('integrity-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+                runtime.launch.assert_called_once_with('refuse-integrity-seal','app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
+                if failure is None:runtime.client.wait.assert_called_once_with(timeout=6)
+                else:runtime.client.wait.assert_not_called()
+
     def test_authority_selector_requires_only_its_explicit_plan_before_profile(self):
         spec=importlib.util.spec_from_file_location('authority_runner_control',ROOT/'tests/acceptance/run.py')
         runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
@@ -1710,11 +1861,12 @@ class CappedAdoptionControls(unittest.TestCase):
 
     def test_negative_client_keeps_peer_until_its_host_gate_and_makes_no_successor_call(self):
         from linear_capped_client import run_adoption
-        for fault,seal,adoption,authority,gate in (('plan-after',None,None,None,'unsettled-seal-refusal'),
-                ('plan-before','before-forward',None,None,'seal-commit-fault'),('plan-before','after-complete',None,None,'seal-commit-fault'),
-                ('plan-before',None,'before-forward',None,'adoption-commit-fault'),('plan-before',None,'after-complete',None,'adoption-commit-fault'),
-                ('plan-before',None,None,'actor-grant','continuation-authority-refusal'),
-                ('plan-before',None,None,'original-expiry','continuation-authority-refusal')):
+        for fault,seal,adoption,authority,integrity,gate in (('plan-after',None,None,None,None,'unsettled-seal-refusal'),
+                ('plan-before','before-forward',None,None,None,'seal-commit-fault'),('plan-before','after-complete',None,None,None,'seal-commit-fault'),
+                ('plan-before',None,'before-forward',None,None,'adoption-commit-fault'),('plan-before',None,'after-complete',None,None,'adoption-commit-fault'),
+                ('plan-before',None,None,'actor-grant',None,'continuation-authority-refusal'),
+                ('plan-before',None,None,'original-expiry',None,'continuation-authority-refusal'),
+                ('plan-before',None,None,None,'workflow-effect','continuation-integrity-refusal')):
             with tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);session=root/'session.private';saved=dict(session='private')
                 session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
@@ -1722,6 +1874,7 @@ class CappedAdoptionControls(unittest.TestCase):
                 if seal is not None:publish(root,'linear-quantum-seal-fault.json',seal)
                 if adoption is not None:publish(root,'linear-quantum-adoption-fault.json',adoption)
                 if authority is not None:publish(root,'linear-quantum-authority-refusal.json',authority)
+                if integrity is not None:publish(root,'linear-quantum-integrity-refusal.json',integrity)
                 calls=[];result=[];errors=[];peer_started=threading.Event();peer_joined=threading.Event();cli=Mock()
                 def request(method,path,body=None,headers=None):
                     calls.append((method,path,body));self.assertEqual(method,'POST')
@@ -1752,6 +1905,7 @@ class CappedAdoptionControls(unittest.TestCase):
                 self.assertEqual(len(calls),4);cli.assert_not_called()
                 self.assertEqual(result[0]['completion'],gate);self.assertIsNone(result[0]['job_status'])
                 if authority is not None:self.assertEqual(result[0]['gate_seconds'],140 if authority=='original-expiry' else 110)
+                if integrity is not None:self.assertEqual(result[0]['integrity_refusal'],'workflow-effect');self.assertEqual(result[0]['gate_seconds'],110)
 
 
 if __name__=='__main__':unittest.main()

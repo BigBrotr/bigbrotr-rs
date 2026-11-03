@@ -36,6 +36,9 @@ MEASUREMENT_CHECKPOINT_QUERY = b"""UPDATE control.producer_checkpoints SET
 
 
 CONTROL_TARGETS = {
+    'control-acquisition-coverage': (b'SELECT CONTROL.ACQUISITION_CONTINUATION_COVERS($1,$2,$3::TEXT::NUMERIC) AND EXISTS(SELECT 1 FROM CONTROL.ACQUISITION_CONTINUATIONS '
+        b'WHERE JOB_ID=$1 AND PREVIOUS_JOB_REVISION=$4::TEXT::NUMERIC AND MANIFEST_SHA256=$5 AND LAST_QUANTUM_NUMBER=$6::TEXT::NUMERIC '
+        b'AND ENROLLMENT_GENERATION=$7::TEXT::NUMERIC AND ROUTE_ID=$8 AND SOURCE_SEQUENCE=$9::TEXT::NUMERIC AND SOURCE_DIGEST=$10)'),
     'control-acquisition-authority': b'SELECT CONTROL.REQUIRE_ACQUISITION_CONTINUATION_AUTHORITY($1,$2)',
     'control-acquisition-adoption': (b'UPDATE CONTROL.JOBS SET JOB_REVISION=JOB_REVISION+1,OWNER_RESOURCE_ID=$3::BYTEA,'
         b'OWNER_EPOCH=$4::TEXT::NUMERIC,OWNER_INCARNATION=$5::BYTEA WHERE JOB_ID=$1::BYTEA AND STATE=\'QUEUED\' '
@@ -71,7 +74,7 @@ CONTROL_TARGETS = {
 def control_target_query(target, query):
     if target == 'control-measurement-checkpoint':
         return b' '.join(query.upper().split()) == b' '.join(MEASUREMENT_CHECKPOINT_QUERY.upper().split())
-    if target in ('control-closed-reclamation','control-quantum-source-rollback','control-acquisition-adoption','control-acquisition-authority'):
+    if target in ('control-closed-reclamation','control-quantum-source-rollback','control-acquisition-adoption','control-acquisition-authority','control-acquisition-coverage'):
         return b' '.join(query.upper().split()) == CONTROL_TARGETS[target]
     if target in ('control-pin-release','control-index-publication'):
         return query == CONTROL_TARGETS[target]
@@ -291,6 +294,77 @@ def bind_parameters(body, expected_count, *, nullable=()):
     return values
 
 
+def bind_result_format(body):
+    """Read only one result-format code; skip parameter bytes without retaining them."""
+    portal,name,tail=body.split(b'\0',2)
+    if portal or len(name)>64:raise ValueError('coverage-bind-profile')
+    offset=0
+    def take(size):
+        nonlocal offset
+        if size<0 or offset+size>len(tail):raise ValueError('coverage-bind-profile')
+        value=tail[offset:offset+size];offset+=size;return value
+    def count():return struct.unpack('!H',take(2))[0]
+    formats=count()
+    if formats>32 or any(count() not in (0,1) for _ in range(formats)):raise ValueError('coverage-bind-profile')
+    parameters=count()
+    if parameters>32 or formats not in (0,1,parameters):raise ValueError('coverage-bind-profile')
+    for _ in range(parameters):
+        size,=struct.unpack('!i',take(4))
+        if size!=-1:take(size)
+    results=count()
+    if results not in (0,1):raise ValueError('coverage-bind-profile')
+    result=count() if results else 0
+    if result not in (0,1) or offset!=len(tail):raise ValueError('coverage-bind-profile')
+    return result
+
+
+class CoverageResultObserver(SessionCommandObserver):
+    """One real prepared Boolean Execute; no arbitrary row or Bind data retained."""
+    def __init__(self):
+        super().__init__('control-acquisition-coverage',command_complete=b'SELECT 1\0',track_errors=True)
+        self.result_format=None;self.value=None;self.rows=0;self.completed_value=None
+
+    def frontend(self,tag,body,*,eligible=True):
+        discarded=self.discard_until_sync and tag!=b'S'
+        super().frontend(tag,body,eligible=eligible)
+        if tag==b'B' and not discarded:
+            phase,name=self.responses[-1]
+            assert phase==b'B'
+            result=bind_result_format(body) if self.bound or name in self.prepared else None
+            self.responses[-1]=(phase,(name,result))
+
+    def observe_response(self,tag,body):
+        if tag==b'2':
+            if not self.responses or self.responses[0][0]!=b'B':raise ValueError('session-response-phase')
+            _,(name,result)=self.responses.popleft()
+            self.executing_target=name in self.prepared
+            self.result_format=result if self.executing_target else None
+            self.value=None;self.rows=0
+            if self.executing_target and result is None:raise ValueError('coverage-bind-profile')
+            return
+        if tag==b'E' or tag==b'Z' and body!=b'T':
+            self.value=None;self.rows=0;self.result_format=None
+        super().observe_response(tag,body)
+
+    def backend(self,tag,body):
+        self.completed_value=None
+        executing=self.failing_execute()
+        if tag==b'D' and executing:
+            if self.rows or len(body)!=7 or body[:6]!=b'\0\1\0\0\0\1':raise ValueError('coverage-row-profile')
+            allowed=(b'f',b't') if self.result_format==0 else (b'\0',b'\1')
+            if body[6:] not in allowed:raise ValueError('coverage-row-profile')
+            self.value=body[6:]==allowed[1];self.rows=1
+        value,rows=self.value,self.rows
+        selected=super().backend(tag,body)
+        if tag==b'C':
+            self.value=None;self.rows=0;self.result_format=None
+            if selected and executing:
+                if rows!=1 or type(value) is not bool:raise ValueError('coverage-row-profile')
+                self.completed_value=value
+                return True
+        return False
+
+
 class IndexPublicationObserver(SessionCommandObserver):
     """Closed plan3 Bind identity; never log credentials or arbitrary parameters."""
     def __init__(self, consumer):
@@ -360,6 +434,10 @@ class Proxy:
         self.mode = mode
         self.target = target
         self.authority_target = target == 'control-acquisition-authority'
+        self.integrity_target = target == 'control-acquisition-coverage'
+        if self.integrity_target and (mode!='pass' or defer_arm or lifetime_seconds!=120
+                or profile not in ('default','retained-catch-up')):
+            raise ValueError('acquisition-integrity-profile')
         if self.authority_target and (mode!='pass' or defer_arm or lifetime_seconds!=120
                 or profile not in ('default','retained-catch-up')):
             raise ValueError('acquisition-authority-profile')
@@ -461,6 +539,9 @@ class Proxy:
             self.report['adoption_cas_complete'] = 0
         if self.authority_target:
             self.report.update(authority_execute_errors=0,authority_refusals=0,authority_successes=0)
+        if self.integrity_target:
+            self.report.update(integrity_inserts_complete=0,coverage_selects_complete=0,coverage_false=0,coverage_true=0,
+                coverage_unpaired=0,integrity_commits=0,integrity_server_commits=0,integrity_rollbacks=0,integrity_errors=0)
         if target == 'control-quantum-plan':
             self.report['gap_write_rejections'] = 0
             self.quantum_selected_session = self.quantum_selected_backend_pid = None
@@ -480,7 +561,7 @@ class Proxy:
         quantum_summary = self.target.startswith('control-quantum-') and event in (
             'ready', 'terminal', 'quantum-gap-write-rejected')
         measurement_summary = self.target == 'control-measurement-checkpoint' and event in ('ready','terminal')
-        seal_summary = (self.closed_commit_target or self.authority_target) and event in ('ready','terminal')
+        seal_summary = (self.closed_commit_target or self.authority_target or self.integrity_target) and event in ('ready','terminal')
         if quantum_summary or measurement_summary or seal_summary:
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit, connection_limit_scope='lifetime',
@@ -669,6 +750,7 @@ class Proxy:
                      owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set(), resume_expiry_waiting=False)
         source_target = self.target == 'control-quantum-source-rollback'
         state.update(source_query=False,source_rollback=False,rollback_completion=None,source_reply_forwarded=False)
+        state['integrity_transaction']=False
         progress_target = self.target == 'control-producer-progress'
         release_target = self.target == 'control-pin-release'
         index_target = self.target == 'control-index-publication'
@@ -691,6 +773,12 @@ class Proxy:
             if parameters.get(b'user')!=b'bigbrotr_control' or database!=b'bigbrotr_control':
                 raise ValueError('acquisition-authority-backend')
             session_commands=SessionCommandObserver(self.target,command_complete=b'SELECT 1\0',track_errors=True)
+        integrity_insert=None
+        if self.integrity_target:
+            if parameters.get(b'user')!=b'bigbrotr_control' or database!=b'bigbrotr_control':
+                raise ValueError('acquisition-integrity-backend')
+            integrity_insert=SessionCommandObserver('control-acquisition-seal',command_complete=b'INSERT 0 1\0',track_errors=True)
+            session_commands=CoverageResultObserver()
         quantum_session = object() if self.target == 'control-quantum-plan' else None
         gap_commands = (SessionCommandObserver('control-quantum-terminal', track_errors=True)
                         if quantum_session is not None and self.mode == 'hold-reply' else None)
@@ -733,6 +821,16 @@ class Proxy:
                     return
                 tag, header, body = frame
                 selected_reply = False
+                if integrity_insert is not None:
+                    if frontend:integrity_insert.frontend(tag,body)
+                    else:
+                        if tag==b'E' and state['integrity_transaction']:self.report['integrity_errors']+=1
+                        if integrity_insert.backend(tag,body) and integrity_insert.executing_target:
+                            if not progress_transaction or not state['backend_pid']:raise ValueError('integrity-transaction')
+                            state['integrity_transaction']=True
+                            self.report['integrity_inserts_complete']+=1;self.report['data_queries']+=1
+                            self.emit('integrity-seal-insert-complete',backend_pid=state['backend_pid'],role='bigbrotr_control',
+                                database='bigbrotr_control',executed=True,transaction='T')
                 if gap_commands is not None:
                     if frontend:
                         gap_commands.frontend(tag, body)
@@ -772,8 +870,17 @@ class Proxy:
                     if frontend:
                         session_commands.frontend(tag, body, eligible=(not (release_target or index_target or measurement_target or source_target) or
                             (self.armed and not self.target_selected)))
-                    elif session_commands.backend(tag, body) and (not (self.closed_commit_target or self.authority_target) or session_commands.executing_target):
-                        if self.authority_target:
+                    elif session_commands.backend(tag, body) and (not (self.closed_commit_target or self.authority_target or self.integrity_target) or session_commands.executing_target):
+                        if self.integrity_target:
+                            if not progress_transaction or not state['backend_pid']:raise ValueError('integrity-transaction')
+                            if not state['integrity_transaction']:self.report['coverage_unpaired']+=1
+                            else:
+                                value=session_commands.completed_value
+                                self.report['coverage_selects_complete']+=1
+                                self.report['coverage_true' if value else 'coverage_false']+=1
+                                self.emit('continuation-coverage-result',value=value,backend_pid=state['backend_pid'],
+                                    role='bigbrotr_control',database='bigbrotr_control',executed=True,transaction='T')
+                        elif self.authority_target:
                             self.report['authority_successes']+=1
                         elif measurement_target:
                             if not progress_transaction or state['backend_pid'] is None or self.target_selected:
@@ -879,7 +986,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target or self.authority_target):
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target or self.authority_target or self.integrity_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -982,6 +1089,8 @@ class Proxy:
                                 self.report['faults'] += 1
                                 self.emit('fault', backend_pid=state['backend_pid'])
                                 return
+                    if self.integrity_target and state['integrity_transaction'] and query.rstrip(b'\0; \r\n')==b'COMMIT':
+                        self.report['integrity_commits']+=1
                 if not frontend and tag == b'K':
                     assert len(body) == 8
                     if ordinary_target and state['backend_pid'] is not None:
@@ -991,7 +1100,11 @@ class Proxy:
                     if ordinary_target:
                         self.emit('reader-selected', backend_pid=state['backend_pid'],
                                   connection_number=connection_number, admitted_after_arm=True)
-                if not frontend and (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target or self.authority_target):
+                if not frontend and self.integrity_target and state['integrity_transaction']:
+                    if tag==b'C' and body==b'COMMIT\0':self.report['integrity_server_commits']+=1
+                    if tag==b'C' and body==b'ROLLBACK\0':self.report['integrity_rollbacks']+=1
+                    if tag==b'Z' and body==b'I':state['integrity_transaction']=False
+                if not frontend and (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target or self.authority_target or self.integrity_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
                         state['commit_selected'] = False

@@ -28,6 +28,7 @@ ADOPTION_LIMITS=[
     'The explicit seal-fault variant retains plan-before Q2 absence, then loses a separate executed seal INSERT COMMIT before forwarding or after server completion. It requires caller CommitUnknown, zero or one unadopted seal respectively, native85 to86, unchanged job/history/inputs and no second wire. It never retires, activates, adopts or retries.',
     'The explicit adoption-fault variant confirms normal sealing/retirement, then loses the executed final job-owner CAS COMMIT before forwarding or after completion. Both stop startup without success JSON or another wire, retain exact active-zero native91 and active Control/Ingest custody; only the after-complete cut atomically adopts the seal/job. No retry or lost-candidate recovery is attempted.',
     'The explicit authority-refusal variants confirm sealing/retirement before removing only the original actor grant or genuinely waiting past the original120s deadline. A transparent observer must see the actual executed0045 helper refuse BB001 under fresh Control/root authority, with exact unadopted job/seal/history and active-zero native91. Only the expiry observation gate uses120s+the existing20s settlement allowance; no job deadline, SQL lease or policy TTL changes.',
+    'The one workflow-effect integrity profile first authenticates original Q1/native85, then uses explicit fixture-admin replica mode to change only effect1 mutation4 to5/new xmin. It must observe real seal INSERT0 1 followed by false coverage SELECT1 on the same Control transaction, no selected COMMIT, joined abort/no seals and exact native86. Charge, payload/time targets, all five originals and every other history field stay fixed. This is metadata corruption, not a genuine origin reservation or unissued-native write.',
 ]
 
 
@@ -260,6 +261,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             self.inputs['linear_quantum_adoption_fault']=self.args.linear_quantum_adoption_fault
         if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
             self.inputs['linear_quantum_authority_refusal']=self.args.linear_quantum_authority_refusal
+        if getattr(self.args,'linear_quantum_integrity_refusal',None) is not None:
+            self.inputs['linear_quantum_integrity_refusal']=self.args.linear_quantum_integrity_refusal
         path='tests/fixtures/acquisition/settled-owner-adoption.json'
         self.inputs['adoption_expectation_sha256']=digest(self.source/path)
         oracle.adoption_manifest(load(self.source/path))
@@ -281,6 +284,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             save(self.home/'linear-quantum-adoption-fault.json',self.args.linear_quantum_adoption_fault)
         if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
             save(self.home/'linear-quantum-authority-refusal.json',self.args.linear_quantum_authority_refusal)
+        if getattr(self.args,'linear_quantum_integrity_refusal',None) is not None:
+            save(self.home/'linear-quantum-integrity-refusal.json',self.args.linear_quantum_integrity_refusal)
         self.events=corpus(self.home)[:3]
 
     def successor_sql_login(self):
@@ -465,6 +470,11 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         if unsettled:
             self.refuse_unsettled_seal()
             return
+        if getattr(self.args,'linear_quantum_integrity_refusal',None) is not None:
+            self.prepare_integrity_refusal()
+            self.start_integrity_proxy()
+            self.failed_seal(integrity=True)
+            return
         if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
             self.start_seal_proxy()
             self.failed_seal(self.args.linear_quantum_seal_fault)
@@ -530,18 +540,22 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         require(self.quantum_fault=='plan-before','authority refusal requires settled Q1 and absent Q2')
         self.start_commit_proxy('authority','pass','control-acquisition-authority')
 
+    def start_integrity_proxy(self):
+        require(self.quantum_fault=='plan-before','integrity refusal requires settled Q1 and absent Q2')
+        self.start_commit_proxy('integrity','pass','control-acquisition-coverage')
+
     def start_commit_proxy(self,kind,mode,target):
         require(self.resources['quantum_proxy']['status']=='joined','seal proxy requires joined original Q2 proxy')
         original=self.config.read_text()
         require(tomllib.loads(original)['postgres']['control']['endpoint']=='127.0.0.1:15432','seal proxy requires direct Control upstream')
-        require(mode in (('pass',) if kind=='authority' else ('before-forward','after-complete')),'invalid closed proxy mode')
+        require(mode in (('pass',) if kind in ('authority','integrity') else ('before-forward','after-complete')),'invalid closed proxy mode')
         path=self.source/'experiments/archive-engine/native_commit_proxy.py'
         binding=dict(source_sha256=digest(path),mode=mode,target=target,
             profile='retained-catch-up',frame_limit=131072,connection_limit=64,connection_limit_scope='lifetime',
             wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432,
             catalog_manager='CatalogManager',catalog_reader='bigbrotr_receipt_reader',catalog_database='bbpub_normal',
             armed=True,commit_ordinal=1)
-        if kind=='authority':del binding['commit_ordinal']
+        if kind in ('authority','integrity'):del binding['commit_ordinal']
         resource=kind+'_proxy';stem=kind+'-proxy'
         setattr(self,resource+'_binding',binding);self.inputs[resource]=binding
         route=self.proxy_process([sys.executable,'-B',str(path),'--mode',mode,'--target',target,
@@ -565,6 +579,19 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
 
     def validate_authority_proxy(self,value,event):
         self.validate_commit_proxy(value,event,self.authority_proxy_binding)
+
+    def validate_integrity_proxy(self,value,event):
+        self.validate_commit_proxy(value,event,self.integrity_proxy_binding)
+
+    def validate_integrity_refusal_terminal(self,value):
+        self.validate_integrity_proxy(value,'terminal')
+        require(all(value[key]>0 for key in ('frames','connections','bytes')),'integrity refusal lacks framed Control traffic')
+        expected=dict(integrity_inserts_complete=1,coverage_selects_complete=1,coverage_false=1,coverage_true=0,coverage_unpaired=0,
+            integrity_commits=0,integrity_server_commits=0,integrity_errors=0,data_queries=1,data_commits=0,
+            server_complete=0,client_complete=0,faults=0)
+        require(all(type(value.get(key)) is int and value[key]==count for key,count in expected.items()),
+            'integrity observer lacks executed INSERT and false SELECT without a selected COMMIT')
+        require(type(value.get('integrity_rollbacks')) is int and value['integrity_rollbacks'] in (0,1),'integrity rollback count differs')
 
     def validate_authority_refusal_terminal(self,value):
         self.validate_authority_proxy(value,'terminal')
@@ -614,13 +641,48 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             self.stop_owned_proxy(self.authority_route,'authority_proxy','authority-proxy',
                 getattr(self,'authority_proxy_ready',None),self.validate_authority_proxy)
 
+    def stop_integrity_proxy(self):
+        if hasattr(self,'integrity_route'):
+            self.stop_owned_proxy(self.integrity_route,'integrity_proxy','integrity-proxy',
+                getattr(self,'integrity_proxy_ready',None),self.validate_integrity_proxy)
+
     def cleanup(self):
-        try:self.stop_authority_proxy()
+        try:self.stop_integrity_proxy()
         finally:
-            try:self.stop_adoption_proxy()
+            try:self.stop_authority_proxy()
             finally:
-                try:self.stop_seal_proxy()
-                finally:super().cleanup()
+                try:self.stop_adoption_proxy()
+                finally:
+                    try:self.stop_seal_proxy()
+                    finally:super().cleanup()
+
+    def prepare_integrity_refusal(self):
+        require(self.args.linear_quantum_integrity_refusal=='workflow-effect','unknown integrity seed')
+        output=self.root/'continuation-integrity-refusal';output.mkdir(mode=0o700)
+        save(output/'seed-original-control.json',self.adoption_before)
+        old,changed=oracle.integrity_effect_seed(self.adoption_before,self.events)
+        text=self.sql('bigbrotr_control',oracle.integrity_seed_sql(old))
+        (output/'seed-transaction.stdout').write_text(text)
+        row=oracle.integrity_seed_receipt(text,old,changed);save(output/'seed-row.json',row)
+        self.integrity_seeded,_=self.capture(output,'seeded')
+        oracle.integrity_seed_rows(self.adoption_before,self.integrity_seeded,self.events)
+        at=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        oracle.adoption_seal_eligibility(self.integrity_seeded,at)
+        save(output/'seed-observation.json',dict(setup_kind='fixture-admin-replica',profile='workflow-effect',observed_at_us=at,
+            original_deadline_at_us=self.adoption_before['acquisition_jobs'][0]['deadline_at_us'],
+            coverage=oracle.integrity_workflow_coverage(self.integrity_seeded)))
+
+    def observe_integrity_refusal(self,output):
+        inserted=self.proxy_event(self.integrity_route,'integrity-seal-insert-complete',5)
+        result=self.proxy_event(self.integrity_route,'continuation-coverage-result',5)
+        save(output/'insert-observation.json',inserted);save(output/'coverage-observation.json',result)
+        self.stop_integrity_proxy()
+        self.validate_integrity_refusal_terminal(load(self.root/'integrity-proxy-terminal.json'))
+        markers=[json.loads(line) for line in load(self.root/'integrity-proxy.json')['stdout'].splitlines()]
+        first,=[value for value in markers if value.get('event')=='integrity-seal-insert-complete']
+        second,=[value for value in markers if value.get('event')=='continuation-coverage-result']
+        require(first==inserted and second==result and result.get('value') is False,'integrity observations differ from joined route')
+        return inserted,result
 
     def prepare_authority_refusal(self):
         profile=self.args.linear_quantum_authority_refusal
@@ -759,19 +821,20 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         require(not (self.home/'linear-status-observations.json').exists() and not (self.home/'commands-finished.json').exists(),
             'failed adoption made a successor status request')
 
-    def failed_seal(self,mode=None):
-        completion='seal-commit-fault' if mode is not None else 'unsettled-seal-refusal'
-        show_label='seal-root-config' if mode is not None else 'unsettled-root-config'
-        label='fault-seal-commit' if mode is not None else 'refuse-unsettled-seal'
-        output=self.root/completion;output.mkdir(mode=0o700)
+    def failed_seal(self,mode=None,*,integrity=False):
+        completion='continuation-integrity-refusal' if integrity else 'seal-commit-fault' if mode is not None else 'unsettled-seal-refusal'
+        show_label='integrity-root-config' if integrity else 'seal-root-config' if mode is not None else 'unsettled-root-config'
+        label='refuse-integrity-seal' if integrity else 'fault-seal-commit' if mode is not None else 'refuse-unsettled-seal'
+        baseline=self.integrity_seeded if integrity else self.adoption_before
+        output=self.root/completion;output.mkdir(mode=0o700,exist_ok=integrity)
         document_sha256=digest(self.config)
         resolved=self.finite(show_label,'config','show','--file','/etc/bigbrotr/instance.toml')
         require(digest(self.config)==document_sha256,'unsettled seal refusal prerequisite: root file changed during config show')
-        authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,self.adoption_before)
+        authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,baseline)
         show_sha256=digest(self.root/'bootstrap'/(show_label+'.stdout'))
         clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
         before_us=int(self.sql('bigbrotr_control',clock))
-        oracle.adoption_seal_eligibility(self.adoption_before,before_us)
+        oracle.adoption_seal_eligibility(baseline,before_us)
         boottime=getattr(time,'CLOCK_BOOTTIME',None)
         require(boottime is not None,'unsettled seal refusal prerequisite: Linux CLOCK_BOOTTIME is required')
         # Product policy authority uses Linux boottime too. Every fresh policy
@@ -796,6 +859,7 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             and not terminal['State']['Running'] and not terminal['State']['OOMKilled'],'unsettled seal recovery did not exit4 naturally')
         diagnostic=oracle.adoption_unsettled_error if mode is None else oracle.adoption_seal_fault_error
         diagnostic((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
+        if integrity:inserted,result=self.observe_integrity_refusal(output)
         if mode is not None:
             fault=self.observe_commit_fault('seal',output,'seal_inserts_complete','seal-insert-complete')
             self.seal_fault_observation=fault
@@ -805,7 +869,10 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],dump)
         after_us=int(self.sql('bigbrotr_control',clock))
         wires=self.wires(1)
-        if mode is None:
+        if integrity:
+            oracle.integrity_refusal(self.adoption_before,baseline,self.adoption_refused,self.adoption_first,wires,self.events,
+                before_us,returned_us,after_us,inserted,result)
+        elif mode is None:
             oracle.adoption_unsettled_refusal(self.adoption_before,self.adoption_refused,self.adoption_first,wires,self.events,before_us,returned_us,after_us)
         else:
             oracle.adoption_seal_fault(self.adoption_before,self.adoption_refused,self.adoption_first,wires,self.events,
@@ -831,6 +898,18 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.source_unchanged()
         output=self.root/'linear-quantum';output.mkdir(mode=0o700)
         state,_=self.capture(output,'after');self.backend_absence(output)
+        integrity=getattr(self.args,'linear_quantum_integrity_refusal',None)
+        if integrity is not None:
+            oracle.adoption_exact_tables(self.adoption_refused,state)
+            oracle.integrity_seed_rows(self.adoption_before,self.integrity_seeded,self.events)
+            wires=self.wires(1);oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],self.adoption_refusal_dump)
+            joined=load(self.home/'capped-adoption-peer-joined.json')
+            require(joined['requests']==1 and joined['listener_closed'] is True and joined['errors']==0,'integrity peer did not join after Q1')
+            save(output/'verdict.json',dict(status='PASS',scenario='settled-owner-adoption',fault=self.quantum_fault,
+                integrity_refusal=integrity,outcome='continuation-integrity-refused',caller_outcome='refused',setup_kind='fixture-admin-replica',
+                same_job=True,job_revision=2,wire_queries=1,pending_plans=0,mutation_requests=5,continuation_seals=0,
+                adopted_seals=0,successor_activations=0,native_sequence=86,coverage='pending'))
+            return
         authority=getattr(self.args,'linear_quantum_authority_refusal',None)
         if authority is not None:
             oracle.adoption_exact_tables(self.adoption_failed,state)
