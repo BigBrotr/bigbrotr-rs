@@ -223,6 +223,17 @@ class PhysicalSetupControls(unittest.TestCase):
 
 
 class PhysicalTelemetryControls(unittest.TestCase):
+    def test_file_record_preserves_sparse_and_block_rounded_allocation(self):
+        # Hole creation depends on the filesystem. These fixed stat observations
+        # exercise both allocation relationships without requiring either one.
+        for name,blocks,allocated in [('sparse',8,4096),('block-rounded',2056,1052672)]:
+            with self.subTest(allocation=name):
+                value = SimpleNamespace(st_dev=7,st_ino=11,st_size=1048577,
+                    st_blocks=blocks,st_nlink=2)
+                self.assertEqual(PHYSICAL.file_record(value,'native','000001.sst'),
+                    dict(device=7,inode=11,logical_bytes=1048577,allocated_bytes=allocated,
+                        links=2,classification='SST'))
+
     def test_allocated_bytes_inode_dedup_and_separate_input_domain(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary).resolve()
@@ -242,7 +253,7 @@ class PhysicalTelemetryControls(unittest.TestCase):
                 self.assertEqual(value['inode'],actual.st_ino)
                 self.assertEqual(value['allocated_bytes'],actual.st_blocks*512)
                 self.assertEqual(value['classification'],'SST')
-                self.assertLess(value['allocated_bytes'],value['logical_bytes'])
+                self.assertEqual(value['logical_bytes'],1048577)
                 self.assertEqual(sample['directories']['.']['inode'],root.stat().st_ino)
                 self.assertEqual(sample['directory_allocated_bytes'],root.stat().st_blocks*512)
                 self.assertEqual(sample['classes']['DIRECTORY_METADATA']['allocated_bytes'],root.stat().st_blocks*512)
