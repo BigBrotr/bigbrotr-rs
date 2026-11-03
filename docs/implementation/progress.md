@@ -8,7 +8,7 @@ releases nor packages/deployment.
 ## Revision and capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **85fab388** before this checkpoint.
+`work/m2-finite-history-20261101`, observed HEAD **074c28fc** before this checkpoint.
 Canonical main/origin/actual remote are **5a9b7cc4**, clean/pushed, full hosted PASS.
 Reviewed M2 production/oracle, fixture corrections, wire SQL types and now cached
 PL/pgSQL record types are integrated locally. No installed same-job continuation
@@ -84,18 +84,37 @@ files/81.85MB hash identically before/after; original R5 PG never restarted.
 Three new networknone/nohostport diagnostic containers are stopped/PID0/noOOM.
 Evidence644a5b28 is linked in P03; keep private DB bytes/raw logs protected.
 
-Cause remains UNKNOWN. Astra found no revision2-only claim/execution guard or
-new-allocation-domain visibility restriction. No product correction or timeout
-increase is justified. Next unchanged-product observation will distinguish SQL
-reachability from quiet pre-wire exits; do not infer live admission from cold SQL.
+R6 Root93357 **5PASS/1FAIL/1NOT_RUN,cleanupPASS**,107.805s, reproduces the same
+20s observation failure. Reviewed447/Root074 adds only opt-in role SQL tracing
+with both bindvalue limits0 and a targeted readonly failure snapshot. Six new
+and9 existing pure controls PASS; actual PG setup/snapshot preflightac2e1a58 PASS.
+The same qualifiedefd product/Rust/observer were reused, exact6-path acceptance
+provenance79e022ee and privateassembly2d6336c6. Rawlogs remain private.
+
+R6 gives a contract-backed **fixture timing incompatibility**: both accepted
+config/policy specify30,000,000µs recovery stability. Raw reopen must reconcile
+then stay pressure-latched below low water for that entire fresh interval
+([contract](../reference/producer-request-inputs.md)).
+Astra matched77 completed nomination/source/visibility/observation read cycles,
+no append SQL and no new plan; fresh epoch2 attribution needs positive quota.
+The final backend query is ROLLBACK. Existing controls refuse through29s and allow
+30s. The20s fixture window cannot cross this intended product guard. Final
+post-stable traversal/science remains unproven; R5/R6 keep their original FAIL.
+
+R6 custody202616e6 authenticates20 stopped/PID0/noOOM containers,5 processes and
+1432 command PIDs absent,53 sourcefiles plus traceartifacts, empty preservedbridge.
+First wrong manual audit start-tick and then stale exact-argv rejection remain
+separate read-only observation failures; actual session-derived args and reviewed
+auditor e142 close custody. No engine was restarted to obtain that closure.
 
 R4 Root41988 terminal custody51eb9b45:20 containers stopped/PID0/noOOM,5 processes
 and1096 command PIDs absent,53 acceptance files verified, borrowed bridge1699209a
 preserved. Keep its original PG/native/activation/logs unchanged; native activation
 may precede failed adoption. SQL-prepare lab is stopped/retained, internal/no host
-ports. Original R4 was never restarted. Sol owns only the bounded3-file harness change in
-`.research/m2-adoption-dispatch-observation-20261103`; Astra reviews before execution.
-Root alone integrates/launches. No engines, compiler or cache holder active.
+ports. Original R4 was never restarted. Sol447/Root074 observation change is committed/reviewed. Sol now owns only a
+bounded2-file fixture timing correction in `.research/m2-adoption-dispatch-observation-20261103`;
+Astra reviews before R7. Root alone integrates/launches. No engine/compiler/cache
+holder active.
 [Inventory](../research/laboratory-inventory.json) owns resources. Preserve unique
 data/failures/.research/worktrees. No new cleanup; October31 recovery reconciled.
 
@@ -105,15 +124,14 @@ strict checks, Rust and native controls. [P01](evidence/p01-ci-hosted-foundation
 owns exact results, skips/ignores and bounded public artifact/log inspection.
 No hosted observer active; this result does not cover later M2.
 
-**Next Root action:** review/integrate the bounded maintained observation seam,
-then use the same qualifiedefd product/worker/observer for R6 with explicit separate
-acceptance provenance. Opt-in successor-role SQL statement logging must be scoped
-to the actual owned test role/database, with both bindparameter limits0 before
-login; rawlogs remain private. Capture one targeted readonly failure snapshot,
-preserving original20s FAIL and all independent oracles, budgets and deadlines.
-No15s tail, speculative product fix or new product build. Critical review precedes
-the next engine run. Existing build/installed recipes remain in
-`.research/m2-adoption-core-qualification-20261103` and
-`.research/m2-adoption-installed-preparation-20261103`; cold observation is
-`.research/m2-adoption-poststart-diagnostic-20261103`. No retained ledger is forged.
-After closing this slice, choose the next concrete M2 capability by dependencies.
+**Next Root action:** review/integrate the fixture timing correction: derive the
+accepted stable interval plus the existing20s settlement allowance, verify config/
+policy agreement and fit within the original remaining job duration, and record
+the derivation. Preserve default30s product recovery hysteresis, original120s job
+expiry, quota limits and scientific oracles. Then reuse unchangedefd artifacts
+for R7 with exact separate acceptance provenance. No product rebuild or pressure
+guard weakening. Recipes remain under `.research/m2-adoption-installed-preparation-20261103`,
+qualification under `.research/m2-adoption-core-qualification-20261103`, cold setup
+under `.research/m2-adoption-poststart-diagnostic-20261103`. Preserve all later
+negative/lost-candidate/zero-query gates; advance the next useful M2 capability
+after this slice closes.

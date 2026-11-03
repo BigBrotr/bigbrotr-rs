@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "REAL_SAME_JOB_ADOPTION_CONFIRMED_POST_ADOPTION_DISPATCH_UNKNOWN_R5_FAIL",
+    "status": "ADOPTION_CONFIRMED_R6_FAIL_CLASSIFIED_FIXTURE_RECOVERY_HYSTERESIS_TIMING",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Unchangedproduct, bounded opt-in successor-role SQL statement observation with bothbindparameterlimits0 and targeted failurestatecapture, maintaining20s FAIL/oracle andalljoblimits. Reviewharness before nextinstalledrun.",
+    "next": "Reviewedfixturederivesacceptedstableinterval+existing20sallowance within ORIGINAL remainingjobdeadline. Productpressureguard/default30s/quotas/science unchanged. No eventualsciencePASS yet.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2300,7 +2300,7 @@
     },
     "current_qualification": {
       "source": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
-      "state": "PASS_STRICT_BUILD_RUST_OBSERVER_INSTALLED_R5_FAIL_POST_ADOPTION_DISPATCH_UNKNOWN",
+      "state": "PRODUCT_AND_OBSERVER_QUALIFIED_R6_REAPED_FIXTURE_TIMING_FAIL_NO_ENGINE_ACTIVE",
       "next": "Unchangedproduct, bounded opt-in successor-role SQL statement observation with bothbindparameterlimits0 and targeted failurestatecapture, maintaining20s FAIL/oracle andalljoblimits. Reviewharness before nextinstalledrun.",
       "tree": "ab9897730d6f72525e007a5b643b755a44c6965d",
       "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
@@ -2361,6 +2361,45 @@
       "observed": "SameJobIdqueuedrevision3/Control5; finalizedsealprevious2\u2192adopted3/targetepoch2, acquisition_adopted_claimtrue, exactmaintainedSCAN_ADMISSIONS withrecordedadoptingtuple returnsadmission1eligibletrue. OnlyoldQ1; noepoch2plan/originalfiles. No time-sensitiveauthorityfunction replay afterdeadline.",
       "independent_diagnosis": "Astra rulesoutrev2-onlynomination/queue/execution guardsandnewallocationdomainvisibilityrequirement. Sourcebudgets5base+33session+19Sync=57showsnoconcreteleak, notmeasuredusage. Quiet source/visibility/observation/plan-none orsilentscangrant remainpossible. Extra15s tailalonecannotdistinguishsilentscan; keep20s unchanged.",
       "next": "ExistingP03-T01/T05 owner: Sol boundedmaintained opt-in SQLtrace andtargetedfailurecapture; Astrawillreviewactualdelta/sourcewrappers beforeR6. Productefd/artifactswillbereused, no speculativeproductfix orfreshbuild."
+    },
+    "post_adoption_dispatch_observation": {
+      "original": "447ca8703b442bb67d0f1d10db07e907ae90537e",
+      "integrated": "074c28fc2e1d98a8b711bc778e76916ec9c04dc6",
+      "scope": "Only3maintainedacceptancefiles:explicitadoption-onlyroleSQLtraceall/0/0beforelogin +bound readonly/hash-onlyfailurecapture preservingoriginalexception. No product/science/joblimits changes.",
+      "controls": "Sixnewsourcecontrols toolchunk0ca78dPASS +nineexistingpureadoption/history/science83af71PASS; actualagentoutputs retained, notseparatestdoutfiles. No repeatedexecution claimed.",
+      "critical_review": "Astra exact447source/tree/3fileSHA andone-linewrapperextra2allowedpaths nofinding. Root074reviewedharnessbytesidentical; actualefd\u2192074 delta3docs+3acceptancefiles.",
+      "real_sql_preflight": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103/observation-sql-preflight/result.json",
+        "sha256": "ac2e1a58641eb545ac1f6cee0bf6a68ac68a4e17b608bc008256b781960e6ae1"
+      },
+      "preflight_scope": "OwnedcoldcopyPG160015 actualmaintainedtraceDDL/defaultsquery/snapshotexecutePASS; freshnamedrolelocal-logininheritsall/0/0. No successorlaunch/auth/nativequalification; originalR5neverrestarted, clone/originalstoppedafterwards.",
+      "source_admission": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-installed-preparation-20261103/r6-provenance-admission.json",
+        "sha256": "79e022eea73032f463015cd45710d8ff6eee9d2c8b870310ece974e851a4f0b4"
+      },
+      "assembly": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/assembly-r6-receipt.json",
+        "sha256": "2d6336c6699cb88a446ed1644bc809bf145088e35fb66a3e52bb869bc7e124dc"
+      },
+      "installed_failure": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/installed-r6-failure-receipt.json",
+        "sha256": "cc378415bd0c2b43581e45f00d6c8da2a228604466919ab4dda10eb606a10f42"
+      },
+      "next": "Reviewedfixturederivesacceptedstableinterval+existing20sallowance within ORIGINAL remainingjobdeadline. Productpressureguard/default30s/quotas/science unchanged. No eventualsciencePASS yet."
+    },
+    "installed_sixth_attempt": {
+      "failure_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/installed-r6-failure-receipt.json",
+        "sha256": "cc378415bd0c2b43581e45f00d6c8da2a228604466919ab4dda10eb606a10f42"
+      },
+      "result": "5PASS/1FAIL/1NOT_RUN,cleanupPASS,107.805s,reaped1. Original20ssettledqueryFAIL preserved.",
+      "classification": "Astra source/trace/contract:77completednomination/source/visibility/observationreadcycles; noappendSQL/newplan. AcceptedconfigANDpolicy stable30000000us. Rawreopen\u2192RecoveryBlocked\u2192reconciledPressure freshstable-lowclock; positiveepoch2attribution cannotreserve before30s.20s fixturewait cannotcrossintendedguard. LastactualbackendquerySHA is SHA256(ROLLBACK).",
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r6/root-terminal.json",
+        "sha256": "202616e6f89eb44d6d24b96dbd982a770fd8f6bfff92749babd212b412ead05c"
+      },
+      "scientific_limit": "Atomicadoption/eligibility/readonlyprogress observed; no post-stablepositivegrowth or finalnative139/fivequerysciencePASS. AllR5/R6FAIL kept.",
+      "audit_interface": "FirstmanualtickargumentFAIL andsecondstaleexactargvguardFAIL preservedread-only; actualsessionread directly for finalaudit. Source only optionaltrace bool/argv/receipt hash addition independentlyreviewed e142; alloldcustody/scientificpredicates unchanged."
     }
   }
 }
