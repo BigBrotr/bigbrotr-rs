@@ -194,7 +194,7 @@ def request_binding(event, wire, ordinal):
 
 
 def requests(state, epoch, manifest, inputs, receipts, owner, bindings, observations):
-    """Exact current columns; attribution is shared or declared per mutation."""
+    """Exact current normal Sync/setup columns, with no Monitor attribution."""
     producer = only(state['producer_epochs'], producer_epoch=epoch)
     assert producer['outstanding_request_limit'] == 32
     assert producer['reserved_through_request'] == len(inputs) == len(receipts)
@@ -211,7 +211,8 @@ def requests(state, epoch, manifest, inputs, receipts, owner, bindings, observat
         binding = bindings.get(n)
         attribution = (observations[n] if per_request else observations) if binding else dict.fromkeys(columns)
         expected = dict(common, request_sequence=n, request_digest='\\x' + sha(original),
-            input_bytes=len(original), input_profile=1, issuer_role='control', issuer_resource=owner['resource_id'],
+            input_bytes=len(original), input_profile=1, monitor_attempt_id=None, monitor_resolution=None,
+            issuer_role='control', issuer_resource=owner['resource_id'],
             issuer_epoch=owner['epoch'], issuer_incarnation=owner['process_incarnation'], **attribution,
             **(binding if binding else dict.fromkeys(PROGRESS_FIELDS)))
         for key in ('progress_event_ordinal', 'progress_wire_sequence'):

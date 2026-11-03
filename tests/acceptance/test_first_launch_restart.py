@@ -456,7 +456,7 @@ class RestartControls(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(AssertionError):
                 check.exact(dict(progress_event_ordinal=value), dict(progress_event_ordinal=1), 'position')
 
-    def test_request_positions_are_exact_integers_in_full_records(self):
+    def test_request_positions_and_monitor_absence_are_exact_in_full_records(self):
         state, job, detail, owner, wire = progress_fixture(self.new, self.manifest, self.encoded)
         common = dict(dataset_id=self.encoded.m.ds['dataset_id'], producer_slot_id=self.encoded.m.slot,
             producer_epoch=2, manifest_sha256='\\x' + check.sha(self.manifest))
@@ -469,7 +469,8 @@ class RestartControls(unittest.TestCase):
         for n, original in self.encoded.inputs.items():
             receipt = self.encoded.receipts[n]
             state['producer_requests'].append(dict(common, request_sequence=n, request_digest='\\x' + check.sha(original),
-                input_bytes=len(original), input_profile=1, issuer_role='control', issuer_resource=owner['resource_id'],
+                input_bytes=len(original), input_profile=1, monitor_attempt_id=None, monitor_resolution=None,
+                issuer_role='control', issuer_resource=owner['resource_id'],
                 issuer_epoch=owner['epoch'], issuer_incarnation=owner['process_incarnation'], reserved_at_us=5000 + n,
                 **(source if n > 1 else dict.fromkeys(source)),
                 **(bindings[n] if n > 1 else dict.fromkeys(check.PROGRESS_FIELDS))))
@@ -485,6 +486,22 @@ class RestartControls(unittest.TestCase):
                 altered['producer_requests'][1][key] = value
                 with self.subTest(key=key, value=value), self.assertRaises(AssertionError):
                     check.requests(altered, *args)
+        # Every setup and attributed Sync row needs both current NULL columns.
+        # A complete Monitor binding is equally foreign to this normal path.
+        mutations=[dict(monitor_attempt_id='\\x'+'ab'*16,monitor_resolution=value) for value in (False,True)]
+        mutations += [{key:value} for key in ('monitor_attempt_id','monitor_resolution')
+            for value in (False,True,0,'','\\x'+'ab'*16)]
+        for number in range(3):
+            for fields in mutations:
+                altered=copy.deepcopy(state);altered['producer_requests'][number].update(fields)
+                with self.subTest(request=number+1,fields=fields),self.assertRaisesRegex(AssertionError,'^exact producer request$'):
+                    check.requests(altered,*args)
+            for key in ('monitor_attempt_id','monitor_resolution'):
+                altered=copy.deepcopy(state);del altered['producer_requests'][number][key]
+                with self.subTest(request=number+1,missing=key),self.assertRaisesRegex(AssertionError,'^exact producer request$'):
+                    check.requests(altered,*args)
+        altered=copy.deepcopy(state);altered['producer_requests'][0]['unexpected_column']=None
+        with self.assertRaisesRegex(AssertionError,'^exact producer request$'):check.requests(altered,*args)
 
     def test_exact_retry_refuses_ledger_or_producer_mutation(self):
         before = dict(owner_epochs=[], role_instances=[], producer_requests=[dict(request_sequence=1)], archive_attempts=[dict(ordinal=1)])

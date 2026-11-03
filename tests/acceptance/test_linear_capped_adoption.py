@@ -51,7 +51,8 @@ def projection(state,science,events,wires,epoch):
         tx=str(epoch*100+n)
         binding=bindings.get(n)
         state['producer_requests'].append(dict(common,manifest_sha256='\\x'+source.sha(science['manifest']),request_sequence=n,
-            request_digest='\\x'+source.sha(original),input_bytes=len(original),input_profile=1,issuer_role='control',
+            request_digest='\\x'+source.sha(original),input_bytes=len(original),input_profile=1,
+            monitor_attempt_id=None,monitor_resolution=None,issuer_role='control',
             issuer_resource=owner['resource_id'],issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'],
             **(source_fields if binding else dict.fromkeys(source_fields)),**(binding or dict.fromkeys(source.PROGRESS_FIELDS)),
             reserved_at_us=wires[0 if epoch==1 else 1]['sent_at_us']+10,xmin=tx))

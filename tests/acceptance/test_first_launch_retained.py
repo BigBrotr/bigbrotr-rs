@@ -76,7 +76,8 @@ def saturation_fixture(root):
         binding=source.request_binding(events[n-4],wires[(n-4)//3],(n-4)%3+1) if n>=4 else dict.fromkeys(fields)
         provenance=attribution if n>=4 else dict.fromkeys(attribution)
         state['producer_requests'].append(dict(shared,request_sequence=n,request_digest='\\x'+source.sha(original),
-            input_bytes=len(original),input_profile=1,issuer_role='control',issuer_resource=control['resource_id'],
+            input_bytes=len(original),input_profile=1,monitor_attempt_id=None,monitor_resolution=None,
+            issuer_role='control',issuer_resource=control['resource_id'],
             issuer_epoch=1,issuer_incarnation=control['process_incarnation'],**provenance,**binding,reserved_at_us=2000+n,xmin=str(n)))
         state['producer_outcomes'].append(dict(shared,request_sequence=n,request_digest='\\x'+source.sha(original),
             outcome_kind=1,outcome_bytes='\\x'+receipt.hex(),outcome_sha256='\\x'+source.sha(receipt),policy_epoch=1,
@@ -169,7 +170,8 @@ def successor_authority_fixture():
     for n,original in science.inputs.items():
         receipt=science.receipts[n]
         after['producer_requests'].append(dict(common,request_sequence=n,request_digest='\\x'+source.sha(original),
-            input_bytes=len(original),input_profile=1,issuer_role='control',issuer_resource=owner['resource_id'],
+            input_bytes=len(original),input_profile=1,monitor_attempt_id=None,monitor_resolution=None,
+            issuer_role='control',issuer_resource=owner['resource_id'],
             issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'],reserved_at_us=5000+n,
             **(observations if n>1 else dict.fromkeys(observations)),
             **(bindings[n] if n>1 else dict.fromkeys(source.PROGRESS_FIELDS))))
