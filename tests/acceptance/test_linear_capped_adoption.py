@@ -430,6 +430,13 @@ class CappedAdoptionControls(unittest.TestCase):
                 check.adoption_recovery_prefix(before,sealed,retired,first)
                 check.adoption_fault(retired,after,first,wires,events,dump,start,end,end+5_000_000,mode,fault)
                 check.adoption_progress(after,report,events,wires,first,end+5_000_000,epoch=1)
+                reordered=lambda state:{table:[dict(reversed(list(row.items()))) for row in reversed(rows)]
+                    for table,rows in reversed(list(state.items()))}
+                check.adoption_recovery_prefix(before,reordered(sealed),reordered(retired),first)
+                check.adoption_fault(retired,reordered(after),first,wires,events,dump,start,end,end+5_000_000,mode,fault)
+                duplicate=copy.deepcopy(after);duplicate['producer_outcomes'].append(copy.deepcopy(duplicate['producer_outcomes'][0]))
+                with self.assertRaises((AssertionError,ValueError)):
+                    check.adoption_fault(retired,duplicate,first,wires,events,dump,start,end,end+5_000_000,mode,fault)
                 mutations=[('jobs',0,'job_revision',4),('acquisition_continuations',0,'sealed_at_us',start),
                     ('producer_epochs',1,'reserved_through_request',1),('producer_epochs',1,'state','retired'),
                     ('source_streams',1,'last_complete_sequence',0),('allocation_domains',9,'xmin','999'),

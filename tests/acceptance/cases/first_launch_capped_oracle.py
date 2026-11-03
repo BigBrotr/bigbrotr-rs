@@ -551,8 +551,9 @@ def adoption_xid(value,*,bits=32):
 
 def adoption_exact_tables(wanted,actual):
     assert set(wanted)==set(actual),'table census differs'
+    canonical=lambda rows:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows)
     for table in wanted:
-        assert sorted(quantum.wire_json(row) for row in wanted[table])==sorted(quantum.wire_json(row) for row in actual[table]),table
+        assert canonical(wanted[table])==canonical(actual[table]),table
 
 
 def adoption_new_control(before,after,lower,upper,*,active):
