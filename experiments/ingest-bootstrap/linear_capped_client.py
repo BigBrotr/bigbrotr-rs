@@ -50,6 +50,10 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     seal_path=directory/'linear-quantum-seal-fault.json'
     seal_fault=json.loads(seal_path.read_text()) if seal_path.exists() else None
     assert seal_fault is None or (fault=='plan-before' and seal_fault in ('before-forward','after-complete'))
+    adoption_path=directory/'linear-quantum-adoption-fault.json'
+    adoption_fault=json.loads(adoption_path.read_text()) if adoption_path.exists() else None
+    assert adoption_fault is None or (fault=='plan-before' and seal_fault is None
+        and adoption_fault in ('before-forward','after-complete'))
     observations=[];errors=[]
     def call(path,value,key):
         code,answer=request('POST','/management/v1/'+path,value,{**auth,'Idempotency-Key':key})
@@ -80,8 +84,9 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
         assert receipt['execution']=='unobserved' and receipt['authority']=='acceptance-only'
         # No HTTP poll while the original process is deliberately lost. The
         # same authenticated session later observes the same accepted JobId.
-        if fault=='plan-after' or seal_fault is not None:
-            completion='seal-commit-fault' if seal_fault is not None else 'unsettled-seal-refusal'
+        if fault=='plan-after' or seal_fault is not None or adoption_fault is not None:
+            completion=('adoption-commit-fault' if adoption_fault is not None else
+                'seal-commit-fault' if seal_fault is not None else 'unsettled-seal-refusal')
             publish(directory,'adoption-old-cut.json',observations)
             barrier(completion,110)
             assert json.loads(session.read_text())==saved

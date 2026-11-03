@@ -1,6 +1,7 @@
 """Independent six-page expectations and the existing complete native encoder."""
 import hashlib
 import re
+import copy
 
 from cases import first_launch_quantum_oracle as quantum
 from cases import first_launch_restart as source
@@ -406,12 +407,12 @@ def adoption_root_authorization(report,document_sha256,state):
     return authorization_us
 
 
-def adoption_seal_eligibility(state,observed_at_us):
+def adoption_seal_eligibility(state,observed_at_us,*,job_revision=2):
     """The original actor, accepted documents, source and deadline still allow sealing."""
     job=source.only(state['jobs']);detail=source.only(state['acquisition_jobs']);dataset=source.only(state['datasets'])
     source.clock(observed_at_us,job['created_at_us'],detail['deadline_at_us']-1)
     assert detail['deadline_at_us']-job['created_at_us']==120_000_000
-    assert job['state']=='queued' and job['job_revision']==2 and job['input_complete'] is True and job['acquisition_job_protocol']==1
+    assert job['state']=='queued' and job['job_revision']==job_revision and job['input_complete'] is True and job['acquisition_job_protocol']==1
     assert (job['dataset_id'],job['principal_id'],job['request_key'])==(detail['dataset_id'],detail['actor_id'],detail['request_key'])
     assert job['dataset_id']==dataset['dataset_id']
     actor=source.only(state['local_accounts'],dataset_id=job['dataset_id'],principal_id=detail['actor_id'])
@@ -540,6 +541,201 @@ def adoption_seal_fault_error(stdout,stderr):
 
 def adoption_unsettled_error(stdout,stderr):
     assert stdout=='' and stderr=='error: producer operation unavailable: Control(InvalidMetadata)\n'
+
+
+def adoption_xid(value,*,bits=32):
+    assert type(value) is str and re.fullmatch('[1-9][0-9]*',value)
+    result=int(value);assert result<1<<bits
+    return result
+
+
+def adoption_exact_tables(wanted,actual):
+    assert set(wanted)==set(actual),'table census differs'
+    for table in wanted:
+        assert sorted(quantum.wire_json(row) for row in wanted[table])==sorted(quantum.wire_json(row) for row in actual[table]),table
+
+
+def adoption_new_control(before,after,lower,upper,*,active):
+    """Exact new Control shape with opaque fresh IDs and source-bounded renewal clocks."""
+    from initial_succession_oracle import exclusion
+    previous=max((row for row in before['owner_epochs'] if row['role']=='control'),key=lambda row:row['epoch'])
+    current=source.only(after['owner_epochs'],role='control',epoch=previous['epoch']+1)
+    role=source.only(after['role_instances'],role_instance_id=current['role_instance_id'])
+    old_ids=set(re.findall(r'\\x[0-9a-f]{32}(?![0-9a-f])',quantum.wire_json(before).decode()))
+    selected=(current['role_instance_id'],current['process_incarnation'])
+    assert len(set(selected))==2
+    for value in selected:
+        assert re.fullmatch(r'\\x[0-9a-f]{32}',value) and any(source.raw(value)) and value not in old_ids
+    assert type(current['control_backend_pid']) is int and current['control_backend_pid']>0
+    assert type(current['control_backend_start']) is str and current['control_backend_start']
+    source.clock(role['created_at_us'],lower,current['acquired_at_us'])
+    source.clock(current['acquired_at_us'],lower,upper)
+    # acquire/renew each add the configured60s SQL lease to their own PG cut;
+    # preparation separately captures the then-current deadline, not a new TTL.
+    source.clock(current['lease_expires_at_us']-60_000_000,current['acquired_at_us'],upper)
+    adoption_xid(current['xmin']);adoption_xid(role['xmin'])
+    old_xids={row['xmin'] for rows in before.values() for row in rows}
+    assert current['xmin'] not in old_xids and role['xmin'] not in old_xids,'new Control reused an old transaction'
+    expected=dict(previous,epoch=previous['epoch']+1,role_instance_id=current['role_instance_id'],
+        process_incarnation=current['process_incarnation'],acquired_at_us=current['acquired_at_us'],
+        lease_expires_at_us=current['lease_expires_at_us'],state='active' if active else 'released',released_at_us=None,
+        exclusion_method=None,exclusion_digest=None,control_fence_version=1,control_backend_pid=current['control_backend_pid'],
+        control_backend_start=current['control_backend_start'],archive_frontier_protocol=None,index_publication_protocol=None,xmin=current['xmin'])
+    retired_at=None
+    if not active:
+        source.clock(current['released_at_us'],current['acquired_at_us'],upper)
+        retired_at=source.clock(role['retired_at_us'],current['released_at_us'],upper)
+        assert current['xmin']==role['xmin']
+        expected.update(released_at_us=current['released_at_us'],exclusion_method='storage_fenced',
+            exclusion_digest=exclusion(current,current['process_incarnation']))
+    source.exact(current,expected,'new Control identity/custody differs')
+    source.exact(role,dict(dataset_id=previous['dataset_id'],role='control',role_instance_id=current['role_instance_id'],
+        created_at_us=role['created_at_us'],retired_at_us=retired_at,xmin=role['xmin']),'new Control role differs')
+    return current,role
+
+
+def adoption_recovery_prefix(before,sealed,retired,first):
+    """Confirmed seal/retire effects only, including every unrelated row/xmin."""
+    from initial_succession_oracle import exclusion
+    deadline=source.only(before['acquisition_jobs'])['deadline_at_us']-1
+    job=source.only(before['jobs']);producer=source.only(before['producer_epochs'])
+    slot=producer['producer_slot_id'];digest='\\x'+source.closure(first['manifest'],slot,1,first['inputs'],first['receipts'],17)
+    assert not before['acquisition_continuations']
+    for prior,after,retiring in ((before,sealed,False),(sealed,retired,True)):
+        current,role=adoption_new_control(prior,after,job['created_at_us'],deadline,active=False)
+        wanted=copy.deepcopy(prior)
+        for owner in prior['owner_epochs']:
+            if owner['role']!='control' or owner['state']=='released':continue
+            assert not retiring and owner['state']=='active'
+            changed=source.only(after['owner_epochs'],resource_id=owner['resource_id'],epoch=owner['epoch'])
+            changed_role=source.only(after['role_instances'],role_instance_id=owner['role_instance_id'])
+            source.clock(changed['released_at_us'],owner['lease_expires_at_us'],current['acquired_at_us'])
+            source.clock(changed_role['retired_at_us'],changed['released_at_us'],current['acquired_at_us'])
+            adoption_xid(changed['xmin']);assert changed_role['xmin']==changed['xmin']
+            wanted['owner_epochs'][wanted['owner_epochs'].index(owner)]=dict(owner,state='released',
+                released_at_us=changed['released_at_us'],exclusion_method='storage_fenced',
+                exclusion_digest=exclusion(owner,current['process_incarnation']),xmin=changed['xmin'])
+            old_role=source.only(prior['role_instances'],role_instance_id=owner['role_instance_id'])
+            wanted['role_instances'][wanted['role_instances'].index(old_role)]=dict(old_role,retired_at_us=changed_role['retired_at_us'],xmin=changed_role['xmin'])
+        wanted['owner_epochs'].append(current);wanted['role_instances'].append(role)
+        dataset=source.only(wanted['datasets']);observed=source.only(after['datasets'])
+        adoption_xid(observed['xmin']);dataset['xmin']=observed['xmin']
+        old=source.only(wanted['producer_epochs']);new=source.only(after['producer_epochs'])
+        adoption_xid(new['xmin'])
+        if not retiring:
+            assert old['state']=='open'
+            old.update(state='closing',xmin=new['xmin'])
+            stream=source.only(wanted['source_streams']);closed=source.only(after['source_streams'])
+            source.clock(closed['closed_at_us'],current['acquired_at_us'],current['released_at_us'])
+            adoption_xid(closed['xmin'])
+            stream.update(state='closed',closed_at_us=closed['closed_at_us'],last_complete_sequence=17,closure_digest=digest,xmin=closed['xmin'])
+            wanted['acquisition_continuations']=copy.deepcopy(after['acquisition_continuations'])
+            adoption_unadopted_seal(before,after,first,current,current['released_at_us'])
+        else:
+            assert old['state']=='closing'
+            at=source.clock(new['retired_at_us'],current['acquired_at_us'],current['released_at_us']);tx=new['xmin']
+            old.update(state='retired',retired_at_us=at,closure_digest=digest,xmin=tx)
+            ingest=source.only(wanted['owner_epochs'],role='ingest',resource_id=producer['owner_resource_id'],epoch=1)
+            ingest.update(state='released',released_at_us=at,exclusion_method='storage_fenced',exclusion_digest=digest,xmin=tx)
+            source.only(wanted['role_instances'],role_instance_id=ingest['role_instance_id']).update(retired_at_us=at,xmin=tx)
+            assert len(wanted['allocation_domains'])==9
+            for domain in wanted['allocation_domains']:domain.update(state='closed',closed_at_us=at,closure_digest=digest,xmin=tx)
+        adoption_exact_tables(wanted,after)
+
+
+def adoption_activated_native(before,state,first,dump=None):
+    """Independent five-put activation from the exact closed86 cut, no epoch2 work."""
+    from initial_succession_oracle import successor_manifest,successor_rows
+    intent=source.only(state['initial_ingest_successions'])
+    domains=[source.only(state['allocation_domains'],owner_epoch=2,dictionary_kind=k)['allocation_domain'] for k in range(1,10)]
+    source.fresh_successor(before,intent,domains)
+    manifest=successor_manifest(first['manifest'],source.raw(intent['target_incarnation']),[source.raw(value) for value in domains])
+    slot=intent['producer_slot_id'];digest=source.closure(first['manifest'],slot,1,first['inputs'],first['receipts'],17)
+    handoff=(b'\x01\x0a'+source.raw(slot)+source.be(1)+source.be(5)+source.be(17)+bytes.fromhex(digest)
+        +source.be(len(first['manifest']),2)+first['manifest']+source.be(len(manifest),2)+manifest)
+    assert source.raw(intent['previous_manifest'])==first['manifest'] and source.raw(intent['target_manifest'])==manifest
+    assert source.raw(intent['handoff'])==handoff
+    initial=successor_rows({(cf,key):value for cf,key,value in adoption_closed_native(first,slot)},manifest,source.raw(slot),handoff)
+    wanted=dict(event='dump-state',sequence=91,rows=[dict(cf=cf,key=key.hex(),value=value.hex()) for (cf,key),value in sorted(initial.items())])
+    if dump is not None:source.exact(dump,wanted,'failed adoption changed activation native cut')
+    return manifest,handoff,wanted
+
+
+def adoption_fault(before,after,first,wires,events,dump,before_us,returned_us,after_us,mode,fault):
+    """Fresh activation remains; only the atomic job/seal adoption may commit."""
+    assert mode in ('before-forward','after-complete') and before_us<=returned_us<=after_us
+    revision=3 if mode=='after-complete' else 2
+    adoption_seal_eligibility(before,before_us);adoption_seal_eligibility(after,after_us,job_revision=revision)
+    adoption_history(before,wires,events,first);adoption_history(after,wires,events,first)
+    current,role=adoption_new_control(before,after,before_us,returned_us,active=True)
+    assert type(fault['backend_pid']) is int and fault['backend_pid']==current['control_backend_pid']
+    assert returned_us<current['lease_expires_at_us']
+    manifest,handoff,_=adoption_activated_native(before,after,first,dump)
+    intent=source.only(after['initial_ingest_successions']);activation=source.only(after['initial_ingest_activations'])
+    job=source.only(before['jobs']);old_ingest=source.only(before['owner_epochs'],role='ingest',epoch=1)
+    producer=source.only(before['producer_epochs']);slot=producer['producer_slot_id'];dataset=job['dataset_id']
+    created=source.clock(intent['created_at_us'],current['acquired_at_us'],activation['activated_at_us'])
+    source.clock(activation['activated_at_us'],created,returned_us)
+    expires=intent['lease_expires_at_us'];assert returned_us<expires<=current['lease_expires_at_us']
+    source.clock(expires-60_000_000,current['acquired_at_us'],created)
+    tx=intent['xmin'];adoption_xid(tx)
+    assert all(tx!=row['xmin'] for rows in before.values() for row in rows)
+    wanted=copy.deepcopy(before);wanted['owner_epochs'].append(current);wanted['role_instances'].append(role)
+    inc=intent['target_incarnation'];target_role=intent['target_role_instance_id']
+    assert inc not in (current['process_incarnation'],current['role_instance_id']) and target_role not in (current['process_incarnation'],current['role_instance_id'])
+    wanted['owner_epochs'].append(dict(old_ingest,epoch=2,role_instance_id=target_role,process_incarnation=inc,
+        acquired_at_us=created,lease_expires_at_us=expires,state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None,xmin=tx))
+    wanted['role_instances'].append(dict(dataset_id=dataset,role='ingest',role_instance_id=target_role,created_at_us=created,retired_at_us=None,xmin=tx))
+    wanted['producer_epochs'].append(dict(producer,producer_epoch=2,producer_role_instance_id=target_role,producer_incarnation=inc,
+        owner_epoch=2,owner_incarnation=inc,state='open',reserved_through_request=0,opened_at_us=created,retired_at_us=None,closure_digest=None,xmin=tx))
+    old=source.only(before['source_streams'])
+    wanted['source_streams'].append(dict(old,owner_epoch=2,owner_incarnation=inc,state='open',opened_at_us=created,
+        closed_at_us=None,last_complete_sequence=None,closure_digest=None,xmin=tx))
+    for kind in range(1,10):
+        old=source.only(before['allocation_domains'],dictionary_kind=kind)
+        domain=source.only(after['allocation_domains'],owner_epoch=2,dictionary_kind=kind)['allocation_domain']
+        wanted['allocation_domains'].append(dict(old,allocation_domain=domain,owner_epoch=2,owner_incarnation=inc,state='active',
+            created_at_us=created,closed_at_us=None,closure_digest=None,xmin=tx))
+    old=source.only(before['topology_generations'])
+    wanted['topology_generations'].append(dict(old,generation=1,previous_generation=0,created_at_us=created,sealed=True,xmin=tx))
+    old=source.only(before['topology_streams'])
+    wanted['topology_streams'] += [dict(old,topology_generation=1,owner_epoch=epoch,handoff_last_complete_sequence=17 if epoch==1 else None,xmin=tx) for epoch in (1,2)]
+    wanted['datasets']=[dict(source.only(before['datasets']),topology_generation=1,xmin=tx)]
+    config=source.only(before['config_revisions']);policy=source.only(before['policy_revisions'])
+    expected=dict(dataset_id=dataset,owner_resource_id=old_ingest['resource_id'],target_epoch=2,owner_role='ingest',
+        target_incarnation=inc,target_role_instance_id=target_role,producer_slot_id=slot,producer_epoch=2,shard_id=0,
+        previous_topology=0,target_topology=1,issued_through=5,last_complete_sequence=17,
+        closure_digest=producer['closure_digest'],previous_manifest='\\x'+first['manifest'].hex(),target_manifest='\\x'+manifest.hex(),
+        previous_manifest_sha256='\\x'+source.sha(first['manifest']),target_manifest_sha256='\\x'+source.sha(manifest),
+        handoff='\\x'+handoff.hex(),handoff_sha256='\\x'+source.sha(handoff),config_revision=1,policy_revision=1,
+        config_digest=config['document_digest'],policy_digest=policy['document_digest'],outstanding_request_limit=producer['outstanding_request_limit'],
+        created_at_us=created,lease_expires_at_us=expires,prepared_by_resource=current['resource_id'],prepared_by_epoch=current['epoch'],
+        prepared_by_role='control',prepared_by_incarnation=current['process_incarnation'],xmin=tx)
+    wanted['initial_ingest_successions']=[expected]
+    fields=('dataset_id','owner_resource_id','target_epoch','target_incarnation','target_role_instance_id','producer_slot_id','producer_epoch',
+        'previous_manifest_sha256','target_manifest_sha256','handoff_sha256','prepared_by_resource','prepared_by_epoch','prepared_by_incarnation',
+        'config_revision','policy_revision','config_digest','policy_digest')
+    activation_tx=activation['xmin'];assert adoption_xid(activation_tx)==adoption_xid(activation['activation_transaction'],bits=64)&0xffffffff
+    assert activation_tx!=tx
+    wanted['initial_ingest_activations']=[dict({key:expected[key] for key in fields},activated_by_resource=current['resource_id'],
+        activated_by_epoch=current['epoch'],activated_by_incarnation=current['process_incarnation'],activated_at_us=activation['activated_at_us'],
+        activation_transaction=activation['activation_transaction'],xmin=activation_tx)]
+    if mode=='after-complete':
+        seal=source.only(after['acquisition_continuations']);old_seal=source.only(before['acquisition_continuations'])
+        tx=seal['xmin'];assert adoption_xid(tx)==adoption_xid(seal['adoption_transaction'],bits=64)&0xffffffff
+        assert tx not in (old_seal['xmin'],job['xmin'],activation_tx,expected['xmin'])
+        source.clock(seal['adopted_at_us'],activation['activated_at_us'],returned_us)
+        wanted['acquisition_continuations']=[dict(old_seal,target_epoch=2,target_manifest_sha256='\\x'+source.sha(manifest),
+            activation_sha256='\\x'+source.sha(handoff),adopting_resource=current['resource_id'],adopting_epoch=current['epoch'],
+            adopting_incarnation=current['process_incarnation'],adopted_job_revision=3,adopted_at_us=seal['adopted_at_us'],
+            adoption_transaction=seal['adoption_transaction'],xmin=tx)]
+        wanted['jobs']=[dict(job,job_revision=3,owner_resource_id=current['resource_id'],owner_epoch=current['epoch'],
+            owner_incarnation=current['process_incarnation'],xmin=tx)]
+    adoption_exact_tables(wanted,after)
+
+
+def adoption_fault_error(stdout,stderr):
+    assert stdout=='' and stderr=='error: initial native batch unavailable: Quantum(CommitUnknown)\n'
 
 
 def adoption_transition(before,sealed,retired,after,first):

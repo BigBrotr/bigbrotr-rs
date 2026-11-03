@@ -26,6 +26,7 @@ ADOPTION_LIMITS=[
     'Full old inputs, native facts/receipts, historical SQL rows/xmins and immutable source/principal/policy are preserved. Sealing cannot change job ownership; the positive path checks one exact queued rev2 to rev3/current-Control CAS and actual native handoff/adoption.',
     'The plan-after variant retains Q1 wire, five original inputs/outcomes, queued revision2 and pending Q2; native85 to86/source close are permitted, no continuation seal is created, and retirement/activation/successor are not attempted. Other negative schedules, repeated successor loss, OPEN65, full500, fleet and Archive remain outside this case.',
     'The explicit seal-fault variant retains plan-before Q2 absence, then loses a separate executed seal INSERT COMMIT before forwarding or after server completion. It requires caller CommitUnknown, zero or one unadopted seal respectively, native85 to86, unchanged job/history/inputs and no second wire. It never retires, activates, adopts or retries.',
+    'The explicit adoption-fault variant confirms normal sealing/retirement, then loses the executed final job-owner CAS COMMIT before forwarding or after completion. Both stop startup without success JSON or another wire, retain exact active-zero native91 and active Control/Ingest custody; only the after-complete cut atomically adopts the seal/job. No retry or lost-candidate recovery is attempted.',
 ]
 
 
@@ -254,6 +255,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             self.inputs['linear_quantum_trace_successor_sql']=True
         if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
             self.inputs['linear_quantum_seal_fault']=self.args.linear_quantum_seal_fault
+        if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
+            self.inputs['linear_quantum_adoption_fault']=self.args.linear_quantum_adoption_fault
         path='tests/fixtures/acquisition/settled-owner-adoption.json'
         self.inputs['adoption_expectation_sha256']=digest(self.source/path)
         oracle.adoption_manifest(load(self.source/path))
@@ -271,6 +274,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         save(self.home/'linear-capped-adoption-profile.json',ADOPTION_PROFILE)
         if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
             save(self.home/'linear-quantum-seal-fault.json',self.args.linear_quantum_seal_fault)
+        if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
+            save(self.home/'linear-quantum-adoption-fault.json',self.args.linear_quantum_adoption_fault)
         self.events=corpus(self.home)[:3]
 
     def successor_sql_login(self):
@@ -471,6 +476,11 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         save(output/'retirement-report.json',retired)
         self.adoption_retired,_=self.capture(output,'retired')
         self.backend_absence(output);self.wires(1)
+        if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
+            oracle.adoption_recovery_prefix(self.adoption_before,self.adoption_sealed,self.adoption_retired,self.adoption_first)
+            self.start_adoption_proxy()
+            self.failed_adoption()
+            return
         successor_output=self.root/'adoption-successor';successor_output.mkdir(mode=0o700)
         successor=self.launch_adoption_successor(successor_output)
         started=self.wait(lambda:self.logs(successor,successor_output),'actual adoption successor',20,entry=successor)[0]
@@ -498,34 +508,48 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.failed_seal()
 
     def start_seal_proxy(self):
+        require(self.quantum_fault=='plan-before','seal fault requires settled Q1 and absent Q2')
+        self.start_commit_proxy('seal',self.args.linear_quantum_seal_fault,'control-acquisition-seal')
+
+    def start_adoption_proxy(self):
+        require(self.quantum_fault=='plan-before','adoption fault requires settled Q1 and absent Q2')
+        self.start_commit_proxy('adoption',self.args.linear_quantum_adoption_fault,'control-acquisition-adoption')
+
+    def start_commit_proxy(self,kind,mode,target):
         require(self.resources['quantum_proxy']['status']=='joined','seal proxy requires joined original Q2 proxy')
         original=self.config.read_text()
         require(tomllib.loads(original)['postgres']['control']['endpoint']=='127.0.0.1:15432','seal proxy requires direct Control upstream')
-        mode=self.args.linear_quantum_seal_fault
-        require(mode in ('before-forward','after-complete') and self.quantum_fault=='plan-before',
-            'seal fault requires settled Q1 and absent Q2')
+        require(mode in ('before-forward','after-complete'),'invalid closed COMMIT fault mode')
         path=self.source/'experiments/archive-engine/native_commit_proxy.py'
-        self.seal_proxy_binding=dict(source_sha256=digest(path),mode=mode,target='control-acquisition-seal',
+        binding=dict(source_sha256=digest(path),mode=mode,target=target,
             profile='retained-catch-up',frame_limit=131072,connection_limit=64,connection_limit_scope='lifetime',
             wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432,
             catalog_manager='CatalogManager',catalog_reader='bigbrotr_receipt_reader',catalog_database='bbpub_normal',
             armed=True,commit_ordinal=1)
-        self.inputs['seal_proxy']=self.seal_proxy_binding
-        self.seal_route=self.proxy_process([sys.executable,'-B',str(path),'--mode',mode,'--target','control-acquisition-seal',
+        resource=kind+'_proxy';stem=kind+'-proxy'
+        setattr(self,resource+'_binding',binding);self.inputs[resource]=binding
+        route=self.proxy_process([sys.executable,'-B',str(path),'--mode',mode,'--target',target,
             '--upstream-port','15432','--profile','retained-catch-up'],input_pipe=True)
-        self.resources['seal_proxy']=dict(pid=self.seal_route.process.pid,status='running',port=None,
+        setattr(self,kind+'_route',route)
+        self.resources[resource]=dict(pid=route.process.pid,status='running',port=None,
             upstream_endpoint='127.0.0.1:15432',direct_recipe_sha256=digest(self.config))
         self.record_resources()
-        save(self.root/'seal-proxy-process.json',dict(pid=self.seal_route.process.pid))
-        ready=self.proxy_event(self.seal_route,'ready',10)
-        save(self.root/'seal-proxy-ready.json',ready);self.validate_seal_proxy(ready,'ready')
-        self.seal_proxy_ready=ready;self.resources['seal_proxy']['port']=ready['port'];self.record_resources()
+        save(self.root/(stem+'-process.json'),dict(pid=route.process.pid))
+        ready=self.proxy_event(route,'ready',10)
+        save(self.root/(stem+'-ready.json'),ready);getattr(self,'validate_'+resource)(ready,'ready')
+        setattr(self,resource+'_ready',ready);self.resources[resource]['port']=ready['port'];self.record_resources()
         self.config.write_text(self.set_value(original,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
         self.inputs['initial_recipe_sha256']=digest(self.config)
 
     def validate_seal_proxy(self,value,event):
+        self.validate_commit_proxy(value,event,self.seal_proxy_binding)
+
+    def validate_adoption_proxy(self,value,event):
+        self.validate_commit_proxy(value,event,self.adoption_proxy_binding)
+
+    def validate_commit_proxy(self,value,event,binding):
         require(value.get('event')==event and all(type(value.get(key)) is type(expected) and value[key]==expected
-            for key,expected in self.seal_proxy_binding.items()),'seal proxy '+event+' binding differs')
+            for key,expected in binding.items()),'closed COMMIT proxy '+event+' binding differs')
         if event=='terminal':
             require(type(value.get('unexpected')) is int and value['unexpected']==0
                 and all(type(value.get(key)) is int and 0<=value[key]<=limit for key,limit in (
@@ -534,10 +558,18 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
 
     def validate_seal_fault_terminal(self,value):
         self.validate_seal_proxy(value,'terminal')
+        self.validate_commit_fault_terminal(value,'seal_inserts_complete')
+
+    def validate_adoption_fault_terminal(self,value):
+        self.validate_adoption_proxy(value,'terminal')
+        self.validate_commit_fault_terminal(value,'adoption_cas_complete')
+
+    def validate_commit_fault_terminal(self,value,counter):
         require(all(value[key]>0 for key in ('frames','connections','bytes')),'seal fault lacks framed Control traffic')
-        expected=dict(seal_inserts_complete=1,data_queries=1,data_commits=1,matched_commits=1,selected_commits=1,
+        expected=dict(data_queries=1,data_commits=1,matched_commits=1,selected_commits=1,
             skipped_commits=0,selected_server_complete=int(value['mode']=='after-complete'),selected_client_complete=0,
             server_complete=int(value['mode']=='after-complete'),client_complete=0,faults=1)
+        expected[counter]=1
         require(all(type(value.get(key)) is int and value[key]==number for key,number in expected.items()),
             'seal proxy did not observe one exact executed INSERT and unknown COMMIT')
 
@@ -545,9 +577,89 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         if hasattr(self,'seal_route'):
             self.stop_owned_proxy(self.seal_route,'seal_proxy','seal-proxy',getattr(self,'seal_proxy_ready',None),self.validate_seal_proxy)
 
+    def stop_adoption_proxy(self):
+        if hasattr(self,'adoption_route'):
+            self.stop_owned_proxy(self.adoption_route,'adoption_proxy','adoption-proxy',
+                getattr(self,'adoption_proxy_ready',None),self.validate_adoption_proxy)
+
     def cleanup(self):
-        try:self.stop_seal_proxy()
-        finally:super().cleanup()
+        try:self.stop_adoption_proxy()
+        finally:
+            try:self.stop_seal_proxy()
+            finally:super().cleanup()
+
+    def observe_commit_fault(self,kind,output,counter,marker):
+        fault=self.proxy_event(getattr(self,kind+'_route'),'fault',5);save(output/'commit-fault.json',fault)
+        getattr(self,'stop_'+kind+'_proxy')()
+        terminal=load(self.root/(kind+'-proxy-terminal.json'))
+        getattr(self,'validate_'+kind+'_fault_terminal')(terminal)
+        require(type(fault.get('backend_pid')) is int and fault['backend_pid']>0 and fault.get('event')=='fault'
+            and all(type(fault.get(key)) is type(terminal[key]) and fault[key]==terminal[key]
+                for key in ('mode','target',counter,'data_queries','data_commits','matched_commits',
+                    'selected_commits','skipped_commits','selected_server_complete','selected_client_complete','faults')),
+            'selected fault differs from joined proxy evidence')
+        observed=load(self.root/(kind+'-proxy.json'))
+        markers=[json.loads(line) for line in observed['stdout'].splitlines()]
+        executed,=[value for value in markers if value.get('event')==marker]
+        selected,=[value for value in markers if value.get('event')=='fault']
+        require(selected==fault and executed['backend_pid']==fault['backend_pid'],'executed statement and COMMIT backend differ')
+        return fault
+
+    def failed_adoption(self):
+        mode=self.args.linear_quantum_adoption_fault
+        output=self.root/'adoption-commit-fault';output.mkdir(mode=0o700)
+        document_sha256=digest(self.config)
+        resolved=self.finite('adoption-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+        require(digest(self.config)==document_sha256,'adoption fault prerequisite: root file changed during config show')
+        authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,self.adoption_retired)
+        show_sha256=digest(self.root/'bootstrap/adoption-root-config.stdout')
+        clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
+        before_us=int(self.sql('bigbrotr_control',clock))
+        oracle.adoption_seal_eligibility(self.adoption_retired,before_us)
+        boottime=getattr(time,'CLOCK_BOOTTIME',None)
+        require(boottime is not None,'adoption fault prerequisite: Linux CLOCK_BOOTTIME is required')
+        require(digest(self.config)==document_sha256,'adoption fault prerequisite: root file changed before startup')
+        started_ns=time.clock_gettime_ns(boottime)
+        entry=self.launch_adoption_successor(output)
+        ended=self.docker('wait',entry['id'],timeout=180)
+        attempt_ns=time.clock_gettime_ns(boottime)-started_ns
+        after_document_sha256=digest(self.config)
+        returned_us=int(self.sql('bigbrotr_control',clock))
+        self.logs(entry,output);terminal=self.inspect(entry)
+        save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
+        save(output/'authorization-interval.json',dict(clock='CLOCK_BOOTTIME',elapsed_ns=attempt_ns,
+            root_authorization_ttl_us=authorization_us,command_returned_at_us=returned_us,
+            root_config_document_sha256=document_sha256,root_config_after_attempt_sha256=after_document_sha256,
+            root_config_show_sha256=show_sha256,root_setting_source=resolved['settings']['runtime.authorization_ttl']['source']))
+        require(after_document_sha256==document_sha256,'adoption fault prerequisite: root file changed during startup')
+        require(type(attempt_ns) is int and 0<=attempt_ns<authorization_us*1000,
+            'adoption fault prerequisite: startup exceeded resolved root authorization interval')
+        require(ended.stdout.strip()=='4' and terminal['State']['ExitCode']==4 and terminal['State']['Pid']==0
+            and not terminal['State']['Running'] and not terminal['State']['OOMKilled'],'adoption startup did not exit4 naturally')
+        oracle.adoption_fault_error((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
+        fault=self.observe_commit_fault('adoption',output,'adoption_cas_complete','adoption-cas-complete')
+        self.backend_absence(output)
+        self.adoption_failed,_=self.capture(output,'failed')
+        dump=native.census(self,output,expected_writer_exit=4,writer_terminal=output/'terminal-container.json')
+        after_us=int(self.sql('bigbrotr_control',clock));wires=self.wires(1)
+        oracle.adoption_fault(self.adoption_retired,self.adoption_failed,self.adoption_first,wires,self.events,dump,
+            before_us,returned_us,after_us,mode,fault)
+        oracle.adoption_progress(self.adoption_failed,self.initialized,self.events,wires,self.adoption_first,after_us,epoch=1)
+        require(source.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,5)==self.adoption_first['inputs']
+            and self.files(self.state/'data/ingest/producer-inputs-v1')==self.adoption_original_files,'failed adoption changed original input custody')
+        require(self.client.poll() is None,'negative peer exited before failed adoption evidence')
+        self.loopback_listener(self.owned_listeners(self.client.pid),7447)
+        save(output/'original-duration.json',dict(before_us=before_us,command_returned_at_us=returned_us,after_us=after_us,
+            original_deadline_at_us=self.adoption_retired['acquisition_jobs'][0]['deadline_at_us'],source_and_actor_eligible=True))
+        self.adoption_failure_dump=dump
+        (self.home/'adoption-commit-fault.continue').write_text('unknown adoption retained SQL/native and live listener checked\n')
+        require(self.client.wait(timeout=6)==0 and not (self.home/'client.stderr').read_bytes(),'negative adoption client failed')
+        stop_process(self.client);self.processes.remove(self.client)
+        result=load(self.home/'client-result.json')
+        require(result['status']=='PASS' and result['completion']=='adoption-commit-fault' and result['job_status'] is None,
+            'negative adoption client completion differs')
+        require(not (self.home/'linear-status-observations.json').exists() and not (self.home/'commands-finished.json').exists(),
+            'failed adoption made a successor status request')
 
     def failed_seal(self,mode=None):
         completion='seal-commit-fault' if mode is not None else 'unsettled-seal-refusal'
@@ -587,20 +699,7 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         diagnostic=oracle.adoption_unsettled_error if mode is None else oracle.adoption_seal_fault_error
         diagnostic((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
         if mode is not None:
-            fault=self.proxy_event(self.seal_route,'fault',5);save(output/'commit-fault.json',fault)
-            self.stop_seal_proxy()
-            terminal_proxy=load(self.root/'seal-proxy-terminal.json')
-            self.validate_seal_fault_terminal(terminal_proxy)
-            require(type(fault.get('backend_pid')) is int and fault['backend_pid']>0 and fault.get('event')=='fault'
-                and all(type(fault.get(key)) is type(terminal_proxy[key]) and fault[key]==terminal_proxy[key]
-                    for key in ('mode','target','seal_inserts_complete','data_queries','data_commits','matched_commits',
-                        'selected_commits','skipped_commits','selected_server_complete','selected_client_complete','faults')),
-                'seal fault differs from joined proxy evidence')
-            observed=load(self.root/'seal-proxy.json')
-            markers=[json.loads(line) for line in observed['stdout'].splitlines()]
-            insert,=[value for value in markers if value.get('event')=='seal-insert-complete']
-            selected,=[value for value in markers if value.get('event')=='fault']
-            require(selected==fault and insert['backend_pid']==fault['backend_pid'],'seal INSERT and COMMIT backend differ')
+            fault=self.observe_commit_fault('seal',output,'seal_inserts_complete','seal-insert-complete')
             self.seal_fault_observation=fault
         self.backend_absence(output)
         self.adoption_refused,_=self.capture(output,'refused')
@@ -634,6 +733,19 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.source_unchanged()
         output=self.root/'linear-quantum';output.mkdir(mode=0o700)
         state,_=self.capture(output,'after');self.backend_absence(output)
+        adoption_mode=getattr(self.args,'linear_quantum_adoption_fault',None)
+        if adoption_mode is not None:
+            canonical=lambda snapshot:{table:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows) for table,rows in snapshot.items()}
+            require(canonical(state)==canonical(self.adoption_failed),'failed adoption changed after stopping the peer')
+            wires=self.wires(1);oracle.adoption_history(state,wires,self.events,self.adoption_first)
+            oracle.adoption_activated_native(self.adoption_retired,state,self.adoption_first,self.adoption_failure_dump)
+            joined=load(self.home/'capped-adoption-peer-joined.json')
+            require(joined['requests']==1 and joined['listener_closed'] is True and joined['errors']==0,'failed adoption peer did not join after Q1')
+            save(output/'verdict.json',dict(status='PASS',scenario='settled-owner-adoption',fault=self.quantum_fault,
+                adoption_fault=adoption_mode,outcome='adoption-commit-unknown',caller_outcome='unknown',same_job=True,
+                job_revision=3 if adoption_mode=='after-complete' else 2,wire_queries=1,pending_plans=0,mutation_requests=5,
+                continuation_seals=1,adopted_seals=int(adoption_mode=='after-complete'),successor_activations=1,native_sequence=91,coverage='pending'))
+            return
         mode=getattr(self.args,'linear_quantum_seal_fault',None)
         if self.quantum_fault=='plan-after' or mode is not None:
             canonical=lambda snapshot:{table:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows) for table,rows in snapshot.items()}

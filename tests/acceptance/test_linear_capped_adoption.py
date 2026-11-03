@@ -302,7 +302,273 @@ def seal_fault_fixture(root,mode):
     return before,after,report,events,wires,first,dump,closed,start,end
 
 
+def adoption_fault_fixture(root,mode):
+    """Declared5-request/17-record cut and fresh active-zero SQL/native lifetime."""
+    from initial_succession_oracle import exclusion
+    before,sealed,report,events,wires,first,_,closed,start,end=seal_fault_fixture(root,'after-complete')
+    job=before['jobs'][0];ds=job['dataset_id'];slot='\\x'+report['producer_slot_id']
+    for state in (before,sealed):
+        for rows in state.values():
+            for row in rows:row.setdefault('xmin','1')
+        state['topology_generations']=[dict(dataset_id=ds,generation=0,previous_generation=None,created_at_us=1000,sealed=True,xmin='1')]
+        state['topology_streams']=[dict(dataset_id=ds,topology_generation=0,shard_id=0,owner_epoch=1,handoff_last_complete_sequence=None,xmin='1')]
+    old_control=source.only(before['owner_epochs'],role='control')
+    changed=source.only(sealed['owner_epochs'],role='control',epoch=old_control['epoch'])
+    sealer=source.only(sealed['owner_epochs'],role='control',epoch=2)
+    changed['exclusion_digest']=exclusion(changed,sealer['process_incarnation'])
+    changed_role=source.only(sealed['role_instances'],role_instance_id=changed['role_instance_id']);changed_role['xmin']=changed['xmin']
+    sealer.update(state='released',released_at_us=end,exclusion_method='storage_fenced',
+        exclusion_digest=exclusion(sealer,sealer['process_incarnation']),control_backend_start='fresh-start',
+        control_fence_version=1,archive_frontier_protocol=None,index_publication_protocol=None,
+        lease_expires_at_us=sealer['acquired_at_us']+60_000_000,xmin='115')
+    source.only(sealed['role_instances'],role_instance_id=sealer['role_instance_id']).update(retired_at_us=end+1,xmin='115')
+    def control(state,epoch,role,inc,at,tx,*,released=False):
+        owner=dict(sealer,epoch=epoch,role_instance_id='\\x'+role*16,process_incarnation='\\x'+inc*16,
+            acquired_at_us=at,lease_expires_at_us=at+60_000_000,state='released' if released else 'active',
+            released_at_us=at+500_000 if released else None,exclusion_method='storage_fenced' if released else None,
+            exclusion_digest=None,control_backend_pid=7400+epoch,control_backend_start='fresh-'+str(epoch),xmin=tx)
+        if released:owner['exclusion_digest']=exclusion(owner,owner['process_incarnation'])
+        state['owner_epochs'].append(owner)
+        state['role_instances'].append(dict(dataset_id=ds,role='control',role_instance_id=owner['role_instance_id'],
+            created_at_us=at-1,retired_at_us=at+500_001 if released else None,xmin=tx))
+        return owner
+    retired=copy.deepcopy(sealed);retirer=control(retired,3,'d1','d2',end+1000,'122',released=True)
+    at=end+300_000;digest=sealed['source_streams'][0]['closure_digest']
+    retired['producer_epochs'][0].update(state='retired',retired_at_us=at,closure_digest=digest,xmin='121')
+    ingest=source.only(retired['owner_epochs'],role='ingest')
+    ingest.update(state='released',released_at_us=at,exclusion_method='storage_fenced',exclusion_digest=digest,xmin='121')
+    source.only(retired['role_instances'],role_instance_id=ingest['role_instance_id']).update(retired_at_us=at,xmin='121')
+    for row in retired['allocation_domains']:row.update(state='closed',closed_at_us=at,closure_digest=digest,xmin='121')
+    begun=end+1_000_000;returned=begun+1_000_000;after=copy.deepcopy(retired)
+    current=control(after,4,'d3','d4',begun+1000,'130')
+    current.update(lease_expires_at_us=current['lease_expires_at_us']+20_000,xmin='133')
+    created=begun+10_000;expires=begun+1000+60_000_000;inc='\\x'+'cf'*16;role='\\x'+'ce'*16;tx='131'
+    domains=[bytes([150+k])*16 for k in range(1,10)]
+    manifest=successor_manifest(first['manifest'],source.raw(inc),domains)
+    handoff=(b'\x01\x0a'+source.raw(slot)+source.be(1)+source.be(5)+source.be(17)+source.raw(digest)
+        +source.be(len(first['manifest']),2)+first['manifest']+source.be(len(manifest),2)+manifest)
+    after['owner_epochs'].append(dict(ingest,epoch=2,role_instance_id=role,process_incarnation=inc,acquired_at_us=created,
+        lease_expires_at_us=expires,state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None,xmin=tx))
+    after['role_instances'].append(dict(dataset_id=ds,role='ingest',role_instance_id=role,created_at_us=created,retired_at_us=None,xmin=tx))
+    after['producer_epochs'].append(dict(retired['producer_epochs'][0],producer_epoch=2,producer_role_instance_id=role,
+        producer_incarnation=inc,owner_epoch=2,owner_incarnation=inc,state='open',reserved_through_request=0,
+        opened_at_us=created,retired_at_us=None,closure_digest=None,xmin=tx))
+    after['source_streams'].append(dict(retired['source_streams'][0],owner_epoch=2,owner_incarnation=inc,state='open',opened_at_us=created,
+        closed_at_us=None,last_complete_sequence=None,closure_digest=None,xmin=tx))
+    for kind,domain in enumerate(domains,1):
+        old=source.only(retired['allocation_domains'],dictionary_kind=kind)
+        after['allocation_domains'].append(dict(old,allocation_domain='\\x'+domain.hex(),owner_epoch=2,owner_incarnation=inc,
+            state='active',created_at_us=created,closed_at_us=None,closure_digest=None,xmin=tx))
+    after['topology_generations'].append(dict(retired['topology_generations'][0],generation=1,previous_generation=0,
+        created_at_us=created,sealed=True,xmin=tx))
+    after['topology_streams'] += [dict(retired['topology_streams'][0],topology_generation=1,owner_epoch=epoch,
+        handoff_last_complete_sequence=17 if epoch==1 else None,xmin=tx) for epoch in (1,2)]
+    after['datasets'][0].update(topology_generation=1,xmin=tx)
+    intent=dict(dataset_id=ds,owner_resource_id=ingest['resource_id'],target_epoch=2,owner_role='ingest',
+        target_incarnation=inc,target_role_instance_id=role,producer_slot_id=slot,producer_epoch=2,shard_id=0,
+        previous_topology=0,target_topology=1,issued_through=5,last_complete_sequence=17,closure_digest=digest,
+        previous_manifest='\\x'+first['manifest'].hex(),target_manifest='\\x'+manifest.hex(),
+        previous_manifest_sha256='\\x'+source.sha(first['manifest']),target_manifest_sha256='\\x'+source.sha(manifest),
+        handoff='\\x'+handoff.hex(),handoff_sha256='\\x'+source.sha(handoff),config_revision=1,policy_revision=1,
+        config_digest='\\x'+'ab'*32,policy_digest='\\x'+'ab'*32,outstanding_request_limit=retired['producer_epochs'][0]['outstanding_request_limit'],
+        created_at_us=created,lease_expires_at_us=expires,prepared_by_resource=current['resource_id'],prepared_by_epoch=current['epoch'],
+        prepared_by_role='control',prepared_by_incarnation=current['process_incarnation'],xmin=tx)
+    after['initial_ingest_successions']=[intent]
+    keys=('dataset_id','owner_resource_id','target_epoch','target_incarnation','target_role_instance_id','producer_slot_id','producer_epoch',
+        'previous_manifest_sha256','target_manifest_sha256','handoff_sha256','prepared_by_resource','prepared_by_epoch','prepared_by_incarnation',
+        'config_revision','policy_revision','config_digest','policy_digest')
+    after['initial_ingest_activations']=[dict({key:intent[key] for key in keys},activated_by_resource=current['resource_id'],
+        activated_by_epoch=current['epoch'],activated_by_incarnation=current['process_incarnation'],activated_at_us=begun+20_000,
+        activation_transaction='132',xmin='132')]
+    if mode=='after-complete':
+        after['acquisition_continuations'][0].update(target_epoch=2,target_manifest_sha256='\\x'+source.sha(manifest),
+            activation_sha256='\\x'+source.sha(handoff),adopting_resource=current['resource_id'],adopting_epoch=current['epoch'],
+            adopting_incarnation=current['process_incarnation'],adopted_job_revision=3,adopted_at_us=begun+30_000,
+            adoption_transaction='134',xmin='134')
+        after['jobs'][0].update(job_revision=3,owner_resource_id=current['resource_id'],owner_epoch=current['epoch'],
+            owner_incarnation=current['process_incarnation'],xmin='134')
+    values=successor_rows({(row['cf'],bytes.fromhex(row['key'])):bytes.fromhex(row['value']) for row in closed['rows']},
+        manifest,source.raw(slot),handoff)
+    dump=dict(event='dump-state',sequence=91,rows=[dict(cf=cf,key=key.hex(),value=value.hex()) for (cf,key),value in sorted(values.items())])
+    return before,sealed,retired,after,report,events,wires,first,dump,begun,returned,dict(backend_pid=7404)
+
+
 class CappedAdoptionControls(unittest.TestCase):
+    def test_adoption_proxy_has_separate_route_file_binding_and_clean_unreached_cleanup(self):
+        from installed import set_value
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.CappedAdoptionRuntime)
+            runtime.root=root;runtime.source=ROOT;runtime.config=root/'instance.toml'
+            runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:15432"\n');runtime.set_value=set_value
+            runtime.args=SimpleNamespace(linear_quantum_adoption_fault='before-forward');runtime.quantum_fault='plan-before'
+            original=Mock();runtime.route=original;old=dict(status='joined',pid=42,port=9999)
+            runtime.resources=dict(quantum_proxy=old.copy(),cleanup_errors=[]);runtime.inputs=dict(quantum_proxy=dict(original=True))
+            runtime.record_resources=Mock();route=Mock();route.process.pid=43;route.process.poll.return_value=0
+            route.wait.return_value=0;route.threads=[];route.stderr=b'';route.overflow=False
+            runtime.proxy_process=Mock(return_value=route)
+            runtime.proxy_event=Mock(side_effect=lambda *args:dict(runtime.adoption_proxy_binding,event='ready',port=12346))
+            runtime.start_adoption_proxy()
+            self.assertIs(runtime.route,original);self.assertEqual(runtime.resources['quantum_proxy'],old)
+            self.assertEqual(runtime.inputs['quantum_proxy'],dict(original=True));self.assertFalse(hasattr(runtime,'seal_route'))
+            self.assertEqual(runtime.resources['adoption_proxy']['pid'],43)
+            self.assertEqual(tomllib.loads(runtime.config.read_text())['postgres']['control']['endpoint'],'127.0.0.1:12346')
+            self.assertEqual(runtime.inputs['initial_recipe_sha256'],case.digest(runtime.config))
+            terminal=dict(runtime.adoption_proxy_binding,event='terminal',unexpected=0,frames=0,connections=0,bytes=0,
+                **dict.fromkeys(('adoption_cas_complete','data_queries','data_commits','matched_commits','selected_commits','skipped_commits',
+                    'selected_server_complete','selected_client_complete','server_complete','client_complete','faults'),0))
+            route.stdout=(json.dumps(runtime.adoption_proxy_ready)+'\n'+json.dumps(terminal)+'\n').encode()
+            runtime.proxy_observation=Mock(return_value=dict(stdout=route.stdout.decode(),stderr='',overflow=False))
+            runtime.stop_adoption_proxy()
+            self.assertEqual(runtime.resources['adoption_proxy']['status'],'joined');self.assertEqual(runtime.resources['cleanup_errors'],[])
+            with self.assertRaises(ValueError):runtime.validate_adoption_fault_terminal(terminal)
+            self.assertTrue((root/'adoption-proxy-process.json').exists());self.assertTrue((root/'adoption-proxy-terminal.json').exists())
+
+    def test_adoption_fault_requires_confirmed_prefix_exact_activation_and_atomic_job_seal_cut(self):
+        for mode in ('before-forward','after-complete'):
+            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as temporary:
+                before,sealed,retired,after,report,events,wires,first,dump,start,end,fault=adoption_fault_fixture(Path(temporary),mode)
+                check.adoption_recovery_prefix(before,sealed,retired,first)
+                check.adoption_fault(retired,after,first,wires,events,dump,start,end,end+5_000_000,mode,fault)
+                check.adoption_progress(after,report,events,wires,first,end+5_000_000,epoch=1)
+                mutations=[('jobs',0,'job_revision',4),('acquisition_continuations',0,'sealed_at_us',start),
+                    ('producer_epochs',1,'reserved_through_request',1),('producer_epochs',1,'state','retired'),
+                    ('source_streams',1,'last_complete_sequence',0),('allocation_domains',9,'xmin','999'),
+                    ('initial_ingest_successions',0,'issued_through',4),('initial_ingest_successions',0,'prepared_by_epoch',2),
+                    ('initial_ingest_successions',0,'outstanding_request_limit',1),('initial_ingest_activations',0,'activation_transaction','131'),
+                    ('initial_ingest_activations',0,'target_incarnation',retired['owner_epochs'][0]['process_incarnation']),
+                    ('topology_streams',1,'handoff_last_complete_sequence',18),('topology_generations',1,'sealed',1),
+                    ('owner_epochs',4,'state','released'),('owner_epochs',4,'control_backend_pid',9999),
+                    ('owner_epochs',4,'xmin',retired['jobs'][0]['xmin']),('role_instances',4,'xmin',retired['jobs'][0]['xmin']),
+                    ('owner_epochs',5,'lease_expires_at_us',end),('role_instances',5,'retired_at_us',end),
+                    ('datasets',0,'topology_generation',2)]
+                if mode=='after-complete':
+                    mutations += [('acquisition_continuations',0,key,None) for key in check.ADOPTION_FIELDS]
+                    mutations += [('acquisition_continuations',0,key,value) for key,value in (
+                        ('target_manifest_sha256','\\x'+'ff'*32),('activation_sha256','\\x'+'ff'*32),('adopting_epoch',2),
+                        ('adoption_transaction','135'),('adopted_at_us',start),('xmin','135'),('sealing_transaction','imaginary'))]
+                for table,index,key,value in mutations:
+                    changed=copy.deepcopy(after);changed[table][index][key]=value
+                    with self.subTest(table=table,key=key),self.assertRaises((AssertionError,ValueError)):
+                        check.adoption_fault(retired,changed,first,wires,events,dump,start,end,end+5_000_000,mode,fault)
+                # Every preexisting captured table is conserved, including xmins.
+                for table,rows in retired.items():
+                    if not rows:continue
+                    changed=copy.deepcopy(after);changed[table][0]['xmin']='9999'
+                    with self.subTest(old_table=table),self.assertRaises((AssertionError,ValueError)):
+                        check.adoption_fault(retired,changed,first,wires,events,dump,start,end,end+5_000_000,mode,fault)
+                for broken in (dict(dump,sequence=86),dict(dump,sequence=92),dict(dump,rows=dump['rows'][:-1])):
+                    with self.assertRaises((AssertionError,ValueError)):check.adoption_fault(retired,after,first,wires,events,broken,start,end,end+5_000_000,mode,fault)
+                with self.assertRaises((AssertionError,ValueError)):check.adoption_fault(retired,after,first,wires*2,events,dump,start,end,end+5_000_000,mode,fault)
+                with self.assertRaises((AssertionError,ValueError)):check.adoption_fault(retired,after,first,wires,events,dump,start,end,end+5_000_000,mode,dict(backend_pid=9999))
+                half=copy.deepcopy(after)
+                if mode=='after-complete':half['jobs']=copy.deepcopy(retired['jobs'])
+                else:half['jobs'][0].update(job_revision=3,owner_epoch=4,xmin='134')
+                with self.assertRaises((AssertionError,ValueError)):check.adoption_fault(retired,half,first,wires,events,dump,start,end,end+5_000_000,mode,fault)
+                for table in ('producer_requests','producer_outcomes','producer_checkpoints','acquisition_quanta'):
+                    extra=copy.deepcopy(after);extra[table].append(dict(extra[table][0],producer_epoch=2))
+                    with self.subTest(extra_epoch2=table),self.assertRaises((AssertionError,ValueError)):
+                        check.adoption_fault(retired,extra,first,wires,events,dump,start,end,end+5_000_000,mode,fault)
+                for table in ('owner_epochs','role_instances','source_streams','allocation_domains','jobs','acquisition_continuations'):
+                    altered=copy.deepcopy(retired);altered[table][0]['xmin']='99999'
+                    with self.subTest(prefix_table=table),self.assertRaises((AssertionError,ValueError)):check.adoption_recovery_prefix(before,sealed,altered,first)
+                check.adoption_fault_error('','error: initial native batch unavailable: Quantum(CommitUnknown)\n')
+                for stdout,stderr in (('{}','error: initial native batch unavailable: Quantum(CommitUnknown)\n'),
+                        ('','error: producer operation unavailable: CommitUnknown\n'),
+                        ('','error: initial native batch unavailable: Quantum(CommitUnknown)\nextra')):
+                    with self.assertRaises((AssertionError,ValueError)):check.adoption_fault_error(stdout,stderr)
+
+    def test_adoption_fault_cli_refuses_other_schedules_and_competing_fault_or_trace(self):
+        spec=importlib.util.spec_from_file_location('adoption_fault_runner_control',ROOT/'tests/acceptance/run.py')
+        runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+        common=['run.py','p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption','--linear-quantum-fault','plan-before']
+        for mode in ('before-forward','after-complete'):
+            with tempfile.TemporaryDirectory() as temporary:
+                tail=['--source-root',str(ROOT),'--evidence',str(Path(temporary)/'evidence'),'--linear-quantum-adoption-fault',mode]
+                with patch.object(sys,'argv',common+tail),patch.object(sys,'stdout'),patch('cases.first_launch.first_launch') as launched:
+                    self.assertEqual(runner.main(),2)
+                self.assertEqual(launched.call_args.args[0].linear_quantum_adoption_fault,mode)
+        for prefix in (['run.py','p01-t01','--binary',sys.executable],['run.py','p03-linear-quantum'],
+                common[:-1]+['plan-after'],common+['--linear-quantum-trace-successor-sql'],
+                common+['--linear-quantum-seal-fault','before-forward']):
+            with tempfile.TemporaryDirectory() as temporary:
+                evidence=Path(temporary)/'evidence'
+                with patch.object(sys,'argv',prefix+['--source-root',str(ROOT),'--evidence',str(evidence),
+                        '--linear-quantum-adoption-fault','before-forward']),patch.object(sys,'stderr'),self.assertRaises(SystemExit) as raised:
+                    runner.main()
+                self.assertEqual(raised.exception.code,2);self.assertFalse(evidence.exists())
+
+    def test_failed_adoption_startup_retains_exact_error_clocks_and_custody_before_peer_release(self):
+        for mode in ('before-forward','after-complete'):
+            for failure in (None,'diagnostic','exit','elapsed','file','native','extra-input','pid','proxy'):
+                with self.subTest(mode=mode,failure=failure),tempfile.TemporaryDirectory() as temporary:
+                    root=Path(temporary);before,sealed,retired,after,report,events,wires,first,dump,start,end,fault=adoption_fault_fixture(root,mode)
+                    runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.home=root/'peer';runtime.home.mkdir()
+                    runtime.state=root/'state';runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
+                    runtime.args=SimpleNamespace(linear_quantum_adoption_fault=mode,linear_quantum_trace_successor_sql=False)
+                    document_sha256=case.digest(runtime.config);runtime.adoption_retired=retired;runtime.adoption_first=first
+                    runtime.initialized=report;runtime.events=events;runtime.adoption_route=Mock()
+                    def finite(*args):
+                        (root/'bootstrap').mkdir();observed=root_configuration_report(document_sha256)
+                        publish(root/'bootstrap','adoption-root-config.stdout',observed);return observed
+                    runtime.finite=Mock(side_effect=finite)
+                    directory=runtime.state/'data/ingest/producer-inputs-v1';directory.mkdir(parents=True)
+                    for number,data in enumerate(first['inputs'],1):
+                        (directory/f"{report['producer_slot_id']}-0000000000000001-{number:016x}.cbor").write_bytes(data)
+                    runtime.adoption_original_files={'old-inputs':'exact'}
+                    runtime.files=Mock(return_value={'extra-epoch2-input':'unexpected'} if failure=='extra-input' else runtime.adoption_original_files)
+                    runtime.sql=Mock(side_effect=[str(start),str(end),str(end+10_000_000)])
+                    runtime.launch=Mock(return_value=dict(id='ab'*32))
+                    def waited(*args,**kwargs):
+                        if failure=='file':runtime.config.write_text('[runtime]\n# changed during startup\n')
+                        return SimpleNamespace(stdout='4\n')
+                    runtime.docker=Mock(side_effect=waited)
+                    runtime.inspect=Mock(return_value=dict(Id='ab'*32,State=dict(ExitCode=0 if failure=='exit' else 4,Pid=0,Running=False,OOMKilled=False)))
+                    def logs(entry,output):
+                        (output/'serve.stdout').write_text('')
+                        (output/'serve.stderr').write_text('error: initial native batch unavailable: Quantum('
+                            +('DeliveryUnknown' if failure=='diagnostic' else 'CommitUnknown')+')\n')
+                    runtime.logs=Mock(side_effect=logs)
+                    runtime.adoption_proxy_binding=dict(mode=mode,target='control-acquisition-adoption',frame_limit=131072,
+                        connection_limit=64,wire_limit=64*1024*1024)
+                    terminal=dict(runtime.adoption_proxy_binding,event='terminal',unexpected=0,frames=30,connections=1,bytes=1024,
+                        adoption_cas_complete=1,data_queries=1,data_commits=1,matched_commits=1,selected_commits=1,skipped_commits=0,
+                        selected_server_complete=int(mode=='after-complete'),selected_client_complete=0,
+                        server_complete=int(mode=='after-complete'),client_complete=0,faults=int(failure!='proxy'))
+                    selected=dict(terminal,event='fault',backend_pid=9999 if failure=='pid' else fault['backend_pid'])
+                    runtime.proxy_event=Mock(return_value=selected)
+                    def stop_proxy():
+                        publish(root,'adoption-proxy-terminal.json',terminal)
+                        publish(root,'adoption-proxy.json',dict(stdout='\n'.join(json.dumps(value) for value in (
+                            dict(event='adoption-cas-complete',backend_pid=selected['backend_pid']),selected))))
+                    runtime.stop_adoption_proxy=Mock(side_effect=stop_proxy)
+                    runtime.backend_absence=Mock();runtime.capture=Mock(return_value=(after,{}));runtime.wires=Mock(return_value=wires)
+                    if failure=='native':dump['sequence']=92
+                    def census(*args,**kwargs):
+                        runtime.stop_adoption_proxy.assert_called_once();runtime.backend_absence.assert_called_once()
+                        self.assertFalse((runtime.home/'adoption-commit-fault.continue').exists());return dump
+                    runtime.client=Mock(pid=12345);runtime.client.poll.return_value=None;runtime.processes=[runtime.client]
+                    runtime.wait=Mock();runtime.owned_listeners=Mock(return_value=['listener']);runtime.loopback_listener=Mock()
+                    (runtime.home/'client.stderr').write_text('')
+                    publish(runtime.home,'client-result.json',dict(status='PASS',completion='adoption-commit-fault',job_status=None))
+                    def joined(*,timeout):
+                        self.assertTrue((runtime.home/'adoption-commit-fault.continue').exists())
+                        self.assertTrue((root/'adoption-commit-fault/original-duration.json').exists())
+                        runtime.capture.assert_called_once();runtime.loopback_listener.assert_called_once();return 0
+                    runtime.client.wait.side_effect=joined
+                    with patch.object(case.native,'census',side_effect=census),patch.object(case,'stop_process'),\
+                            patch.object(case.time,'CLOCK_BOOTTIME',7,create=True),patch.object(case.time,'clock_gettime_ns',
+                                side_effect=[1_000_000_000,6_000_000_000 if failure=='elapsed' else 2_000_000_000]):
+                        if failure is None:runtime.failed_adoption()
+                        else:
+                            with self.assertRaises((AssertionError,ValueError)):runtime.failed_adoption()
+                    runtime.finite.assert_called_once_with('adoption-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+                    runtime.launch.assert_called_once_with('adoption-successor','app','serve','--file','/etc/bigbrotr/instance.toml',
+                        '--activate-initial-successor','--roles','control,ingest,sync')
+                    runtime.wait.assert_not_called()
+                    if failure is None:
+                        self.assertEqual(runtime.processes,[]);runtime.client.wait.assert_called_once_with(timeout=6)
+                    else:
+                        runtime.client.wait.assert_not_called();self.assertFalse((runtime.home/'adoption-commit-fault.continue').exists())
     def test_seal_fault_parser_accepts_only_its_explicit_negative_schedule(self):
         spec=importlib.util.spec_from_file_location('seal_fault_runner_control',ROOT/'tests/acceptance/run.py')
         runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
@@ -1242,13 +1508,15 @@ class CappedAdoptionControls(unittest.TestCase):
 
     def test_negative_client_keeps_peer_until_its_host_gate_and_makes_no_successor_call(self):
         from linear_capped_client import run_adoption
-        for fault,seal,gate in (('plan-after',None,'unsettled-seal-refusal'),
-                ('plan-before','before-forward','seal-commit-fault'),('plan-before','after-complete','seal-commit-fault')):
+        for fault,seal,adoption,gate in (('plan-after',None,None,'unsettled-seal-refusal'),
+                ('plan-before','before-forward',None,'seal-commit-fault'),('plan-before','after-complete',None,'seal-commit-fault'),
+                ('plan-before',None,'before-forward','adoption-commit-fault'),('plan-before',None,'after-complete','adoption-commit-fault')):
             with tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);session=root/'session.private';saved=dict(session='private')
                 session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
                 publish(root,'linear-quantum-fault.json',fault);(root/'prepared.continue').write_text('prepared\n')
                 if seal is not None:publish(root,'linear-quantum-seal-fault.json',seal)
+                if adoption is not None:publish(root,'linear-quantum-adoption-fault.json',adoption)
                 calls=[];result=[];errors=[];peer_started=threading.Event();peer_joined=threading.Event();cli=Mock()
                 def request(method,path,body=None,headers=None):
                     calls.append((method,path,body));self.assertEqual(method,'POST')

@@ -68,7 +68,14 @@ unadopted. The failed command can leave its source closed and its fresh Control
 row active after the process/backend join. Observing either seal outcome alone
 authorizes no implicit retry, retirement, activation or new wire work.
 An exact committed seal keeps its original sealer/time. A committed adoption and
-job-owner change form one transaction. Until it is positively confirmed, no new
+job-owner change form one transaction. An unknown adoption COMMIT stops startup
+with `initial native batch unavailable: Quantum(CommitUnknown)` before its
+activated/startup report or any new wire request. Native preparation/activation
+can already be retained, with fresh Control and Ingest rows active even after
+the writer and connection driver have joined. Preserve that candidate and both
+possible job/seal cuts; neither active SQL rows nor activation metadata grant
+permission to reconstruct the lost writer or retry its work.
+Until adoption is positively confirmed, no new
 wire work is authorized. A lost activated candidate is never recreated from its
 activation row; use the existing recovery/retirement procedure and a newly minted
 successor. Whole-intent abandonment remains a separate explicit cancellation

@@ -18,6 +18,10 @@ from unittest.mock import patch
 from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
                                 IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, failure_kind, gap_write_refusal)
 
+ADOPTION_CAS_QUERY=(b'UPDATE control.jobs SET job_revision=job_revision+1,owner_resource_id=$3::bytea,'
+    b'owner_epoch=$4::text::numeric,owner_incarnation=$5::bytea WHERE job_id=$1::bytea AND state=\'queued\' '
+    b'AND job_revision=$2::text::numeric AND checkpoint_revision=0')
+
 
 def gap_error(**changes):
     fields = dict(S=b'ERROR', V=b'ERROR', C=b'23514',
@@ -455,6 +459,18 @@ class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
 
 
 class ClosedProfile(unittest.TestCase):
+    def test_adoption_profile_matches_only_final_job_cas_and_keeps_existing_bounds(self):
+        self.assertTrue(control_target_query('control-acquisition-adoption',ADOPTION_CAS_QUERY))
+        self.assertTrue(control_target_query('control-acquisition-adoption',ADOPTION_CAS_QUERY.replace(b' WHERE ',b'\n WHERE   ')))
+        for query in (ADOPTION_CAS_QUERY+b' RETURNING job_id',ADOPTION_CAS_QUERY.replace(b'checkpoint_revision=0',b'checkpoint_revision=1'),
+                b'UPDATE control.jobs SET state=\'queued\'',b'UPDATE control.acquisition_continuations SET target_epoch=2'):
+            self.assertFalse(control_target_query('control-acquisition-adoption',query))
+        proxy=Proxy('after-complete','control-acquisition-adoption',profile='retained-catch-up')
+        self.assertEqual((proxy.frame_limit,proxy.connection_limit,proxy.lifetime_seconds,MAX_WIRE),(131072,64,120,64*1024*1024))
+        for options in ({'mode':'pass'},{'defer_arm':True},{'lifetime_seconds':180},{'profile':'ordinary-reader'},{'commit_ordinal':2}):
+            values=dict(mode='before-forward',target='control-acquisition-adoption');values.update(options)
+            with self.subTest(options=options),self.assertRaises(ValueError):Proxy(**values)
+
     def test_seal_profile_keeps_existing_bounds_and_single_commit_ordinal(self):
         for mode in ('before-forward','after-complete'):
             for profile,limits in (('default',(20000,16)),('retained-catch-up',(131072,64))):
@@ -708,6 +724,80 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def adoption_execute(self,connection,*,name=b'adopt',query=ADOPTION_CAS_QUERY,parse=True,result=b'UPDATE 1\0'):
+        if parse:await self.exchange(connection,b'P',name+b'\0'+query+b'\0\0\0',[(b'1',b'')])
+        await self.exchange(connection,b'B',b'\0'+name+b'\0\0\0\0\0\0\0',[(b'2',b'')])
+        await self.exchange(connection,b'E',b'\0'*5,[(b'C',result)])
+        await self.exchange(connection,b'S',b'',[(b'Z',b'T')])
+
+    async def test_adoption_cas_selects_only_successful_execute_then_same_backend_commit(self):
+        for mode in ('before-forward','after-complete'):
+            with self.subTest(mode=mode):
+                async with SocketProxy(self,mode,target='control-acquisition-adoption',deferred=False,profile='retained-catch-up') as proxy:
+                    ready=proxy.events[0]
+                    self.assertEqual((ready['connection_limit_scope'],ready['wire_limit'],ready['lifetime_seconds']),('lifetime',64*1024*1024,120))
+                    self.assertEqual(ready['source_sha256'],hashlib.sha256(Path(__file__).with_name('native_commit_proxy.py').read_bytes()).hexdigest())
+                    c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+                    begin=[(b'C',b'BEGIN\0'),(b'Z',b'T')];commit=[(b'C',b'COMMIT\0'),(b'Z',b'I')]
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.adoption_execute(c,result=b'UPDATE 0\0')
+                    await self.exchange(c,b'Q',b'COMMIT\0',commit)
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.exchange(c,b'B',b'\0adopt\0\0\0\0\0\0\0',[(b'2',b'')])
+                    await self.exchange(c,b'S',b'',[(b'Z',b'T')])
+                    await self.exchange(c,b'Q',b'COMMIT\0',commit)
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.adoption_execute(c,name=b'cached',query=b'UPDATE control.jobs SET state=\'queued\'')
+                    await self.exchange(c,b'Q',b'COMMIT\0',commit)
+                    await self.exchange(c,b'P',b'cached\0'+ADOPTION_CAS_QUERY+b'\0\0\0',[(b'E',b'SERROR\0C42P05\0Mfixture duplicate\0\0')])
+                    await self.exchange(c,b'S',b'',[(b'Z',b'I')])
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.adoption_execute(c,name=b'cached',parse=False)
+                    await self.exchange(c,b'Q',b'COMMIT\0',commit)
+                    # A Bind error must not attribute its skipped Execute to adoption.
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.exchange(c,b'B',b'\0adopt\0\0\0\0\0\0\0',[(b'E',b'SERROR\0C22023\0Mfixture bind refusal\0\0')])
+                    await self.exchange(c,b'S',b'',[(b'Z',b'E')])
+                    await self.exchange(c,b'Q',b'COMMIT\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.adoption_execute(c,parse=False)
+                    executed=await proxy.event('adoption-cas-complete');self.assertEqual(executed['backend_pid'],7331)
+                    c[1].write(message(b'Q',b'COMMIT\0'));await c[1].drain()
+                    if mode=='after-complete':
+                        self.assertEqual(await asyncio.wait_for(read_message(c[2]),3),(b'Q',b'COMMIT\0'))
+                        c[3].write(message(b'C',b'COMMIT\0')+message(b'Z',b'I'));await c[3].drain()
+                    fault=await proxy.event('fault');self.assertEqual(fault['backend_pid'],7331)
+                    self.assertEqual(await asyncio.wait_for(c[0].read(),3),b'')
+                    self.assertEqual(await asyncio.wait_for(c[2].read(),3),b'')
+                    await proxy.stop()
+                    for value in (fault,proxy.events[-1]):
+                        self.assertEqual([value[key] for key in ('adoption_cas_complete','data_queries','matched_commits','selected_commits',
+                            'skipped_commits','selected_server_complete','selected_client_complete','faults')],[1,1,1,1,0,int(mode=='after-complete'),0,1])
+
+    async def test_adoption_rollback_and_other_session_commit_cannot_consume_selection(self):
+        async with SocketProxy(self,'before-forward',target='control-acquisition-adoption',deferred=False) as proxy:
+            c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+            await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+            await self.adoption_execute(c);await proxy.event('adoption-cas-complete')
+            other=await proxy.connect('bigbrotr_control','bigbrotr_control',backend_pid=7332)
+            await self.exchange(other,b'Q',b'COMMIT\0',[(b'C',b'COMMIT\0'),(b'Z',b'I')])
+            await self.exchange(c,b'Q',b'ROLLBACK\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+            await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+            await self.exchange(c,b'Q',b'COMMIT\0',[(b'C',b'COMMIT\0'),(b'Z',b'I')])
+            await proxy.stop();terminal=proxy.events[-1]
+            self.assertEqual((terminal['adoption_cas_complete'],terminal['matched_commits'],terminal['faults']),(1,0,0))
+
+    async def test_adoption_target_refuses_wrong_login_and_nonpositive_backend_pid(self):
+        for user,database,pid in (('reader','bigbrotr_control',7331),('bigbrotr_control','catalog',7331),('bigbrotr_control','bigbrotr_control',0)):
+            with self.subTest(user=user,database=database,pid=pid):
+                async with SocketProxy(self,'before-forward',target='control-acquisition-adoption',deferred=False,unexpected=1) as proxy:
+                    with self.assertRaises((asyncio.IncompleteReadError,ConnectionResetError,TimeoutError)):
+                        c=await proxy.connect(user,database,backend_pid=pid)
+                        await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+                        await self.adoption_execute(c)
+                    await proxy.stop();terminal=proxy.events[-1]
+                    self.assertEqual((terminal['adoption_cas_complete'],terminal['matched_commits'],terminal['faults']),(0,0,0))
+
     async def seal_execute(self,connection,*,name=b'seal',parse=True,result=b'INSERT 0 1\0'):
         if parse:
             await self.exchange(connection,b'P',name+b'\0INSERT INTO control.acquisition_continuations(continuation_id) VALUES ($1::bytea)\0\0\0',[(b'1',b'')])
