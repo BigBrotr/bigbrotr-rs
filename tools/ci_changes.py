@@ -18,8 +18,12 @@ CONTROL_FILES = {
     'experiments/ingest-bootstrap/installed_archive_export_oracle.py',
     'experiments/ingest-bootstrap/test_installed_archive_profile.py',
     'experiments/ingest-bootstrap/installed_passive_monitor_client.py',
+    'experiments/ingest-bootstrap/installed_progress_context_oracle.py',
     'experiments/ingest-bootstrap/installed_sync_oracle.py',
+    'experiments/ingest-bootstrap/linear_capped_client.py',
+    'experiments/ingest-succession/installed_family_science.py',
     'docs/development/verification.md',
+    'docs/operations/acquisition-continuation.md',
     'docs/operations/monitor.md',
 }
 

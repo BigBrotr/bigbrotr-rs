@@ -161,8 +161,12 @@ class CiSelectionControls(unittest.TestCase):
                      'experiments/ingest-bootstrap/installed_archive_export_oracle.py',
                      'experiments/ingest-bootstrap/test_installed_archive_profile.py',
                      'experiments/ingest-bootstrap/installed_passive_monitor_client.py',
+                     'experiments/ingest-bootstrap/installed_progress_context_oracle.py',
                      'experiments/ingest-bootstrap/installed_sync_oracle.py',
-                     'docs/development/verification.md', 'docs/operations/monitor.md']:
+                     'experiments/ingest-bootstrap/linear_capped_client.py',
+                     'experiments/ingest-succession/installed_family_science.py',
+                     'docs/development/verification.md', 'docs/operations/monitor.md',
+                     'docs/operations/acquisition-continuation.md']:
             with self.subTest(path=path):
                 self.assertTrue(controls_only(['docs/implementation/progress.md', path]))
         for path in ['apps/bigbrotr/src/main.rs', 'Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml',
@@ -172,13 +176,80 @@ class CiSelectionControls(unittest.TestCase):
                      'experiments/archive-engine/native_commit_proxy_extra.py',
                      'experiments/archive-engine/native_commit_proxy_tests.rs',
                      'experiments/ingest-bootstrap/installed_passive_monitor.py',
+                     'experiments/ingest-bootstrap/installed_progress_context.py',
+                     'experiments/ingest-bootstrap/installed_progress_context_oracle_extra.py',
                      'experiments/ingest-bootstrap/installed_sync_client.py',
+                     'experiments/ingest-bootstrap/linear_capped_transport.py',
+                     'experiments/ingest-succession/installed_family_client.py',
+                     'experiments/ingest-succession/installed_family_science_extra.py',
                      'config/recipes/acceptance.toml', 'vendor/native/probe.py',
+                     'docs/operations/acquisition-continuation-extra.md',
                      'docs/operations/unknown.md', 'docs/specification/operations-contract.md',
                      'docs/tutorials/first-event.md', 'contracts/config/schema.json']:
             with self.subTest(path=path):
                 self.assertFalse(controls_only(['docs/operations/monitor.md','tests/acceptance/test_ci.py', path]))
         self.assertFalse(controls_only([]))
+
+    def test_handoff_control_diff_keeps_protected_inputs_native(self):
+        from tools.ci_changes import select
+        # Literal maintained handoff inputs, independent of the selector's set.
+        paths = (
+            'docs/development/verification.md',
+            'docs/operations/acquisition-continuation.md',
+            'experiments/ingest-bootstrap/installed_progress_context_oracle.py',
+            'experiments/ingest-bootstrap/linear_capped_client.py',
+            'experiments/ingest-succession/installed_family_science.py',
+            'tests/acceptance/cases/first_launch.py',
+            'tests/acceptance/cases/first_launch_capped_oracle.py',
+            'tests/acceptance/cases/first_launch_capped_quantum.py',
+            'tests/acceptance/cases/first_launch_handoff.py',
+            'tests/acceptance/cases/first_launch_handoff_oracle.py',
+            'tests/acceptance/run.py',
+            'tests/acceptance/test_linear_capped_adoption.py',
+            'tests/acceptance/test_linear_handoff.py',
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(
+                    ['git', '-c', 'gc.auto=0', '-c', 'maintenance.auto=false', '-C', str(root), *args],
+                    stderr=subprocess.DEVNULL, text=True).strip()
+            def commit(message):
+                git('add', '.')
+                git('-c', 'user.name=CI fixture', '-c', 'user.email=ci@example.invalid',
+                    'commit', '-qm', message)
+                return git('rev-parse', 'HEAD')
+            git('init', '-q')
+            (root/'README.md').write_text('fixture baseline\n')
+            base = commit('base')
+            for name in paths:
+                path = root/name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('independent acceptance fixture\n')
+            controls = commit('handoff controls')
+            result = select(base, controls, root)
+            self.assertEqual(result['paths'], sorted(paths))
+            self.assertFalse(result['foundation'])
+            self.assertTrue(result['controls'])
+            self.assertEqual(result['reason'], 'portable control-only allowlist')
+            previous = controls
+            for name in ('apps/bigbrotr/src/main.rs', 'Cargo.lock', 'tools/build.py',
+                         'tools/ci.py', 'tools/ci_changes.py', '.github/workflows/ci.yml',
+                         'config/recipes/acceptance.toml', 'tests/acceptance/linux/Dockerfile',
+                         'packaging/release/assemble.py', 'experiments/unknown/probe.py'):
+                with self.subTest(path=name):
+                    path = root/name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text('protected fixture input\n')
+                    mixed = commit('protected input')
+                    result = select(previous, mixed, root)
+                    self.assertEqual(result['paths'], [name])
+                    self.assertTrue(result['foundation'])
+                    self.assertFalse(result['controls'])
+                    mixed_result = select(base, mixed, root)
+                    self.assertTrue(mixed_result['foundation'])
+                    self.assertFalse(mixed_result['controls'])
+                    previous = mixed
 
     def test_complete_git_diff_keeps_deleted_and_renamed_code(self):
         from tools.ci_changes import select
