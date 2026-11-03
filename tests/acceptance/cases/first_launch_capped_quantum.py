@@ -486,24 +486,34 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
 
     def refuse_unsettled_seal(self):
         output=self.root/'unsettled-seal-refusal';output.mkdir(mode=0o700)
+        document_sha256=digest(self.config)
+        resolved=self.finite('unsettled-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+        require(digest(self.config)==document_sha256,'unsettled seal refusal prerequisite: root file changed during config show')
+        authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,self.adoption_before)
+        show_sha256=digest(self.root/'bootstrap/unsettled-root-config.stdout')
         clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
         before_us=int(self.sql('bigbrotr_control',clock))
-        authorization_us=oracle.adoption_seal_eligibility(self.adoption_before,before_us)
+        oracle.adoption_seal_eligibility(self.adoption_before,before_us)
         boottime=getattr(time,'CLOCK_BOOTTIME',None)
         require(boottime is not None,'unsettled seal refusal prerequisite: Linux CLOCK_BOOTTIME is required')
         # Product policy authority uses Linux boottime too. Every fresh policy
         # tracker is created inside this conservative whole-attempt interval.
+        require(digest(self.config)==document_sha256,'unsettled seal refusal prerequisite: root file changed before recovery')
         started_ns=time.clock_gettime_ns(boottime)
         entry=self.launch('refuse-unsettled-seal','app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
         ended=self.docker('wait',entry['id'],timeout=180)
         attempt_ns=time.clock_gettime_ns(boottime)-started_ns
+        after_document_sha256=digest(self.config)
         returned_us=int(self.sql('bigbrotr_control',clock))
         self.logs(entry,output);terminal=self.inspect(entry)
         save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
         save(output/'authorization-interval.json',dict(clock='CLOCK_BOOTTIME',elapsed_ns=attempt_ns,
-            accepted_authorization_ttl_us=authorization_us,command_returned_at_us=returned_us))
+            root_authorization_ttl_us=authorization_us,command_returned_at_us=returned_us,
+            root_config_document_sha256=document_sha256,root_config_after_recovery_sha256=after_document_sha256,
+            root_config_show_sha256=show_sha256,root_setting_source=resolved['settings']['runtime.authorization_ttl']['source']))
+        require(after_document_sha256==document_sha256,'unsettled seal refusal prerequisite: root file changed during recovery')
         require(type(attempt_ns) is int and 0<=attempt_ns<authorization_us*1000,
-            'unsettled seal refusal prerequisite: recovery attempt exceeded accepted authorization interval')
+            'unsettled seal refusal prerequisite: recovery attempt exceeded resolved root authorization interval')
         require(ended.stdout.strip()=='4' and terminal['State']['ExitCode']==4 and terminal['State']['Pid']==0
             and not terminal['State']['Running'] and not terminal['State']['OOMKilled'],'unsettled seal recovery did not exit4 naturally')
         oracle.adoption_unsettled_error((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())

@@ -385,6 +385,27 @@ def adoption_unsettled_history(state,wires,events,first):
     return result
 
 
+def adoption_root_authorization(report,document_sha256,state):
+    """Bind the offline resolver's deployment root; accepted policy excludes it."""
+    assert report['format']=='bigbrotr-config-static/1' and report['status']=='valid-static'
+    assert re.fullmatch('[0-9a-f]{64}',document_sha256) and report['document_sha256']==document_sha256
+    setting=report['settings']['runtime.authorization_ttl']
+    assert set(setting)=={'value','source','default_from','default_add_us','reload','deployment_locked','applicability'}
+    assert setting['deployment_locked'] is True and setting['reload']=='live-revocation-barrier'
+    assert setting['applicability']=='selected' and setting['source'] in ('schema-default','recipe','file')
+    assert setting['default_from'] is None and setting['default_add_us']=='0'
+    value=setting['value'];assert type(value) is str and re.fullmatch('[1-9][0-9]*',value)
+    authorization_us=source.clock(int(value),1,2**64-1)
+    seed=report['initial_policy']
+    assert seed['format']=='bigbrotr-product-policy/3' and seed['status']=='candidate-only'
+    assert re.fullmatch('[0-9a-f]{64}',seed['sha256'])
+    for kind in ('config','policy'):
+        revision=source.only(state[kind+'_revisions'])
+        assert revision['document_digest']=='\\x'+seed['sha256'],'resolved non-root policy differs from accepted identity'
+        assert 'runtime.authorization_ttl' not in revision['document']['settings'],'deployment root leaked into accepted policy'
+    return authorization_us
+
+
 def adoption_seal_eligibility(state,observed_at_us):
     """The original actor, accepted documents, source and deadline still allow sealing."""
     job=source.only(state['jobs']);detail=source.only(state['acquisition_jobs']);dataset=source.only(state['datasets'])
@@ -397,21 +418,17 @@ def adoption_seal_eligibility(state,observed_at_us):
     assert actor['active'] is True
     source.only(state['principal_grants'],dataset_id=job['dataset_id'],principal_id=detail['actor_id'],
         action='roles.control',resource_kind='dataset',resource_id=job['dataset_id'])
-    authorization=[]
     for kind in ('config','policy'):
         revision=source.only(state[kind+'_revisions'],dataset_id=job['dataset_id'],revision=job[kind+'_revision'])
         assert dataset[kind+'_revision']==job[kind+'_revision']==1
         assert revision['document']['format']=='bigbrotr-product-policy/3'
         assert revision['document']['settings']['sync.enabled'] is True
-        authorization.append(revision['document']['settings']['runtime.authorization_ttl'])
-    source.exact(authorization[0],authorization[1],'accepted authorization interval differs')
-    authorization_us=source.clock(authorization[0],1,2**64-1)
+        assert 'runtime.authorization_ttl' not in revision['document']['settings']
     scope=source.only(state['acquisition_scopes'],scope_id=detail['scope_id'])
     assert scope['policy_revision']==job['policy_revision']
     enrollment=source.only(state['relay_enrollments'],dataset_id=job['dataset_id'],
         endpoint_id=scope['endpoint_id'],access_scope_id=scope['access_scope_id'])
     assert enrollment['enabled'] is True and enrollment['generation']==1
-    return authorization_us
 
 
 def adoption_unsettled_refusal(before,after,first,wires,events,before_us,returned_us,after_us):

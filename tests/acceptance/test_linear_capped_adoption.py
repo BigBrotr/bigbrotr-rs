@@ -10,6 +10,7 @@ import socket
 import threading
 import time
 import sys
+import tomllib
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock,patch
@@ -246,9 +247,9 @@ def unsettled_fixture(root):
     before['local_accounts']=[dict(dataset_id=dataset,principal_id=job['principal_id'],active=True)]
     before['principal_grants']=[dict(dataset_id=dataset,principal_id=job['principal_id'],action='roles.control',
         resource_kind='dataset',resource_id=dataset)]
-    document=dict(format='bigbrotr-product-policy/3',settings={'sync.enabled':True,'runtime.authorization_ttl':5_000_000})
+    document=dict(format='bigbrotr-product-policy/3',settings={'sync.enabled':True})
     for kind in ('config','policy'):
-        before[kind+'_revisions']=[dict(dataset_id=dataset,revision=1,document=copy.deepcopy(document))]
+        before[kind+'_revisions']=[dict(dataset_id=dataset,revision=1,document=copy.deepcopy(document),document_digest='\\x'+'ab'*32)]
     before['acquisition_scopes'][0]['policy_revision']=1
     before['relay_enrollments'][0].update(dataset_id=dataset,enabled=True,generation=1)
     old=source.only(before['owner_epochs'],role='control');old['lease_expires_at_us']=ACCEPTED+60_000_000
@@ -279,7 +280,51 @@ def unsettled_fixture(root):
     return before,after,report,events,wires[:1],first,dump,closed,before_us,after_us
 
 
+def root_configuration_report(document_sha256,value='5000000'):
+    """Declared config-show serialization; this fixture never resolves defaults."""
+    return dict(format='bigbrotr-config-static/1',status='valid-static',document_sha256=document_sha256,
+        initial_policy=dict(format='bigbrotr-product-policy/3',status='candidate-only',sha256='ab'*32),
+        settings={'runtime.authorization_ttl':dict(value=value,source='schema-default',default_from=None,
+            default_add_us='0',reload='live-revocation-barrier',deployment_locked=True,applicability='selected')})
+
+
 class CappedAdoptionControls(unittest.TestCase):
+    def test_root_authorization_requires_actual_show_types_file_and_nonroot_policy_binding(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);state,*_=unsettled_fixture(root)
+            config=root/'root.toml';config.write_text('[runtime]\n')
+            self.assertNotIn('authorization_ttl',tomllib.loads(config.read_text())['runtime'])
+            for kind in ('config','policy'):self.assertNotIn('runtime.authorization_ttl',state[kind+'_revisions'][0]['document']['settings'])
+            for literal,value in ((None,'5000000'),('1us','1'),('7s','7000000')):
+                config.write_text('[runtime]\n'+('' if literal is None else 'authorization_ttl="'+literal+'"\n'))
+                document_sha256=case.digest(config)
+                observed=root_configuration_report(document_sha256,value)
+                if literal is not None:observed['settings']['runtime.authorization_ttl']['source']='file'
+                self.assertEqual(check.adoption_root_authorization(observed,document_sha256,state),int(value))
+            config.write_text('[runtime]\n');document_sha256=case.digest(config)
+            for fault in ('number','boolean','zero','leading-zero','fraction','overflow','source','locked','reload','unselected',
+                    'dependent','offset','file','seed','missing','unknown','validate-only','policy-root','accepted-digest'):
+                observed=root_configuration_report(document_sha256);selected=observed['settings']['runtime.authorization_ttl']
+                accepted=copy.deepcopy(state)
+                if fault in ('number','boolean','zero','leading-zero','fraction','overflow'):
+                    selected['value']={'number':5_000_000,'boolean':True,'zero':'0','leading-zero':'05000000',
+                        'fraction':'5000000.0','overflow':str(2**64)}[fault]
+                elif fault=='source':selected['source']='accepted-policy'
+                elif fault=='locked':selected['deployment_locked']=False
+                elif fault=='reload':selected['reload']='restart'
+                elif fault=='unselected':selected['applicability']='staged-unselected'
+                elif fault=='dependent':selected['default_from']='another.key'
+                elif fault=='offset':selected['default_add_us']=0
+                elif fault=='file':observed['document_sha256']='cd'*32
+                elif fault=='seed':observed['initial_policy']['sha256']='cd'*32
+                elif fault=='missing':del selected['value']
+                elif fault=='unknown':selected['extra']=True
+                elif fault=='validate-only':del observed['settings']
+                elif fault=='policy-root':accepted['policy_revisions'][0]['document']['settings']['runtime.authorization_ttl']=5_000_000
+                else:accepted['config_revisions'][0]['document_digest']='\\x'+'cd'*32
+                with self.subTest(fault=fault),self.assertRaises((AssertionError,KeyError,TypeError,ValueError)):
+                    check.adoption_root_authorization(observed,document_sha256,accepted)
+
     def test_unsettled_plan_refusal_keeps_exact_history_progress_inputs_and_permitted_native_close(self):
         with tempfile.TemporaryDirectory() as temporary:
             before,after,report,events,wires,first,dump,closed,start,end=unsettled_fixture(Path(temporary))
@@ -320,18 +365,13 @@ class CappedAdoptionControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             baseline,closed,_,events,wires,first,_,_,start,end=unsettled_fixture(Path(temporary))
             for name in ('actor','grant','policy','source','expiry','old-owner-live','fresh-owner-expired','seal','activation',
-                    'authorization-zero','authorization-boolean','authorization-string','authorization-disagree','authorization-missing',
+                    'authorization-in-policy',
                     'retirement','closure-cut','closure-digest','deadline','job-xmin','old-row-xmin','pending-xmin','input','role','source-identity'):
                 before=copy.deepcopy(baseline);after=copy.deepcopy(closed);finish=end
                 if name=='actor':before['local_accounts'][0]['active']=False
                 elif name=='grant':before['principal_grants']=[]
                 elif name=='policy':before['policy_revisions'][0]['document']['settings']['sync.enabled']=False
-                elif name in ('authorization-zero','authorization-boolean','authorization-string'):
-                    for kind in ('config','policy'):
-                        before[kind+'_revisions'][0]['document']['settings']['runtime.authorization_ttl']={
-                            'authorization-zero':0,'authorization-boolean':True,'authorization-string':'5000000'}[name]
-                elif name=='authorization-disagree':before['policy_revisions'][0]['document']['settings']['runtime.authorization_ttl']=6_000_000
-                elif name=='authorization-missing':del before['policy_revisions'][0]['document']['settings']['runtime.authorization_ttl']
+                elif name=='authorization-in-policy':before['policy_revisions'][0]['document']['settings']['runtime.authorization_ttl']=5_000_000
                 elif name=='source':before['relay_enrollments'][0]['enabled']=False
                 elif name=='expiry':finish=after['acquisition_jobs'][0]['deadline_at_us']
                 elif name=='old-owner-live':source.only(before['owner_epochs'],role='control')['lease_expires_at_us']=start+1
@@ -355,11 +395,21 @@ class CappedAdoptionControls(unittest.TestCase):
                 with self.subTest(stdout=stdout,stderr=stderr),self.assertRaises(AssertionError):check.adoption_unsettled_error(stdout,stderr)
 
     def test_failed_seal_requires_natural_exact_refusal_and_captures_before_releasing_peer(self):
-        for fault in ('none','exit','error','native','authorization-duration','clock','clock-reversed'):
+        for fault in ('none','exit','error','native','authorization-duration','clock','clock-reversed',
+                'show-change','pre-recovery-change','recovery-change'):
             with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);before,after,report,events,wires,first,_,closed,start,end=unsettled_fixture(root)
                 runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root
                 runtime.home=root/'peer';runtime.home.mkdir();runtime.state=root/'state'
+                runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
+                document_sha256=case.digest(runtime.config)
+                def finite(*args):
+                    observed=root_configuration_report(document_sha256)
+                    (root/'bootstrap').mkdir()
+                    publish(root/'bootstrap','unsettled-root-config.stdout',observed)
+                    if fault=='show-change':runtime.config.write_text('[runtime]\n# changed during show\n')
+                    return observed
+                runtime.finite=Mock(side_effect=finite)
                 directory=runtime.state/'data/ingest/producer-inputs-v1';directory.mkdir(parents=True)
                 for number,data in enumerate(first['inputs'],1):
                     (directory/f"{report['producer_slot_id']}-0000000000000001-{number:016x}.cbor").write_bytes(data)
@@ -367,9 +417,19 @@ class CappedAdoptionControls(unittest.TestCase):
                 publish(runtime.home,'client-result.json',dict(status='PASS',completion='unsettled-seal-refusal',job_status=None))
                 runtime.adoption_before=before;runtime.adoption_first=first;runtime.initialized=report;runtime.events=events
                 runtime.adoption_original_files={'old-inputs':'exact'};runtime.files=Mock(return_value=runtime.adoption_original_files)
-                runtime.sql=Mock(side_effect=[str(start),str(end),str(end+5_000_000)]);runtime.capture=Mock(return_value=(after,{}))
+                clocks=iter([str(start),str(end),str(end+5_000_000)])
+                def sql(*args):
+                    value=next(clocks)
+                    if fault=='pre-recovery-change' and value==str(start):runtime.config.write_text('[runtime]\n# changed before recovery\n')
+                    return value
+                runtime.sql=Mock(side_effect=sql);runtime.capture=Mock(return_value=(after,{}))
                 runtime.wires=Mock(return_value=wires);runtime.backend_absence=Mock()
                 runtime.launch=Mock(return_value=dict(id='ab'*32));runtime.docker=Mock(return_value=SimpleNamespace(stdout='4\n'))
+                if fault=='recovery-change':
+                    def wait(*args,**kwargs):
+                        runtime.config.write_text('[runtime]\n# changed during recovery\n')
+                        return SimpleNamespace(stdout='4\n')
+                    runtime.docker.side_effect=wait
                 runtime.inspect=Mock(return_value=dict(Id='ab'*32,State=dict(ExitCode=0 if fault=='exit' else 4,
                     Pid=0,Running=False,OOMKilled=False)))
                 def logs(entry,output):
@@ -393,14 +453,19 @@ class CappedAdoptionControls(unittest.TestCase):
                         patch.object(case.time,'clock_gettime_ns',side_effect=samples) as measured:
                     if fault=='none':runtime.refuse_unsettled_seal()
                     elif fault in ('authorization-duration','clock-reversed'):
-                        with self.assertRaisesRegex(ValueError,'unsettled seal refusal prerequisite: recovery attempt exceeded accepted authorization interval'):
+                        with self.assertRaisesRegex(ValueError,'unsettled seal refusal prerequisite: recovery attempt exceeded resolved root authorization interval'):
                             runtime.refuse_unsettled_seal()
                     elif fault=='clock':
                         with self.assertRaisesRegex(ValueError,'unsettled seal refusal prerequisite: Linux CLOCK_BOOTTIME'):
                             runtime.refuse_unsettled_seal()
+                    elif fault.endswith('change'):
+                        with self.assertRaisesRegex(ValueError,'unsettled seal refusal prerequisite: root file changed'):
+                            runtime.refuse_unsettled_seal()
                     else:
                         with self.assertRaises((AssertionError,ValueError)):runtime.refuse_unsettled_seal()
-                    if fault=='clock':runtime.launch.assert_not_called();runtime.docker.assert_not_called();measured.assert_not_called()
+                    runtime.finite.assert_called_once_with('unsettled-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+                    if fault in ('clock','show-change','pre-recovery-change'):
+                        runtime.launch.assert_not_called();runtime.docker.assert_not_called();measured.assert_not_called()
                     else:
                         runtime.launch.assert_called_once_with('refuse-unsettled-seal','app','ingest','recover','--file',
                             '/etc/bigbrotr/instance.toml','--seal-acquisition')
@@ -408,8 +473,10 @@ class CappedAdoptionControls(unittest.TestCase):
                         self.assertEqual([observed.args for observed in measured.call_args_list],[(7,),(7,)])
                     if fault=='authorization-duration':
                         self.assertEqual(json.loads((root/'unsettled-seal-refusal/authorization-interval.json').read_text()),
-                            dict(clock='CLOCK_BOOTTIME',elapsed_ns=5_000_000_000,accepted_authorization_ttl_us=5_000_000,
-                                command_returned_at_us=end))
+                            dict(clock='CLOCK_BOOTTIME',elapsed_ns=5_000_000_000,root_authorization_ttl_us=5_000_000,
+                                command_returned_at_us=end,root_config_document_sha256=document_sha256,
+                                root_config_after_recovery_sha256=document_sha256,
+                                root_config_show_sha256=case.digest(root/'bootstrap/unsettled-root-config.stdout'),root_setting_source='schema-default'))
                     if fault=='none':
                         self.assertEqual(runtime.processes,[])
                         census.assert_called_once_with(runtime,root/'unsettled-seal-refusal',expected_writer_exit=4,
