@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "Root121aaf00 plus bounded tutorial/checkpoint update; main/origin/actual remote5a9b7cc4 clean/pushed",
-      "state": "Monitor bounded recovery published/qualified; M2 first all-target compile failed. Mechanical PG catalog/accessor correction committed121aaf00, fresh compiled/installed qualification pending.",
+      "observed_source": "Root5e1a99ee before current checkpoint; canonical main/origin/actual remote5a9b7cc4 clean/pushed",
+      "state": "Bounded Monitor qualified/published. Corrected M2 source5e1a99ee alltarget/strictClippy/strictRustdocPASS, fresh maintained worker/parent release build ACTIVE; Rusttests/observer/installedM2NOT_RUN.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79077,12 +79077,11 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root sole integrator/launcher; current local compiler/test/installed tools terminal.",
-        "source_work": "Sol source-only build recipe retarget preparation pending new frozen source; separate Sol installed invocation prep source-only with PENDING actual product/observer. No engine/compiler/cache holder active.",
-        "review": "Critical Monitor guards, settled-job authority/retirement and independent five-query oracle source reviews complete. No source-only review stands in for runtime acceptance.",
-        "hosted": "Root sole watcher56226 active for5a9 run41546602945; original551 terminal failure sealed and retained."
+        "integrator": "Root sole integrator/launcher. No source agent writes active; source-only preparers complete, reusable parent/affected recipes retained.",
+        "local": "Root57670/launcher2155776 ticks39157296/containerb10368be active releasebuild; shared115cache held exclusively. Four-target Rust/probe capsules5e source-prepared only, actual-parent UNBOUND/NOT_RUN.",
+        "hosted": "Root56226 singleobserver for5a9 run41546602945 remains active. Prior551 terminalfailure sealed."
       },
-      "resources": "Root41175 firstM2builder reaped1/stopped/PID0/noOOM; cache115 Rootreacquired/released/nooverlap, original4ELFfullstat/O_NOATIMEbyteguardPASS. No local engine/compiler. Source-only recipe agents prepare corrected qualification/installed commands. Hosted56226 driver2138096/GH2138099 remains active for5a9. All earlier Monitor tools terminal; borrowed bridge1699209a/data/failures/worktrees preserved; no cleanup.",
+      "resources": "Current5e builderb10368be ACTIVE under Root57670; original4ELF/fullstat/O_NOATIME/cache isolation guards freshly passed before launch, postguard waits actualterminal. Source7c/81/6354/2a failedattempts allreaped1/stopped/PID0/noOOM/cache released withguardreceipts preserved in P03. No installedM2engine or cleanup active. Borrowedbridge1699209a and originaldata/failures/worktrees preserved.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79282,20 +79281,18 @@
         }
       },
       "settled_adoption_qualification": {
-        "source": "7c89f554e2b50a9627a85b7995b3ad2b2d49d1d6",
-        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-7c89f554",
-        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/7c89f554",
-        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-7c89f554",
-        "state": "FIRST_COMPILE_FAIL Root41175 reaped1; container877dff45 stopped/PID0/noOOM/launcherabsent, cacheRootreacquired/released/nooverlap and original4ELFfullstat/O_NOATIMEbyteguardPASS. StrictClippy/Rustdoc/release/tests/installedNOT_RUN. Mechanical correction121aaf00 pending freshqualification.",
-        "portable": {
-          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/portable-receipt.json",
-          "sha256": "3a2cd53e84bb47e4e51f8d7f2ed97beecd1ac6354f82fe1e8e8b2758af536647"
-        },
+        "source": "5e1a99ee8862efb6a1cb2faf8016c75f1dd95484",
+        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-recovery-20261103",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee",
+        "state": "Bounded Monitor qualified/published. Corrected M2 source5e1a99ee alltarget/strictClippy/strictRustdocPASS, fresh maintained worker/parent release build ACTIVE; Rusttests/observer/installedM2NOT_RUN.",
+        "root_tool": 57670,
+        "launcher_pid": 2155776,
+        "launcher_start_ticks": "39157296",
+        "container": "b10368be772d56a85295895c1b9fc406fae3ff3a75fedd3f67ce74c0b1804d0b",
+        "cache_lock": "held exclusively",
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
-        "failure_receipt": {
-          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/7c89f554/failure-receipt.json",
-          "sha256": "4a697ef8c823f75dc452d8e4c6c3dc9730ec8524114231ed79be50e8ace081b7"
-        }
+        "retention": "Originalfourfailedcompile/lintattempts and cheapmissingCargoHomeFAIL preserved.7cportable692/13/43PASS and currentboundedtutorial14PASS reused within unchanged scopes. Newinstalledfivequery/custody/SQL65/unknownoutcome/laterzeroqueryNOT_RUN."
       }
     }
   }

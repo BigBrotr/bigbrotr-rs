@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "COMPILE_SEAM_FIXES_COMMITTED_FRESH_QUALIFICATION_PENDING",
+    "status": "STRICT_SOURCE_CHECKS_PASS_CURRENT_WORKER_PARENT_RELEASE_BUILD_RUNNING",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Freeze corrected source after bounded tutorial input-fence reconciliation, then repeat actual cheap preflight and affected compilation; reuse prior independent contract/oracle reviews and unchanged portable inputs. Real five-query same-job and new SQL/unknown outcomes remain unqualified.",
+    "next": "Reap actual builder, authenticate exact current worker/parent/source/native artifacts with retained verifier, then bind prepared four-target Rust/library capsule and observer to real PASS receipt. Installed five-query and authority/SQL65/unknown/later-zero-query gates remain NOT_RUN.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2165,6 +2165,20 @@
       "sha256": "e8a80f10bf2544c287c6bec962600fa0aac0da1b14cce64b0b4bef83cfb32c79",
       "result": "Root42042reaped1; alltargetPASS7.732s/strictClippyFAIL13.238s on bin items_after_test_module and drop_non_drop only. Rustdoc/release/tests/installedNOT_RUN. Builder38bd8ec8 terminal/cache released/post4ELFguardscompleted.",
       "correction": "c3e51a90 moves exact unchanged continuation_grant before cfg(test) module and removes borrowed proof drop with allnative/SQL/lease validations unchanged; no allowance/limit/oracle weakened."
+    },
+    "current_qualification": {
+      "source": "5e1a99ee8862efb6a1cb2faf8016c75f1dd95484",
+      "tree": "914a9ffc69f21d5154e488e6f4363ae8e98a51d9",
+      "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee",
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee",
+      "strict_preflight": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee/out/compile-preflight/result.json",
+        "sha256": "74109a044143938b1e9dc3d7c36c2b9a9f65433ce1d9efc142e1fe6fef21c05c",
+        "result": "All-target6.577s/strictClippy11.586s/explicit-DwarningsRustdoc4.022sPASS; actual cheapformat/planningPASS. No testassertion/release/installed claim."
+      },
+      "root_tool": 57670,
+      "state": "ACTIVE_MAINTAINED_WORKER_BEFORE_PARENT_RELEASE_BUILD",
+      "next": "Reap actual builder, authenticate exact current worker/parent/source/native artifacts with retained verifier, then bind prepared four-target Rust/library capsule and observer to real PASS receipt. Installed five-query and authority/SQL65/unknown/later-zero-query gates remain NOT_RUN."
     }
   }
 }
