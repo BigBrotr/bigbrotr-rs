@@ -40,7 +40,8 @@ def captured_log():
         'read-write-amplify(1.0) write-amplify(1.0) OK, records in: 10, records dropped: 0 output_compression: ZSTD')
     event(dict(event='compaction_finished',job=2,output_level=1,num_output_files=1,
                total_output_size=150,num_input_records=10,num_output_records=10))
-    return '\n'.join(lines)+'\n'
+    # Exact EnvLogger grammar: combined date-time, decimal thread token.
+    return ('\n'.join(lines)+'\n').replace('2026/11/03 00:00:','2026/11/03-00:00:')
 
 
 def verifier_fixture(events,corpus):
@@ -52,9 +53,11 @@ def verifier_fixture(events,corpus):
     for n in range(1,65):
         identity = dict(request_sequence=n,producer_slot_id='\\x'+'42'*16,producer_epoch=1,dataset_id='\\x'+'01'*16,
             manifest_sha256='\\x'+expected['manifest_sha256'],request_digest='\\x'+PHYSICAL.digest(expected['requests'][n]),lab_xmin=str(n))
-        control['producer_requests'].append(dict(identity,input_bytes=len(expected['requests'][n]),acquisition_job_id=None))
+        control['producer_requests'].append(dict(identity,input_bytes=len(expected['requests'][n]),
+            acquisition_job_id=None,relay_endpoint_id=None,acquisition_scope_id=None,
+            relay_access_scope_id=None,relay_enrollment_generation=None,relay_route_id=None))
         control['producer_outcomes'].append(dict(identity,outcome_bytes='\\x'+expected['receipts'][n].hex(),
-            outcome_sha256='\\x'+PHYSICAL.digest(expected['receipts'][n])))
+            outcome_sha256='\\x'+PHYSICAL.digest(expected['receipts'][n]),outcome_kind=1,policy_epoch=1))
     tables = copy.deepcopy(control)
     for rows in tables.values():
         for row in rows: row['xmin'] = row.pop('lab_xmin')
@@ -81,6 +84,16 @@ def verifier_fixture(events,corpus):
     complete = dict(event='physical-complete',credit=credit(63),admitted_events=63,
         source_bound_event_acknowledgement='NOT_RUN',reclamation='NOT_RUN',reserve_qualification='NOT_RUN',open65='NOT_RUN')
     return [dict(value=value) for value in values],events,corpus,dict(jobs=[]),control,closed,reopened,complete,ROOT
+
+
+def mutate_control(fixture,name,index,**fields):
+    fixture[4][name][index].update(fields)
+    tables = copy.deepcopy(fixture[4])
+    for rows in tables.values():
+        for row in rows: row['xmin'] = row.pop('lab_xmin')
+    serialized = [[table,json.dumps(rows)] for table,rows in tables.items()]
+    fixture[5]['state']['control_tables'] = serialized
+    fixture[6]['state']['control_tables'] = copy.deepcopy(serialized)
 
 
 class PhysicalScienceControls(unittest.TestCase):
@@ -126,9 +139,14 @@ class PhysicalScienceControls(unittest.TestCase):
                     PHYSICAL.verify_trace(*fixture)
                     for change in [lambda value:value[5]['state'].update(native_sha256='00'*32),
                         lambda value:value[6]['state']['originals'].pop(),
-                        lambda value:value[4]['producer_requests'][1].update(acquisition_job_id='\\x'+'11'*16),
-                        lambda value:value[4]['producer_outcomes'][1].update(request_sequence=1),
-                        lambda value:value[4]['producer_epochs'][0].update(outstanding_request_limit=65),
+                        lambda value:mutate_control(value,'producer_requests',1,acquisition_job_id='\\x'+'11'*16),
+                        lambda value:mutate_control(value,'producer_requests',1,relay_endpoint_id='\\x'+'11'*16),
+                        lambda value:mutate_control(value,'producer_requests',1,relay_route_id='\\x'+'11'*16),
+                        lambda value:mutate_control(value,'producer_requests',1,acquisition_scope_id='\\x'+'11'*16),
+                        lambda value:mutate_control(value,'producer_outcomes',1,request_sequence=1),
+                        lambda value:mutate_control(value,'producer_outcomes',1,outcome_kind=2),
+                        lambda value:mutate_control(value,'producer_outcomes',1,policy_epoch=2),
+                        lambda value:mutate_control(value,'producer_epochs',0,outstanding_request_limit=65),
                         lambda value:value[0][3]['value']['pending'].update(pending_bytes=0),
                         lambda value:value[7].update(open65='PASS')]:
                         changed = copy.deepcopy(fixture)
@@ -162,6 +180,13 @@ class PhysicalTelemetryControls(unittest.TestCase):
                 self.assertEqual(sample['directories']['.']['inode'],root.stat().st_ino)
                 self.assertEqual(sample['directory_allocated_bytes'],root.stat().st_blocks*512)
                 self.assertEqual(sample['classes']['DIRECTORY_METADATA']['allocated_bytes'],root.stat().st_blocks*512)
+                frame = dict(phase='load',roots=dict(native=copy.deepcopy(sample)),open_unlinked=dict(
+                    status='OBSERVED',files={'1:2':dict(role='native',allocated_bytes=4096)}))
+                frame['roots']['native']['disappeared_during_sample'] = ['vanished.log']
+                (root/'samples.jsonl').write_text(json.dumps(frame)+'\n')
+                summary = PHYSICAL.sample_summary(root)
+                self.assertEqual(summary['census_race_samples'],dict(native=1))
+                self.assertEqual(summary['open_unlinked_sampled_peaks'],dict(native=4096))
             finally: bound.close()
 
     def test_descriptor_binding_refuses_path_replacement_and_symlinks(self):
@@ -217,6 +242,11 @@ class PhysicalTelemetryControls(unittest.TestCase):
         self.assertEqual(observed['status'],'UNKNOWN_PARTIAL')
         self.assertTrue(observed['errors'])
         self.assertEqual(lab.docker.call_args.args[:4],('exec','-i','owned','bash'))
+        lab.docker.return_value.stdout = 'F\t1:2:8:4096:1:regular file\t/var/lib/postgresql/data/pg_wal/old (deleted)\nS\t3\t9\tpid:[12]\n'
+        alias = PHYSICAL.pg_open_unlinked(lab,dict(postgres='owned'))
+        self.assertEqual(alias['status'],'UNKNOWN_PARTIAL')
+        self.assertEqual(alias['allocated_bytes'],0)
+        self.assertTrue(alias['aliases_with_remaining_links'])
 
 
 class PhysicalLogControls(unittest.TestCase):
@@ -256,6 +286,16 @@ class PhysicalLogControls(unittest.TestCase):
             self.assertEqual(actual['automatic_flush'],'NOT_WITNESSED')
             self.assertEqual(actual['nontrivial_automatic_compaction'],'NOT_WITNESSED')
         self.assertEqual(self.witness(captured_log(),rotated=True)['automatic_flush'],'NOT_WITNESSED')
+        duplicate_output = captured_log().replace('"num_output_files": 1','"num_output_files": 2')
+        creation, = [line for line in duplicate_output.splitlines() if '"job": 2' in line and 'table_file_creation' in line]
+        duplicate_output = duplicate_output.replace(creation,creation+'\n'+creation)
+        self.assertEqual(self.witness(duplicate_output)['nontrivial_automatic_compaction'],'NOT_WITNESSED')
+        # An earlier OK with a lost finish cannot fund a later failed install.
+        old = captured_log().replace('"event": "compaction_finished"','"event": "lost_finished"')
+        later = captured_log().split('"event": "compaction_started"',1)[1]
+        later = '2026/11/03-00:00:00.000100 123 EVENT_LOG_v1 {"event": "compaction_started"'+later
+        later = later.replace('"job": 2','"job": 3').replace(' OK, records in:',' IO error, records in:')
+        self.assertEqual(self.witness(old+later)['nontrivial_automatic_compaction'],'NOT_WITNESSED')
 
     def test_real_checkpoint_and_admission_intervals_must_overlap(self):
         logs = ('2026-11-03T00:00:01.000000Z 2026-11-03 00:00:01 UTC [9] LOG:  checkpoint starting: immediate force wait\n'
@@ -272,29 +312,51 @@ class PhysicalLogControls(unittest.TestCase):
 
 
 class PhysicalArtifactControls(unittest.TestCase):
-    def preflight(self,changes='',tampered=False):
+    def preflight(self,changes='',tampered=False,receipt_fault=None):
         with tempfile.TemporaryDirectory() as temporary:
             root,build = Path(temporary)/'fresh',Path(temporary)/'build'
             build.mkdir()
             for name in ('bigbrotr','ingest_bootstrap_probe'): (build/name).write_bytes(name.encode())
-            (build/'build-result.json').write_text(json.dumps(dict(source='a'*40,
-                probe_sha256=hashlib.sha256(b'ingest_bootstrap_probe').hexdigest(),
-                binary_sha256=hashlib.sha256(b'bigbrotr').hexdigest())))
+            (build/'source/tools').mkdir(parents=True)
+            (build/'source/tools/build.py').write_bytes(b'maintained-source-fixture')
+            helper_hash = hashlib.sha256(b'maintained-source-fixture').hexdigest()
+            manifest = dict(format='bigbrotr-source/1',revision='a'*40,tree='c'*40,
+                files_sha256={'tools/build.py':helper_hash})
+            (build/'source-manifest.json').write_text(json.dumps(manifest))
+            manifest_hash = PHYSICAL.file_sha(build/'source-manifest.json')
+            receipt = dict(format='bigbrotr-build-result/1',source_manifest_sha256=manifest_hash,
+                binary_sha256=hashlib.sha256(b'bigbrotr').hexdigest(),helper_sha256=helper_hash,
+                native_toolchain=dict(tools={}),build_info=dict(source=dict(state='builder-supplied',
+                    revision='a'*40,tree='c'*40,dirty=False,manifest_sha256=manifest_hash)))
+            (build/'build-result.json').write_text(json.dumps(receipt))
+            probe = dict(format='bigbrotr-ingest-bootstrap-probe-build/1',source_revision='a'*40,source_tree='c'*40,
+                source_manifest_sha256=manifest_hash,parent_build_receipt_sha256=PHYSICAL.file_sha(build/'build-result.json'),
+                binary_sha256=hashlib.sha256(b'ingest_bootstrap_probe').hexdigest(),native_toolchain=dict(tools={}),
+                profile='release',command=['cargo','build','--locked','--release','-p','bigbrotr','--example','ingest_bootstrap_probe'])
+            if receipt_fault in ('parent-hash','probe-tree','native-toolchain'):
+                probe[{'parent-hash':'parent_build_receipt_sha256','probe-tree':'source_tree','native-toolchain':'native_toolchain'}[receipt_fault]] = 'wrong'
+            (build/'ingest-bootstrap-probe-build.json').write_text(json.dumps(probe))
+            if receipt_fault == 'archive': (build/'source/tools/build.py').write_bytes(b'changed after build')
+            if receipt_fault == 'manifest': (build/'source-manifest.json').write_text('{}')
             if tampered: (build/'ingest_bootstrap_probe').write_bytes(b'changed')
             class Boundary(Exception): pass
             def command(args):
-                return SimpleNamespace(stdout=('b'*40 if changes else 'a'*40)+'\n' if args[-1] == 'HEAD'
+                return SimpleNamespace(stdout='c'*40+'\n' if args[-1] == 'a'*40+'^{tree}' else
+                    ('b'*40 if changes else 'a'*40)+'\n' if args[-1] == 'HEAD'
                     else changes if 'diff' in args else '')
             lab = SimpleNamespace(command=Mock(side_effect=command),setup=Mock(side_effect=Boundary),
                                   docker=Mock(side_effect=AssertionError('premature engine')))
             permitted = {'experiments/policy-versions/run.py','experiments/policy-versions/README.md',
                 'experiments/policy-versions/physical_envelope.py','tests/acceptance/test_physical_envelope.py'}
             reason = 'current ingest probe differs' if tampered else \
+                'retained source archive changed' if receipt_fault == 'archive' else \
+                'parent source manifest hash' if receipt_fault == 'manifest' else \
+                'exact probe-parent build binding' if receipt_fault else \
                 'built product source changed beyond policy harness' if set(changes.splitlines())-permitted else None
             with patch.object(sys,'argv',[str(RUNNER),str(root),str(build),'--physical-envelope']), \
                 patch.object(sys,'path',list(sys.path)),patch.dict(sys.modules,dict(lab=lab,
-                    oracle=SimpleNamespace(expected=Mock()),physical_envelope=SimpleNamespace(preflight=Mock()))):
-                with self.assertRaisesRegex(AssertionError,reason) if reason else self.assertRaises(Boundary):
+                    oracle=SimpleNamespace(expected=Mock()),physical_envelope=PHYSICAL)),patch.object(PHYSICAL,'preflight',Mock()):
+                with self.assertRaisesRegex((AssertionError,ValueError),reason) if reason else self.assertRaises(Boundary):
                     runpy.run_path(str(RUNNER),run_name='__main__')
             self.assertEqual(lab.setup.call_count,0 if reason else 1)
             self.assertFalse(root.exists())
@@ -304,6 +366,8 @@ class PhysicalArtifactControls(unittest.TestCase):
         self.preflight()
         self.preflight('experiments/policy-versions/physical_envelope.py\n')
         self.preflight(tampered=True)
+        for fault in ('parent-hash','probe-tree','native-toolchain','archive','manifest'):
+            with self.subTest(fault=fault): self.preflight(receipt_fault=fault)
         for path in ('apps/bigbrotr/examples/support/ingest_physical_growth.rs',
                      'apps/bigbrotr/src/storage/rocks/options.rs','Cargo.lock',
                      'tests/fixtures/configuration/policy-v3.json','unknown.py'):

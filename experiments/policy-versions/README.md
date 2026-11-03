@@ -13,10 +13,17 @@ python3 -m venv /absolute/physical-python
   --physical-envelope --subnet ROOT_SELECTED_UNUSED_PRIVATE_28
 ```
 
-Use the existing exact-revision build procedure; the new compiled probe mode
-requires its own build. The optional Python environment is a reproducible input,
-not a private cache prerequisite. The runner verifies both executable hashes and
-the complete source diff before engine setup. This mode permits only the existing
+Use the existing exact-revision build procedure and
+`experiments/ingest-registry/build_probe.py --build EXACT_BUILD --example ingest_bootstrap_probe`;
+the new compiled probe mode requires its own build. The optional Python
+environment is a reproducible input, not a private cache prerequisite.
+Physical mode consumes the unchanged maintained `bigbrotr-build-result/1`
+parent receipt, `source-manifest.json` and
+`bigbrotr-ingest-bootstrap-probe-build/1` receipt directly. It checks the complete
+retained source archive inventory, exact revision/Git tree/manifest identity,
+probe parent-receipt hash, native-toolchain identity, declared release build
+command/profile, both executable hashes and the complete source diff before
+engine setup. No fabricated combined receipt is needed. This mode permits only the existing
 noncompiled policy harness paths plus `physical_envelope.py` and its focused
 portable control. Changed compiled code, schema, policy fixture or unknown paths
 still refuse artifact reuse. No source/build receipt is rewritten to fit a run.
@@ -69,9 +76,13 @@ MANIFEST, LOG, retained inputs, fixed source/preflight snapshot and PG
 data/WAL/temp/other classes. Native/input and
 PG directories are sampled every100ms, PG open-unlinked descriptors every500ms.
 Container-scoped descriptor censuses record positive deleted-but-open regular
-files and deduplicate their allocation. Permission failures and disappearance
+files with zero remaining links and deduplicate their allocation. A deleted name
+with remaining hardlinks has explicit unknown alias coverage. Permission failures and disappearance
 races are explicit partial/unknown coverage, never an assumed zero. Full final
-file identities accompany phase counts and non-atomic sampled peaks. Root and
+file identities accompany phase counts and non-atomic sampled peaks. Linked
+file/directory peaks and open-unlinked peaks remain separate, including the
+different PG descriptor sampling cadence. Census disappearance races yield
+`WITH_GAPS`. Root and
 subdirectory allocations use descriptor-observed blocks in the separate
 `DIRECTORY_METADATA` class, with full directory identities. Unrelated filesystem
 users remain outside these directory/file totals;

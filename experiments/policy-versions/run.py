@@ -38,13 +38,21 @@ assert root.is_absolute() and not root.exists() and not root.is_symlink()
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 receipt = json.loads((build / 'build-result.json').read_text())
-assert re.fullmatch('[0-9a-f]{40}', receipt['source']), 'invalid built product revision'
+physical_artifacts = None
+if args.physical_envelope:
+    from physical_envelope import admit_artifacts
+    physical_artifacts = admit_artifacts(build,receipt,lambda built:lab.command(
+        ['git','-C',str(SOURCE),'rev-parse',built+'^{tree}']).stdout.strip())
+    built_revision,probe_sha256 = physical_artifacts['source'],physical_artifacts['probe_sha256']
+else:
+    built_revision,probe_sha256 = receipt['source'],receipt['probe_sha256']
+assert re.fullmatch('[0-9a-f]{40}', built_revision), 'invalid built product revision'
 harness_changes = []
-if receipt['source'] != revision:
+if built_revision != revision:
     # Carry the qualified current runner's exact noncompiled-diff fence. The
     # historical option adds only its two actual fixture/control consumers.
     harness_changes = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only',
-                                  '--no-renames', receipt['source'], revision, '--']).stdout.splitlines()
+                                  '--no-renames', built_revision, revision, '--']).stdout.splitlines()
     permitted = {'experiments/policy-versions/run.py', 'experiments/policy-versions/README.md',
                  'tests/acceptance/test_policy_versions.py',
                  'experiments/policy-versions/current_lab.py'}
@@ -72,7 +80,7 @@ def fingerprint(document, version):
     return sha(f'bigbrotr/product-policy/{version}\0'.encode() + compact(document))
 
 
-assert sha((build / 'ingest_bootstrap_probe').read_bytes()) == receipt['probe_sha256'], \
+assert sha((build / 'ingest_bootstrap_probe').read_bytes()) == probe_sha256, \
     'current ingest probe differs from its exact-source build receipt'
 assert sha((build / 'bigbrotr').read_bytes()) == receipt['binary_sha256'], \
     'current product differs from its exact-source build receipt'
@@ -82,11 +90,13 @@ inventory = declared_inventory(SOURCE)
 if args.physical_envelope:
     from physical_envelope import preflight as physical_preflight
     physical_preflight(SOURCE)
-report = dict(format='bigbrotr-policy-versions-native/1', source=receipt['source'],
+report = dict(format='bigbrotr-policy-versions-native/1', source=built_revision,
               harness_revision=revision, harness_only_changes=harness_changes,
               build=receipt, schema=inventory, status='RUNNING', cases=[],
               not_run=['populated policy upgrade', 'source issuance and restrictive drain',
                        'COMMIT transport faults', 'load and aged state', 'arm64', 'release'])
+if physical_artifacts is not None:
+    report['physical_artifact_admission'] = physical_artifacts
 
 
 def save():

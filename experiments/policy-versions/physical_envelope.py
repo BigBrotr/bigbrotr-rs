@@ -47,6 +47,57 @@ def digest(value):
     return hashlib.sha256(value).hexdigest()
 
 
+def file_sha(path):
+    require(stat.S_ISREG(path.lstat().st_mode), 'regular pinned artifact required')
+    value = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda:stream.read(1024*1024),b''): value.update(block)
+    return value.hexdigest()
+
+
+def admit_artifacts(build, receipt, git_tree):
+    """Consume the maintained parent and probe receipts without rewriting either."""
+    require(receipt['format'] == 'bigbrotr-build-result/1', 'standard parent build receipt')
+    parent_hash = file_sha(build/'build-result.json')
+    manifest_path = build/'source-manifest.json'
+    manifest_hash = file_sha(manifest_path)
+    require(manifest_hash == receipt['source_manifest_sha256'], 'parent source manifest hash')
+    manifest = json.loads(manifest_path.read_text())
+    identity = receipt['build_info']['source']
+    revision,tree = manifest['revision'],manifest['tree']
+    require(re.fullmatch('[0-9a-f]{40}',revision) and re.fullmatch('[0-9a-f]{40}',tree), 'exact built revision/tree')
+    require(manifest['format'] == 'bigbrotr-source/1' and identity == dict(state='builder-supplied',
+        revision=revision,tree=tree,dirty=False,manifest_sha256=manifest_hash), 'parent source identity')
+    require(git_tree(revision) == tree, 'built source Git tree mismatch')
+    source = build/'source'
+    require(source.is_dir() and not source.is_symlink(), 'retained exact source archive')
+    files = {}
+    for path in sorted(source.rglob('*')):
+        mode = path.lstat().st_mode
+        require(not stat.S_ISLNK(mode), 'source archive symlink')
+        if stat.S_ISDIR(mode): continue
+        require(len(files) < 20000, 'source inventory bound')
+        files[str(path.relative_to(source))] = file_sha(path)
+    require(files == manifest['files_sha256'], 'retained source archive changed')
+    require(files['tools/build.py'] == receipt['helper_sha256'], 'parent build helper binding')
+    probe_path = build/'ingest-bootstrap-probe-build.json'
+    probe_hash = file_sha(probe_path)
+    probe = json.loads(probe_path.read_text())
+    require(probe['format'] == 'bigbrotr-ingest-bootstrap-probe-build/1'
+        and probe['source_revision'] == revision and probe['source_tree'] == tree
+        and probe['source_manifest_sha256'] == manifest_hash
+        and probe['parent_build_receipt_sha256'] == parent_hash
+        and probe['native_toolchain'] == receipt['native_toolchain']
+        and probe['profile'] == 'release' and probe['command'] == ['cargo','build','--locked','--release',
+            '-p','bigbrotr','--example','ingest_bootstrap_probe'], 'exact probe-parent build binding')
+    require(file_sha(build/'ingest_bootstrap_probe') == probe['binary_sha256'], 'current ingest probe differs from standard receipt')
+    require(file_sha(build/'bigbrotr') == receipt['binary_sha256'], 'current product differs from standard receipt')
+    return dict(source=revision,tree=tree,source_manifest_sha256=manifest_hash,
+        parent_build_receipt_sha256=parent_hash,probe_build_receipt_sha256=probe_hash,
+        probe_sha256=probe['binary_sha256'],source_files=len(files),
+        provenance='unchanged maintained parent/source/probe receipts; complete archive inventory checked')
+
+
 def fixture_module(source):
     path = source / 'experiments/identity-contract/signed_fixture.py'
     spec = importlib.util.spec_from_file_location('physical_signed_fixture', path)
@@ -206,7 +257,7 @@ class BoundRoot:
 
 def open_unlinked(roots):
     """Container PID namespace only. Denials/races remain explicit unknowns."""
-    records, errors, processes, descriptors = {}, [], 0, 0
+    records, aliases, errors, processes, descriptors = {}, {}, [], 0, 0
     for proc in Path('/proc').iterdir():
         if not proc.name.isdigit(): continue
         processes += 1
@@ -226,15 +277,16 @@ def open_unlinked(roots):
                     if not matches: continue
                     role, relative = max(matches, key=lambda item: len(str(roots[item[0]].path)))
                     key = f'{value.st_dev}:{value.st_ino}'
-                    records[key] = dict(file_record(value, role, relative), role=role, target=target)
+                    target_records = records if value.st_nlink == 0 else aliases
+                    target_records[key] = dict(file_record(value, role, relative), role=role, target=target)
                 except OSError as error:
                     errors.append(dict(path=str(fd), errno=error.errno))
         except OSError as error:
             errors.append(dict(path=str(proc/'fd'), errno=error.errno))
-    return dict(status='OBSERVED' if not errors else 'UNKNOWN_PARTIAL',
+    return dict(status='OBSERVED' if not errors and not aliases else 'UNKNOWN_PARTIAL',
         pid_namespace=os.readlink('/proc/self/ns/pid'), processes=processes,
         observer_process_excluded=os.getpid(),
-        descriptors=descriptors, files=records, errors=errors,
+        descriptors=descriptors, files=records, aliases_with_remaining_links=aliases, errors=errors,
         allocated_bytes=sum(value['allocated_bytes'] for value in records.values()))
 
 
@@ -294,19 +346,28 @@ def log_witness(directory):
             continue
         session, = sessions
         starts, tables, flush_bindings, commits, summaries = {}, {}, {}, set(), {}
+        active_compactions, table_ids, install_counts = {}, set(), {}
         for line in text.splitlines():
-            thread = re.match(r'^\S+ \S+ ([0-9a-fA-F]+) ', line)
+            thread = re.match(r'^\d{4}/\d{2}/\d{2}-\d{2}:\d{2}:\d{2}\.\d{6} (\d+) ', line)
             thread = thread[1] if thread else None
             flush = re.search(r'\[([^\]]+)\] \[JOB (\d+)\] Level-0 flush table #(\d+): started', line)
             if flush:
                 flush_bindings[(int(flush[2]),int(flush[3]))] = flush[1]
             commit = re.search(r'\[([^\]]+)\] Level-0 commit table #(\d+): memtable #\d+ done(?:\s|$)', line)
             if commit: commits.add((commit[1],int(commit[2])))
+            install_summary = re.search(r'\[([^\]]+)\] compacted to:',line)
+            if install_summary and thread:
+                # Failed/truncated/intervening installs invalidate earlier OK.
+                summaries.pop(thread,None)
+                identity = (active_compactions.get(thread),thread)
+                install_counts[identity] = install_counts.get(identity,0)+1
+                if identity[0] is None or install_counts[identity] != 1:
+                    errors.append('orphan/duplicate compaction install summary')
             summary = re.search(r'\[([^\]]+)\] compacted to: .*?, level (\d+), '
                 r'files in\((\d+), (\d+)\).*? out\((\d+) \+0 blob\).*? OK, records in: (\d+), '
                 r'records dropped: \d+ output_compression: ZSTD\s*$', line)
-            if summary and thread:
-                summaries[thread] = dict(cf=summary[1], level=int(summary[2]),
+            if summary and thread and thread in active_compactions:
+                summaries[thread] = dict(job=active_compactions[thread],cf=summary[1], level=int(summary[2]),
                     inputs=int(summary[3])+int(summary[4]), outputs=int(summary[5]), records=int(summary[6]))
             marker = 'EVENT_LOG_v1 '
             if marker not in line: continue
@@ -322,12 +383,21 @@ def log_witness(directory):
                 continue
             kind = event.get('event')
             if kind == 'table_file_creation':
+                identity = (event.get('job'),event.get('cf_name'),event.get('file_number'))
+                if identity in table_ids: errors.append('duplicate table_file_creation identity')
+                table_ids.add(identity)
                 tables.setdefault(event.get('job'), []).append(event)
                 continue
             if kind not in ('flush_started','flush_finished','compaction_started','compaction_finished'): continue
             family = kind.split('_')[0]
             key = (family, event['job'])
             if kind.endswith('_started'):
+                if family == 'compaction':
+                    summaries.pop(thread,None)
+                    if thread is None or thread in active_compactions:
+                        errors.append('missing/ambiguous active compaction thread')
+                    active_compactions[thread] = event['job']
+                    event = dict(event,logger_thread=thread)
                 starts.setdefault(key, []).append(event)
                 continue
             candidates = starts.get(key, [])
@@ -349,6 +419,7 @@ def log_witness(directory):
                     flushes.append(pair)
             else:
                 summary = summaries.pop(thread, None)
+                active_job = active_compactions.pop(thread,None)
                 inputs = {number for key, values in start.items() if key.startswith('files_L')
                           for number in values}
                 output = [table for table in output if table.get('cf_name') == start.get('cf_name')
@@ -356,8 +427,10 @@ def log_witness(directory):
                 if start.get('compaction_reason') in ('LevelL0FilesNum','LevelMaxLevelSize') \
                         and start.get('input_data_size',0) > 0 and len(inputs) > 1 \
                         and event.get('total_output_size',0) > 0 and event.get('num_output_records',0) > 0 \
+                        and active_job == event['job'] and start.get('logger_thread') == thread \
+                        and len({table['file_number'] for table in output}) == len(output) \
                         and len(output) == event.get('num_output_files') and summary is not None \
-                        and summary == dict(cf=start.get('cf_name'),level=event.get('output_level'),
+                        and summary == dict(job=event['job'],cf=start.get('cf_name'),level=event.get('output_level'),
                             inputs=len(inputs),outputs=len(output),records=event.get('num_input_records')):
                     compactions.append(dict(pair, tables=output, installed_summary=summary))
         flushes = [pair for pair in flushes if any((table['cf_name'],table['file_number']) in commits
@@ -438,7 +511,7 @@ printf 'S\t%s\t%s\t%s\n' "$p" "$d" "$(readlink /proc/self/ns/pid)"
 def pg_open_unlinked(lab, state):
     result = lab.docker('exec','-i',state['postgres'],'bash',
                         data=PG_FD_SCRIPT, timeout=10, check=False)
-    files, errors, summary = {}, [], None
+    files, aliases, errors, summary = {}, {}, [], None
     for line in result.stdout.splitlines():
         fields = line.split('\t')
         if fields[0] == 'E': errors.append(line)
@@ -451,11 +524,12 @@ def pg_open_unlinked(lab, state):
             device,inode,blocks,size,links = map(int,values[:5])
             target = fields[2]
             relative = target[len('/var/lib/postgresql/data/'):-len(' (deleted)')]
-            files[f'{device}:{inode}'] = dict(device=device,inode=inode,allocated_bytes=blocks*512,
+            target_records = files if links == 0 else aliases
+            target_records[f'{device}:{inode}'] = dict(device=device,inode=inode,allocated_bytes=blocks*512,
                 logical_bytes=size,links=links,target=target,classification=classify('postgres',relative))
         else: errors.append('unrecognized PG fd output')
-    return dict(status='OBSERVED' if result.returncode == 0 and not errors and summary else 'UNKNOWN_PARTIAL',
-        files=files,errors=errors,summary=summary,returncode=result.returncode,
+    return dict(status='OBSERVED' if result.returncode == 0 and not errors and not aliases and summary else 'UNKNOWN_PARTIAL',
+        files=files,aliases_with_remaining_links=aliases,errors=errors,summary=summary,returncode=result.returncode,
         stderr=result.stderr,allocated_bytes=sum(value['allocated_bytes'] for value in files.values()))
 
 
@@ -547,21 +621,27 @@ def send(process, value):
 
 
 def sample_summary(case):
-    counts, peaks, errors = {}, {}, []
+    counts, peaks, unlinked_peaks, errors, census_races = {}, {}, {}, [], {}
     with (case/'samples.jsonl').open() as stream:
         for line in stream:
             frame = json.loads(line)
             counts[frame['phase']] = counts.get(frame['phase'],0)+1
             if frame['open_unlinked']['status'] != 'OBSERVED': errors.append('native FD census partial')
+            deleted = {}
+            for value in frame['open_unlinked']['files'].values():
+                deleted[value['role']] = deleted.get(value['role'],0)+value['allocated_bytes']
+            for role,value in deleted.items(): unlinked_peaks[role] = max(unlinked_peaks.get(role,0),value)
             for role,root in frame['roots'].items():
+                if root['disappeared_during_sample']: census_races[role] = census_races.get(role,0)+1
                 values = peaks.setdefault(role,dict(allocated_bytes=0,logical_bytes=0,classes={}))
                 for field in ('allocated_bytes','logical_bytes'):
                     values[field] = max(values[field],sum(v[field] for v in root['classes'].values()))
                 for kind,value in root['classes'].items():
                     values['classes'][kind] = max(values['classes'].get(kind,0),value['allocated_bytes'])
     return dict(phase_samples=counts, sampled_peaks=peaks, fd_coverage_errors=sorted(set(errors)),
+                open_unlinked_sampled_peaks=unlinked_peaks,census_race_samples=census_races,
                 missing_phases=sorted(set(('bootstrap','load','checkpoint-load','automatic-work','shutdown','reopen'))-set(counts)),
-                scope='sampled non-atomic diagnostic peaks; not a hard bound or reservation guarantee')
+                scope='linked-file+directory non-atomic sampled peaks; open-unlinked peaks separate; no hard bound')
 
 
 def expected_science(events, artifact_digest, source):
@@ -710,10 +790,13 @@ def verify_trace(trace, events, corpus, baseline, control, closed, reopened, com
                 and row['manifest_sha256'] == '\\x'+expected['manifest_sha256']
                 and row['request_digest'] == '\\x'+digest(expected['requests'][n]), 'bounded PG request identity')
             if name == 'producer_requests':
-                require(row['acquisition_job_id'] is None and row['request_digest'] == '\\x'+digest(expected['requests'][n])
+                require(all(row[key] is None for key in ('relay_endpoint_id','relay_access_scope_id',
+                    'relay_enrollment_generation','relay_route_id','acquisition_job_id','acquisition_scope_id'))
+                    and row['request_digest'] == '\\x'+digest(expected['requests'][n])
                     and row['input_bytes'] == len(expected['requests'][n]), 'PG original binding')
             else:
-                require(row['outcome_bytes'] == '\\x'+expected['receipts'][n].hex()
+                require(row['outcome_kind'] == 1 and row['policy_epoch'] == 1
+                    and row['outcome_bytes'] == '\\x'+expected['receipts'][n].hex()
                     and row['outcome_sha256'] == '\\x'+digest(expected['receipts'][n]), 'PG outcome copy binding')
     require(complete['credit'] == dict(issued=64,acknowledged=1,outstanding=63,retired=0)
         and complete['admitted_events'] == 63 and complete['source_bound_event_acknowledgement'] == 'NOT_RUN'
@@ -873,10 +956,16 @@ def run(state, output, contents, record, prepare, call, inventory, source):
             result.update(pg_fd_thread_joined=not pg_thread.is_alive(),pg_fd_thread_errors=thread_errors,
                 pg_fd_coverage='OBSERVED' if pg_fd_frames and all(frame['observation']['status'] == 'OBSERVED'
                     for frame in pg_fd_frames) else 'UNKNOWN_PARTIAL', elapsed_ns=time.monotonic_ns()-started)
+            result['pg_open_unlinked_sampled_peak'] = max((frame['observation']['allocated_bytes']
+                for frame in pg_fd_frames),default=None)
             if (case/'samples.jsonl').exists(): result['samples'] = sample_summary(case)
+            if result.get('sampler_returncode') != 0 or thread_errors or pg_thread.is_alive():
+                result['status'] = 'FAILED_OR_UNKNOWN'
             if result['status'] == 'CAPTURED_DIAGNOSTIC' and (result['pg_fd_coverage'] != 'OBSERVED'
                     or result.get('samples',{}).get('fd_coverage_errors')
+                    or result.get('samples',{}).get('census_race_samples')
                     or result.get('samples',{}).get('missing_phases')
+                    or result['witness'].get('unmatched_jobs') or result['witness'].get('errors')
                     or result['checkpoint_overlap']['status'] != 'WITNESSED'
                     or any(result['witness'][key] != 'WITNESSED'
                            for key in ('automatic_flush','nontrivial_automatic_compaction'))):
