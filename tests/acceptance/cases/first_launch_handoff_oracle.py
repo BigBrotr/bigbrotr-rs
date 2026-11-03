@@ -1,10 +1,38 @@
 """Declared zero-query epoch2 handoff; complete native and relational expectations."""
 import copy
+import json
 from types import SimpleNamespace
 
 from cases import first_launch_capped_oracle as base
 from cases import first_launch_quantum_oracle as quantum
 from cases import first_launch_restart as source
+
+
+def zero_query_fault_error(stdout,stderr):
+    """Ordinary Sync's first-plan error; caller progress never proves COMMIT state."""
+    prefix='error: initial Sync unavailable: Quantum(CommitUnknown); sync_dispatch='
+    assert stdout=='' and stderr.startswith(prefix) and stderr.endswith('\n'),'exact first-plan Sync refusal required'
+    def unique(pairs):
+        value=dict(pairs)
+        assert len(value)==len(pairs),'duplicate Sync diagnostic field'
+        return value
+    value=json.loads(stderr[len(prefix):],object_pairs_hook=unique)
+    expected=dict(format='bigbrotr-initial-sync-diagnostic/1',scope='caller-progress-not-commit-outcome',
+        timing='monotonic-offset-microseconds-saturating',stage='quantum-plan',reason='operation-error',
+        frame_ordinal=None,request_sequence=None,last_delivered_admission_sequence=None)
+    offsets=('captured_us','authority_checked_us','renewal_due_us','parent_deadline_us',
+        'dispatch_deadline_us','outer_deadline_us','entered_us','returned_us')
+    durations=('renewal_timeout_us','authority_remaining_us','due_remaining_us','maximum_us')
+    assert type(value) is dict and set(value)==set(expected)|set(offsets)|set(durations),'incomplete Sync diagnostic'
+    source.exact({key:value[key] for key in expected},expected,'first-plan Sync diagnostic binding differs')
+    for key in offsets:source.clock(value[key],0,2**63-1)
+    for key in durations:source.clock(value[key],1,2**64-1)
+    assert value['authority_checked_us']<=value['entered_us']<=value['returned_us']<=value['captured_us']
+    assert value['parent_deadline_us']==value['dispatch_deadline_us']==value['outer_deadline_us']
+    assert value['maximum_us']<=min(value['renewal_timeout_us'],value['authority_remaining_us']//2,value['due_remaining_us'])
+    # planning_delivery preserves a typed error before checking its deadline.
+    # A late returned error remains CommitUnknown, never a success or timeout.
+    return value
 
 
 def attribution_science(before,state,started,events,first,dump,inputs,lower,upper):

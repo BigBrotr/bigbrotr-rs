@@ -108,7 +108,7 @@ class ZeroQueryHandoffRuntime(CappedAdoptionRuntime):
             and not info['State']['Running'] and not info['State']['OOMKilled'],'epoch2 plan fault owner did not exit4 naturally')
         require(len(records)==1 and records[0]['state']=='activated' and records[0]['producer_epoch']=='2'
             and records[0]['acquisition']=='finite-initial-successor' and records[0]['ready'] is False,'Sync-selected epoch2 adoption report differs')
-        base.adoption_fault_error('',(folder/'serve.stderr').read_text())
+        oracle.zero_query_fault_error('',(folder/'serve.stderr').read_text())
         self.handoff_started=records[0];save(folder/'initialized.json',records[0])
         require(digest(self.config)==document,'epoch2 root file changed during Serve')
         preserved=folder/'instance-epoch2.toml';preserved.write_bytes(self.config.read_bytes());preserved.chmod(0o600)

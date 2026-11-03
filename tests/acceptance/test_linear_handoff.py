@@ -1,6 +1,7 @@
 """Source-only discriminants for the single declared zero-query handoff."""
 import copy
 import importlib.util
+import json
 import tempfile
 import sys
 from pathlib import Path
@@ -19,6 +20,22 @@ from installed_family_science import NetworkScience
 from transition_replay import native_rows
 from initial_succession_oracle import exclusion,successor_rows
 from installed_family_science import decode
+
+
+def sync_fault_diagnostic(**changes):
+    value=dict(format='bigbrotr-initial-sync-diagnostic/1',scope='caller-progress-not-commit-outcome',
+        timing='monotonic-offset-microseconds-saturating',stage='quantum-plan',reason='operation-error',
+        frame_ordinal=None,request_sequence=None,last_delivered_admission_sequence=None,
+        authority_checked_us=2,entered_us=10,returned_us=20,captured_us=21,renewal_timeout_us=100,
+        authority_remaining_us=200,due_remaining_us=60,maximum_us=60,renewal_due_us=62,
+        parent_deadline_us=62,dispatch_deadline_us=62,outer_deadline_us=62)
+    value.update(changes)
+    return value
+
+
+def sync_fault_stderr(value=None,error='Quantum(CommitUnknown)'):
+    value=sync_fault_diagnostic() if value is None else value
+    return 'error: initial Sync unavailable: '+error+'; sync_dispatch='+json.dumps(value)+'\n'
 
 
 def zero_fixture(root):
@@ -173,6 +190,35 @@ def journey_fixture(root):
 
 
 class HandoffControls(unittest.TestCase):
+    def test_first_plan_fault_requires_ordinary_sync_error_and_preserves_late_typed_errors(self):
+        for changes in ({},{'returned_us':70,'captured_us':71}):
+            value=sync_fault_diagnostic(**changes)
+            self.assertEqual(check.zero_query_fault_error('',sync_fault_stderr(value)),value)
+        startup='error: initial native batch unavailable: Quantum(CommitUnknown)\n'
+        base.adoption_fault_error('',startup)
+        with self.assertRaises(AssertionError):check.zero_query_fault_error('',startup)
+        with self.assertRaises(AssertionError):base.adoption_fault_error('',sync_fault_stderr())
+
+    def test_first_plan_fault_rejects_wrong_error_output_and_malformed_diagnostics(self):
+        valid=sync_fault_stderr();prefix=valid.split('sync_dispatch=',1)[0]+'sync_dispatch='
+        for stdout,stderr in (('{}\n',valid),('',valid+'extra\n'),('','extra\n'+valid),('',valid.rstrip('\n')),
+                ('',valid+valid),('',prefix+'{}\n'),('',prefix+'[]\n'),('',prefix+'null\n'),('',prefix+'{\n'),
+                ('',sync_fault_stderr(error='Quantum(Backend)')),('',sync_fault_stderr(error='Native(CommitUnknown)')),
+                ('',prefix+json.dumps(sync_fault_diagnostic())[:-1]+',"stage":"quantum-plan"}\n')):
+            with self.subTest(stdout=stdout,stderr=stderr),self.assertRaises((AssertionError,ValueError)):
+                check.zero_query_fault_error(stdout,stderr)
+        value=sync_fault_diagnostic()
+        for key in value:
+            missing=dict(value);missing.pop(key)
+            with self.subTest(missing=key),self.assertRaises(AssertionError):check.zero_query_fault_error('',sync_fault_stderr(missing))
+        for key,item in (('stage','quantum-terminal'),('reason','deadline'),('format','bigbrotr-initial-sync-diagnostic/2'),
+                ('scope','commit-outcome'),('timing','utc'),('frame_ordinal',0),('request_sequence',1),
+                ('last_delivered_admission_sequence',1),('entered_us',True),('returned_us',None),('captured_us',19),
+                ('authority_checked_us',11),('entered_us',21),('renewal_due_us',-1),('maximum_us',0),
+                ('maximum_us',61),('authority_remaining_us',119),('outer_deadline_us',63),('extra',1)):
+            with self.subTest(field=key),self.assertRaises(AssertionError):
+                check.zero_query_fault_error('',sync_fault_stderr(sync_fault_diagnostic(**{key:item})))
+
     def test_epoch3_initialized_and_settlement_share_one_derived_stage_budget(self):
         for exhausted in (False,True):
             with self.subTest(exhausted=exhausted),tempfile.TemporaryDirectory() as temporary:
@@ -259,7 +305,7 @@ class HandoffControls(unittest.TestCase):
 
     def test_long_epoch2_serve_joins_real_fault_and_attribution_before_recovery(self):
         from installed import set_value
-        for failure in (None,'counter','pid','native','root-change','extra-report'):
+        for failure in (None,'counter','pid','native','root-change','extra-report','startup-error','sync-stage','sync-extra'):
             with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);before,state,first,started,wires,events,dump,inputs,lower,upper,fault=zero_fixture(root)
                 upper=lower+31_000_000
@@ -287,7 +333,10 @@ class HandoffControls(unittest.TestCase):
                 runtime.docker=Mock(return_value=SimpleNamespace(stdout='4\n'))
                 runtime.inspect=Mock(return_value=dict(Id='epoch2',State=dict(ExitCode=4,Pid=0,Running=False,OOMKilled=False)))
                 def logs(entry,output):
-                    (output/'serve.stderr').write_text('error: initial native batch unavailable: Quantum(CommitUnknown)\n')
+                    stderr=sync_fault_stderr(sync_fault_diagnostic(stage='quantum-terminal')) if failure=='sync-stage' else sync_fault_stderr()
+                    if failure=='startup-error':stderr='error: initial native batch unavailable: Quantum(CommitUnknown)\n'
+                    if failure=='sync-extra':stderr+='extra\n'
+                    (output/'serve.stderr').write_text(stderr)
                     return [started,started] if failure=='extra-report' else [started]
                 runtime.logs=Mock(side_effect=logs)
                 terminal=dict(runtime.handoff_proxy_binding,event='terminal',unexpected=0,frames=10,connections=1,bytes=100,
