@@ -27,6 +27,16 @@ ADOPTION_LIMITS=[
 ]
 
 
+def sql_identifier(value):
+    require(type(value) is str and value and '\0' not in value and len(value.encode())<=63,'invalid PostgreSQL identifier')
+    return '"'+value.replace('"','""')+'"'
+
+
+def sql_literal(value):
+    require(type(value) is str and '\0' not in value,'invalid PostgreSQL literal')
+    return "E'"+value.replace('\\','\\\\').replace("'","''")+"'"
+
+
 class CappedQuantumRuntime(LinearQuantumRuntime):
     def candidate(self):
         super().candidate()
@@ -238,6 +248,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
     def candidate(self):
         super().candidate()
         self.inputs['linear_quantum_scenario']='settled-owner-adoption'
+        if getattr(self.args,'linear_quantum_trace_successor_sql',False):
+            self.inputs['linear_quantum_trace_successor_sql']=True
         path='tests/fixtures/acquisition/settled-owner-adoption.json'
         self.inputs['adoption_expectation_sha256']=digest(self.source/path)
         oracle.adoption_manifest(load(self.source/path))
@@ -254,6 +266,89 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             shutil.copyfile(self.source/'tests/fixtures/acquisition'/name,self.home/name)
         save(self.home/'linear-capped-adoption-profile.json',ADOPTION_PROFILE)
         self.events=corpus(self.home)[:3]
+
+    def successor_sql_login(self):
+        control=tomllib.loads(self.config.read_text())['postgres']['control']
+        role,database=control['user'],control['database']
+        for value in (role,database):sql_identifier(value)
+        return role,database
+
+    def launch_adoption_successor(self,output):
+        if getattr(self.args,'linear_quantum_trace_successor_sql',False):
+            role,database=self.successor_sql_login()
+            user,db=sql_identifier(role),sql_identifier(database)
+            observed=json.loads(self.sql(database,f"""
+                BEGIN;
+                ALTER ROLE {user} IN DATABASE {db} SET log_parameter_max_length=0;
+                ALTER ROLE {user} IN DATABASE {db} SET log_parameter_max_length_on_error=0;
+                ALTER ROLE {user} IN DATABASE {db} SET log_statement='all';
+                COMMIT;
+                SELECT jsonb_build_object('role',r.rolname,'database',d.datname,'settings',
+                    (SELECT jsonb_agg(value ORDER BY value COLLATE "C") FROM unnest(s.setconfig) value
+                        WHERE split_part(value,'=',1) IN ('log_statement','log_parameter_max_length','log_parameter_max_length_on_error')))
+                FROM pg_db_role_setting s JOIN pg_roles r ON r.oid=s.setrole
+                    JOIN pg_database d ON d.oid=s.setdatabase
+                WHERE r.rolname={sql_literal(role)} AND d.datname={sql_literal(database)};
+                """))
+            require(observed==dict(role=role,database=database,settings=[
+                'log_parameter_max_length=0','log_parameter_max_length_on_error=0','log_statement=all']),
+                'successor SQL login defaults differ or expose bind values')
+            save(output/'sql-trace-configured.json',dict(scope='verified_login_defaults_only',
+                before_successor_launch=True,**observed))
+        return self.launch('adoption-successor','app','serve','--file','/etc/bigbrotr/instance.toml',
+            '--activate-initial-successor','--roles','control,ingest,sync')
+
+    def capture_successor_wait_failure(self,output):
+        role,database=self.successor_sql_login()
+        job,=self.adoption_before['jobs']
+        wanted=source.raw(job['job_id']).hex()
+        snapshot=json.loads(self.sql(database,f"""
+            BEGIN READ ONLY;
+            SET LOCAL statement_timeout='3s';
+            WITH target AS (SELECT decode({sql_literal(wanted)},'hex') AS job_id)
+            SELECT jsonb_build_object('format','bigbrotr-adoption-successor-wait-diagnostic/1',
+                'observed_at_us',(extract(epoch FROM clock_timestamp())*1000000)::bigint,
+                'role',{sql_literal(role)},'database',{sql_literal(database)},
+                'jobs',jsonb_build_object('count',(SELECT count(*) FROM control.jobs j WHERE j.job_id=t.job_id),
+                    'rows',(SELECT coalesce(jsonb_agg(to_jsonb(v)),'[]'::jsonb) FROM (
+                        SELECT job_id,dataset_id,state,job_revision,owner_resource_id,owner_epoch,owner_incarnation
+                        FROM control.jobs WHERE job_id=t.job_id LIMIT 1) v)),
+                'seals',jsonb_build_object('count',(SELECT count(*) FROM control.acquisition_continuations c WHERE c.job_id=t.job_id),
+                    'rows',(SELECT coalesce(jsonb_agg(to_jsonb(v)),'[]'::jsonb) FROM (
+                        SELECT continuation_id,job_id,producer_slot_id,producer_epoch,target_epoch,
+                            previous_owner_resource,previous_owner_epoch,previous_owner_incarnation,
+                            adopting_resource,adopting_epoch,adopting_incarnation,adopted_job_revision,adopted_at_us
+                        FROM control.acquisition_continuations WHERE job_id=t.job_id ORDER BY previous_job_revision DESC LIMIT 3) v)),
+                'quanta',jsonb_build_object('count',(SELECT count(*) FROM control.acquisition_quanta q WHERE q.job_id=t.job_id),
+                    'rows',(SELECT coalesce(jsonb_agg(to_jsonb(v)),'[]'::jsonb) FROM (
+                        SELECT quantum_id,job_id,producer_slot_id,producer_epoch,quantum_number,query_number,
+                            issuer_resource,issuer_epoch,issuer_incarnation,terminal_kind,disposition
+                        FROM control.acquisition_quanta WHERE job_id=t.job_id ORDER BY quantum_number DESC LIMIT 6) v)),
+                'application_backends',jsonb_build_object('count',(SELECT count(*) FROM pg_stat_activity a
+                        WHERE a.usename={sql_literal(role)} AND a.datname={sql_literal(database)} AND a.pid<>pg_backend_pid()),
+                    'rows',(SELECT coalesce(jsonb_agg(to_jsonb(v)),'[]'::jsonb) FROM (
+                        SELECT a.pid,a.backend_start,a.state,a.wait_event_type,a.wait_event,
+                            encode(sha256(convert_to(a.query,'UTF8')),'hex') AS query_sha256
+                        FROM pg_stat_activity a WHERE a.usename={sql_literal(role)} AND a.datname={sql_literal(database)}
+                            AND a.pid<>pg_backend_pid() ORDER BY a.backend_start,a.pid LIMIT 16) v)))
+            FROM target t;
+            COMMIT;
+            """))
+        save(output/'wait-failure-snapshot.json',snapshot)
+
+    def wait_adoption_successor(self,successor,output):
+        def settled():
+            require(not (self.home/'relay-error.json').exists(),'adoption relay failed')
+            require(not (self.home/'relay-open-006.json').exists(),'adoption opened a sixth socket')
+            if not (self.home/'capped-adoption-peer-complete.json').exists():return False
+            return self.sql('bigbrotr_control',"SELECT count(*)=5 AND bool_and(disposition IS NOT NULL) FROM control.acquisition_quanta")=='t'
+        try:self.wait(settled,'five globally numbered settled acquisition queries',20,successor,self.client)
+        except BaseException:
+            try:self.capture_successor_wait_failure(output)
+            except BaseException as error:
+                try:save(output/'wait-failure-diagnostic-error.json',dict(error=type(error).__name__))
+                except BaseException:pass
+            raise
 
     def initial(self):
         require(self.quantum_fault=='plan-before','adoption requires the declared before-forward Q2 COMMIT fault')
@@ -309,19 +404,13 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.adoption_retired,_=self.capture(output,'retired')
         self.backend_absence(output);self.wires(1)
         successor_output=self.root/'adoption-successor';successor_output.mkdir(mode=0o700)
-        successor=self.launch('adoption-successor','app','serve','--file','/etc/bigbrotr/instance.toml',
-            '--activate-initial-successor','--roles','control,ingest,sync')
+        successor=self.launch_adoption_successor(successor_output)
         started=self.wait(lambda:self.logs(successor,successor_output),'actual adoption successor',20,entry=successor)[0]
         require(started['state']=='activated' and started['producer_epoch']=='2' and started['acquisition']=='finite-initial-successor'
             and started['config_revision']==started['policy_revision']=='1' and started['ready'] is False,
             'actual locally activated successor differs')
         self.adoption_started=started;save(successor_output/'initialized.json',started)
-        def settled():
-            require(not (self.home/'relay-error.json').exists(),'adoption relay failed')
-            require(not (self.home/'relay-open-006.json').exists(),'adoption opened a sixth socket')
-            if not (self.home/'capped-adoption-peer-complete.json').exists():return False
-            return self.sql('bigbrotr_control',"SELECT count(*)=5 AND bool_and(disposition IS NOT NULL) FROM control.acquisition_quanta")=='t'
-        self.wait(settled,'five globally numbered settled acquisition queries',20,successor,self.client)
+        self.wait_adoption_successor(successor,successor_output)
         self.adoption_live,_=self.capture(successor_output,'settled')
         self.wires(5)
         completion=load(self.home/'capped-adoption-peer-complete.json')

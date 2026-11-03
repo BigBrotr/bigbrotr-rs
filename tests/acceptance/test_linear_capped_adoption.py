@@ -2,12 +2,14 @@
 import copy
 import base64
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import tempfile
 import socket
 import threading
 import time
+import sys
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock,patch
@@ -17,6 +19,7 @@ from test_first_launch_restart import fixture as signed_fixture,current42_head
 from test_linear_quantum import fixture as quantum_fixture
 from test_linear_capped_quantum import corpus_fixture
 from cases import first_launch_capped_oracle as check
+from cases import first_launch_capped_quantum as case
 from cases import first_launch_quantum_oracle as quantum
 from cases import first_launch_restart as source
 from cases.first_launch_quantum_science import initial_science
@@ -236,6 +239,137 @@ def fixture(root):
 
 
 class CappedAdoptionControls(unittest.TestCase):
+    def successor_runtime(self,root,*,trace=False,role='actual_control',database='actual_database'):
+        runtime=object.__new__(case.CappedAdoptionRuntime)
+        runtime.args=SimpleNamespace(linear_quantum_trace_successor_sql=trace)
+        runtime.config=root/'instance.toml'
+        runtime.config.write_text('[postgres.control]\nuser = '+json.dumps(role)+'\ndatabase = '+json.dumps(database)+'\n')
+        runtime.home=root;runtime.client=Mock()
+        runtime.adoption_before=dict(jobs=[dict(job_id='\\x'+'12'*16)])
+        runtime.launch=Mock(return_value='successor')
+        return runtime
+
+    def test_successor_trace_quotes_exact_login_and_commits_redacted_defaults_before_launch(self):
+        role=r'''control"login'\tail''';database=r'''owned"db'\path'''
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=self.successor_runtime(root,trace=True,role=role,database=database)
+            observed=dict(role=role,database=database,settings=[
+                'log_parameter_max_length=0','log_parameter_max_length_on_error=0','log_statement=all'])
+            runtime.sql=Mock(return_value=json.dumps(observed))
+            def launch(*args):
+                runtime.sql.assert_called_once()
+                self.assertEqual(json.loads((root/'sql-trace-configured.json').read_text()),
+                    dict(scope='verified_login_defaults_only',before_successor_launch=True,**observed))
+                return 'successor'
+            runtime.launch.side_effect=launch
+            self.assertEqual(runtime.launch_adoption_successor(root),'successor')
+            actual_database,statement=runtime.sql.call_args.args
+            self.assertEqual(actual_database,database)
+            self.assertIn(r'''ALTER ROLE "control""login'\tail" IN DATABASE "owned""db'\path" SET log_parameter_max_length=0;''',statement)
+            self.assertIn(r'''r.rolname=E'control"login''\\tail' AND d.datname=E'owned"db''\\path';''',statement)
+            self.assertEqual(statement.count('ALTER ROLE '),3)
+            self.assertLess(statement.index('BEGIN;'),statement.index('SET log_parameter_max_length=0;'))
+            self.assertLess(statement.index('SET log_parameter_max_length_on_error=0;'),statement.index("SET log_statement='all';"))
+            self.assertLess(statement.index('COMMIT;'),statement.index('FROM pg_db_role_setting'))
+            self.assertIn("WHERE split_part(value,'=',1) IN ('log_statement','log_parameter_max_length','log_parameter_max_length_on_error')",statement)
+            self.assertNotIn('current_setting(',statement)
+            runtime.launch.assert_called_once_with('adoption-successor','app','serve','--file','/etc/bigbrotr/instance.toml',
+                '--activate-initial-successor','--roles','control,ingest,sync')
+
+    def test_successor_trace_refuses_wrong_or_missing_redaction_defaults_and_login(self):
+        valid=dict(role='actual_control',database='actual_database',settings=[
+            'log_parameter_max_length=0','log_parameter_max_length_on_error=0','log_statement=all'])
+        changes=[dict(role='observer'),dict(database='observer_database')]
+        for index in range(3):
+            missing=list(valid['settings']);missing.pop(index);changes.append(dict(settings=missing))
+            wrong=list(valid['settings']);wrong[index]=('log_parameter_max_length=10',
+                'log_parameter_max_length_on_error=-1','log_statement=none')[index]
+            changes.append(dict(settings=wrong))
+        changes.append(dict(settings=valid['settings']+[valid['settings'][0]]))
+        for changed in changes:
+            with self.subTest(changed=changed),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=self.successor_runtime(root,trace=True)
+                runtime.sql=Mock(return_value=json.dumps(dict(valid,**changed)))
+                with self.assertRaisesRegex(ValueError,'defaults differ or expose bind values'):
+                    runtime.launch_adoption_successor(root)
+                runtime.launch.assert_not_called();self.assertFalse((root/'sql-trace-configured.json').exists())
+
+    def test_successor_trace_is_opt_in_and_rejects_invalid_identifiers_before_sql(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=self.successor_runtime(root)
+            runtime.sql=Mock();runtime.launch_adoption_successor(root);runtime.sql.assert_not_called()
+            self.assertFalse((root/'sql-trace-configured.json').exists())
+        for role in ('','bad\0role','r'*64):
+            with self.subTest(role=role),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=self.successor_runtime(root,trace=True,role=role)
+                runtime.sql=Mock()
+                with self.assertRaisesRegex(ValueError,'PostgreSQL identifier'):runtime.launch_adoption_successor(root)
+                runtime.sql.assert_not_called();runtime.launch.assert_not_called()
+
+    def test_failed_successor_wait_retains_original_exception_and_one_readonly_snapshot_with_trace_on_or_off(self):
+        for trace in (False,True):
+            with self.subTest(trace=trace),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=self.successor_runtime(root,trace=trace)
+                original=ValueError('original twenty-second wait failure');runtime.wait=Mock(side_effect=original)
+                snapshot=dict(format='bigbrotr-adoption-successor-wait-diagnostic/1',jobs=dict(count=1,rows=[]),
+                    seals=dict(count=1,rows=[]),quanta=dict(count=1,rows=[]),application_backends=dict(count=1,
+                        rows=[dict(pid=123,backend_start='2026-11-03T00:00:00Z',state='idle',wait_event_type='Client',
+                            wait_event='ClientRead',query_sha256='ab'*32)]))
+                runtime.sql=Mock(return_value=json.dumps(snapshot))
+                with self.assertRaises(ValueError) as raised:runtime.wait_adoption_successor('successor',root)
+                self.assertIs(raised.exception,original)
+                self.assertEqual(runtime.wait.call_args.args[1:],('five globally numbered settled acquisition queries',20,'successor',runtime.client))
+                self.assertEqual(runtime.wait.call_count,1);runtime.sql.assert_called_once()
+                database,statement=runtime.sql.call_args.args;self.assertEqual(database,'actual_database')
+                self.assertIn('BEGIN READ ONLY;',statement);self.assertIn("SET LOCAL statement_timeout='3s';",statement)
+                self.assertIn("encode(sha256(convert_to(a.query,'UTF8')),'hex') AS query_sha256",statement)
+                self.assertIn("a.usename=E'actual_control' AND a.datname=E'actual_database'",statement)
+                for bound in (1,3,6,16):self.assertIn('LIMIT '+str(bound),statement)
+                self.assertNotIn('SELECT *',statement)
+                self.assertNotRegex(statement,r'\b(?:INSERT|UPDATE|DELETE|ALTER|CREATE|DROP)\b')
+                self.assertEqual(json.loads((root/'wait-failure-snapshot.json').read_text()),snapshot)
+                self.assertFalse((root/'wait-failure-diagnostic-error.json').exists())
+
+    def test_snapshot_or_error_receipt_failure_cannot_mask_original_wait_failure(self):
+        for save_error in (False,True):
+            with self.subTest(save_error=save_error),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=self.successor_runtime(root)
+                original=RuntimeError('original wait failure');runtime.wait=Mock(side_effect=original)
+                runtime.sql=Mock(side_effect=OSError('private diagnostic failure detail'))
+                with patch.object(case,'save',side_effect=OSError('private receipt failure')) if save_error else patch.object(case,'save',wraps=case.save):
+                    with self.assertRaises(RuntimeError) as raised:runtime.wait_adoption_successor('successor',root)
+                self.assertIs(raised.exception,original);runtime.sql.assert_called_once()
+                if not save_error:
+                    self.assertEqual(json.loads((root/'wait-failure-diagnostic-error.json').read_text()),dict(error='OSError'))
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=self.successor_runtime(root)
+            runtime.wait=Mock();runtime.capture_successor_wait_failure=Mock()
+            runtime.wait_adoption_successor('successor',root);runtime.capture_successor_wait_failure.assert_not_called()
+
+    def test_trace_cli_rejects_unrelated_cases_and_accepts_only_declared_adoption(self):
+        spec=importlib.util.spec_from_file_location('adoption_trace_runner_control',ROOT/'tests/acceptance/run.py')
+        runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+        invalid=(('p01-t01','--binary',sys.executable),('p03-linear-quantum',),
+            ('p03-linear-quantum','--linear-quantum-scenario','interruptions'),
+            ('p03-linear-quantum','--linear-quantum-scenario','capped-continuation'),
+            ('p03-linear-quantum','--linear-quantum-scenario','window-succession','--linear-quantum-fault','gap-write'),
+            ('p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption','--linear-quantum-fault','plan-after'))
+        for prefix in invalid:
+            with self.subTest(prefix=prefix),tempfile.TemporaryDirectory() as temporary:
+                evidence=Path(temporary)/'evidence'
+                argv=['run.py',*prefix,'--linear-quantum-trace-successor-sql','--source-root',str(ROOT),'--evidence',str(evidence)]
+                with patch.object(sys,'argv',argv),patch.object(sys,'stderr'),self.assertRaises(SystemExit) as raised:runner.main()
+                self.assertEqual(raised.exception.code,2);self.assertFalse(evidence.exists())
+        for trace in (False,True):
+            with self.subTest(valid_trace=trace),tempfile.TemporaryDirectory() as temporary:
+                evidence=Path(temporary)/'evidence'
+                argv=['run.py','p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption',
+                    '--linear-quantum-fault','plan-before','--source-root',str(ROOT),'--evidence',str(evidence)]
+                if trace:argv.append('--linear-quantum-trace-successor-sql')
+                with patch.object(sys,'argv',argv),patch.object(sys,'stdout'),patch('cases.first_launch.first_launch') as launched:
+                    self.assertEqual(runner.main(),2)
+                self.assertEqual(launched.call_args.args[0].linear_quantum_trace_successor_sql,trace)
+
     def test_distinct_retained_job_union_preserves_64_across_categories_and_owner_move(self):
         # Captured metadata semantics only. No connected SQL65 refusal is run.
         bx=lambda n:'\\x'+f'{n:032x}'

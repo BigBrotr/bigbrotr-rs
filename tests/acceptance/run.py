@@ -224,6 +224,8 @@ def main():
                         help='linear quantum only: interruptions, capped continuation, window succession or same-job owner adoption')
     parser.add_argument('--linear-quantum-corruption',choices=('cursor-time','foreign-payload'),
                         help='capped continuation only: corrupt one completed cursor or its native payload binding')
+    parser.add_argument('--linear-quantum-trace-successor-sql',action='store_true',
+                        help='settled owner adoption only: private successor statements with bind values disabled')
     parser.add_argument("--retained-archive-schedule", choices=("uninterrupted", "unbound-publication-loss", "grouped-publication-loss"),
                         help="closed-reclamation Archive fault schedule; default is unique unbound publication loss")
     parser.add_argument("--monitor-guard-corruption",choices=("dispatch-clock",),
@@ -237,6 +239,9 @@ def main():
         parser.error('--linear-quantum-fault is only for p03-linear-quantum')
     if args.linear_quantum_scenario is not None and args.case!='p03-linear-quantum':
         parser.error('--linear-quantum-scenario is only for p03-linear-quantum')
+    if args.linear_quantum_trace_successor_sql and (args.case!='p03-linear-quantum'
+            or args.linear_quantum_scenario!='settled-owner-adoption'):
+        parser.error('--linear-quantum-trace-successor-sql is only for settled-owner-adoption')
     if args.linear_quantum_fault is not None and args.linear_quantum_scenario not in (None,'interruptions'):
         allowed=(args.linear_quantum_scenario=='window-succession' and args.linear_quantum_fault in ('gap-write','terminal-before','terminal-after')
             or args.linear_quantum_scenario=='settled-owner-adoption' and args.linear_quantum_fault=='plan-before')
