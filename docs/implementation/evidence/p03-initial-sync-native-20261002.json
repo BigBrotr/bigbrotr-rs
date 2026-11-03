@@ -2116,7 +2116,7 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "FIRST_COMPILE_FAIL_MECHANICAL_SOURCE_CORRECTION_PENDING_REQUALIFICATION",
+    "status": "COMPILE_SEAM_FIXES_COMMITTED_FRESH_QUALIFICATION_PENDING",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
@@ -2143,6 +2143,13 @@
       "result": "Root41175 reaped1; all-target11.535s FAIL on two E0624 continuation accessors and stale static migration count60/actual61. StrictClippy/Rustdoc/release/tests/engines NOT_RUN. Container877dff45 stopped/PID0/noOOM, launcherabsent, Rootcache115reacquired/released/nooverlap and original4ELFfullstat/O_NOATIMEsha guardPASS.",
       "setup": "Original cheap preflight missingCargoHome FAIL before rustfmt; distinct R2 explicit temporaryCargoHome format/planningPASS. Both originalresults/logs/recipes retained.",
       "correction": "Restrict two positive successor proof accessors to the postgres ancestor, their intended sibling consumer; no public API/constructor or authority change. Make migration catalog a static slice to avoid redundant manual array length; same61 ordered SQL records/checksums/plan logic. Compilation remains to verify."
+    },
+    "second_compile": {
+      "source": "81ea6c28e410b89381e74cce0d710d7400d56609",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/81ea6c28/failure-receipt.json",
+      "sha256": "8841d720fb9c443a0768567c86ef7d548e3e8a9b077273a8b99899fbcb0b2a4d",
+      "result": "Root42777 reaped1; all-target12.137sFAIL at BINtest2missing RuntimeContext imports, priorlibraryerrorscorrected. Release/strictClippy/Rustdoc/tests/installedNOT_RUN. Container43450e48 stopped/PID0/noOOM/launcherabsent/cacheRootreacquiredreleased/nooverlap/original4ELFfullstatO_NOATIMEguardPASS.",
+      "correction": "a942a49f imports existing owner::RuntimeContext in two successor startup modules; no logic/protocol/SQL changes. Actual cheap preflight format/planningPASS before failed compilation."
     }
   }
 }

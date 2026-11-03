@@ -8,7 +8,7 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and qualified recovery capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **121aaf00** before this
+`work/m2-finite-history-20261101`, observed HEAD **a942a49f** before this
 checkpoint. Canonical main/origin/actual remote are **5a9b7cc4**, clean and pushed:
 qualified bounded Monitor recovery, connected fixtures and Mac path correction.
 The reviewed M2 production/oracle sources are integrated locally, not on main;
@@ -94,13 +94,16 @@ Documentation3/3 PASS at85b0fa3c remains valid for unchanged document inputs.
 First exact7c89 all-target compilation **FAIL** after11.535s: two internal proof
 accessors were private to the wrong ancestor and the catalog declared60/actual61.
 Correction121aaf00 scopes those accessors to postgres and uses a static slice,
-retaining the same61 records/checksums and authority. Compilation remains to
-verify. Original cheap preflight missing-CargoHome FAIL and corrected temporary-
+retaining the same61 records/checksums and authority. Second81ea6c28 compile reached binary checking, then **FAIL** on two missing
+RuntimeContext imports (12.137s). Correctiona942a49f imports that existing enum;
+no logic/protocol/SQL change. Both original failures remain in P03, second receipt
+8841d720; its builder43450e48/launcher/cache/4ELF guards are terminal/valid.
+Fresh compilation remains to verify. Original cheap preflight missing-CargoHome FAIL and corrected temporary-
 home two-check PASS are preserved separately. Receipt4a697ef8 binds raw failures,
 stopped builder877dff45, absent launcher, cache release/reacquisition and unchanged
 original4ELF fullstat/bytes. Release/Clippy/Rustdoc/tests/installed **NOT_RUN**.
 Nine selected tutorial Nostr leaves, other six code objects and vendor unchanged;
-bounded fence repinned to121aaf00, owning14 controls PASS. Zero-query/custody,
+bounded fence repinned for the same mechanical fixes; owning14 controls PASS. Zero-query/custody,
 SQL65 and absent/uncertain adoption remain explicit qualification gates.
 
 [Inventory](../research/laboratory-inventory.json) owns resources. All Root
