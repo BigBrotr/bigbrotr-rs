@@ -186,17 +186,55 @@ class TutorialControls(unittest.TestCase):
                     finished.set();thread.join(4)
 
     def test_documentation_only_product_revision_can_reuse_reviewed_code_but_changed_code_refuses(self):
-        runtime=object.__new__(case.TutorialRuntime);runtime.source=ROOT;runtime.inputs={}
-        revision=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()
-        runtime.manifest=dict(artifact=dict(source=dict(revision=revision)))
-        runtime.command=lambda command,**_:subprocess.run(command,capture_output=True,text=True,check=True)
-        with patch.object(case.Runtime,'candidate'):
-            runtime.candidate()
-        self.assertEqual(runtime.inputs['nostr_source_exclusion']['product_revision'],revision)
-        self.assertEqual(runtime.inputs['nostr_source_exclusion']['reviewed_revision'],case.REVIEWED_PRODUCT)
-        runtime.command=Mock(return_value=SimpleNamespace(stdout='0'*40+'\n'))
-        with patch.object(case.Runtime,'candidate'):
-            with self.assertRaisesRegex(ValueError,'changed product code'):runtime.candidate()
+        # Synthetic Git mechanism only; this does not review the current product's
+        # Nostr paths. The independent vendor-profile controls own that component.
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            environment={key:value for key,value in os.environ.items() if not key.startswith('GIT_')}
+            environment.update(GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL=os.devnull,LANG='C',LC_ALL='C')
+            def git(*args):
+                return subprocess.check_output(['git','-c','gc.auto=0','-c','maintenance.auto=false',
+                    '-c','core.hooksPath='+os.devnull,'-c','commit.gpgsign=false',
+                    '-c','user.name=Tutorial fixture','-c','user.email=fixture@example.invalid',
+                    '-C',str(root),*args],env=environment,text=True,timeout=5).strip()
+            helper=root/'tests/acceptance/cases/first_launch_tutorial.py';helper.parent.mkdir(parents=True)
+            helper.write_bytes(Path(case.__file__).read_bytes())
+            for name,text in (('apps/main.rs','fn main() {}\n'),('config/selected.toml','profile = "unit"\n'),
+                    ('vendor/README.md','# Unit vendor fixture\n'),('README.md','# Original documentation\n')):
+                path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(text)
+            git('init','--quiet');git('add','.');git('commit','--quiet','-m','Declare synthetic reviewed inputs')
+            reviewed=git('rev-parse','HEAD')
+            objects={path:git('rev-parse',reviewed+':'+path) for path in ('apps','config')}
+            vendor_inventory=subprocess.check_output(['git','-C',str(root),'ls-tree','-r','-z',reviewed+':vendor'],
+                env=environment,text=True,timeout=5)
+            vendor_binding=dict(scope='synthetic vendor component; real inventory validated separately')
+            runtime=object.__new__(case.TutorialRuntime);runtime.source=root
+            runtime.command=lambda command,**_:subprocess.run(command,capture_output=True,text=True,
+                check=True,env=environment,timeout=5)
+            with patch.object(case.Runtime,'candidate'),patch.object(case,'REVIEWED_PRODUCT',reviewed),\
+                    patch.object(case,'REVIEWED_CODE',objects),patch.object(case,'NOSTR_PATHS',('apps/main.rs',)),\
+                    patch.object(case,'reviewed_vendor',return_value=vendor_binding) as vendor:
+                for documentation in (False,True):
+                    if documentation:
+                        (root/'README.md').write_text('# Revised documentation\n')
+                        git('add','README.md');git('commit','--quiet','-m','Change documentation only')
+                    revision=git('rev-parse','HEAD');runtime.inputs={}
+                    runtime.manifest=dict(artifact=dict(source=dict(revision=revision)))
+                    runtime.candidate()
+                    observed=runtime.inputs['nostr_source_exclusion']
+                    self.assertEqual(observed['product_revision'],revision)
+                    self.assertEqual(observed['reviewed_revision'],reviewed)
+                    self.assertEqual(observed['code_git_objects'],objects)
+                    self.assertEqual(observed['vendor_profile'],vendor_binding)
+                    self.assertEqual(observed['files_sha256'],{'apps/main.rs':base.digest(root/'apps/main.rs')})
+                    vendor.assert_called_with(vendor_inventory,root/'vendor/README.md')
+                    if documentation:self.assertNotEqual(revision,reviewed)
+                (root/'apps/main.rs').write_text('fn main() { let _changed = 1; }\n')
+                git('add','apps/main.rs');git('commit','--quiet','-m','Change synthetic product code')
+                runtime.inputs={};runtime.manifest['artifact']['source']['revision']=git('rev-parse','HEAD')
+                with self.assertRaisesRegex(ValueError,'changed product code'):runtime.candidate()
+                self.assertNotIn('nostr_source_exclusion',runtime.inputs)
+                self.assertEqual(vendor.call_count,2)
 
     def test_vendor_profile_allows_only_maintained_guide_text_to_change(self):
         inventory = subprocess.check_output(
