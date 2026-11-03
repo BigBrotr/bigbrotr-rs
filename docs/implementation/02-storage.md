@@ -235,6 +235,19 @@ One owner serializes exact identity decisions for each writable directory.
   of pending charge by receipt GC, held credit on unknown writes and stable-low
   resume. Only the bounded remaining-growth question gates this increment;
   P02-T02 Step8/P02-T09 retain the broader capacity/maintenance obligations.
+  The maintained [physical diagnostic](../../experiments/policy-versions/README.md#bounded-physical-growth-diagnostic)
+  now captures two real max-event A/B cases: each preserves63 signed events,
+  all64 requests/outcomes, ACK1 and exact science through ordinary reopen, with
+  actual automatic flush/compaction and overlapping PostgreSQL checkpoint work.
+  [Current evidence](evidence/p03-initial-sync-native-20261002.json), key
+  `settled_owner_adoption_root_integration_20261103.physical_open65_prerequisite`,
+  retains the original setup failures and the actual94s R2 result. Three partial
+  PG descriptor samples remain unknown; sampled peaks establish no numeric d/R.
+  The next Step4 slice must enforce finite complete native work/history and file
+  debt plus durable shared-filesystem funding before native writing open/PG claim,
+  including the explicit essential PG share. The selected maximum4MiB native unit
+  and any admitted bootstrap range need their own source bound/qualification;
+  the262144B event diagnostic cannot substitute for them. Lifetime64 remains.
   The accounting/historical-recovery increment records current manifest value
   schema2, an atomic pending-byte counter, mandatory full census and explicit
   source0 at initialization. Counter/source/scientific corruption refuses without

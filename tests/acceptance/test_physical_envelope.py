@@ -225,7 +225,7 @@ class PhysicalSetupControls(unittest.TestCase):
 class PhysicalTelemetryControls(unittest.TestCase):
     def test_allocated_bytes_inode_dedup_and_separate_input_domain(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             with (root/'000001.sst').open('wb') as stream:
                 stream.seek(1024*1024)
                 stream.write(b'x')
@@ -257,7 +257,7 @@ class PhysicalTelemetryControls(unittest.TestCase):
 
     def test_descriptor_binding_refuses_path_replacement_and_symlinks(self):
         with tempfile.TemporaryDirectory() as temporary:
-            parent = Path(temporary)
+            parent = Path(temporary).resolve()
             root = parent/'root'
             root.mkdir()
             bound = PHYSICAL.BoundRoot(root,'native')
@@ -275,7 +275,7 @@ class PhysicalTelemetryControls(unittest.TestCase):
     @unittest.skipUnless(Path('/proc/self/fd').exists(),'Linux procfs only')
     def test_open_unlinked_is_positively_counted_once(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
+            root = Path(temporary).resolve()
             path = root/'000001.log'
             path.write_bytes(b'x'*4096)
             stream = path.open('rb')

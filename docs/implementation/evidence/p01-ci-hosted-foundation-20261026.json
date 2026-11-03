@@ -2991,7 +2991,7 @@
   },
   "current_handoff_publication_20261103": {
     "revision": "2c68fa69409b8b0c179a5f394b4efeab63668b4c",
-    "status": "TERMINAL_LINUX_PASS_MAC_FIXTURE_FAIL_CORRECTION_IN_QUALIFICATION",
+    "status": "INPUT_EQUIVALENT_FOUNDATION_SCOPES_AND_CURRENT_MAIN_CONTROLS_VERIFIED",
     "run": 41708352094,
     "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41708352094",
     "publication": {
@@ -3002,8 +3002,8 @@
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-macos-failure-classification.json",
       "sha256": "392807c2c9a87b9caa571bab384ec03fe61676576b12eab531f326986580d436"
     },
-    "scope": "Exact2c is terminalFAIL from Mac portable clock fixture. Both Linux foundation jobs completedPASS. This is fixture setup, not billing/cancellation or observed product failure; no aggregate3platformPASS.",
-    "next": "Integrate/publish source-only clockfix and concise evidence after terminal2c Linux. Await actual3fMacnine checks; normalmain controls must also execute. Future product/native/build changes still select fullfoundation.",
+    "scope": "Original2c remains terminalFAIL from Mac fixture, with6NOT_RUN preserved. Its Linux27PASS plus separate3fMac9PASS cover the declared unchanged relevant product/native/build/check inputs; actualfacmain portable18PASS covers the corrected unit fixture on all platforms. This is explicit split/input-equivalent coverage, not a relabeled exactmain three-platform full run.04e remains the last same-revision fullthree-platform hostedPASS.",
+    "next": "The next compiled probe/tool publication selects full foundation again. Reuse recorded unchanged-core/local evidence; verify its actual selected hosted execution. No clockfix duplicate native runs or billing/visibility changes.",
     "linux_qualification": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-verification/receipt.json",
       "sha256": "bf285d149ad44e8e4216d6bb05de0847189e12b2545d927ae43c29cce05f3a31",
@@ -3015,12 +3015,35 @@
       "qualification_revision": "3f9149453bfc433f08f12ed8838f9e35113434c6",
       "run": 41713160167,
       "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41713160167",
-      "state": "IN_PROGRESS",
+      "state": "SCOPED_FULL_MAC_FOUNDATION_PASS",
       "receipt": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/ci-clock-work-publication-and-dispatch.json",
         "sha256": "5a16cedbeda4e5705aeab9b37ba04fd09397e560b537ebb7a95f82203895dd4d"
       },
-      "scope": "OnlyMac matrix, same9 maintained checks; all nonworkflow source/build/check inputs equalec1. Does not count omitted Linux asPASS or replace normal3platform workflow."
+      "scope": "OnlyMac matrix, same9 maintained checks; all nonworkflow source/build/check inputs equalec1. Does not count omitted Linux asPASS or replace normal3platform workflow.",
+      "qualification": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-macos-clock-verification/receipt.json",
+        "sha256": "2c4b62491a8b619efe2f98765abeb41c7c0c7c72db3fdd5c718ff7bed957f36e",
+        "counts": "9/9 required commands PASS;1587 Rust PASS/4ignored,745 Pythoncontrols/13SKIP; all4287 source hashes/build bindings verified. Bounded output scan found no new candidates."
+      },
+      "ref_retirement": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/completed-macos-qualification-ref-retirement.json",
+        "sha256": "c3161b48e400dac9074755eb7cbbbe9f787024450636697d53c5aac360c1a72e",
+        "state": "Completed local+remote qualification branch deleted; clean detached3f worktree/commit and all source/log/artifact evidence retained. Matrix-only qualification never merged."
+      }
+    },
+    "current_main_portable_qualification": {
+      "revision": "fac6366fa9972b30b9ce2a4b807a86ae387f4f25",
+      "run": 41718050503,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41718050503",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-fac-verification/receipt.json",
+      "sha256": "b51211d07490f80f4201bc5454e85c9d03e5bdc39ca357d7434c719ac8e52fda",
+      "counts": "18/18 selected portable/documentation commands PASS on Linux x86/ARM/macOS; native foundation deliberately not selected for fixture-only diff.",
+      "public_output_scan": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-fac-verification/public-output-scan.json",
+        "sha256": "a7c90de63418b33987c5cb0c96e85f9640500d1876f02e85a7c90be630d25669",
+        "status": "PASS_BOUNDED_NO_NEW_CANDIDATES"
+      }
     }
   }
 }

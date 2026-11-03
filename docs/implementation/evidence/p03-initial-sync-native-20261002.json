@@ -2877,6 +2877,44 @@
         "sha256": "302c80d3c80c77840d435feb1cff2ecf74cf980f9cb91a7c5df37d8663010575"
       },
       "hosted_gap": "P01owns2cMacportableclockfixture failure; Linuxnativejobsrunning. Unit-onlyfix preservesallR26runtime/product/oracle inputs, no product/probe rebuild or installedrepeat."
+    },
+    "physical_open65_prerequisite": {
+      "owner": "P02-T02 Step4; subsequent full-page composition remains P03-T05",
+      "status": "BOUNDED_REAL_DIAGNOSTIC_CAPTURED_WITH_GAPS_NOT_PHYSICAL_FUNDING",
+      "harness_source": "c3804ce1d583b9e17a9f72a25d0ca4fe943d8b4f",
+      "parent_probe_source": "87a626271289d3b25be4baf543ab8613a1a5a883",
+      "parent_build": {
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/build-receipt.json",
+        "sha256": "fd56753aec4709b80577f2356a3ed11d3b766537240205eb85d87075e1142eda"
+      },
+      "probe_build": {
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/probe/terminal-receipt.json",
+        "sha256": "8f62bb920cc439639cb0dfb5ad066b9a40fa049eb32936c5f3bf704bfd7a0236"
+      },
+      "actual": {
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/physical-run2-receipt.json",
+        "sha256": "cb1b8be3d221c09488fdc2b14a41222ceee89b8c9a77cebcd7cdb20a6ec495c4",
+        "root_tool": 98102,
+        "terminal_chunk": "53e7e3",
+        "exit_code": 0,
+        "seconds": 94.08486016397364
+      },
+      "demonstrated": "Two independently signed A/B corpora each63 distinct complete262144B events. Each preserves585 exact native rows,16555495 pending bytes,64 originals/PG outcomes and credit64/ACK1/outstanding63 through ordinary reopen. Seven atomic flush jobs across3CFs and3 successful nontrivial compactions per case; actual PG checkpoint overlaps admissions33-36(A),32-36(B). Source/build/PG role/fixture identities and actual joined/stopped custody verified.",
+      "gaps": "Only PG descriptor census: A1/B2 partial frames with generic errors, errno/cause unknown. No assumption of zero PG unlinked allocation. Native/root census and LOG reported no gap. Sampled peaks are not simultaneous sums/upper bounds; B PG cluster retains A database.",
+      "source_review": "Astra/xhigh accepted runner27a and initializer6c39 deltas, plus bounded actual R2 interpretation; Sol/xhigh author12 portable controls PASS and existing17 policy controls PASS. Exact source/controls receipts retained in author worktree. Reviewer executed no engines/builds/tests.",
+      "preserved_failures": [
+        "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/ea7c50c2/failure-receipt.json",
+        "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/c555a77c/failure-receipt.json",
+        "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/physical-run1-failure-receipt.json"
+      ],
+      "setup_correction": "R1 real CLI initialization generated random identities; probe required fixed inputs. R2 reuses existing initialize-fixture real initialization/activation adapter and verifies complete fixed baseline before observers. No SQL identity rewrite, oracle/corpus/limit change or product rebuild; R1 original FAIL and four CLI/setup PASS stay separate.",
+      "scope": "Diagnostic tools only. No numeric d/R, runtime filesystem credit, OPEN65, eventACK64, acquisition-bound reclaim, generic16MiB bootstrap/4MiB native maximum unit, wholeM2/capacity or release qualification.",
+      "next": "Implement the selected finite native work/history envelope and durable shared-filesystem funding before writing native open/PG claim, including ACK/no-effect/recovery/file debt and an explicit bounded PG completion share. Derive conservative d/R from enforced source/profile limits, then qualify maximum supported units. Keep lifetime64 until that guard closes; selected132/two-cycle plus128 consumer acceptance remains afterward.",
+      "portable_path_followup": {
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/path-portability-receipt.json",
+        "sha256": "0e39d7da8d45bea3243af6c3869e5d3314d4396cf428114ec4c7a65e48c1d366",
+        "scope": "Root32903/24ff51: all12 focused controls PASS under a symlink temporary directory after positive-fixture path canonicalization. Scientific/runtime oracles and product bytes unchanged."
+      }
     }
   }
 }

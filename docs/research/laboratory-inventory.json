@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-11-03T21:00:42.177711+00:00",
+  "updated_at": "2026-11-03T22:09:12.776832+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -79721,14 +79721,17 @@
         },
         "clock_portability_followup": {
           "work_revision": "ec1ee119c4190fcaa90769a171e1dfbc04db9443",
-          "work_state": "PUSHED_WORK_BRANCH_NOT_YET_MAIN",
+          "work_state": "INTEGRATED_AND_PUSHED_MAIN_FAC_WITH_REAL_THREE_PLATFORM_CONTROLS_PASS",
           "qualification_revision": "3f9149453bfc433f08f12ed8838f9e35113434c6",
           "qualification_worktree": "/home/tux/bigbrotr-rs/.research/ci-macos-handoff-clock-20261103",
           "run": 41713160167,
-          "state": "REMOTE_MAC_FOUNDATION_RUNNING",
+          "state": "SCOPED_REMOTE_MAC_FOUNDATION_COMPLETE_PASS",
           "terminal_original_run": 41708352094,
           "original_status": "LINUX_X86_ARM_PASS_MAC_FIXTURE_FAIL",
-          "evidence": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-verification/receipt.json"
+          "evidence": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-verification/receipt.json",
+          "main_revision": "fac6366fa9972b30b9ce2a4b807a86ae387f4f25",
+          "qualification_ref_state": "LOCAL_REMOTE_REF_RETIRED_SOURCE_WORKTREE_RETAINED",
+          "qualification_ref_retirement": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/completed-macos-qualification-ref-retirement.json"
         },
         "physical_growth_diagnostic_in_progress": {
           "owner_task": "P02-T02 Step4, prerequisite for physically guarded same-owner OPEN65 and later P03-T05 fullpage composition",
@@ -79750,9 +79753,22 @@
             }
           ],
           "critical_review": "Astra/xhigh on actual native lifecycle oracle and persistent funding boundary before Root engines",
-          "status": "SOURCE_AUTHORING_NOT_INTEGRATED_BUILD_AND_REAL_ENGINES_NOT_RUN",
+          "status": "R2_CAPTURED_WITH_GAPS_SOURCE_INTEGRATED_LOCALLY_READY_FOR_COHERENT_PUBLICATION",
           "scope": "Two finite max-size corpora within absolute64; direct imports do not qualify acquisition-bound reclaim or finalACK64. No numeric physical reserve guarantee or OPEN65 enabled.",
-          "local_processes": "No new engine/compiler launched; Root remains sole launcher/integrator. Agents author source only."
+          "local_processes": "Root4394 parent and30093 probe actually reaped0; Root98102 R2 actually reaped0. R2 client stopped143/PG0, bothPid0; native/Control drivers and samplers joined. Cache115 released and original4ELF full-byte/fullstat guards completed. No local autonomous engine/compiler left.",
+          "harness_source": "c3804ce1d583b9e17a9f72a25d0ca4fe943d8b4f",
+          "built_source": "87a626271289d3b25be4baf543ab8613a1a5a883",
+          "build_capsule": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627",
+          "build_runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-87a62627",
+          "probe_runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-87a62627-probe",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-physical-envelope-c3804ce1-r2",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/physical-run2-receipt.json",
+            "sha256": "cb1b8be3d221c09488fdc2b14a41222ceee89b8c9a77cebcd7cdb20a6ec495c4"
+          },
+          "retention": "Preserve bothA/B source/native/PG data/logs/211hashed evidence files, original2 compile/check failures and R1 setupFAIL, source worktrees and snapshots. No cleanup of unique data.",
+          "dependency_environment": "/home/tux/bigbrotr-rs/.research/m2-physical-growth-dependencies-20261103/dependency-receipt.json",
+          "next": "Selected finite work/history and per-filesystem held/completion credit before native writing open/PGclaim; noOPEN65 until source-derived d/R and maximum-unit gate close."
         }
       }
     }
