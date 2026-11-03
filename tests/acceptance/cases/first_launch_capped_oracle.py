@@ -433,15 +433,22 @@ def adoption_seal_eligibility(state,observed_at_us):
 
 def adoption_unsettled_refusal(before,after,first,wires,events,before_us,returned_us,after_us):
     """No seal or job effect; only authenticated source close and fresh Control custody."""
+    adoption_unsettled_history(before,wires,events,first);adoption_unsettled_history(after,wires,events,first)
+    adoption_failed_seal_closure(before,after,first,before_us,returned_us,after_us)
+
+
+def adoption_failed_seal_closure(before,after,first,before_us,returned_us,after_us,*,seal_count=0):
+    """Shared failed-command conservation; a retained seal is checked separately."""
     adoption_seal_eligibility(before,before_us);adoption_seal_eligibility(after,after_us)
     assert before_us<=returned_us<=after_us
-    adoption_unsettled_history(before,wires,events,first);adoption_unsettled_history(after,wires,events,first)
     assert set(after)==set(before)
     mutable={'datasets','owner_epochs','role_instances','producer_epochs','source_streams'}
+    if seal_count:mutable.add('acquisition_continuations')
     canonical=lambda rows:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows)
     for table in set(before)-mutable:
         assert canonical(before[table])==canonical(after[table]),'failed seal changed retained '+table
-    for table in ('acquisition_continuations','acquisition_gaps','initial_ingest_successions','initial_ingest_activations',
+    assert not before['acquisition_continuations'] and len(after['acquisition_continuations'])==seal_count
+    for table in ('acquisition_gaps','initial_ingest_successions','initial_ingest_activations',
             'ingest_successions','ingest_activations'):
         assert not after.get(table),'unsettled plan acquired lifecycle authority: '+table
     old=source.only(before['datasets']);new=source.only(after['datasets'])
@@ -492,6 +499,43 @@ def adoption_unsettled_refusal(before,after,first,wires,events,before_us,returne
     source.clock(fresh_role['created_at_us'],before_us,returned_us)
     assert current['role_instance_id'] not in {row['role_instance_id'] for row in before['role_instances']}
     assert len(after['role_instances'])==len(before['role_instances'])+1
+    return current
+
+
+def adoption_seal_fault(before,after,first,wires,events,before_us,returned_us,after_us,mode,fault):
+    """An executed seal INSERT loses one COMMIT reply; the caller stays unknown."""
+    assert mode in ('before-forward','after-complete')
+    adoption_history(before,wires,events,first);adoption_history(after,wires,events,first)
+    count=int(mode=='after-complete')
+    issuer=adoption_failed_seal_closure(before,after,first,before_us,returned_us,after_us,seal_count=count)
+    assert type(fault['backend_pid']) is int and fault['backend_pid']>0
+    assert issuer['control_backend_pid']==fault['backend_pid'],'seal fault did not select the fresh Control backend'
+    if count:adoption_unadopted_seal(before,after,first,issuer,returned_us)
+
+
+def adoption_unadopted_seal(before,after,first,issuer,latest_us):
+    """Exact seal component; caller separately qualifies issuer custody and time cut."""
+    seal=source.only(after['acquisition_continuations']);job=source.only(before['jobs'])
+    detail=source.only(before['acquisition_jobs']);head=source.only(before['producer_checkpoints'])
+    stream=source.only(after['source_streams'])
+    assert len(source.raw(seal['continuation_id']))==16
+    assert type(seal['xmin']) is str and re.fullmatch('[0-9]+',seal['xmin'])
+    source.clock(seal['sealed_at_us'],stream['closed_at_us'],latest_us)
+    assert seal['sealed_at_us']<detail['deadline_at_us']
+    expected=dict(continuation_id=seal['continuation_id'],dataset_id=job['dataset_id'],job_id=job['job_id'],
+        previous_job_revision=2,previous_continuation=None,previous_owner_resource=job['owner_resource_id'],
+        previous_owner_epoch=job['owner_epoch'],previous_owner_incarnation=job['owner_incarnation'],scope_id=detail['scope_id'],
+        enrollment_generation=1,route_id=source.only(before['relay_enrollments'])['route_id'],
+        producer_slot_id=head['producer_slot_id'],producer_epoch=1,manifest_sha256='\\x'+source.sha(first['manifest']),shard_id=0,
+        source_sequence=17,source_digest=stream['closure_digest'],checkpoint_revision=5,complete_through_request=5,
+        checkpoint_sha256=head['checkpoint_digest'],last_quantum_number=1,sealing_resource=issuer['resource_id'],
+        sealing_epoch=issuer['epoch'],sealing_incarnation=issuer['process_incarnation'],sealed_at_us=seal['sealed_at_us'],
+        **dict.fromkeys(ADOPTION_FIELDS),xmin=seal['xmin'])
+    source.exact(seal,expected,'unknown COMMIT retained a different seal')
+
+
+def adoption_seal_fault_error(stdout,stderr):
+    assert stdout=='' and stderr=='error: producer operation unavailable: CommitUnknown\n'
 
 
 def adoption_unsettled_error(stdout,stderr):

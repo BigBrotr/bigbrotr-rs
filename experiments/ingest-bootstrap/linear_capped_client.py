@@ -34,10 +34,10 @@ def continue_after_prepopulation(directory,call,barrier,status,endpoint,enrollme
 
 
 def run_adoption(directory,request,cli,logged_in,session,saved,auth):
-    """One real accepted job, one listener, and two actual Serve lifetimes.
+    """One real accepted job and listener through the declared lifecycle gate.
 
     The host releases the second gate after five settled terminals, or after
-    the declared plan-after seal refusal. The latter makes no successor call.
+    a declared failed seal. Either negative path makes no successor call.
     NOT_RUN here: installed lifecycle qualification belongs to the host runner.
     """
     import json
@@ -47,6 +47,9 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     from linear_capped_transport import relay
     fault=json.loads((directory/'linear-quantum-fault.json').read_text())
     assert fault in ('plan-before','plan-after')
+    seal_path=directory/'linear-quantum-seal-fault.json'
+    seal_fault=json.loads(seal_path.read_text()) if seal_path.exists() else None
+    assert seal_fault is None or (fault=='plan-before' and seal_fault in ('before-forward','after-complete'))
     observations=[];errors=[]
     def call(path,value,key):
         code,answer=request('POST','/management/v1/'+path,value,{**auth,'Idempotency-Key':key})
@@ -77,11 +80,12 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
         assert receipt['execution']=='unobserved' and receipt['authority']=='acceptance-only'
         # No HTTP poll while the original process is deliberately lost. The
         # same authenticated session later observes the same accepted JobId.
-        if fault=='plan-after':
+        if fault=='plan-after' or seal_fault is not None:
+            completion='seal-commit-fault' if seal_fault is not None else 'unsettled-seal-refusal'
             publish(directory,'adoption-old-cut.json',observations)
-            barrier('unsettled-seal-refusal',110)
+            barrier(completion,110)
             assert json.loads(session.read_text())==saved
-            result=dict(login=logged_in,observations=observations,job_status=None,completion='unsettled-seal-refusal')
+            result=dict(login=logged_in,observations=observations,job_status=None,completion=completion)
         else:
             barrier('adoption-old-cut',110)
             code,observed=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)

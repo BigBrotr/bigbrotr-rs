@@ -36,6 +36,7 @@ MEASUREMENT_CHECKPOINT_QUERY = b"""UPDATE control.producer_checkpoints SET
 
 
 CONTROL_TARGETS = {
+    'control-acquisition-seal': b'INSERT INTO CONTROL.ACQUISITION_CONTINUATIONS(',
     'control-measurement-checkpoint': MEASUREMENT_CHECKPOINT_QUERY,
     'control-coordinator': b'INSERT INTO CONTROL.ARCHIVE_COORDINATORS(',
     'control-frontier': b'INSERT INTO CONTROL.ARCHIVE_FRONTIER_SNAPSHOTS(',
@@ -341,6 +342,11 @@ class Proxy:
         self.mode = mode
         self.target = target
         self.quantum_commit_target = target in ('control-quantum-plan', 'control-quantum-terminal')
+        self.seal_commit_target = target == 'control-acquisition-seal'
+        self.executed_commit_target = self.quantum_commit_target or self.seal_commit_target
+        if self.seal_commit_target and (mode not in ('before-forward','after-complete') or defer_arm
+                or profile not in ('default','retained-catch-up') or lifetime_seconds != 120):
+            raise ValueError('acquisition-seal-profile')
         if type(commit_ordinal) is not int or not 1 <= commit_ordinal <= 128:
             raise ValueError('commit-ordinal')
         if commit_ordinal != 1 and not (self.quantum_commit_target and mode in (
@@ -421,10 +427,12 @@ class Proxy:
         self.report.update(pin_claim_injections=0, pin_rejections=[])
         self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
         self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
-        if self.quantum_commit_target:
+        if self.executed_commit_target:
             self.report.update(commit_ordinal=commit_ordinal, matched_commits=0,
                                skipped_commits=0, selected_commits=0,
                                selected_server_complete=0, selected_client_complete=0)
+        if self.seal_commit_target:
+            self.report['seal_inserts_complete'] = 0
         if target == 'control-quantum-plan':
             self.report['gap_write_rejections'] = 0
             self.quantum_selected_session = self.quantum_selected_backend_pid = None
@@ -444,7 +452,8 @@ class Proxy:
         quantum_summary = self.target.startswith('control-quantum-') and event in (
             'ready', 'terminal', 'quantum-gap-write-rejected')
         measurement_summary = self.target == 'control-measurement-checkpoint' and event in ('ready','terminal')
-        if quantum_summary or measurement_summary:
+        seal_summary = self.seal_commit_target and event in ('ready','terminal')
+        if quantum_summary or measurement_summary or seal_summary:
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit, connection_limit_scope='lifetime',
                          wire_limit=MAX_WIRE, lifetime_seconds=self.lifetime_seconds,
@@ -459,7 +468,7 @@ class Proxy:
         if self.profile != 'default':
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit)
-        if quantum_summary or self.explicit_catalog or self.upstream_port != 5432 or self.defer_arm:
+        if quantum_summary or seal_summary or self.explicit_catalog or self.upstream_port != 5432 or self.defer_arm:
             extra.update(upstream_host='127.0.0.1', upstream_port=self.upstream_port,
                          catalog_manager=self.catalog_manager, catalog_reader=self.catalog_reader,
                          catalog_database=self.catalog_database, armed=self.armed)
@@ -645,6 +654,10 @@ class Proxy:
         if self.quantum_commit_target:
             session_commands = SessionCommandObserver(self.target,
                 command_complete=b'INSERT 0 1\0' if self.target == 'control-quantum-plan' else b'UPDATE 1\0')
+        if self.seal_commit_target:
+            if parameters.get(b'user') != b'bigbrotr_control' or database != b'bigbrotr_control':
+                raise ValueError('acquisition-seal-backend')
+            session_commands = SessionCommandObserver(self.target,command_complete=b'INSERT 0 1\0',track_errors=True)
         quantum_session = object() if self.target == 'control-quantum-plan' else None
         gap_commands = (SessionCommandObserver('control-quantum-terminal', track_errors=True)
                         if quantum_session is not None and self.mode == 'hold-reply' else None)
@@ -716,7 +729,7 @@ class Proxy:
                     if frontend:
                         session_commands.frontend(tag, body, eligible=(not (release_target or index_target or measurement_target or source_target) or
                             (self.armed and not self.target_selected)))
-                    elif session_commands.backend(tag, body):
+                    elif session_commands.backend(tag, body) and (not self.seal_commit_target or session_commands.executing_target):
                         if measurement_target:
                             if not progress_transaction or state['backend_pid'] is None or self.target_selected:
                                 raise ValueError('measurement-checkpoint-transaction')
@@ -745,7 +758,7 @@ class Proxy:
                             self.target_selected=True;state['source_query']=True
                             self.report['source_queries_complete']+=1
                             self.emit('source-query-complete',backend_pid=state['backend_pid'])
-                        elif self.quantum_commit_target:
+                        elif self.executed_commit_target:
                             # Preparation and Bind alone cannot mark a plan or
                             # terminal transaction. This also sees cached Execute
                             # requests and counts multiple target statements as
@@ -754,6 +767,9 @@ class Proxy:
                                 raise ValueError('quantum-commit-transaction')
                             state['data'] = True
                             self.report['data_queries'] += 1
+                            if self.seal_commit_target:
+                                self.report['seal_inserts_complete'] += 1
+                                self.emit('seal-insert-complete',backend_pid=state['backend_pid'])
                         elif progress_target:
                             # Closed fixture: NEW first inserts; OLD completes
                             # UPDATE1; the gated repeat completes UPDATE2 on this
@@ -815,7 +831,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or measurement_target or source_target or self.quantum_commit_target):
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -897,12 +913,12 @@ class Proxy:
                         if not await self.hold('data', state['backend_pid']):
                             return
                     if query.rstrip(b'\0; \r\n') == b'COMMIT' and state['data']:
-                        if self.quantum_commit_target and state['commit']:
+                        if self.executed_commit_target and state['commit']:
                             raise ValueError('duplicate-target-commit')
                         state['commit'] = True
                         state['commit_selected'] = True
                         self.report['data_commits'] += 1
-                        if self.quantum_commit_target:
+                        if self.executed_commit_target:
                             self.report['matched_commits'] += 1
                             state['commit_selected'] = self.report['matched_commits'] == self.commit_ordinal
                             self.report['selected_commits' if state['commit_selected'] else 'skipped_commits'] += 1
@@ -927,7 +943,7 @@ class Proxy:
                     if ordinary_target:
                         self.emit('reader-selected', backend_pid=state['backend_pid'],
                                   connection_number=connection_number, admitted_after_arm=True)
-                if not frontend and (progress_target or release_target or index_target or measurement_target or source_target or self.quantum_commit_target):
+                if not frontend and (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
                         state['commit_selected'] = False
@@ -970,7 +986,7 @@ class Proxy:
                     self.report['server_complete'] += 1
                     manager_committed.set()
                     selected = state['commit_selected']
-                    if self.quantum_commit_target and selected:
+                    if self.executed_commit_target and selected:
                         self.report['selected_server_complete'] += 1
                     state['commit'] = False
                     state['commit_selected'] = False
@@ -982,7 +998,7 @@ class Proxy:
                             return
                         if not await self.hold('reply', state['backend_pid']):
                             return
-                    selected_reply = self.quantum_commit_target and selected
+                    selected_reply = self.executed_commit_target and selected
                     self.report['client_complete'] += 1
                 if source_target and not frontend and state['source_rollback']:
                     if tag==b'C' and body==b'ROLLBACK\0':

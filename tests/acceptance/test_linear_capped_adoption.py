@@ -288,7 +288,199 @@ def root_configuration_report(document_sha256,value='5000000'):
             default_add_us='0',reload='live-revocation-barrier',deployment_locked=True,applicability='selected')})
 
 
+def seal_fault_fixture(root,mode):
+    """Same declared old prefix; the pending Q2 fixture is deliberately removed."""
+    before,after,report,events,wires,first,dump,closed,start,end=unsettled_fixture(root)
+    before['acquisition_quanta'].pop();after['acquisition_quanta'].pop()
+    issuer=source.only(after['owner_epochs'],role='control',epoch=2)
+    issuer.update(control_backend_pid=7331,lease_expires_at_us=start+60_000_000)
+    if mode=='after-complete':
+        seal=fixture(root)[1]['acquisition_continuations'][0]
+        seal.update(sealing_resource=issuer['resource_id'],sealing_epoch=issuer['epoch'],
+            sealing_incarnation=issuer['process_incarnation'],sealed_at_us=start+750_000,xmin='113')
+        after['acquisition_continuations']=[seal]
+    return before,after,report,events,wires,first,dump,closed,start,end
+
+
 class CappedAdoptionControls(unittest.TestCase):
+    def test_seal_fault_parser_accepts_only_its_explicit_negative_schedule(self):
+        spec=importlib.util.spec_from_file_location('seal_fault_runner_control',ROOT/'tests/acceptance/run.py')
+        runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+        common=['run.py','p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption','--linear-quantum-fault','plan-before']
+        for mode in ('before-forward','after-complete'):
+            with tempfile.TemporaryDirectory() as temporary:
+                tail=['--source-root',str(ROOT),'--evidence',str(Path(temporary)/'evidence'),'--linear-quantum-seal-fault',mode]
+                with patch.object(sys,'argv',common+tail),patch.object(sys,'stdout'),patch('cases.first_launch.first_launch') as launched:
+                    self.assertEqual(runner.main(),2)
+                self.assertEqual(launched.call_args.args[0].linear_quantum_seal_fault,mode)
+        for prefix in (['run.py','p01-t01','--binary',sys.executable],['run.py','p03-linear-quantum'],
+                ['run.py','p03-linear-quantum','--linear-quantum-scenario','capped-continuation'],
+                common[:-1]+['plan-after'],common+['--linear-quantum-trace-successor-sql']):
+            with tempfile.TemporaryDirectory() as temporary:
+                evidence=Path(temporary)/'evidence'
+                with patch.object(sys,'argv',prefix+['--source-root',str(ROOT),'--evidence',str(evidence),
+                        '--linear-quantum-seal-fault','before-forward']),patch.object(sys,'stderr'),self.assertRaises(SystemExit) as raised:
+                    runner.main()
+                self.assertEqual(raised.exception.code,2);self.assertFalse(evidence.exists())
+
+    def test_seal_proxy_keeps_original_proxy_custody_and_binds_rewritten_root_before_show(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.CappedAdoptionRuntime)
+            runtime.root=root;runtime.source=ROOT;runtime.config=root/'instance.toml'
+            from installed import set_value
+            runtime.set_value=set_value
+            runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:15432"\n')
+            runtime.args=SimpleNamespace(linear_quantum_seal_fault='after-complete');runtime.quantum_fault='plan-before'
+            original=Mock();runtime.route=original;old=dict(status='joined',pid=42,port=9999)
+            runtime.resources=dict(quantum_proxy=old.copy());runtime.inputs=dict(quantum_proxy=dict(original=True))
+            runtime.record_resources=Mock();route=Mock();route.process.pid=43
+            runtime.proxy_process=Mock(return_value=route)
+            def ready(selected,event,timeout):
+                self.assertIs(selected,route);self.assertEqual((event,timeout),('ready',10))
+                return dict(runtime.seal_proxy_binding,event='ready',port=12345)
+            runtime.proxy_event=Mock(side_effect=ready)
+            runtime.start_seal_proxy()
+            self.assertIs(runtime.route,original);self.assertEqual(runtime.resources['quantum_proxy'],old)
+            self.assertEqual(runtime.inputs['quantum_proxy'],dict(original=True))
+            self.assertEqual(runtime.resources['seal_proxy']['pid'],43)
+            self.assertEqual(tomllib.loads(runtime.config.read_text())['postgres']['control']['endpoint'],'127.0.0.1:12345')
+            self.assertEqual(runtime.inputs['initial_recipe_sha256'],case.digest(runtime.config))
+            command=runtime.proxy_process.call_args.args[0]
+            self.assertEqual(command[command.index('--target')+1],'control-acquisition-seal')
+            self.assertEqual(command[command.index('--profile')+1],'retained-catch-up')
+            terminal=dict(runtime.seal_proxy_binding,event='terminal',unexpected=0,frames=30,connections=1,bytes=1024,
+                seal_inserts_complete=1,data_queries=1,data_commits=1,matched_commits=1,selected_commits=1,
+                skipped_commits=0,selected_server_complete=1,selected_client_complete=0,server_complete=1,client_complete=0,faults=1)
+            runtime.validate_seal_fault_terminal(terminal)
+            for key,value in (('source_sha256','ff'*32),('lifetime_seconds',180),('wire_limit',128*1024*1024),
+                    ('target','control-quantum-plan'),('seal_inserts_complete',0),('selected_server_complete',0),
+                    ('selected_client_complete',1),('faults',0),('unexpected',1),('matched_commits',2)):
+                with self.subTest(key=key),self.assertRaises(ValueError):runtime.validate_seal_fault_terminal(dict(terminal,**{key:value}))
+            runtime.stop_owned_proxy=Mock();runtime.stop_seal_proxy()
+            runtime.stop_owned_proxy.assert_called_once_with(route,'seal_proxy','seal-proxy',runtime.seal_proxy_ready,runtime.validate_seal_proxy)
+
+    def test_unreached_seal_target_can_join_cleanly_without_claiming_a_fault_pass(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=Path(temporary)
+            runtime.seal_proxy_binding=dict(mode='before-forward',target='control-acquisition-seal',frame_limit=131072,
+                connection_limit=64,wire_limit=64*1024*1024)
+            ready=dict(runtime.seal_proxy_binding,event='ready',port=12345)
+            terminal=dict(runtime.seal_proxy_binding,event='terminal',unexpected=0,frames=0,connections=0,bytes=0,
+                **dict.fromkeys(('seal_inserts_complete','data_queries','data_commits','matched_commits','selected_commits',
+                    'skipped_commits','selected_server_complete','selected_client_complete','server_complete','client_complete','faults'),0))
+            runtime.seal_proxy_ready=ready;route=Mock();runtime.seal_route=route
+            route.process.poll.return_value=0;route.process.pid=123;route.wait.return_value=0
+            route.threads=[];route.stdout=(json.dumps(ready)+'\n'+json.dumps(terminal)+'\n').encode()
+            route.stderr=b'';route.overflow=False
+            runtime.resources=dict(seal_proxy=dict(status='running'),cleanup_errors=[]);runtime.record_resources=Mock()
+            runtime.proxy_observation=Mock(return_value=dict(stdout=route.stdout.decode(),stderr='',overflow=False))
+            runtime.stop_seal_proxy()
+            self.assertEqual(runtime.resources['seal_proxy'],dict(status='joined',exit_code=0))
+            self.assertEqual(runtime.resources['cleanup_errors'],[]);route.stop.assert_called_once()
+            with self.assertRaisesRegex(ValueError,'lacks framed Control traffic'):runtime.validate_seal_fault_terminal(terminal)
+
+    def test_seal_commit_unknown_requires_exact_zero_or_one_unadopted_seal_and_conserves_every_old_row(self):
+        for mode in ('before-forward','after-complete'):
+            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as temporary:
+                before,after,report,events,wires,first,_,closed,start,end=seal_fault_fixture(Path(temporary),mode)
+                fault=dict(backend_pid=7331)
+                def verify(state=after,selected=fault):
+                    check.adoption_seal_fault(before,state,first,wires,events,start,end,end+5_000_000,mode,selected)
+                verify();check.adoption_closed_native(first,'\\x'+report['producer_slot_id'],closed)
+                mutations=[('jobs',0,'job_revision',3),('jobs',0,'xmin','new'),('acquisition_jobs',0,'deadline_at_us',ACCEPTED+121_000_000),
+                    ('acquisition_quanta',0,'xmin','new'),('producer_requests',0,'xmin','new'),('producer_outcomes',0,'outcome_kind',2),
+                    ('producer_epochs',0,'state','retired'),('source_streams',0,'last_complete_sequence',18),
+                    ('owner_epochs',2,'state','released'),('owner_epochs',2,'control_backend_pid',7332)]
+                if mode=='after-complete':
+                    mutations += [('acquisition_continuations',0,key,value) for key,value in (
+                        ('previous_job_revision',3),('previous_continuation','\\x'+'ff'*16),('previous_owner_epoch',2),
+                        ('scope_id','\\x'+'ff'*16),('enrollment_generation',2),('route_id','\\x'+'ff'*16),
+                        ('producer_epoch',2),('source_sequence',18),('source_digest','\\x'+'ff'*32),('checkpoint_revision',6),
+                        ('complete_through_request',4),('last_quantum_number',2),('manifest_sha256','\\x'+'ff'*32),
+                        ('checkpoint_sha256','\\x'+'ff'*32),('shard_id',1),('sealing_epoch',1),('sealed_at_us',start),
+                        ('sealing_incarnation','\\x'+'ff'*16),('continuation_id','\\x00'),('sealing_transaction','imaginary'))]
+                    mutations += [('acquisition_continuations',0,key,1) for key in check.ADOPTION_FIELDS]
+                for table,index,key,value in mutations:
+                    state=copy.deepcopy(after);state[table][index][key]=value
+                    with self.subTest(table=table,key=key),self.assertRaises(AssertionError):verify(state)
+                state=copy.deepcopy(after)
+                state['acquisition_continuations']=[] if mode=='after-complete' else [dict(unexpected=True)]
+                with self.assertRaises(AssertionError):verify(state)
+                with self.assertRaises(AssertionError):verify(selected=dict(backend_pid=7332))
+                check.adoption_seal_fault_error('','error: producer operation unavailable: CommitUnknown\n')
+                for stdout,stderr in (('report','error: producer operation unavailable: CommitUnknown\n'),
+                        ('','error: producer operation unavailable: Control(InvalidMetadata)\n'),
+                        ('','error: producer operation unavailable: CommitUnknown\nextra')):
+                    with self.assertRaises(AssertionError):check.adoption_seal_fault_error(stdout,stderr)
+
+    def test_seal_fault_command_joins_proxy_and_backend_then_checks_native_and_state_before_peer_release(self):
+        for mode in ('before-forward','after-complete'):
+            for failure in (None,'diagnostic','counter','backend','native','authorization'):
+                with self.subTest(mode=mode,failure=failure),tempfile.TemporaryDirectory() as temporary:
+                    root=Path(temporary);before,after,report,events,wires,first,_,closed,start,end=seal_fault_fixture(root,mode)
+                    runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.home=root/'peer';runtime.home.mkdir()
+                    runtime.state=root/'state';runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
+                    document_sha256=case.digest(runtime.config);runtime.adoption_before=before;runtime.adoption_first=first
+                    runtime.initialized=report;runtime.events=events;runtime.seal_route=Mock();runtime.record_resources=Mock()
+                    def finite(*args):
+                        (root/'bootstrap').mkdir();observed=root_configuration_report(document_sha256)
+                        publish(root/'bootstrap','seal-root-config.stdout',observed);return observed
+                    runtime.finite=Mock(side_effect=finite)
+                    directory=runtime.state/'data/ingest/producer-inputs-v1';directory.mkdir(parents=True)
+                    for number,data in enumerate(first['inputs'],1):
+                        (directory/f"{report['producer_slot_id']}-0000000000000001-{number:016x}.cbor").write_bytes(data)
+                    runtime.adoption_original_files={'old-inputs':'exact'};runtime.files=Mock(return_value=runtime.adoption_original_files)
+                    runtime.sql=Mock(side_effect=[str(start),str(end),str(end+5_000_000)])
+                    runtime.launch=Mock(return_value=dict(id='ab'*32));runtime.docker=Mock(return_value=SimpleNamespace(stdout='4\n'))
+                    runtime.inspect=Mock(return_value=dict(Id='ab'*32,State=dict(ExitCode=4,Pid=0,Running=False,OOMKilled=False)))
+                    def logs(entry,output):
+                        (output/'serve.stdout').write_text('')
+                        (output/'serve.stderr').write_text('error: producer operation unavailable: '
+                            +('Control(InvalidMetadata)' if failure=='diagnostic' else 'CommitUnknown')+'\n')
+                    runtime.logs=Mock(side_effect=logs)
+                    runtime.seal_proxy_binding=dict(mode=mode,target='control-acquisition-seal',frame_limit=131072,
+                        connection_limit=64,wire_limit=64*1024*1024)
+                    terminal=dict(runtime.seal_proxy_binding,event='terminal',unexpected=0,frames=30,connections=1,bytes=1024,
+                        seal_inserts_complete=1,data_queries=1,data_commits=1,matched_commits=1,selected_commits=1,skipped_commits=0,
+                        selected_server_complete=int(mode=='after-complete'),selected_client_complete=0,
+                        server_complete=int(mode=='after-complete'),client_complete=0,faults=int(failure!='counter'))
+                    selected=dict(terminal,event='fault',backend_pid=7332 if failure=='backend' else 7331)
+                    runtime.proxy_event=Mock(return_value=selected)
+                    def stop_proxy():
+                        runtime.validate_seal_proxy(terminal,'terminal')
+                        publish(root,'seal-proxy-terminal.json',terminal)
+                        publish(root,'seal-proxy.json',dict(stdout='\n'.join(json.dumps(value) for value in (
+                            dict(event='seal-insert-complete',backend_pid=selected['backend_pid']),selected))))
+                    runtime.stop_seal_proxy=Mock(side_effect=stop_proxy)
+                    runtime.backend_absence=Mock();runtime.capture=Mock(return_value=(after,{}));runtime.wires=Mock(return_value=wires)
+                    if failure=='native':closed['sequence']=87
+                    def census(*args,**kwargs):
+                        runtime.stop_seal_proxy.assert_called_once();runtime.backend_absence.assert_called_once()
+                        self.assertFalse((runtime.home/'seal-commit-fault.continue').exists())
+                        return closed
+                    runtime.client=Mock(pid=12345);runtime.client.poll.return_value=None;runtime.processes=[runtime.client]
+                    runtime.owned_listeners=Mock(return_value=['listener']);runtime.loopback_listener=Mock()
+                    (runtime.home/'client.stderr').write_text('')
+                    publish(runtime.home,'client-result.json',dict(status='PASS',completion='seal-commit-fault',job_status=None))
+                    def joined(*,timeout):
+                        self.assertTrue((runtime.home/'seal-commit-fault.continue').exists())
+                        self.assertTrue((root/'seal-commit-fault/original-duration.json').exists())
+                        runtime.capture.assert_called_once();runtime.loopback_listener.assert_called_once();return 0
+                    runtime.client.wait.side_effect=joined
+                    with patch.object(case.native,'census',side_effect=census),patch.object(case,'stop_process'),\
+                            patch.object(case.time,'CLOCK_BOOTTIME',7,create=True),patch.object(case.time,'clock_gettime_ns',
+                                side_effect=[1_000_000_000,6_000_000_000 if failure=='authorization' else 2_000_000_000]):
+                        if failure is None:runtime.failed_seal(mode)
+                        else:
+                            with self.assertRaises((AssertionError,ValueError)):runtime.failed_seal(mode)
+                    runtime.finite.assert_called_once_with('seal-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+                    runtime.launch.assert_called_once_with('fault-seal-commit','app','ingest','recover','--file',
+                        '/etc/bigbrotr/instance.toml','--seal-acquisition')
+                    if failure is None:
+                        self.assertEqual(runtime.processes,[]);runtime.client.wait.assert_called_once_with(timeout=6)
+                    else:
+                        runtime.client.wait.assert_not_called();self.assertFalse((runtime.home/'seal-commit-fault.continue').exists())
+
     def test_root_authorization_requires_actual_show_types_file_and_nonroot_policy_binding(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);state,*_=unsettled_fixture(root)
@@ -1050,39 +1242,42 @@ class CappedAdoptionControls(unittest.TestCase):
 
     def test_negative_client_keeps_peer_until_its_host_gate_and_makes_no_successor_call(self):
         from linear_capped_client import run_adoption
-        with tempfile.TemporaryDirectory() as temporary:
-            root=Path(temporary);session=root/'session.private';saved=dict(session='private')
-            session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
-            publish(root,'linear-quantum-fault.json','plan-after');(root/'prepared.continue').write_text('prepared\n')
-            calls=[];result=[];errors=[];peer_started=threading.Event();peer_joined=threading.Event();cli=Mock()
-            def request(method,path,body=None,headers=None):
-                calls.append((method,path,body));self.assertEqual(method,'POST')
-                answer=dict(created=True,command_key=headers['Idempotency-Key'])
-                if path.endswith('/relay-endpoints'):answer['endpoint_id']='11'*16
-                elif path.endswith('/relay-enrollments'):answer.update(access_scope_id='14'*16,generation='1',enabled=True)
-                elif path.endswith('/acquisition-scopes'):answer['scope_id']='12'*16
-                else:answer.update(job_id='13'*16,accepted_at_us=str(ACCEPTED),execution='unobserved',authority='acceptance-only')
-                return 202,answer
-            def relay(directory,listener,finished,relay_errors,**kwargs):
-                peer_started.set();finished.wait(3);peer_joined.set()
-            def run():
-                try:result.append(run_adoption(root,request,cli,{},session,saved,{}))
-                except BaseException as error:errors.append(error)
-            with patch('installed_sync_client.relay_listener',return_value=Mock()),patch.object(peer,'relay',side_effect=relay):
-                worker=threading.Thread(target=run);worker.start()
-                try:
-                    deadline=time.monotonic()+1
-                    while not (root/'unsettled-seal-refusal.json').exists() and time.monotonic()<deadline:time.sleep(.01)
-                    self.assertTrue((root/'unsettled-seal-refusal.json').exists(),errors)
-                    self.assertTrue(worker.is_alive());self.assertTrue(peer_started.is_set());self.assertFalse(peer_joined.is_set())
-                    self.assertEqual(len(calls),4);cli.assert_not_called()
-                    self.assertFalse((root/'linear-status-observations.json').exists());self.assertFalse((root/'commands-finished.json').exists())
-                finally:
-                    (root/'unsettled-seal-refusal.continue').write_text('actual failed seal evidence complete\n')
-                    worker.join(4)
-            self.assertFalse(worker.is_alive());self.assertFalse(errors);self.assertTrue(peer_joined.is_set())
-            self.assertEqual(len(calls),4);cli.assert_not_called()
-            self.assertEqual(result[0]['completion'],'unsettled-seal-refusal');self.assertIsNone(result[0]['job_status'])
+        for fault,seal,gate in (('plan-after',None,'unsettled-seal-refusal'),
+                ('plan-before','before-forward','seal-commit-fault'),('plan-before','after-complete','seal-commit-fault')):
+            with tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);session=root/'session.private';saved=dict(session='private')
+                session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
+                publish(root,'linear-quantum-fault.json',fault);(root/'prepared.continue').write_text('prepared\n')
+                if seal is not None:publish(root,'linear-quantum-seal-fault.json',seal)
+                calls=[];result=[];errors=[];peer_started=threading.Event();peer_joined=threading.Event();cli=Mock()
+                def request(method,path,body=None,headers=None):
+                    calls.append((method,path,body));self.assertEqual(method,'POST')
+                    answer=dict(created=True,command_key=headers['Idempotency-Key'])
+                    if path.endswith('/relay-endpoints'):answer['endpoint_id']='11'*16
+                    elif path.endswith('/relay-enrollments'):answer.update(access_scope_id='14'*16,generation='1',enabled=True)
+                    elif path.endswith('/acquisition-scopes'):answer['scope_id']='12'*16
+                    else:answer.update(job_id='13'*16,accepted_at_us=str(ACCEPTED),execution='unobserved',authority='acceptance-only')
+                    return 202,answer
+                def relay(directory,listener,finished,relay_errors,**kwargs):
+                    peer_started.set();finished.wait(3);peer_joined.set()
+                def run():
+                    try:result.append(run_adoption(root,request,cli,{},session,saved,{}))
+                    except BaseException as error:errors.append(error)
+                with patch('installed_sync_client.relay_listener',return_value=Mock()),patch.object(peer,'relay',side_effect=relay):
+                    worker=threading.Thread(target=run);worker.start()
+                    try:
+                        deadline=time.monotonic()+1
+                        while not (root/(gate+'.json')).exists() and time.monotonic()<deadline:time.sleep(.01)
+                        self.assertTrue((root/(gate+'.json')).exists(),errors)
+                        self.assertTrue(worker.is_alive());self.assertTrue(peer_started.is_set());self.assertFalse(peer_joined.is_set())
+                        self.assertEqual(len(calls),4);cli.assert_not_called()
+                        self.assertFalse((root/'linear-status-observations.json').exists());self.assertFalse((root/'commands-finished.json').exists())
+                    finally:
+                        (root/(gate+'.continue')).write_text('actual failed seal evidence complete\n')
+                        worker.join(4)
+                self.assertFalse(worker.is_alive());self.assertFalse(errors);self.assertTrue(peer_joined.is_set())
+                self.assertEqual(len(calls),4);cli.assert_not_called()
+                self.assertEqual(result[0]['completion'],gate);self.assertIsNone(result[0]['job_status'])
 
 
 if __name__=='__main__':unittest.main()

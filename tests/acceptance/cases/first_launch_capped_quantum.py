@@ -3,6 +3,7 @@ import shutil
 import time
 import tomllib
 import json
+import sys
 
 from cases.first_launch import Runtime,load,save,require,digest,stop_process
 from cases.first_launch_linear_quantum import LinearQuantumRuntime
@@ -20,10 +21,11 @@ LIMITS=[
 ]
 
 ADOPTION_LIMITS=[
-    'NOT_RUN until installed execution: plan-before follows one finite job through an activated successor; plan-after instead requires refusal to seal its retained pending Q2 after the original owner and backend exit.',
+    'NOT_RUN until installed execution: plan-before follows one finite job through an activated successor unless an explicit seal fault is selected; plan-after instead requires refusal to seal its retained pending Q2 after the original owner and backend exit.',
     'The plan-before path requires five literal REQs [0,86400),[0,24),[0,23),[0,2),[0,1), bodies24/23/1, five EVENT observations and both gaps. The plan-after path stops at Q1 plus unwired pending Q2. Original128-query budget/deadline and no undeclared socket remain required.',
     'Full old inputs, native facts/receipts, historical SQL rows/xmins and immutable source/principal/policy are preserved. Sealing cannot change job ownership; the positive path checks one exact queued rev2 to rev3/current-Control CAS and actual native handoff/adoption.',
     'The plan-after variant retains Q1 wire, five original inputs/outcomes, queued revision2 and pending Q2; native85 to86/source close are permitted, no continuation seal is created, and retirement/activation/successor are not attempted. Other negative schedules, repeated successor loss, OPEN65, full500, fleet and Archive remain outside this case.',
+    'The explicit seal-fault variant retains plan-before Q2 absence, then loses a separate executed seal INSERT COMMIT before forwarding or after server completion. It requires caller CommitUnknown, zero or one unadopted seal respectively, native85 to86, unchanged job/history/inputs and no second wire. It never retires, activates, adopts or retries.',
 ]
 
 
@@ -250,6 +252,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.inputs['linear_quantum_scenario']='settled-owner-adoption'
         if getattr(self.args,'linear_quantum_trace_successor_sql',False):
             self.inputs['linear_quantum_trace_successor_sql']=True
+        if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
+            self.inputs['linear_quantum_seal_fault']=self.args.linear_quantum_seal_fault
         path='tests/fixtures/acquisition/settled-owner-adoption.json'
         self.inputs['adoption_expectation_sha256']=digest(self.source/path)
         oracle.adoption_manifest(load(self.source/path))
@@ -265,6 +269,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         for name in ('selector-events.json','linear-window-events.json'):
             shutil.copyfile(self.source/'tests/fixtures/acquisition'/name,self.home/name)
         save(self.home/'linear-capped-adoption-profile.json',ADOPTION_PROFILE)
+        if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
+            save(self.home/'linear-quantum-seal-fault.json',self.args.linear_quantum_seal_fault)
         self.events=corpus(self.home)[:3]
 
     def successor_sql_login(self):
@@ -449,6 +455,10 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         if unsettled:
             self.refuse_unsettled_seal()
             return
+        if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
+            self.start_seal_proxy()
+            self.failed_seal(self.args.linear_quantum_seal_fault)
+            return
         args=('ingest','recover','--file','/etc/bigbrotr/instance.toml')
         seal=self.finite('seal-acquisition',*args,'--seal-acquisition')
         save(output/'seal-report.json',seal)
@@ -485,12 +495,70 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.backend_absence(successor_output)
 
     def refuse_unsettled_seal(self):
-        output=self.root/'unsettled-seal-refusal';output.mkdir(mode=0o700)
+        self.failed_seal()
+
+    def start_seal_proxy(self):
+        require(self.resources['quantum_proxy']['status']=='joined','seal proxy requires joined original Q2 proxy')
+        original=self.config.read_text()
+        require(tomllib.loads(original)['postgres']['control']['endpoint']=='127.0.0.1:15432','seal proxy requires direct Control upstream')
+        mode=self.args.linear_quantum_seal_fault
+        require(mode in ('before-forward','after-complete') and self.quantum_fault=='plan-before',
+            'seal fault requires settled Q1 and absent Q2')
+        path=self.source/'experiments/archive-engine/native_commit_proxy.py'
+        self.seal_proxy_binding=dict(source_sha256=digest(path),mode=mode,target='control-acquisition-seal',
+            profile='retained-catch-up',frame_limit=131072,connection_limit=64,connection_limit_scope='lifetime',
+            wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432,
+            catalog_manager='CatalogManager',catalog_reader='bigbrotr_receipt_reader',catalog_database='bbpub_normal',
+            armed=True,commit_ordinal=1)
+        self.inputs['seal_proxy']=self.seal_proxy_binding
+        self.seal_route=self.proxy_process([sys.executable,'-B',str(path),'--mode',mode,'--target','control-acquisition-seal',
+            '--upstream-port','15432','--profile','retained-catch-up'],input_pipe=True)
+        self.resources['seal_proxy']=dict(pid=self.seal_route.process.pid,status='running',port=None,
+            upstream_endpoint='127.0.0.1:15432',direct_recipe_sha256=digest(self.config))
+        self.record_resources()
+        save(self.root/'seal-proxy-process.json',dict(pid=self.seal_route.process.pid))
+        ready=self.proxy_event(self.seal_route,'ready',10)
+        save(self.root/'seal-proxy-ready.json',ready);self.validate_seal_proxy(ready,'ready')
+        self.seal_proxy_ready=ready;self.resources['seal_proxy']['port']=ready['port'];self.record_resources()
+        self.config.write_text(self.set_value(original,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
+        self.inputs['initial_recipe_sha256']=digest(self.config)
+
+    def validate_seal_proxy(self,value,event):
+        require(value.get('event')==event and all(type(value.get(key)) is type(expected) and value[key]==expected
+            for key,expected in self.seal_proxy_binding.items()),'seal proxy '+event+' binding differs')
+        if event=='terminal':
+            require(type(value.get('unexpected')) is int and value['unexpected']==0
+                and all(type(value.get(key)) is int and 0<=value[key]<=limit for key,limit in (
+                    ('frames',value['frame_limit']),('connections',value['connection_limit']),('bytes',value['wire_limit']))),
+                'incomplete seal proxy terminal observation')
+
+    def validate_seal_fault_terminal(self,value):
+        self.validate_seal_proxy(value,'terminal')
+        require(all(value[key]>0 for key in ('frames','connections','bytes')),'seal fault lacks framed Control traffic')
+        expected=dict(seal_inserts_complete=1,data_queries=1,data_commits=1,matched_commits=1,selected_commits=1,
+            skipped_commits=0,selected_server_complete=int(value['mode']=='after-complete'),selected_client_complete=0,
+            server_complete=int(value['mode']=='after-complete'),client_complete=0,faults=1)
+        require(all(type(value.get(key)) is int and value[key]==number for key,number in expected.items()),
+            'seal proxy did not observe one exact executed INSERT and unknown COMMIT')
+
+    def stop_seal_proxy(self):
+        if hasattr(self,'seal_route'):
+            self.stop_owned_proxy(self.seal_route,'seal_proxy','seal-proxy',getattr(self,'seal_proxy_ready',None),self.validate_seal_proxy)
+
+    def cleanup(self):
+        try:self.stop_seal_proxy()
+        finally:super().cleanup()
+
+    def failed_seal(self,mode=None):
+        completion='seal-commit-fault' if mode is not None else 'unsettled-seal-refusal'
+        show_label='seal-root-config' if mode is not None else 'unsettled-root-config'
+        label='fault-seal-commit' if mode is not None else 'refuse-unsettled-seal'
+        output=self.root/completion;output.mkdir(mode=0o700)
         document_sha256=digest(self.config)
-        resolved=self.finite('unsettled-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+        resolved=self.finite(show_label,'config','show','--file','/etc/bigbrotr/instance.toml')
         require(digest(self.config)==document_sha256,'unsettled seal refusal prerequisite: root file changed during config show')
         authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,self.adoption_before)
-        show_sha256=digest(self.root/'bootstrap/unsettled-root-config.stdout')
+        show_sha256=digest(self.root/'bootstrap'/(show_label+'.stdout'))
         clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
         before_us=int(self.sql('bigbrotr_control',clock))
         oracle.adoption_seal_eligibility(self.adoption_before,before_us)
@@ -500,7 +568,7 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         # tracker is created inside this conservative whole-attempt interval.
         require(digest(self.config)==document_sha256,'unsettled seal refusal prerequisite: root file changed before recovery')
         started_ns=time.clock_gettime_ns(boottime)
-        entry=self.launch('refuse-unsettled-seal','app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
+        entry=self.launch(label,'app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
         ended=self.docker('wait',entry['id'],timeout=180)
         attempt_ns=time.clock_gettime_ns(boottime)-started_ns
         after_document_sha256=digest(self.config)
@@ -516,14 +584,35 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             'unsettled seal refusal prerequisite: recovery attempt exceeded resolved root authorization interval')
         require(ended.stdout.strip()=='4' and terminal['State']['ExitCode']==4 and terminal['State']['Pid']==0
             and not terminal['State']['Running'] and not terminal['State']['OOMKilled'],'unsettled seal recovery did not exit4 naturally')
-        oracle.adoption_unsettled_error((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
+        diagnostic=oracle.adoption_unsettled_error if mode is None else oracle.adoption_seal_fault_error
+        diagnostic((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
+        if mode is not None:
+            fault=self.proxy_event(self.seal_route,'fault',5);save(output/'commit-fault.json',fault)
+            self.stop_seal_proxy()
+            terminal_proxy=load(self.root/'seal-proxy-terminal.json')
+            self.validate_seal_fault_terminal(terminal_proxy)
+            require(type(fault.get('backend_pid')) is int and fault['backend_pid']>0 and fault.get('event')=='fault'
+                and all(type(fault.get(key)) is type(terminal_proxy[key]) and fault[key]==terminal_proxy[key]
+                    for key in ('mode','target','seal_inserts_complete','data_queries','data_commits','matched_commits',
+                        'selected_commits','skipped_commits','selected_server_complete','selected_client_complete','faults')),
+                'seal fault differs from joined proxy evidence')
+            observed=load(self.root/'seal-proxy.json')
+            markers=[json.loads(line) for line in observed['stdout'].splitlines()]
+            insert,=[value for value in markers if value.get('event')=='seal-insert-complete']
+            selected,=[value for value in markers if value.get('event')=='fault']
+            require(selected==fault and insert['backend_pid']==fault['backend_pid'],'seal INSERT and COMMIT backend differ')
+            self.seal_fault_observation=fault
         self.backend_absence(output)
         self.adoption_refused,_=self.capture(output,'refused')
         dump=native.census(self,output,expected_writer_exit=4,writer_terminal=output/'terminal-container.json')
         oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],dump)
         after_us=int(self.sql('bigbrotr_control',clock))
         wires=self.wires(1)
-        oracle.adoption_unsettled_refusal(self.adoption_before,self.adoption_refused,self.adoption_first,wires,self.events,before_us,returned_us,after_us)
+        if mode is None:
+            oracle.adoption_unsettled_refusal(self.adoption_before,self.adoption_refused,self.adoption_first,wires,self.events,before_us,returned_us,after_us)
+        else:
+            oracle.adoption_seal_fault(self.adoption_before,self.adoption_refused,self.adoption_first,wires,self.events,
+                before_us,returned_us,after_us,mode,fault)
         oracle.adoption_progress(self.adoption_refused,self.initialized,self.events,wires,self.adoption_first,after_us,epoch=1)
         require(source.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,5)==self.adoption_first['inputs']
             and self.files(self.state/'data/ingest/producer-inputs-v1')==self.adoption_original_files,'failed seal changed original inputs')
@@ -532,11 +621,11 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         save(output/'original-duration.json',dict(before_us=before_us,command_returned_at_us=returned_us,after_us=after_us,
             original_deadline_at_us=self.adoption_before['acquisition_jobs'][0]['deadline_at_us'],source_and_actor_eligible=True))
         self.adoption_refusal_dump=dump
-        (self.home/'unsettled-seal-refusal.continue').write_text('pending Q2 refused; retained SQL/native and live listener checked\n')
+        (self.home/(completion+'.continue')).write_text('failed seal retained SQL/native and live listener checked\n')
         require(self.client.wait(timeout=6)==0 and not (self.home/'client.stderr').read_bytes(),'negative adoption client failed')
         stop_process(self.client);self.processes.remove(self.client)
         result=load(self.home/'client-result.json')
-        require(result['status']=='PASS' and result['completion']=='unsettled-seal-refusal' and result['job_status'] is None,
+        require(result['status']=='PASS' and result['completion']==completion and result['job_status'] is None,
             'negative adoption client completion differs')
         require(not (self.home/'linear-status-observations.json').exists() and not (self.home/'commands-finished.json').exists(),
             'negative adoption made a successor status request')
@@ -545,16 +634,20 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.source_unchanged()
         output=self.root/'linear-quantum';output.mkdir(mode=0o700)
         state,_=self.capture(output,'after');self.backend_absence(output)
-        if self.quantum_fault=='plan-after':
+        mode=getattr(self.args,'linear_quantum_seal_fault',None)
+        if self.quantum_fault=='plan-after' or mode is not None:
             canonical=lambda snapshot:{table:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows) for table,rows in snapshot.items()}
             require(canonical(state)==canonical(self.adoption_refused),'retained failed-seal state changed after stopping the peer')
-            wires=self.wires(1);oracle.adoption_unsettled_history(state,wires,self.events,self.adoption_first)
+            wires=self.wires(1)
+            history=oracle.adoption_unsettled_history if mode is None else oracle.adoption_history
+            history(state,wires,self.events,self.adoption_first)
             oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],self.adoption_refusal_dump)
             joined=load(self.home/'capped-adoption-peer-joined.json')
             require(joined['requests']==1 and joined['listener_closed'] is True and joined['errors']==0,'negative adoption peer did not join after one request')
-            save(output/'verdict.json',dict(status='PASS',scenario='settled-owner-adoption',fault='plan-after',
-                outcome='unsettled-seal-refused',same_job=True,job_revision=2,wire_queries=1,pending_plans=1,
-                mutation_requests=5,continuation_seals=0,successor_activations=0,native_sequence=86,coverage='pending'))
+            save(output/'verdict.json',dict(status='PASS',scenario='settled-owner-adoption',fault=self.quantum_fault,
+                seal_fault=mode,outcome='unsettled-seal-refused' if mode is None else 'seal-commit-unknown',
+                same_job=True,job_revision=2,wire_queries=1,pending_plans=int(mode is None),caller_outcome='unknown' if mode else 'refused',
+                mutation_requests=5,continuation_seals=int(mode=='after-complete'),successor_activations=0,native_sequence=86,coverage='pending'))
             return
         for snapshot in (self.adoption_before,self.adoption_sealed,self.adoption_retired,state):
             for producer in snapshot['producer_epochs']:

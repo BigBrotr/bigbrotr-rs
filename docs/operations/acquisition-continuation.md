@@ -60,6 +60,10 @@ partitioning, sparse-window growth and general scheduling retain their own gates
 
 Exit4 or a lost COMMIT response remains unresolved. Stop/join that owner and
 inspect retained state under fresh exclusive recovery before retrying identically.
+For a lost seal COMMIT reply, the seal may be absent or already retained and
+unadopted. The failed command can leave its source closed and its fresh Control
+row active after the process/backend join. Observing either seal outcome alone
+authorizes no implicit retry, retirement, activation or new wire work.
 An exact committed seal keeps its original sealer/time. A committed adoption and
 job-owner change form one transaction. Until it is positively confirmed, no new
 wire work is authorized. A lost activated candidate is never recreated from its

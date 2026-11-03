@@ -455,6 +455,17 @@ class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
 
 
 class ClosedProfile(unittest.TestCase):
+    def test_seal_profile_keeps_existing_bounds_and_single_commit_ordinal(self):
+        for mode in ('before-forward','after-complete'):
+            for profile,limits in (('default',(20000,16)),('retained-catch-up',(131072,64))):
+                proxy=Proxy(mode,'control-acquisition-seal',profile=profile)
+                self.assertEqual((proxy.frame_limit,proxy.connection_limit),limits)
+                self.assertEqual((proxy.lifetime_seconds,MAX_WIRE,proxy.commit_ordinal),(120,64*1024*1024,1))
+        for options in ({'mode':'pass'},{'defer_arm':True},{'lifetime_seconds':180},
+                {'profile':'ordinary-reader'},{'commit_ordinal':2}):
+            values=dict(mode='before-forward',target='control-acquisition-seal');values.update(options)
+            with self.subTest(options=options),self.assertRaises(ValueError):Proxy(**values)
+
     def test_gap_error_tracking_keeps_existing_queue_and_statement_bounds(self):
         observer = SessionCommandObserver('control-quantum-terminal', track_errors=True)
         for _ in range(128):
@@ -697,6 +708,88 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def seal_execute(self,connection,*,name=b'seal',parse=True,result=b'INSERT 0 1\0'):
+        if parse:
+            await self.exchange(connection,b'P',name+b'\0INSERT INTO control.acquisition_continuations(continuation_id) VALUES ($1::bytea)\0\0\0',[(b'1',b'')])
+        await self.exchange(connection,b'B',b'\0'+name+b'\0\0\0\0\0\0\0',[(b'2',b'')])
+        await self.exchange(connection,b'E',b'\0'*5,[(b'C',result)])
+        await self.exchange(connection,b'S',b'',[(b'Z',b'T')])
+
+    async def test_seal_fault_requires_executed_insert_and_loses_exact_commit_before_or_after(self):
+        for mode in ('before-forward','after-complete'):
+            with self.subTest(mode=mode):
+                async with SocketProxy(self,mode,target='control-acquisition-seal',deferred=False,
+                                       profile='retained-catch-up') as proxy:
+                    ready=proxy.events[0]
+                    self.assertEqual([ready[key] for key in ('frame_limit','connection_limit','connection_limit_scope',
+                        'wire_limit','lifetime_seconds','commit_ordinal')],[131072,64,'lifetime',64*1024*1024,120,1])
+                    self.assertEqual(ready['source_sha256'],hashlib.sha256(Path(__file__).with_name('native_commit_proxy.py').read_bytes()).hexdigest())
+                    c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+                    begin=[(b'C',b'BEGIN\0'),(b'Z',b'T')];commit=[(b'C',b'COMMIT\0'),(b'Z',b'I')]
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    # Parse/Bind and even INSERT 0 0 cannot select a COMMIT.
+                    await self.seal_execute(c,result=b'INSERT 0 0\0')
+                    await self.exchange(c,b'Q',b'COMMIT\0',commit)
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.exchange(c,b'B',b'\0seal\0\0\0\0\0\0\0',[(b'2',b'')])
+                    await self.exchange(c,b'S',b'',[(b'Z',b'T')])
+                    await self.exchange(c,b'Q',b'COMMIT\0',commit)
+                    # A failed re-Parse must not relabel an older unrelated INSERT.
+                    await self.exchange(c,b'P',b'cached\0INSERT INTO unrelated VALUES (1)\0\0\0',[(b'1',b'')])
+                    await self.exchange(c,b'S',b'',[(b'Z',b'I')])
+                    await self.exchange(c,b'P',b'cached\0INSERT INTO control.acquisition_continuations(x) VALUES (1)\0\0\0',
+                        [(b'E',b'SERROR\0C42P05\0Mfixture duplicate statement\0\0')])
+                    await self.exchange(c,b'S',b'',[(b'Z',b'I')])
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.seal_execute(c,name=b'cached',parse=False)
+                    await self.exchange(c,b'Q',b'COMMIT\0',commit)
+                    # Failed Execute and its aborted COMMIT cannot arm the target.
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.exchange(c,b'B',b'\0seal\0\0\0\0\0\0\0',[(b'2',b'')])
+                    await self.exchange(c,b'E',b'\0'*5,[(b'E',b'SERROR\0C23514\0Mfixture refusal\0\0')])
+                    await self.exchange(c,b'S',b'',[(b'Z',b'E')])
+                    await self.exchange(c,b'Q',b'COMMIT\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+                    await self.exchange(c,b'Q',b'BEGIN\0',begin)
+                    await self.seal_execute(c,parse=False)
+                    inserted=await proxy.event('seal-insert-complete')
+                    self.assertEqual(inserted['backend_pid'],7331)
+                    c[1].write(message(b'Q',b'COMMIT\0'));await c[1].drain()
+                    if mode=='after-complete':
+                        self.assertEqual(await asyncio.wait_for(read_message(c[2]),3),(b'Q',b'COMMIT\0'))
+                        c[3].write(message(b'C',b'COMMIT\0')+message(b'Z',b'I'));await c[3].drain()
+                    fault=await proxy.event('fault')
+                    self.assertEqual(await asyncio.wait_for(c[0].read(),3),b'')
+                    self.assertEqual(await asyncio.wait_for(c[2].read(),3),b'')
+                    await proxy.stop();terminal=proxy.events[-1]
+                    for observed in (fault,terminal):
+                        self.assertEqual([observed[key] for key in ('seal_inserts_complete','data_queries','data_commits',
+                            'matched_commits','selected_commits','skipped_commits','selected_server_complete',
+                            'selected_client_complete','faults')],[1,1,1,1,1,0,int(mode=='after-complete'),0,1])
+                    self.assertEqual(fault['backend_pid'],7331)
+
+    async def test_rolled_back_seal_does_not_select_later_or_other_backend_commit(self):
+        async with SocketProxy(self,'before-forward',target='control-acquisition-seal',deferred=False) as proxy:
+            c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+            await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+            await self.seal_execute(c);await proxy.event('seal-insert-complete')
+            await self.exchange(c,b'Q',b'ROLLBACK\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+            for connection in (c,await proxy.connect('bigbrotr_control','bigbrotr_control',backend_pid=7332)):
+                await self.exchange(connection,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+                await self.exchange(connection,b'Q',b'COMMIT\0',[(b'C',b'COMMIT\0'),(b'Z',b'I')])
+            await proxy.stop();terminal=proxy.events[-1]
+            self.assertEqual((terminal['seal_inserts_complete'],terminal['matched_commits'],terminal['faults']),(1,0,0))
+
+    async def test_seal_target_refuses_other_login_role_or_database_before_execution(self):
+        for user,database in (('reader','bigbrotr_control'),('bigbrotr_control','catalog')):
+            with self.subTest(user=user,database=database):
+                async with SocketProxy(self,'before-forward',target='control-acquisition-seal',deferred=False,unexpected=1) as proxy:
+                    # The existing session owner closes failed startup streams
+                    # during proxy join, rather than fabricating an auth reply.
+                    with self.assertRaises((asyncio.IncompleteReadError,ConnectionResetError,TimeoutError)):
+                        await proxy.connect(user,database)
+                    await proxy.stop();terminal=proxy.events[-1]
+                    self.assertEqual((terminal['seal_inserts_complete'],terminal['matched_commits'],terminal['faults']),(0,0,0))
+
     async def test_measurement_graceful_stop_retains_safe_session_failure_and_exact_frame_ceiling(self):
         for kind in ('traffic-budget','unsupported-session-profile','bind-profile'):
             with self.subTest(kind=kind):

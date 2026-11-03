@@ -137,11 +137,16 @@ class LinearQuantumRuntime(Runtime):
 
     def stop_quantum_proxy(self):
         if not hasattr(self,'route') or self.resources['quantum_proxy']['status']=='joined':return
-        route=self.route;failures=[]
+        self.stop_owned_proxy(self.route,'quantum_proxy','quantum-proxy',
+            getattr(self,'quantum_proxy_ready',None),self.validate_quantum_proxy)
+
+    def stop_owned_proxy(self,route,resource,stem,ready_observation,validate):
+        if self.resources[resource]['status']=='joined':return
+        failures=[]
         if route.process.poll() is None:
             try:self.proxy_send(route,'stop\n')
             except Exception as error:failures.append(('control',error))
-        try:require(route.wait(5)==0,'quantum proxy did not join')
+        try:require(route.wait(5)==0,stem+' did not join')
         except Exception as error:failures.append(('join',error))
         # Process.stop owns bounded terminate/kill and pipe-reader joins, even
         # after a closed control stream or an unsuccessful wait.
@@ -149,26 +154,26 @@ class LinearQuantumRuntime(Runtime):
         except Exception as error:failures.append(('stop',error))
         code=route.process.poll()
         streams_joined=not any(thread.is_alive() for thread in route.threads)
-        for name,data in (('quantum-proxy.stdout',route.stdout),('quantum-proxy.stderr',route.stderr)):
+        for name,data in ((stem+'.stdout',route.stdout),(stem+'.stderr',route.stderr)):
             try:(self.root/name).write_bytes(data)
             except Exception as error:failures.append(('output',error))
-        try:save(self.root/'quantum-proxy-process.json',dict(pid=route.process.pid,
+        try:save(self.root/(stem+'-process.json'),dict(pid=route.process.pid,
             exit_code=code,overflow=route.overflow,streams_joined=streams_joined))
         except Exception as error:failures.append(('process-record',error))
         try:
-            result=self.proxy_observation(route);save(self.root/'quantum-proxy.json',result)
+            result=self.proxy_observation(route);save(self.root/(stem+'.json'),result)
             require(code==0 and streams_joined and not result['stderr'] and not result['overflow'],
-                'incomplete quantum proxy observation')
-            if hasattr(self,'quantum_proxy_ready'):
+                'incomplete '+stem+' observation')
+            if ready_observation is not None:
                 events=[json.loads(line) for line in result['stdout'].splitlines()]
                 ready,=[value for value in events if value.get('event')=='ready']
                 terminal,=[value for value in events if value.get('event')=='terminal']
-                save(self.root/'quantum-proxy-terminal.json',terminal)
-                require(ready==self.quantum_proxy_ready,'quantum proxy ready observation changed')
-                self.validate_quantum_proxy(terminal,'terminal')
+                save(self.root/(stem+'-terminal.json'),terminal)
+                require(ready==ready_observation,stem+' ready observation changed')
+                validate(terminal,'terminal')
         except Exception as error:failures.append(('observation',error))
-        self.resources['quantum_proxy'].update(status='joined' if code is not None and streams_joined else 'cleanup-incomplete',exit_code=code)
-        self.resources['cleanup_errors'].extend(dict(resource='quantum-proxy',id=route.process.pid,
+        self.resources[resource].update(status='joined' if code is not None and streams_joined else 'cleanup-incomplete',exit_code=code)
+        self.resources['cleanup_errors'].extend(dict(resource=stem,id=route.process.pid,
             operation=operation,error=type(error).__name__) for operation,error in failures)
         try:self.record_resources()
         except Exception:
