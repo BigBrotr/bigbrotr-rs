@@ -228,6 +228,8 @@ def main():
                         help='settled owner adoption only: private successor statements with bind values disabled')
     parser.add_argument('--linear-quantum-seal-fault',choices=('before-forward','after-complete'),
                         help='settled owner adoption with plan-before only: lose the seal COMMIT reply without adoption')
+    parser.add_argument('--linear-quantum-seal-retry',choices=('exact',),
+                        help='explicit seal fault only: identically retry once under fresh exclusive recovery')
     parser.add_argument('--linear-quantum-adoption-fault',choices=('before-forward','after-complete'),
                         help='settled owner adoption with plan-before only: lose the atomic owner-adoption COMMIT reply')
     parser.add_argument('--linear-quantum-authority-refusal',choices=('actor-grant','original-expiry'),
@@ -247,6 +249,12 @@ def main():
         parser.error('--linear-quantum-fault is only for p03-linear-quantum')
     if args.linear_quantum_scenario is not None and args.case!='p03-linear-quantum':
         parser.error('--linear-quantum-scenario is only for p03-linear-quantum')
+    if args.linear_quantum_seal_retry is not None and (args.case!='p03-linear-quantum'
+            or args.linear_quantum_scenario!='settled-owner-adoption' or args.linear_quantum_fault!='plan-before'
+            or args.linear_quantum_seal_fault is None or args.linear_quantum_adoption_fault is not None
+            or args.linear_quantum_authority_refusal is not None or args.linear_quantum_integrity_refusal is not None
+            or args.linear_quantum_trace_successor_sql):
+        parser.error('--linear-quantum-seal-retry requires an explicit settled-owner-adoption plan-before seal fault without competing profiles')
     if args.linear_quantum_integrity_refusal is not None and (args.case!='p03-linear-quantum'
             or args.linear_quantum_scenario!='settled-owner-adoption' or args.linear_quantum_fault!='plan-before'
             or args.linear_quantum_seal_fault is not None or args.linear_quantum_adoption_fault is not None

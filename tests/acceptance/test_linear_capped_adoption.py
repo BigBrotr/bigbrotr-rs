@@ -302,6 +302,43 @@ def seal_fault_fixture(root,mode):
     return before,after,report,events,wires,first,dump,closed,start,end
 
 
+def seal_retry_fixture(root,mode):
+    from initial_succession_oracle import exclusion
+    original,failed,initialized,events,wires,first,_,closed,start,end=seal_fault_fixture(root,mode)
+    for rows in failed.values():
+        for row in rows:row.setdefault('xmin','1')
+    for owner in failed['owner_epochs']:
+        if owner['role']=='control':
+            owner.update(control_fence_version=1,control_backend_start='control-'+str(owner['epoch']),
+                archive_frontier_protocol=None,index_publication_protocol=None)
+            owner.setdefault('control_backend_pid',7000+owner['epoch'])
+    previous=max((row for row in failed['owner_epochs'] if row['role']=='control'),key=lambda row:row['epoch'])
+    lower=end+1_000_000;upper=lower+1_000_000
+    after=copy.deepcopy(failed)
+    current=dict(previous,epoch=previous['epoch']+1,role_instance_id='\\x'+'fa'*16,process_incarnation='\\x'+'fb'*16,
+        acquired_at_us=lower+100,lease_expires_at_us=lower+500_000+60_000_000,state='released',released_at_us=upper-10,
+        exclusion_method='storage_fenced',exclusion_digest=None,control_backend_pid=7444,control_backend_start='retry-start',xmin='203')
+    current['exclusion_digest']=exclusion(current,current['process_incarnation'])
+    source.only(after['owner_epochs'],role='control',epoch=previous['epoch']).update(state='released',
+        released_at_us=lower+10,exclusion_method='storage_fenced',exclusion_digest=exclusion(previous,current['process_incarnation']),xmin='201')
+    source.only(after['role_instances'],role_instance_id=previous['role_instance_id']).update(retired_at_us=lower+20,xmin='201')
+    after['owner_epochs'].append(current)
+    after['role_instances'].append(dict(dataset_id=current['dataset_id'],role='control',role_instance_id=current['role_instance_id'],
+        created_at_us=lower+50,retired_at_us=upper-9,xmin='203'))
+    if mode=='before-forward':
+        seal=fixture(root)[1]['acquisition_continuations'][0]
+        seal.update(sealing_resource=current['resource_id'],sealing_epoch=current['epoch'],sealing_incarnation=current['process_incarnation'],
+            sealed_at_us=lower+250_000,xmin='202')
+        after['acquisition_continuations']=[seal]
+    producer=source.only(failed['producer_epochs']);job=source.only(failed['jobs'])
+    report=dict(format='bigbrotr-ingest-recovery/1',state='acquisition-sealed',dataset_id=job['dataset_id'][2:],
+        owner_resource_id=producer['owner_resource_id'][2:],producer_slot_id=producer['producer_slot_id'][2:],producer_epoch='1',
+        issued_through='5',reserved_through='5',resolved_requests='5',native='closed',owner_release='committed',ready=False,
+        acquisition_continuation=dict(sealed_jobs='1',execution='not-authorized'),
+        source_closure=dict(last_complete_sequence='17',sha256=failed['source_streams'][0]['closure_digest'][2:]))
+    return original,failed,after,initialized,events,wires,first,closed,lower,upper,report
+
+
 def adoption_fault_fixture(root,mode):
     """Declared5-request/17-record cut and fresh active-zero SQL/native lifetime."""
     from initial_succession_oracle import exclusion
@@ -429,6 +466,125 @@ def integrity_fixture(root):
 
 
 class CappedAdoptionControls(unittest.TestCase):
+    def test_exact_seal_retry_requires_real_fencing_released_owner_and_preserves_the_whole_existing_seal(self):
+        for mode in ('before-forward','after-complete'):
+            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as temporary:
+                _,failed,after,initialized,events,wires,first,closed,start,end,report=seal_retry_fixture(Path(temporary),mode)
+                def verify(state=after,answer=report,prior=failed):
+                    check.adoption_seal_retry(prior,state,first,wires,events,start,end,end+5_000_000,mode,answer)
+                verify();check.adoption_closed_native(first,'\\x'+initialized['producer_slot_id'],closed)
+                previous=source.only(failed['owner_epochs'],role='control',epoch=2)
+                current=source.only(after['owner_epochs'],role='control',epoch=3)
+                self.assertLess(current['acquired_at_us'],previous['lease_expires_at_us'])
+                self.assertNotEqual(current['lease_expires_at_us'],current['acquired_at_us']+60_000_000)
+                mutations=[('owner_epochs',2,'state','active'),('owner_epochs',2,'exclusion_digest','\\x'+'ff'*32),
+                    ('owner_epochs',2,'lease_expires_at_us',end),('owner_epochs',3,'state','active'),
+                    ('owner_epochs',3,'lease_expires_at_us',end),('owner_epochs',3,'exclusion_digest','\\x'+'ff'*32),
+                    ('role_instances',3,'retired_at_us',None),('jobs',0,'job_revision',3),('jobs',0,'xmin','204'),
+                    ('acquisition_jobs',0,'deadline_at_us',ACCEPTED+121_000_000),('source_streams',0,'xmin','204'),
+                    ('source_streams',0,'closed_at_us',end),('producer_epochs',0,'xmin','204'),
+                    ('acquisition_quanta',0,'xmin','204'),('producer_requests',0,'xmin','204'),
+                    ('producer_outcomes',0,'outcome_kind',2),('acquisition_continuations',0,'sealing_epoch',2 if mode=='before-forward' else 3),
+                    ('acquisition_continuations',0,'sealed_at_us',start+1),('acquisition_continuations',0,'xmin','204')]
+                if mode=='before-forward':mutations.pop() # A new seal has an opaque fresh transaction.
+                for table,index,key,value in mutations:
+                    changed=copy.deepcopy(after);changed[table][index][key]=value
+                    with self.subTest(table=table,key=key),self.assertRaises(AssertionError):verify(changed)
+                for table in ('owner_epochs','role_instances','producer_requests'):
+                    changed=copy.deepcopy(after);changed[table].append(copy.deepcopy(changed[table][-1]))
+                    with self.subTest(extra=table),self.assertRaises((AssertionError,ValueError)):verify(changed)
+                for key,value in (('state','source-closed'),('ready',True),('resolved_requests','4'),('owner_release','unobserved')):
+                    with self.subTest(report=key),self.assertRaises(AssertionError):verify(answer=dict(report,**{key:value}))
+                changed=copy.deepcopy(failed);source.only(changed['owner_epochs'],role='control',epoch=2)['lease_expires_at_us']=start
+                with self.assertRaises(AssertionError):verify(prior=changed)
+
+    def test_seal_retry_parser_is_explicit_and_rejects_all_other_profiles(self):
+        spec=importlib.util.spec_from_file_location('seal_retry_runner_control',ROOT/'tests/acceptance/run.py')
+        runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+        common=['run.py','p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption','--linear-quantum-fault','plan-before']
+        for mode in ('before-forward','after-complete'):
+            with tempfile.TemporaryDirectory() as temporary:
+                with patch.object(sys,'argv',common+['--linear-quantum-seal-fault',mode,'--linear-quantum-seal-retry','exact',
+                        '--source-root',str(ROOT),'--evidence',str(Path(temporary)/'evidence')]),patch.object(sys,'stdout'),\
+                        patch('cases.first_launch.first_launch') as launched:
+                    self.assertEqual(runner.main(),2)
+                self.assertEqual(launched.call_args.args[0].linear_quantum_seal_retry,'exact')
+        for prefix in (['run.py','p01-t01','--binary',sys.executable],common,common[:-1]+['plan-after'],
+                common+['--linear-quantum-adoption-fault','before-forward'],common+['--linear-quantum-authority-refusal','actor-grant'],
+                common+['--linear-quantum-integrity-refusal','workflow-effect'],common+['--linear-quantum-trace-successor-sql']):
+            with tempfile.TemporaryDirectory() as temporary:
+                evidence=Path(temporary)/'evidence'
+                tail=['--linear-quantum-seal-retry','exact','--source-root',str(ROOT),'--evidence',str(evidence)]
+                if prefix!=common:tail+=['--linear-quantum-seal-fault','before-forward']
+                with patch.object(sys,'argv',prefix+tail),patch.object(sys,'stderr'),self.assertRaises(SystemExit):runner.main()
+                self.assertFalse(evidence.exists())
+
+    def test_retry_checks_exclusion_restores_direct_route_and_joins_success_before_native_proof(self):
+        from installed import set_value
+        for mode in ('before-forward','after-complete'):
+            for failure in (None,'proxy','observer','old-config','config','authorization','diagnostic','report','native','history'):
+                with self.subTest(mode=mode,failure=failure),tempfile.TemporaryDirectory() as temporary:
+                    root=Path(temporary);_,failed,after,initialized,events,wires,first,closed,start,end,report=seal_retry_fixture(root,mode)
+                    runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.home=root/'peer';runtime.home.mkdir()
+                    runtime.config=root/'instance.toml';runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:33333"\n')
+                    runtime.set_value=set_value;runtime.args=SimpleNamespace(linear_quantum_seal_retry='exact')
+                    runtime.state=root/'state';runtime.adoption_refused=failed;runtime.adoption_first=first;runtime.initialized=initialized
+                    runtime.adoption_refusal_dump=copy.deepcopy(closed);runtime.events=events;runtime.inputs={}
+                    runtime.resources=dict(seal_proxy=dict(status='active' if failure=='proxy' else 'joined'),native_observer=dict(id='observer'))
+                    failed_output=root/'seal-commit-fault';failed_output.mkdir()
+                    publish(failed_output,'terminal-container.json',dict(id='failed',state=dict(ExitCode=4,Pid=0,Running=False,OOMKilled=False)))
+                    publish(failed_output,'refused-control.json',failed)
+                    old_sha256='00'*32 if failure=='old-config' else case.digest(runtime.config)
+                    publish(failed_output,'authorization-interval.json',dict(root_config_document_sha256=old_sha256,
+                        root_config_after_recovery_sha256=old_sha256))
+                    publish(root,'native-observer-terminal.json',dict(id='observer',state=dict(ExitCode=0,Pid=1 if failure=='observer' else 0,Running=False,OOMKilled=False)))
+                    publish(failed_output,'native-observer-process.json',dict(exit_code=0,overflow=False))
+                    publish(root,'seal-proxy-terminal.json',dict(event='terminal'));runtime.validate_seal_fault_terminal=Mock()
+                    def absence(output):publish(output,'backend-absence.json',dict(absent=True,cut=runtime.backend_absence.call_count))
+                    runtime.backend_absence=Mock(side_effect=absence)
+                    def finite(*args):
+                        self.assertEqual(tomllib.loads(runtime.config.read_text())['postgres']['control']['endpoint'],'127.0.0.1:15432')
+                        (root/'bootstrap').mkdir()
+                        observed=root_configuration_report(case.digest(runtime.config));publish(root/'bootstrap','seal-retry-root-config.stdout',observed)
+                        if failure=='config':runtime.config.write_text(runtime.config.read_text()+'\n# changed\n')
+                        return observed
+                    runtime.finite=Mock(side_effect=finite);runtime.sql=Mock(side_effect=[str(start),str(end),str(end+5_000_000)])
+                    runtime.launch=Mock(return_value=dict(id='retry'));runtime.docker=Mock(return_value=SimpleNamespace(stdout='0\n'))
+                    runtime.inspect=Mock(return_value=dict(Id='retry',State=dict(ExitCode=0,Pid=0,Running=False,OOMKilled=False)))
+                    def logs(entry,output):
+                        (output/'serve.stdout').write_text(json.dumps(report)+'\n')
+                        (output/'serve.stderr').write_text('diagnostic' if failure=='diagnostic' else '')
+                        return [dict(report,state='source-closed') if failure=='report' else report]
+                    runtime.logs=Mock(side_effect=logs)
+                    if failure=='history':after['jobs'][0]['xmin']='999'
+                    runtime.capture=Mock(return_value=(after,{}));runtime.wires=Mock(return_value=wires)
+                    if failure=='native':closed['sequence']=87
+                    def census(*args,**kwargs):
+                        self.assertEqual(kwargs['writer_terminal'],root/'seal-commit-retry/terminal-container.json')
+                        self.assertFalse((runtime.home/'seal-commit-retry.continue').exists())
+                        self.assertGreaterEqual(runtime.backend_absence.call_count,2);return closed
+                    directory=runtime.state/'data/ingest/producer-inputs-v1';directory.mkdir(parents=True)
+                    for number,data in enumerate(first['inputs'],1):
+                        (directory/f"{initialized['producer_slot_id']}-0000000000000001-{number:016x}.cbor").write_bytes(data)
+                    runtime.adoption_original_files={'inputs':'exact'};runtime.files=Mock(return_value=runtime.adoption_original_files)
+                    runtime.client=Mock(pid=12345);runtime.client.poll.return_value=None
+                    runtime.owned_listeners=Mock(return_value=['listener']);runtime.loopback_listener=Mock()
+                    with patch.object(case.native,'census',side_effect=census),patch.object(case.time,'CLOCK_BOOTTIME',7,create=True),\
+                            patch.object(case.time,'clock_gettime_ns',side_effect=[1_000_000_000,6_000_000_000 if failure=='authorization' else 2_000_000_000]):
+                        if failure is None:runtime.retry_seal(mode)
+                        else:
+                            with self.assertRaises((AssertionError,ValueError)):runtime.retry_seal(mode)
+                    self.assertFalse((runtime.home/'seal-commit-retry.continue').exists())
+                    if failure in ('proxy','observer','old-config'):runtime.launch.assert_not_called();runtime.finite.assert_not_called()
+                    elif failure is None:
+                        self.assertEqual(runtime.adoption_retry_dump,closed)
+                        prior=root/'seal-commit-retry/prior-backend/backend-absence.json'
+                        receipt=case.load(root/'seal-commit-retry/excluded-prior-owners.json')
+                        self.assertEqual(receipt['backend_absence_sha256'],case.digest(prior))
+                        self.assertNotEqual(case.digest(prior),case.digest(root/'seal-commit-retry/backend-absence.json'))
+                        runtime.launch.assert_called_once_with('retry-seal-acquisition','app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
+                        runtime.finite.assert_called_once_with('seal-retry-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+
     def test_integrity_admin_seed_is_captured_before_write_and_restores_origin(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);original,seeded,_,report,events,_,_,_,start,*_=integrity_fixture(root)
@@ -515,6 +671,7 @@ class CappedAdoptionControls(unittest.TestCase):
             with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);original,seeded,after,report,events,wires,first,closed,start,end,inserted,result=integrity_fixture(root)
                 runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.home=root/'peer';runtime.home.mkdir()
+                runtime.args=SimpleNamespace()
                 runtime.state=root/'state';runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
                 runtime.adoption_before=original;runtime.integrity_seeded=seeded;runtime.adoption_first=first
                 runtime.initialized=report;runtime.events=events;runtime.integrity_route=Mock()
@@ -1034,13 +1191,14 @@ class CappedAdoptionControls(unittest.TestCase):
 
     def test_seal_fault_command_joins_proxy_and_backend_then_checks_native_and_state_before_peer_release(self):
         for mode in ('before-forward','after-complete'):
-            for failure in (None,'diagnostic','counter','backend','native','authorization'):
-                with self.subTest(mode=mode,failure=failure),tempfile.TemporaryDirectory() as temporary:
+            for failure,retry in ((None,False),(None,True),('retry',True),('diagnostic',False),('counter',False),('backend',False),('native',False),('authorization',False)):
+                with self.subTest(mode=mode,failure=failure,retry=retry),tempfile.TemporaryDirectory() as temporary:
                     root=Path(temporary);before,after,report,events,wires,first,_,closed,start,end=seal_fault_fixture(root,mode)
                     runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.home=root/'peer';runtime.home.mkdir()
                     runtime.state=root/'state';runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
                     document_sha256=case.digest(runtime.config);runtime.adoption_before=before;runtime.adoption_first=first
                     runtime.initialized=report;runtime.events=events;runtime.seal_route=Mock();runtime.record_resources=Mock()
+                    runtime.args=SimpleNamespace(linear_quantum_seal_retry='exact' if retry else None)
                     def finite(*args):
                         (root/'bootstrap').mkdir();observed=root_configuration_report(document_sha256)
                         publish(root/'bootstrap','seal-root-config.stdout',observed);return observed
@@ -1080,11 +1238,24 @@ class CappedAdoptionControls(unittest.TestCase):
                     runtime.client=Mock(pid=12345);runtime.client.poll.return_value=None;runtime.processes=[runtime.client]
                     runtime.owned_listeners=Mock(return_value=['listener']);runtime.loopback_listener=Mock()
                     (runtime.home/'client.stderr').write_text('')
-                    publish(runtime.home,'client-result.json',dict(status='PASS',completion='seal-commit-fault',job_status=None))
-                    def joined(*,timeout):
-                        self.assertTrue((runtime.home/'seal-commit-fault.continue').exists())
+                    completion='seal-commit-retry' if retry else 'seal-commit-fault'
+                    publish(runtime.home,'client-result.json',dict(status='PASS',completion=completion,job_status=None,
+                        **(dict(seal_retry='exact',gate_seconds=110) if retry else {})))
+                    def retry_once(selected):
+                        self.assertEqual(selected,mode)
                         self.assertTrue((root/'seal-commit-fault/original-duration.json').exists())
-                        runtime.capture.assert_called_once();runtime.loopback_listener.assert_called_once();return 0
+                        self.assertFalse((runtime.home/'seal-commit-fault.continue').exists())
+                        self.assertFalse((runtime.home/'seal-commit-retry.continue').exists())
+                        self.assertEqual(runtime.adoption_refusal_dump,closed)
+                        runtime.capture.assert_called_once();runtime.stop_seal_proxy.assert_called_once()
+                        if failure=='retry':raise ValueError('retry proof refused')
+                    runtime.retry_seal=Mock(side_effect=retry_once)
+                    def joined(*,timeout):
+                        self.assertTrue((runtime.home/(completion+'.continue')).exists())
+                        self.assertTrue((root/'seal-commit-fault/original-duration.json').exists())
+                        runtime.capture.assert_called_once();runtime.loopback_listener.assert_called_once()
+                        if retry:runtime.retry_seal.assert_called_once_with(mode)
+                        return 0
                     runtime.client.wait.side_effect=joined
                     with patch.object(case.native,'census',side_effect=census),patch.object(case,'stop_process'),\
                             patch.object(case.time,'CLOCK_BOOTTIME',7,create=True),patch.object(case.time,'clock_gettime_ns',
@@ -1098,7 +1269,8 @@ class CappedAdoptionControls(unittest.TestCase):
                     if failure is None:
                         self.assertEqual(runtime.processes,[]);runtime.client.wait.assert_called_once_with(timeout=6)
                     else:
-                        runtime.client.wait.assert_not_called();self.assertFalse((runtime.home/'seal-commit-fault.continue').exists())
+                        runtime.client.wait.assert_not_called();self.assertFalse((runtime.home/(completion+'.continue')).exists())
+                    if not retry:runtime.retry_seal.assert_not_called()
 
     def test_root_authorization_requires_actual_show_types_file_and_nonroot_policy_binding(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -1211,6 +1383,7 @@ class CappedAdoptionControls(unittest.TestCase):
             with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);before,after,report,events,wires,first,_,closed,start,end=unsettled_fixture(root)
                 runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root
+                runtime.args=SimpleNamespace()
                 runtime.home=root/'peer';runtime.home.mkdir();runtime.state=root/'state'
                 runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
                 document_sha256=case.digest(runtime.config)
@@ -1866,7 +2039,9 @@ class CappedAdoptionControls(unittest.TestCase):
                 ('plan-before',None,'before-forward',None,None,'adoption-commit-fault'),('plan-before',None,'after-complete',None,None,'adoption-commit-fault'),
                 ('plan-before',None,None,'actor-grant',None,'continuation-authority-refusal'),
                 ('plan-before',None,None,'original-expiry',None,'continuation-authority-refusal'),
-                ('plan-before',None,None,None,'workflow-effect','continuation-integrity-refusal')):
+                ('plan-before',None,None,None,'workflow-effect','continuation-integrity-refusal'),
+                ('plan-before','before-forward',None,None,None,'seal-commit-retry'),
+                ('plan-before','after-complete',None,None,None,'seal-commit-retry')):
             with tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);session=root/'session.private';saved=dict(session='private')
                 session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
@@ -1875,6 +2050,9 @@ class CappedAdoptionControls(unittest.TestCase):
                 if adoption is not None:publish(root,'linear-quantum-adoption-fault.json',adoption)
                 if authority is not None:publish(root,'linear-quantum-authority-refusal.json',authority)
                 if integrity is not None:publish(root,'linear-quantum-integrity-refusal.json',integrity)
+                if gate=='seal-commit-retry':
+                    publish(root,'linear-quantum-seal-retry.json','exact')
+                    (root/'seal-commit-fault.continue').write_text('old failed observation gate is insufficient\n')
                 calls=[];result=[];errors=[];peer_started=threading.Event();peer_joined=threading.Event();cli=Mock()
                 def request(method,path,body=None,headers=None):
                     calls.append((method,path,body));self.assertEqual(method,'POST')
@@ -1906,6 +2084,7 @@ class CappedAdoptionControls(unittest.TestCase):
                 self.assertEqual(result[0]['completion'],gate);self.assertIsNone(result[0]['job_status'])
                 if authority is not None:self.assertEqual(result[0]['gate_seconds'],140 if authority=='original-expiry' else 110)
                 if integrity is not None:self.assertEqual(result[0]['integrity_refusal'],'workflow-effect');self.assertEqual(result[0]['gate_seconds'],110)
+                if gate=='seal-commit-retry':self.assertEqual(result[0]['seal_retry'],'exact');self.assertEqual(result[0]['gate_seconds'],110)
 
 
 if __name__=='__main__':unittest.main()

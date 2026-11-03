@@ -82,6 +82,19 @@ activation row; use the existing recovery/retirement procedure and a newly minte
 successor. Whole-intent abandonment remains a separate explicit cancellation
 choice and never masquerades as continuation.
 
+An explicitly authorized identical seal retry first joins the failed native
+owner, connection driver/backend and all fault/diagnostic observers. Fresh
+recovery takes actual exclusive native custody and the PostgreSQL session
+advisory lock; acquiring that new Control incarnation fences the prior active
+Control and retires its role without waiting for its scheduling lease to expire.
+Do not administratively release the old owner or extend the original job
+deadline. The identical command creates an absent seal, or verifies the whole
+already committed seal without changing its ID, sealer, time or xmin. Successful
+recovery then releases and retires its own Control. This operation authorizes no
+retirement, activation, adoption or resumed wire work by itself. The maintained
+`--linear-quantum-seal-retry exact` option isolates that operation in each seal
+COMMIT-loss profile; their default remains observation without retry.
+
 Continuation also rechecks the original actor's active account and exact Control
 grant, the original deadline, and the unchanged accepted policy/source. A job
 authority refusal can occur after fresh native activation: startup stops with

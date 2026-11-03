@@ -25,7 +25,8 @@ ADOPTION_LIMITS=[
     'The plan-before path requires five literal REQs [0,86400),[0,24),[0,23),[0,2),[0,1), bodies24/23/1, five EVENT observations and both gaps. The plan-after path stops at Q1 plus unwired pending Q2. Original128-query budget/deadline and no undeclared socket remain required.',
     'Full old inputs, native facts/receipts, historical SQL rows/xmins and immutable source/principal/policy are preserved. Sealing cannot change job ownership; the positive path checks one exact queued rev2 to rev3/current-Control CAS and actual native handoff/adoption.',
     'The plan-after variant retains Q1 wire, five original inputs/outcomes, queued revision2 and pending Q2; native85 to86/source close are permitted, no continuation seal is created, and retirement/activation/successor are not attempted. Other negative schedules, repeated successor loss, OPEN65, full500, fleet and Archive remain outside this case.',
-    'The explicit seal-fault variant retains plan-before Q2 absence, then loses a separate executed seal INSERT COMMIT before forwarding or after server completion. It requires caller CommitUnknown, zero or one unadopted seal respectively, native85 to86, unchanged job/history/inputs and no second wire. It never retires, activates, adopts or retries.',
+    'The explicit seal-fault variant retains plan-before Q2 absence, then loses a separate executed seal INSERT COMMIT before forwarding or after server completion. It requires caller CommitUnknown, zero or one unadopted seal respectively, native85 to86, unchanged job/history/inputs and no second wire. Its default stops there; only the explicit exact retry selector starts one identical fresh recovery after all failed owners/observers join. No retirement, activation or adoption follows.',
+    'Exact seal retry keeps the initial60s wait and original120s deadline. Actual exclusive native open and PG advisory-lock acquisition fence the still-unexpired failed Control; no administrative release or second lease wait is used. Success releases/retires the retry Control, retains byte-exact native86 and source/history/inputs, creates the absent seal or preserves the whole committed seal including xmin/sealer/time. The existing110s client gate stays closed through all retry evidence.',
     'The explicit adoption-fault variant confirms normal sealing/retirement, then loses the executed final job-owner CAS COMMIT before forwarding or after completion. Both stop startup without success JSON or another wire, retain exact active-zero native91 and active Control/Ingest custody; only the after-complete cut atomically adopts the seal/job. No retry or lost-candidate recovery is attempted.',
     'The explicit authority-refusal variants confirm sealing/retirement before removing only the original actor grant or genuinely waiting past the original120s deadline. A transparent observer must see the actual executed0045 helper refuse BB001 under fresh Control/root authority, with exact unadopted job/seal/history and active-zero native91. Only the expiry observation gate uses120s+the existing20s settlement allowance; no job deadline, SQL lease or policy TTL changes.',
     'The one workflow-effect integrity profile first authenticates original Q1/native85, then uses explicit fixture-admin replica mode to change only effect1 mutation4 to5/new xmin. It must observe real seal INSERT0 1 followed by false coverage SELECT1 on the same Control transaction, no selected COMMIT, joined abort/no seals and exact native86. Charge, payload/time targets, all five originals and every other history field stay fixed. This is metadata corruption, not a genuine origin reservation or unissued-native write.',
@@ -257,6 +258,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             self.inputs['linear_quantum_trace_successor_sql']=True
         if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
             self.inputs['linear_quantum_seal_fault']=self.args.linear_quantum_seal_fault
+        if getattr(self.args,'linear_quantum_seal_retry',None) is not None:
+            self.inputs['linear_quantum_seal_retry']=self.args.linear_quantum_seal_retry
         if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
             self.inputs['linear_quantum_adoption_fault']=self.args.linear_quantum_adoption_fault
         if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
@@ -280,6 +283,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         save(self.home/'linear-capped-adoption-profile.json',ADOPTION_PROFILE)
         if getattr(self.args,'linear_quantum_seal_fault',None) is not None:
             save(self.home/'linear-quantum-seal-fault.json',self.args.linear_quantum_seal_fault)
+        if getattr(self.args,'linear_quantum_seal_retry',None) is not None:
+            save(self.home/'linear-quantum-seal-retry.json',self.args.linear_quantum_seal_retry)
         if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
             save(self.home/'linear-quantum-adoption-fault.json',self.args.linear_quantum_adoption_fault)
         if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
@@ -885,14 +890,89 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         save(output/'original-duration.json',dict(before_us=before_us,command_returned_at_us=returned_us,after_us=after_us,
             original_deadline_at_us=self.adoption_before['acquisition_jobs'][0]['deadline_at_us'],source_and_actor_eligible=True))
         self.adoption_refusal_dump=dump
+        if getattr(self.args,'linear_quantum_seal_retry',None) is not None:
+            require(mode is not None and not integrity,'retry requires an actual qualified seal COMMIT fault')
+            self.retry_seal(mode)
+            completion='seal-commit-retry'
         (self.home/(completion+'.continue')).write_text('failed seal retained SQL/native and live listener checked\n')
         require(self.client.wait(timeout=6)==0 and not (self.home/'client.stderr').read_bytes(),'negative adoption client failed')
         stop_process(self.client);self.processes.remove(self.client)
         result=load(self.home/'client-result.json')
         require(result['status']=='PASS' and result['completion']==completion and result['job_status'] is None,
             'negative adoption client completion differs')
+        if getattr(self.args,'linear_quantum_seal_retry',None) is not None:
+            require(result.get('seal_retry')=='exact' and result.get('gate_seconds')==110,'exact retry client selector/bound differs')
         require(not (self.home/'linear-status-observations.json').exists() and not (self.home/'commands-finished.json').exists(),
             'negative adoption made a successor status request')
+
+    def retry_seal(self,mode):
+        require(self.args.linear_quantum_seal_retry=='exact','unknown seal retry selector')
+        output=self.root/'seal-commit-retry';output.mkdir(mode=0o700)
+        failed=self.root/'seal-commit-fault'
+        terminal=load(failed/'terminal-container.json');observer=load(self.root/'native-observer-terminal.json')
+        process=load(failed/'native-observer-process.json')
+        require(terminal['state']['ExitCode']==4 and terminal['state']['Pid']==0 and not terminal['state']['Running']
+            and not terminal['state']['OOMKilled'],'retry requires joined failed writer')
+        require(self.resources['seal_proxy']['status']=='joined' and observer['id']==self.resources['native_observer']['id']
+            and observer['state']['ExitCode']==0 and observer['state']['Pid']==0 and not observer['state']['Running']
+            and not observer['state']['OOMKilled'] and process['exit_code']==0 and process['overflow'] is False,
+            'retry requires joined fault proxy and native observer')
+        self.validate_seal_fault_terminal(load(self.root/'seal-proxy-terminal.json'))
+        prior_backend=output/'prior-backend';prior_backend.mkdir(mode=0o700)
+        self.backend_absence(prior_backend)
+        prior_config=failed/'instance-before-retry.toml'
+        prior_config.write_bytes(self.config.read_bytes());prior_config.chmod(0o600)
+        interval=load(failed/'authorization-interval.json')
+        require(digest(prior_config)==interval['root_config_document_sha256']==interval['root_config_after_recovery_sha256'],
+            'retry prerequisite: original failed-attempt root file binding changed')
+        save(output/'excluded-prior-owners.json',dict(failed_writer=terminal,native_observer=observer,
+            native_observer_process=process,seal_proxy_terminal_sha256=digest(self.root/'seal-proxy-terminal.json'),
+            failed_control_sha256=digest(failed/'refused-control.json'),failed_root_config_sha256=digest(prior_config),
+            backend_absence_sha256=digest(prior_backend/'backend-absence.json')))
+        self.config.write_text(self.set_value(self.config.read_text(),'postgres.control','endpoint','127.0.0.1:15432'))
+        self.inputs['initial_recipe_sha256']=digest(self.config)
+        document_sha256=digest(self.config)
+        resolved=self.finite('seal-retry-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+        require(digest(self.config)==document_sha256,'retry root file changed during config show')
+        authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,self.adoption_refused)
+        clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
+        before_us=int(self.sql('bigbrotr_control',clock));oracle.adoption_seal_eligibility(self.adoption_refused,before_us)
+        boottime=getattr(time,'CLOCK_BOOTTIME',None)
+        require(boottime is not None,'seal retry prerequisite: Linux CLOCK_BOOTTIME is required')
+        require(digest(self.config)==document_sha256,'retry root file changed before recovery')
+        started_ns=time.clock_gettime_ns(boottime)
+        entry=self.launch('retry-seal-acquisition','app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
+        ended=self.docker('wait',entry['id'],timeout=180)
+        elapsed_ns=time.clock_gettime_ns(boottime)-started_ns
+        after_sha256=digest(self.config);returned_us=int(self.sql('bigbrotr_control',clock))
+        reports=self.logs(entry,output);terminal=self.inspect(entry)
+        save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
+        save(output/'authorization-interval.json',dict(clock='CLOCK_BOOTTIME',elapsed_ns=elapsed_ns,
+            root_authorization_ttl_us=authorization_us,command_returned_at_us=returned_us,
+            root_config_document_sha256=document_sha256,root_config_after_recovery_sha256=after_sha256,
+            root_config_show_sha256=digest(self.root/'bootstrap/seal-retry-root-config.stdout'),
+            root_setting_source=resolved['settings']['runtime.authorization_ttl']['source']))
+        require(after_sha256==document_sha256,'retry root file changed during recovery')
+        require(type(elapsed_ns) is int and 0<=elapsed_ns<authorization_us*1000,'seal retry exceeded resolved root authorization interval')
+        require(ended.stdout.strip()=='0' and terminal['State']['ExitCode']==0 and terminal['State']['Pid']==0
+            and not terminal['State']['Running'] and not terminal['State']['OOMKilled']
+            and not (output/'serve.stderr').read_bytes() and len(reports)==1,'seal retry did not succeed naturally with one report')
+        save(output/'seal-report.json',reports[0])
+        self.backend_absence(output);self.adoption_retried,_=self.capture(output,'retried')
+        dump=native.census(self,output,writer_terminal=output/'terminal-container.json')
+        oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],dump)
+        require(dump==self.adoption_refusal_dump,'retry changed complete closed native census')
+        after_us=int(self.sql('bigbrotr_control',clock));wires=self.wires(1)
+        oracle.adoption_seal_retry(self.adoption_refused,self.adoption_retried,self.adoption_first,wires,self.events,
+            before_us,returned_us,after_us,mode,reports[0])
+        oracle.adoption_progress(self.adoption_retried,self.initialized,self.events,wires,self.adoption_first,after_us,epoch=1)
+        require(source.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,5)==self.adoption_first['inputs']
+            and self.files(self.state/'data/ingest/producer-inputs-v1')==self.adoption_original_files,'retry changed original inputs')
+        require(self.client.poll() is None,'negative peer exited before retry evidence')
+        self.loopback_listener(self.owned_listeners(self.client.pid),7447)
+        save(output/'original-duration.json',dict(before_us=before_us,command_returned_at_us=returned_us,after_us=after_us,
+            original_deadline_at_us=self.adoption_refused['acquisition_jobs'][0]['deadline_at_us'],source_and_actor_eligible=True))
+        self.adoption_retry_dump=dump
 
     def verify_linear_quantum(self):
         self.source_unchanged()
@@ -938,17 +1018,19 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         mode=getattr(self.args,'linear_quantum_seal_fault',None)
         if self.quantum_fault=='plan-after' or mode is not None:
             canonical=lambda snapshot:{table:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows) for table,rows in snapshot.items()}
-            require(canonical(state)==canonical(self.adoption_refused),'retained failed-seal state changed after stopping the peer')
+            retry=getattr(self.args,'linear_quantum_seal_retry',None)
+            require(canonical(state)==canonical(self.adoption_retried if retry else self.adoption_refused),'retained failed-seal state changed after stopping the peer')
             wires=self.wires(1)
             history=oracle.adoption_unsettled_history if mode is None else oracle.adoption_history
             history(state,wires,self.events,self.adoption_first)
-            oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],self.adoption_refusal_dump)
+            oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],self.adoption_retry_dump if retry else self.adoption_refusal_dump)
             joined=load(self.home/'capped-adoption-peer-joined.json')
             require(joined['requests']==1 and joined['listener_closed'] is True and joined['errors']==0,'negative adoption peer did not join after one request')
             save(output/'verdict.json',dict(status='PASS',scenario='settled-owner-adoption',fault=self.quantum_fault,
-                seal_fault=mode,outcome='unsettled-seal-refused' if mode is None else 'seal-commit-unknown',
+                seal_fault=mode,outcome='seal-exact-retry-confirmed' if retry else 'unsettled-seal-refused' if mode is None else 'seal-commit-unknown',
                 same_job=True,job_revision=2,wire_queries=1,pending_plans=int(mode is None),caller_outcome='unknown' if mode else 'refused',
-                mutation_requests=5,continuation_seals=int(mode=='after-complete'),successor_activations=0,native_sequence=86,coverage='pending'))
+                mutation_requests=5,continuation_seals=1 if retry else int(mode=='after-complete'),successor_activations=0,native_sequence=86,coverage='pending',
+                **(dict(seal_retry=retry,retry_outcome='confirmed',adopted_seals=0) if retry else {})))
             return
         for snapshot in (self.adoption_before,self.adoption_sealed,self.adoption_retired,state):
             for producer in snapshot['producer_epochs']:

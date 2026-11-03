@@ -62,6 +62,10 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     integrity_refusal=json.loads(integrity_path.read_text()) if integrity_path.exists() else None
     assert integrity_refusal is None or (fault=='plan-before' and seal_fault is adoption_fault is authority_refusal is None
         and integrity_refusal=='workflow-effect')
+    retry_path=directory/'linear-quantum-seal-retry.json'
+    seal_retry=json.loads(retry_path.read_text()) if retry_path.exists() else None
+    assert seal_retry is None or (seal_retry=='exact' and fault=='plan-before' and seal_fault is not None
+        and adoption_fault is authority_refusal is integrity_refusal is None)
     observations=[];errors=[]
     def call(path,value,key):
         code,answer=request('POST','/management/v1/'+path,value,{**auth,'Idempotency-Key':key})
@@ -94,7 +98,7 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
         # No HTTP poll while the original process is deliberately lost. The
         # same authenticated session later observes the same accepted JobId.
         if fault=='plan-after' or seal_fault is not None or adoption_fault is not None or authority_refusal is not None or integrity_refusal is not None:
-            completion=('continuation-integrity-refusal' if integrity_refusal is not None else
+            completion=('seal-commit-retry' if seal_retry is not None else 'continuation-integrity-refusal' if integrity_refusal is not None else
                 'continuation-authority-refusal' if authority_refusal is not None else
                 'adoption-commit-fault' if adoption_fault is not None else
                 'seal-commit-fault' if seal_fault is not None else 'unsettled-seal-refusal')
@@ -108,6 +112,7 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
             result=dict(login=logged_in,observations=observations,job_status=None,completion=completion)
             if authority_refusal is not None:result.update(authority_refusal=authority_refusal,gate_seconds=seconds)
             if integrity_refusal is not None:result.update(integrity_refusal=integrity_refusal,gate_seconds=seconds)
+            if seal_retry is not None:result.update(seal_retry=seal_retry,gate_seconds=seconds)
         else:
             barrier('adoption-old-cut',110)
             code,observed=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)

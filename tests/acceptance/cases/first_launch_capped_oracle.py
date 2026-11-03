@@ -540,6 +540,51 @@ def adoption_seal_fault_error(stdout,stderr):
     assert stdout=='' and stderr=='error: producer operation unavailable: CommitUnknown\n'
 
 
+def adoption_seal_retry(failed,after,first,wires,events,before_us,returned_us,after_us,mode,report):
+    """One identical fresh recovery resolves the cut without replacing retained evidence."""
+    from initial_succession_oracle import exclusion
+    assert mode in ('before-forward','after-complete') and before_us<=returned_us<=after_us
+    adoption_seal_eligibility(failed,before_us);adoption_seal_eligibility(after,after_us)
+    adoption_history(failed,wires,events,first);adoption_history(after,wires,events,first)
+    previous=max((row for row in failed['owner_epochs'] if row['role']=='control'),key=lambda row:row['epoch'])
+    assert previous['state']=='active' and before_us<previous['lease_expires_at_us']
+    current,role=adoption_new_control(failed,after,before_us,returned_us,active=False)
+    assert current['acquired_at_us']<previous['lease_expires_at_us'] and returned_us<current['lease_expires_at_us']
+    changed=source.only(after['owner_epochs'],resource_id=previous['resource_id'],epoch=previous['epoch'])
+    old_role=source.only(failed['role_instances'],role_instance_id=previous['role_instance_id'])
+    assert old_role['retired_at_us'] is None
+    retired=source.only(after['role_instances'],role_instance_id=previous['role_instance_id'])
+    source.clock(changed['released_at_us'],before_us,current['acquired_at_us'])
+    source.clock(retired['retired_at_us'],changed['released_at_us'],current['acquired_at_us'])
+    tx=changed['xmin'];adoption_xid(tx)
+    assert tx==retired['xmin'] and tx not in {row['xmin'] for rows in failed.values() for row in rows}
+    assert tx!=current['xmin'],'fencing and successful owner release must be separate transactions'
+    wanted=copy.deepcopy(failed)
+    wanted['owner_epochs'][wanted['owner_epochs'].index(previous)]=dict(previous,state='released',
+        released_at_us=changed['released_at_us'],exclusion_method='storage_fenced',
+        exclusion_digest=exclusion(previous,current['process_incarnation']),xmin=tx)
+    wanted['role_instances'][wanted['role_instances'].index(old_role)]=dict(old_role,retired_at_us=retired['retired_at_us'],xmin=tx)
+    wanted['owner_epochs'].append(current);wanted['role_instances'].append(role)
+    if mode=='before-forward':
+        assert not failed['acquisition_continuations']
+        adoption_unadopted_seal(failed,after,first,current,current['released_at_us'])
+        seal=source.only(after['acquisition_continuations'])
+        source.clock(seal['sealed_at_us'],current['acquired_at_us'],current['released_at_us'])
+        adoption_xid(seal['xmin'])
+        assert seal['xmin'] not in {row['xmin'] for rows in failed.values() for row in rows}|{tx,current['xmin']}
+        wanted['acquisition_continuations']=[seal]
+    else:
+        adoption_unadopted_seal(failed,failed,first,previous,before_us)
+    adoption_exact_tables(wanted,after)
+    job=source.only(failed['jobs']);producer=source.only(failed['producer_epochs']);slot=producer['producer_slot_id']
+    digest=source.closure(first['manifest'],slot,1,first['inputs'],first['receipts'],17)
+    source.exact(report,dict(format='bigbrotr-ingest-recovery/1',state='acquisition-sealed',dataset_id=job['dataset_id'][2:],
+        owner_resource_id=producer['owner_resource_id'][2:],producer_slot_id=slot[2:],producer_epoch='1',issued_through='5',
+        reserved_through='5',resolved_requests='5',native='closed',owner_release='committed',ready=False,
+        acquisition_continuation=dict(sealed_jobs='1',execution='not-authorized'),
+        source_closure=dict(last_complete_sequence='17',sha256=digest)),'retry recovery report differs')
+
+
 def adoption_unsettled_error(stdout,stderr):
     assert stdout=='' and stderr=='error: producer operation unavailable: Control(InvalidMetadata)\n'
 
