@@ -222,8 +222,15 @@ refusals under fresh authority. One installed historical workflow-integrity
 refusal also proves actual INSERT→false coverage→rollback with conserved native
 evidence. Exact absent/present uncertain-seal retries also qualify real lock-based
 exclusion and immutable retained seals. These bounded integration gates are closed;
-main/hosted qualification and later lost-candidate/zero-new-query handoffs remain
-explicit in these same tasks. Genuine origin
+Main04e has current three-platform hosted qualification. The additional zero-query
+intermediate-epoch handoff now qualifies locally through actual epoch3 acquisition,
+independent complete SQL/native reconstruction and terminal custody (R26 in the
+same report). Its scheduling-only native-pressure check avoids repeated admission
+SQL while retaining the existing stability clock and all effect authority checks.
+The original failed observer/diagnostic/logout-oracle attempts remain recorded;
+source-backed corrections precede the successful fresh run. New product/policy
+publication still requires its own hosted checks. Lost-candidate, full500,
+partitions and sparse traversal remain explicit in these same tasks. Genuine origin
 reservation without native issuance remains uncovered P02-T02 Step4/P03 execution
 work: the unchanged pre-resolution refusal guards this strictly settled profile,
 without requiring implementation of negative-outcome recovery before integration.

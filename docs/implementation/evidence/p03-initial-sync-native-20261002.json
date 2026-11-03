@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "CURRENT_A464_BOUNDED_SETTLED_CONTINUATION_INTEGRATION_SAFETY_GATES_QUALIFIED_M2_OPEN",
+    "status": "MAIN04E_HOSTED_PASS_LOCAL_ZERO_QUERY_R26_QUALIFIED_PENDING_PUBLICATION",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Initial source-only review, before the separately recorded qualification: Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Integrate the qualified coherent settled-continuation slice into main and obtain actual current hosted CI. Then continue existing M2 tasks by dependency; zero-new-query handoff needs a real Sync-selected zero-work cut because control/ingest-only activation skips adoption. Lost-candidate/full500 and genuine origin reservation/unissued recovery remain their existing owners; no wholeP02/wholeM2 completion claim.",
+    "next": "Publish the coherent qualified handoff/currentpressure/CI selection slice, require real current hosted checks, then next existingM2 capacity increment by actual dependency; no fullM2 completion claim.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2770,6 +2770,108 @@
       "result": "R21 Root45704/90.759s and R22 Root22780/90.509s both actualREAPED0/7of7PASS; independent scienceadb98ca3/d6ba0aec and custodya33aabe5/c87b0a03. Original callerUnknown remains distinct from identical retryConfirmed. Actual native/PG exclusion fences still-unexpired Control3; newControl4 releases/retires. Absent mode creates one correctly attributedseal; present mode preserves entireoldseal including ID/sealer/time/xmin. Full63-row native85/86/86/source17/time/xmin/5originalinputs/history/progress/job2/original120s conserved; oneREQ/noadoption/newwire. Whole592/590ms retries<root5s,~54soriginalleft. Oldproxy/newdirect configbindings and distinct immutable prior/final backend observations preserved.",
       "source_controls": "Current frozen1c pinned94 owningPASS; unchanged59proxy/634acceptance and14tutorial evidence reused, no full728 run. Source review6cd75604 found/corrected old pre-retry absence-path overwrite, final affected host1control/20subcases preserved separately from pre-fix94. Host mock/setup failures and independent admission-pointer/metadata setup failures retained; no product failure or predicate weakening.",
       "remaining": "Selected settled-continuation integration safety gates now closed within recorded slices. Main/hosted qualification and later acquisition capabilities remain open; no lost-candidate/zero-new-query/origin-unissued/full500 qualification."
+    },
+    "zero_query_handoff": {
+      "status": "PASS_BOUNDED_INSTALLED_ZERO_QUERY_HANDOFF_PENDING_MAIN_PUBLICATION",
+      "owner": "P03-T01 Steps3/7; P03-T05 Steps2/4/7",
+      "source": "8dd01592e6f7a215dd38daf727c9eb30ac282b65",
+      "integrated": "ac1f332c",
+      "source_controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/zero-query-8dd01592/source-controls-composite-receipt.json",
+        "sha256": "c00f2981772383d57ff3d8f348bb9e67b060ef0da3b19d7daf247074d8a28921"
+      },
+      "critical_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-checks-20261103/critical-source-review.json",
+        "sha256": "d852390c892ff91691c532e9854b1c50218580a16512b0be7fc99f985f49865c"
+      },
+      "root_admission": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/zero-query-8dd01592/root-admission.json",
+        "sha256": "44ebb898999a544ea725bf54413508466528c8342f514714148c6e145216901c"
+      },
+      "actual_run": {
+        "root_tool": 73319,
+        "terminal_chunk": "a9ea1a",
+        "exit_code": 1,
+        "seconds": 79.56625730899395,
+        "result": "FAIL",
+        "fault": "NOT_REACHED",
+        "science": "NOT_RUN",
+        "artifact_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-zero-query-r23"
+      },
+      "terminal_resources": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/zero-query-8dd01592/r23-terminal-observation.json",
+        "sha256": "c23249fb7d35e9d0c05d2010b63f28bea8433dc88fb396eb5322962c9303cc70"
+      },
+      "independent_failure": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-checks-20261103/independent-r23-failure-observation.json",
+        "sha256": "ce629a7af4d2b11cd60e4ba9e2cc7958dde6bbd8ae1f4363a09a34263b8f07ef"
+      },
+      "observed": "Handoff proxy exceeded unchanged131072 frame limit at131073/6701queries before selected plan; no matched plan COMMIT or injected fault. Epoch2 activated then exited4/SyncPrerequisite. Stage signed-acquisitionFAIL/cleanupFAIL(proxyValueError); later scientific stageNOT_RUN. Original21containers stopped/7recordedprocesses absent/304commandPIDs absent/bridgeempty. Strict final profile audit not qualified.",
+      "classification": "Observer budget failure preserved. Source-backed diagnosis found no timer spin: ordinary250ms Sync rounds repeat costly SQL before known local pending pressure. Existing proxy cannot defer framing for this target. Correct product scheduling rather than widen observer budgets.",
+      "next": "Coherent docs/publication/main integration then actual hostedfoundation for product/policy changes; proceed with next usefulM2 capability after boundeddependency check.",
+      "diagnosis": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-checks-20261103/proxy-budget-pressure-diagnosis.json",
+        "sha256": "178d2877cf4925e1f832e7b78f625d2ab57b50381f7a5ded9fe286b9ffecb5d0"
+      },
+      "pressure_correction": {
+        "source": "672a3865ec7f9e37c19b587d28981374ec6720ee",
+        "tree": "392cfda8652295cc3872e70370b22bd697247a2a",
+        "source_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-checks-20261103/sync-pressure-672a3865-source-review.json",
+          "sha256": "d2224a288ac789913e8dc3ce61b8089c6c3966ea18ad00c81af86c8840244c12"
+        },
+        "status": "CURRENT_BUILD_RUST_OBSERVER_PASS_ACTUAL_PLAN_FAULT_REACHED",
+        "root_tool": 36049,
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865",
+        "scope": "New nominations only observe actual native quota after safepoint. Pressure leaves scan/job/debt unchanged, retained nominations and actual effects preserve guards. Native wrappers reject uncertain/poisoned identity.250ms/30s/root5/job120/client110/proxy131072 remain unchanged.",
+        "predeclared_controls": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/additional-required-controls.json",
+          "sha256": "ba388bbf5196de5f0b84a8eab3c6c67c1ecfb4e4783aebebb0e097889c2de5b8"
+        },
+        "state": "CURRENT_BUILD_RUST_OBSERVER_PASS_ACTUAL_PLAN_FAULT_REACHED",
+        "integrated": "672a3865ec7f9e37c19b587d28981374ec6720ee",
+        "build_receipt_sha256": "8cb30dddb3ce07762e0734c9673616cc4717a960e082cf0d4b85b071bbe14262",
+        "rust_receipt_sha256": "658db49fa81b020c6615df9cb060adc49cf70320f85e6dbd99fb03ca57d21878",
+        "cache": "Sole observer compiler holds cache115; parent build/Rust terminal and released; actual new installed handoff NOT_RUN",
+        "observer_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/probe/terminal-receipt.json",
+          "sha256": "da2d59dcd80abb1626bba5507a2df092879b024de0b6fcc8fa54227e9601cc54"
+        },
+        "installed_product_observation": "R24 reaches real first-plan before-forward fault at24825frames/1dataquery/1fault/unexpected0, below unchanged131072 budget. No general capacity or throughput claim."
+      },
+      "actual_r24": {
+        "status": "FAIL_HANDOFF_FIXTURE_STDERR_CONTRACT",
+        "root_tool": 98664,
+        "terminal_chunk": "004775",
+        "exit_code": 1,
+        "seconds": 60.105703609995544,
+        "terminal_resources": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-672a3865/r24-terminal-observation.json",
+          "sha256": "9a969d0092d186a59170d3b7b8085b320392e74f9dff2c264ee5cacc4c9410f7"
+        },
+        "source": "672a3865ec7f9e37c19b587d28981374ec6720ee",
+        "classification": "Fixture calls startup-adoption stderr validator at ordinary Sync first-plan fault. Actual source emits Quantum(CommitUnknown) with quantum-plan operation-error diagnostic; startup adoption remains a different contract. CleanupPASS;21containers stopped/7recordedprocesses absent/310commandPIDs absent/55sourcepins/empty bridge. Native113/114/167 not yet witnessed.",
+        "next": "Source-backed test-only validator/sharedmock correction in .research/m2-handoff-sync-error-contract-20261103, Sol author/Astra critical oracle review. Cheap retained stderr replay before next installed run; reuse exact672 build/Rust/probe, no product rebuild."
+      },
+      "actual_r25": {
+        "status": "FAIL_PRESERVED_FINAL_SQL_LOGOUT_EXPECTATION",
+        "receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-7ee85cfc/installed-r25-receipt.json",
+          "sha256": "27b8b8b741f0d96714e501c19de0cfe7e79595302180e54321304aded4cbfbd9"
+        },
+        "custody_sha256": "092890c6dab1dfaa6a7a2e21258b830169e035995652a0f9c2a26d880d23d512",
+        "observed": "Actual signed-acquisitionPASS, five native cuts85/86/113/114/167, epoch3fivewire/job4/logout. Final exactSQL comparison omitted source-required session revocation plus one same-transaction browser.session.revoke audit; no expected values widened. OriginalcaseFAIL and full captures retained.",
+        "next": "Sol .research/m2-handoff-logout-oracle-20261103/base7ee; Astra auth/oracle review; Sol pure full retained-R25 diagnostic before any newengine. Preserve exact session identities/oldrows/fresh audit transaction and allotherSQL/native predicates. R26 still needs actual7/7/fullcustody."
+      },
+      "current_source": "a2975aa03e11f9ca3b3d80c2b945d93baa772edf",
+      "current_product": "672a3865ec7f9e37c19b587d28981374ec6720ee",
+      "actual_r26": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/installed-r26-receipt.json",
+        "sha256": "d21ba9495d833bfe465e3f32d747c10146d759a11035b5305a27854d60d20d87"
+      },
+      "capability": "Same finite job moves rev2\u21923\u21924 across epoch1\u2192zero-query epoch2\u2192real epoch3. One ordinary814B attribution/no epoch2quantum, originalfiveREQs/128querybudget/120sjob/110sclient/root5s/SQL60s preserved; two seals/adoptions, all old data/xmins/native inputs exact. Native85/86/113/114/167/rows63/63/84/84/123; two real30s stability periods. Exact logout/session and its atomic audit independently modeled. Coverage stayspending.",
+      "source_correction": "Fresh Sync nominations observe actual native pending pressure at existing250ms cadence, advancing accepted stability without avoidable nominationSQL/debt. Existing selected jobs/effect authorization remain strict; native wrappers reject uncertainty/poison. Tests/oracles reconcile ordinarySync diagnostics and real authenticated logout, not product/limit relaxations.",
+      "remaining": "Lost-candidate/full500/partitions/sparse, scheduling/live/NEG/import/fleet/capacity and genuine origin-unissued path remain existingtask gates. No fullM2/release/capacity/Archive proof from R26."
     }
   }
 }

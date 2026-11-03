@@ -79607,6 +79607,112 @@
             }
           },
           "resources": "Each22stopped/PID0/noOOM containers19compose+3native,7absent recorded processes,1116/1120absent commandPIDs and53sourcefiles; borrowedbridgeempty. Pinned94 control container990c4d7f stopped0/PID0/noOOM. ImmutableR21/R22 helper copies preserve actualbfb auditor/b393 invoke/c552 runner. No engines/compiler/cache work active; no cleanup. Original outcomes/source/mock/replay setup failures preserved."
+        },
+        "main_integration_20261103": {
+          "revision": "04e1a32f5c1d79b96fb61dfa600269b7d5ed1e72",
+          "state": "PUSHED_HOSTED_FOUNDATION_PASS",
+          "publication_receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/publication-04e1a32f-main-receipt.json",
+          "actual_push_root": 63826,
+          "terminal": "706f2b",
+          "hosted_run": 41684911843,
+          "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41684911843",
+          "observations": "Actual current04e scope20 and foundation36/36 PASS, all three platforms. Selection skips/declared ignores remain unexecuted; no release/fullM2 claim.",
+          "hosted_evidence": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/hosted-04e-verification/receipt.json",
+            "sha256": "bafc429d2ff7a6f0f42077e686ee40ac9d1c4e36e30361f496152a1ae9b2d5c0"
+          },
+          "public_output_triage": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/hosted-04e-verification/public-output-triage.json",
+            "sha256": "6037044177c2c053987981d98d38fa8b69e3221ab1b28f336bdbe476b236e45b"
+          }
+        },
+        "zero_query_handoff_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-20261103",
+          "branch": "work/m2-zero-query-handoff-20261103",
+          "base": "04e1a32f5c1d79b96fb61dfa600269b7d5ed1e72",
+          "state": "BOUNDED_R26_QUALIFIED_ALL_OWNED_RESOURCES_STOPPED",
+          "owner": "Sol author, Root sole integrator/launcher, Astra bounded critical review",
+          "scope": "Current product672 pending-pressure precheck/currentharnessa297; actual samejob zero-query intermediate epoch then epoch3, unchangedbudgets/data, strict independent logout+audit. Original8dd source and failures preserved.",
+          "retained_preflight": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-checks-20261103/retained-attribution-preflight.json",
+          "preflight_sha256": "b367fd49e07b3d55734bed096b463986d3583e00395f6ec9b63ddf9fc6ccaa0d",
+          "revision": "8dd01592e6f7a215dd38daf727c9eb30ac282b65",
+          "integrated": "ac1f332c",
+          "affected_controls": "Actual pinned206 PASS/Root60822; no product rebuild; final critical d852 PASS",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-zero-query-r23",
+          "resource_observation": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/zero-query-8dd01592/r23-terminal-observation.json",
+            "sha256": "c23249fb7d35e9d0c05d2010b63f28bea8433dc88fb396eb5322962c9303cc70"
+          },
+          "failure": "Root73319 actually reaped1; proxy frame-budget failure before plan; scientific cuts NOT_RUN.21 ownedcontainers stopped/7recordedprocesses absent/bridgeempty. All partial data/logs/proxy failures preserved. No running local engine/compiler.",
+          "next": "Publish verified coherent slice; no active localengine/compiler, cache115released/original4ELFpostguards complete. Preserve all sourceWts/data/captures and originalFAILs; retire only reconciled redundantbranchrefs after main integration.",
+          "pressure_correction": {
+            "worktree": "/home/tux/bigbrotr-rs/.research/m2-sync-pressure-fast-path-20261103",
+            "branch": "work/m2-sync-pressure-fast-path-20261103",
+            "source": "672a3865ec7f9e37c19b587d28981374ec6720ee",
+            "tree": "392cfda8652295cc3872e70370b22bd697247a2a",
+            "state": "BUILD_RUST_PROBE_TERMINAL_QUALIFIED",
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-672a3865",
+            "scope": "Only fresh Sync nomination prechecks actual native quota; same250ms/30s and all budgets/effect checks; actual new Rust/build/installed qualification pending.",
+            "root_tool": 98664,
+            "cache": "Released; no compiler/engine active after actual R24 reap",
+            "source_review": {
+              "path": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-checks-20261103/sync-pressure-672a3865-source-review.json",
+              "sha256": "d2224a288ac789913e8dc3ce61b8089c6c3966ea18ad00c81af86c8840244c12"
+            },
+            "status": "BUILD_RUST_PROBE_TERMINAL_QUALIFIED",
+            "integrated": "672a3865ec7f9e37c19b587d28981374ec6720ee",
+            "build_receipt_sha256": "8cb30dddb3ce07762e0734c9673616cc4717a960e082cf0d4b85b071bbe14262",
+            "rust_receipt_sha256": "658db49fa81b020c6615df9cb060adc49cf70320f85e6dbd99fb03ca57d21878",
+            "observer_receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/probe/terminal-receipt.json",
+              "sha256": "da2d59dcd80abb1626bba5507a2df092879b024de0b6fcc8fa54227e9601cc54"
+            }
+          },
+          "r24": {
+            "state": "FAILED_TEST_CONTRACT_RESOURCES_STOPPED",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-672a3865/acceptance-zero-query-r24",
+            "observation": {
+              "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-672a3865/r24-terminal-observation.json",
+              "sha256": "9a969d0092d186a59170d3b7b8085b320392e74f9dff2c264ee5cacc4c9410f7"
+            }
+          },
+          "diagnostic_contract_worktree": "/home/tux/bigbrotr-rs/.research/m2-handoff-sync-error-contract-20261103",
+          "r25": {
+            "state": "FAILED_FINAL_SQL_ORACLE_FULL_CUSTODY_STOPPED",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-672a3865/acceptance-zero-query-r25",
+            "receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-7ee85cfc/installed-r25-receipt.json",
+              "sha256": "27b8b8b741f0d96714e501c19de0cfe7e79595302180e54321304aded4cbfbd9"
+            },
+            "containers": 28,
+            "recorded_processes_absent": 9,
+            "command_pids_absent": 983,
+            "source_pins": 55,
+            "bridge_endpoints": 0
+          },
+          "logout_oracle_worktree": "/home/tux/bigbrotr-rs/.research/m2-handoff-logout-oracle-20261103",
+          "r26": {
+            "state": "PASS_QUALIFIED_STOPPED",
+            "root_tool": 29534,
+            "source": "a2975aa03e11f9ca3b3d80c2b945d93baa772edf",
+            "product": "672a3865ec7f9e37c19b587d28981374ec6720ee",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-672a3865/acceptance-zero-query-r26",
+            "admission_sha256": "97d5d2284778d176e209ef842a9b790cf3265cd0d77916dd5ec2880b9195f00d",
+            "scope": "Current211/sourcecriticalcb750/retaineddiagnostic69b+review78f completed before engine. No new product build or budget change. Real result/science/custody pending.",
+            "receipt": {
+              "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/installed-r26-receipt.json",
+              "sha256": "d21ba9495d833bfe465e3f32d747c10146d759a11035b5305a27854d60d20d87"
+            },
+            "custody_sha256": "697afe4a088b556aacab0b3faa3d6c834e02323fbdc2d80d4db9f544dd73ec67",
+            "containers_stopped": 28,
+            "recorded_processes_absent": 9,
+            "command_pids_absent": 981,
+            "source_pins": 55,
+            "bridge_endpoints": 0
+          },
+          "current_source_worktree": "/home/tux/bigbrotr-rs/.research/m2-handoff-logout-oracle-20261103",
+          "current_source_revision": "a2975aa03e11f9ca3b3d80c2b945d93baa772edf"
         }
       }
     }

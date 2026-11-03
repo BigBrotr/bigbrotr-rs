@@ -1,223 +1,33 @@
 {
   "latest_verified_hosted_execution": {
-    "revision": "5a9b7cc4c16027776a26f96d4eb7f54f22a5c58f",
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945",
-    "run": 41546602945,
+    "revision": "04e1a32f5c1d79b96fb61dfa600269b7d5ed1e72",
+    "tree": "0bf3e7c811be67504bb25ab3731b927f72bcca11",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41684911843",
+    "run": 41684911843,
     "attempt": 1,
-    "status": "PASS_EXACT_SOURCE_THREE_PLATFORM_FOUNDATION_AND_SCOPED_PUBLIC_AUDIT",
-    "foundation_checks": "36/36 required commands PASS; zero FAIL or required NOT_RUN",
+    "status": "PASS_EXACT_SOURCE_THREE_PLATFORM_FOUNDATION_BOUNDED_PUBLIC_OUTPUT_TRIAGE",
+    "foundation_checks": {
+      "collected": 36,
+      "executed": 36,
+      "failed": 0,
+      "not_run": 0
+    },
     "scope_controls": "20/20 PASS",
-    "attempt_scope": "All platforms/scope actually executed in this exact source attempt1; no prior-platform artifact/result reuse.",
-    "platforms": {
-      "amd64": {
-        "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945/job/125623743281",
-        "commands": 16,
-        "rust": {
-          "passed": 1577,
-          "failed": 0,
-          "ignored": 6,
-          "measured": 0,
-          "filtered_out": 0,
-          "suite_results": 97
-        },
-        "native": {
-          "status": "PASS",
-          "required": 12,
-          "passed": 12,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0
-        },
-        "acceptance": {
-          "collected": 681,
-          "passed": 681,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 56.884,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases",
-          "source_declared_count_verified": true
-        },
-        "export_profile": {
-          "collected": 13,
-          "passed": 13,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 0.079,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-        },
-        "fault_proxy": {
-          "collected": 43,
-          "passed": 43,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 8.387,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases",
-          "source_sha256": "1fb90e32c73c755e02210a3718f93131a70e3329c1a1be99649499c25bac83a4",
-          "source_declared_count_verified": true
-        },
-        "artifact_id": 13193992052,
-        "artifact_digest": "sha256:8ac3eecee4c99f3d5d2894df13ad3b033bfaae3a52c2138e9df9823a83d56e55"
-      },
-      "macos": {
-        "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945/job/125623743234",
-        "commands": 9,
-        "rust": {
-          "passed": 1572,
-          "failed": 0,
-          "ignored": 4,
-          "measured": 0,
-          "filtered_out": 0,
-          "suite_results": 97
-        },
-        "native": {
-          "status": "PASS",
-          "required": 12,
-          "passed": 12,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0
-        },
-        "acceptance": {
-          "collected": 681,
-          "passed": 668,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 13,
-          "seconds": 109.101,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases",
-          "source_declared_count_verified": true
-        },
-        "export_profile": {
-          "collected": 13,
-          "passed": 13,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 0.154,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-        },
-        "fault_proxy": {
-          "collected": 43,
-          "passed": 43,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 17.981,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases",
-          "source_sha256": "1fb90e32c73c755e02210a3718f93131a70e3329c1a1be99649499c25bac83a4",
-          "source_declared_count_verified": true
-        },
-        "artifact_id": 13192064922,
-        "artifact_digest": "sha256:2530f62c74b8ad199069d7c3dd9cdbfd17f6a5ce0fa3962ca09d3cb7174078ee"
-      },
-      "arm": {
-        "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945/job/125623743068",
-        "commands": 11,
-        "rust": {
-          "passed": 1577,
-          "failed": 0,
-          "ignored": 5,
-          "measured": 0,
-          "filtered_out": 0,
-          "suite_results": 97
-        },
-        "native": {
-          "status": "PASS",
-          "required": 12,
-          "passed": 12,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0
-        },
-        "acceptance": {
-          "collected": 681,
-          "passed": 681,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 51.131,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases",
-          "source_declared_count_verified": true
-        },
-        "export_profile": {
-          "collected": 13,
-          "passed": 13,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 0.066,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-        },
-        "fault_proxy": {
-          "collected": 43,
-          "passed": 43,
-          "failed": 0,
-          "errors": 0,
-          "skipped": 0,
-          "seconds": 7.262,
-          "failed_or_errored_cases": 0,
-          "affected_case_names": [],
-          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases",
-          "source_sha256": "1fb90e32c73c755e02210a3718f93131a70e3329c1a1be99649499c25bac83a4",
-          "source_declared_count_verified": true
-        },
-        "artifact_id": 13191619778,
-        "artifact_digest": "sha256:42331c0282985e78b2e2e1f1de7326c86f34368ae1a058bef60dcb30e9b316c7"
-      }
+    "actual_identity": "All three source manifests identical; all4284 file hashes/archive verified against exact Git source. No cross-attempt reuse.",
+    "evidence": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/hosted-04e-verification/receipt.json",
+      "sha256": "bafc429d2ff7a6f0f42077e686ee40ac9d1c4e36e30361f496152a1ae9b2d5c0"
     },
-    "source_context": "All three complete4278-file source manifests, current Rust/native/compiler/worker identities and nine workspace postguards verified. Mandatory Native12 eachPASS. Defaultignored6/5/4 retained; private connected/fault controls not executed by ordinary CI.",
-    "mac_fixture_followup": {
-      "status": "PASS_ACTUAL_CURRENT_MAC_EXECUTION",
-      "receipt": ".research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/macos-path-correction.json",
-      "sha256": "3918bb44771eaa96041b93d3d2d39cb83c17f664b122e43cceadc85390f4d8db",
-      "acceptance": "681 collected,668PASS,13SKIP,0FAIL/ERROR; prior path-alias case now runs in complete source-bound passing discovery; actual build/Clippy/Rustdoc/Rust/Native all executedPASS"
+    "public_output_triage": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/hosted-04e-verification/public-output-triage.json",
+      "sha256": "6037044177c2c053987981d98d38fa8b69e3221ab1b28f336bdbe476b236e45b"
     },
-    "public_output": {
-      "status": "PASS_SCOPED_AUDIT_KNOWN_NON_SECRET_CANDIDATES",
-      "candidates": 54,
-      "known_nonsecret_fingerprints": 5,
-      "unclassified": 0,
-      "operational_credentials": 0,
-      "provider_alerts": 0,
-      "artifact_members": 519,
-      "workflow_logs": 34,
-      "limits": "Bounded known-context patterns and asynchronous provider snapshot; no absolute absence/completion claim."
-    },
-    "retained_evidence": {
-      "terminal": {
-        "path": ".research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/terminal-audit.json",
-        "sha256": "a7ab38bdb9b3f905a075504139cc5de2f3bc5a5d2c40b6cd1623051d6637a957"
-      },
-      "public_audit": {
-        "path": ".research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/receipt.json",
-        "sha256": "2194489c3a0e9631231ce2d5912dca2828bd7e054fb45c90ffdc16189e5f01aa"
-      },
-      "execution": {
-        "path": ".research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/execution-sessions.json",
-        "sha256": "fa1f886162a7bcf5f13115ff8e1f0f15ad64de6b0e3cbf5948f7d823791c894b"
-      }
-    },
-    "limits": "Selected foundation qualification only. No later M2/schema45 source, installed engine acceptance, full product or release claim; previous551/16ad failures and f4ad historicalPASS remain unchanged.",
-    "historical_scopes": "Other source-named records preserve originalruns/failures; previous_verified_hosted_executions retains precedingcurrentpointer. This latestsource5a9 does notcover laterM2."
+    "scope": "Current hosted foundation only: strict Clippy/Rustdoc/default unfiltered workspace and maintained controls, Linux CLI/config. Actual per-platform checks, timing, worker/build/postguards and ignored cases belong to linked receipt. Selection SKIP and Rust/test ignores remain unexecuted. No installedM2/capacity/release claim.",
+    "previous_baseline": {
+      "revision": "5a9b7cc4c16027776a26f96d4eb7f54f22a5c58f",
+      "run": 41546602945,
+      "scope": "Prior exact hosted PASS remains retained; superseded only as latest pointer."
+    }
   },
   "date": "2026-11-01",
   "status": "PASS_SCOPED_FOUNDATION_NATIVE_TUPLE_AND_PUBLIC_OUTPUT_AUDIT",
@@ -3164,5 +2974,19 @@
     "result": "Root54376 exit0 in57.320s; all7 installed stages PASS. Current3-query peer transcripts close completely with no outbound EVENT; reviewed7 code objects/9 Nostr leaves/vendor profile, actual owned listeners, exact capability refusals, signed history, byte-exact353-byte export and ordinary restart pass.",
     "limits": "No standalone native/Archive all-row census, runtime signing counter, general egress or signing-enabled/Monitor support. Old25connection fixture retains its own source scope. Original replay metadata/overbroad-release assertion failures preserved; no product rerun or weakened original predicate.",
     "hosted": "Latest full hosted main5a9/run41546602945 does not cover later M2; work-branch publication is not a hosted execution."
+  },
+  "control_selection_followthrough_20261103": {
+    "status": "LOCALLY_QUALIFIED_POLICY_SOURCE_AWAITING_NEW_MAIN_HOSTED",
+    "source": "306c7419a2fbd52ffddbf54d4c806c25e91d1c9f",
+    "integrated": "ffb6c84bde5a9449af499a5fa4018fefcf3cfbcf",
+    "owner": "P01-T08; future compilation reuse P08-T11 Step2",
+    "change": "Four exact maintained handoff helper/doc inputs enter portable controls allowlist; unknown and selector/build/workflow/runtime edits retain full foundation. Policy edit itself selects foundation.",
+    "verification": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-handoff-ci-scope-20261103/.research/ci-scope-qualification/qualification.json",
+      "sha256": "25e154a653d6f23e5882beb7addc236a1822552e157a37b3b32cbd6b381b9b97",
+      "controls": "21/21 host PASS; actual13path handoff selects controls, ten protected and mixed inputs retain foundation; Root ordinary and Astra critical source review no blocker"
+    },
+    "timing": "Already required04e full foundation74m04/61m30/56m30; prior actual controls65/72/86s on different revision. No causal speedup/compiled-cache claim. Next policy-containing main push still requires actual full foundation.",
+    "publication_scope": "Coherent R26 handoff/pressure/product/policy slice will require fullfoundation on next main revision; current04e hosted36PASS remains separate. Current211 affectedharness controls/build8cb/Rust658/observerda2/R26d21 qualified, no CI reduction."
   }
 }
