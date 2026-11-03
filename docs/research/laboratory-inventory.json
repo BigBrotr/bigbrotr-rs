@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "Root5e1a99ee before current checkpoint; canonical main/origin/actual remote5a9b7cc4 clean/pushed",
-      "state": "Bounded Monitor qualified/published. Corrected M2 source5e1a99ee alltarget/strictClippy/strictRustdocPASS, fresh maintained worker/parent release build ACTIVE; Rusttests/observer/installedM2NOT_RUN.",
+      "observed_source": "Root302312fc before checkpoint; canonicalmain/origin/remote5a9b7cc4, no newpush",
+      "state": "Product5e strict/release/fouraffectedRust/observerPASS. InstalledR1FAIL fixtureproxydefaultcap; allresourcesclosed, sourcecorrection700 integrated302, rerunpending criticalprovenance review.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79077,11 +79077,11 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root sole integrator/launcher. No source agent writes active; source-only preparers complete, reusable parent/affected recipes retained.",
-        "local": "Root57670/launcher2155776 ticks39157296/containerb10368be active releasebuild; shared115cache held exclusively. Four-target Rust/probe capsules5e source-prepared only, actual-parent UNBOUND/NOT_RUN.",
-        "hosted": "Root56226 singleobserver for5a9 run41546602945 remains active. Prior551 terminalfailure sealed."
+        "integrator": "Root soleintegrator/launcher; no localengine/compiler/cacheholder active afterR1.",
+        "source": "Solprofilefix700 committed/clean integrated302; Astra profile/cause reviewcomplete, bounded reused-product/acceptance identitywrapper review active. No implementationwriters.",
+        "hosted": "Root56226 singleobserver5a9run41546602945 remains active; no duplicate/supersedingpush."
       },
-      "resources": "Current5e builderb10368be ACTIVE under Root57670; original4ELF/fullstat/O_NOATIME/cache isolation guards freshly passed before launch, postguard waits actualterminal. Source7c/81/6354/2a failedattempts allreaped1/stopped/PID0/noOOM/cache released withguardreceipts preserved in P03. No installedM2engine or cleanup active. Borrowedbridge1699209a and originaldata/failures/worktrees preserved.",
+      "resources": "Current5e build57670/Rust75466/observer66112 allreaped0/stopped/PID0/noOOM/cachereleased, original4ELFguards completed. InstalledR1Root71098reaped1/15containersstopped/215recordedPIDsabsent/groupempty/proxyjoinedexit3/bridgepreserved; originalcleanupFAIL retained, independentclosure receipt0b850122. Source/traffic/logs/failuredata retained; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79285,14 +79285,16 @@
         "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-recovery-20261103",
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee",
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee",
-        "state": "Bounded Monitor qualified/published. Corrected M2 source5e1a99ee alltarget/strictClippy/strictRustdocPASS, fresh maintained worker/parent release build ACTIVE; Rusttests/observer/installedM2NOT_RUN.",
-        "root_tool": 57670,
+        "state": "Product5e strict/release/fouraffectedRust/observerPASS. InstalledR1FAIL fixtureproxydefaultcap; allresourcesclosed, sourcecorrection700 integrated302, rerunpending criticalprovenance review.",
+        "root_tool": 71098,
         "launcher_pid": 2155776,
         "launcher_start_ticks": "39157296",
         "container": "b10368be772d56a85295895c1b9fc406fae3ff3a75fedd3f67ce74c0b1804d0b",
-        "cache_lock": "held exclusively",
+        "cache_lock": "RELEASED",
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
-        "retention": "Originalfourfailedcompile/lintattempts and cheapmissingCargoHomeFAIL preserved.7cportable692/13/43PASS and currentboundedtutorial14PASS reused within unchanged scopes. Newinstalledfivequery/custody/SQL65/unknownoutcome/laterzeroqueryNOT_RUN."
+        "retention": "Originalfourfailedcompile/lintattempts and cheapmissingCargoHomeFAIL preserved.7cportable692/13/43PASS and currentboundedtutorial14PASS reused within unchanged scopes. Newinstalledfivequery/custody/SQL65/unknownoutcome/laterzeroqueryNOT_RUN.",
+        "failure_custody": "P03 installed_first_attempt.custody",
+        "next": "Reuse qualified5e parent/worker/observer; samejourney R2 only after boundedprovenance review. No new product build needed."
       }
     }
   }
