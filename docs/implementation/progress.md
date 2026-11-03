@@ -8,92 +8,98 @@ releases nor packages/deployment.
 ## Revision and demonstrated capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **550bca6d** before this checkpoint.
-Canonical main/origin were **5a9b7cc4**, clean/pushed with full hosted PASS.
-The M2 continuation slice remains separate from main pending its negative gates.
-Branch **550bca6d** is pushed, including reviewed SQL fixture **283042de** integrated
-as **4d683eaa** and its actual qualification. Only setup CLI/documentation and this
-checkpoint are being updated; no product code changed.
+`work/m2-finite-history-20261101`, observed HEAD **8dc11504** before this checkpoint.
+Canonical main/origin were **5a9b7cc4**, clean/pushed with full hosted PASS; last
+pushed work-branch revision is **550bca6d**. Later source/qualification commits are
+local pending this coherent checkpoint/publication. M2 remains separate from main
+until its current critical gates qualify.
 
-The frozen clean product/acceptance **a464cc63**, tree **390e0432**, includes the
-independently reviewed planner STOP correction. Strict all-target, Clippy,
-explicit-Dwarnings Rustdoc and fresh worker-bound release PASS; unfiltered
-711/237/40/24 Rust tests PASS, including all 27 retained and 9 new required controls.
-Five declared dedicated library ignores remain NOT_RUN. The exact-parent native
-observer and private installed bundle qualify. Root tools 8816/24096/58693/56709
-reaped with exit 0; receipts b969f355/e1ba6c8a/61c0d2c0/767e9e47 bind the artifacts.
+Unchanged frozen product **a464cc63**, tree **390e0432**, qualifies strict all-target,
+Clippy, explicit-Dwarnings Rustdoc and fresh worker-bound release. Unfiltered
+711/237/40/24 Rust tests PASS, including all 27 retained and 9 new required controls;
+5 declared dedicated library ignores remain NOT_RUN. Current observer qualifies.
+Receipts b969f355/e1ba6c8a/61c0d2c0 bind the actual artifacts; no rebuild for later
+fixture-only changes.
 
-Installed **R9, Root tool 73521, exit 0**, 120.822 s: all 7 maintained stages PASS,
-including
-same-job adoption, five-query traversal and clean successor shutdown. Root custody
-69c7102d verifies 21 stopped containers (PID 0, no OOM), 6 absent processes and
-1656 absent command PIDs, 53 acceptance files and an empty preserved borrowed bridge.
-Independent scientific receipt d2959b82 PASS verifies the same JobId, original
-120 s deadline, H/W/B and query budget 128, 5 EVENTs, bodies 24/23/1, both gaps,
-old rows/xmins/inputs and full native proofs. Actual censuses are 85/86/139;
-activation 91 is independently reconstructed, not a separate observed census.
-Coverage stays pending; negative/repeated gates remain.
-The separate R8 metadata setup failure 8e68af44 occurred before
-the maintained runner/product started; its original log/session remain retained.
+The positive same-job continuation **R9** is qualified: Root73521 exit0, all7
+maintained stages PASS; independent science d2959b82 and custody69c7102d PASS.
+Same JobId/original120s/H/W/B/query budget128, five queries, bodies24/23/1, two gaps,
+old rows/xmins/inputs, full native85/86/139 and clean successor STOP are checked.
+Activation91 is an independently reconstructed base, not a separate census.
+Coverage remains pending; this does not establish full capacity or the whole M2.
+
+Connected SQL UNION64/65 is qualified: Root82232 exit0, receipte64631ee;12 literal
+cases/48 same-backend calls,20 accepts/28 exact23514 refusals. Claims, retained gaps
+and pending/finalized seals deduplicate correctly; adoption retains the old-source
+obligation. Full schema/data are identical after rollback. This is accounting
+proof, not native/authority/uncertain-COMMIT proof.
+
+**R11 pending-plan sealing refusal is qualified:** Root83646 exit0,87.457s,
+all7 stages PASS; independent sciencec8d37343 and custody0e895881 PASS. Actual
+Q2 COMMIT is server-completed/client-undelivered; Q2 persists pending, with only
+one wire query. Recovery naturally returns4/Control(InvalidMetadata), creates no
+seal/adoption/next wire, preserves queued revision2/owner/deadline/xmins/history/
+five original inputs/outcomes/progress, and permits only exact native85→86/source
+closure and fresh Control custody. The592ms command fits the actual5s root
+policy-authorization interval; SQL lease60s is separate. Original job still has
+56.733597s remaining after diagnostics.
 
 [P03](evidence/p03-initial-sync-native-20261002.json),
-`settled_owner_adoption_root_integration_20261103`, owns exact artifacts, source
-identities, original R1–R7 failures, diagnoses and scoped corrections. R5/R6's 20 s
-wait could not cross accepted 30 s recovery stability; the fixture now derives
-30 s + 20 s strictly within the original 120 s deadline. R7 reached five settled queries
-but failed STOP during immutable history validation. The current correction drains
-only that read prefix through authenticated rollback; each real write retains
-original cancellation and unknown-COMMIT handling. No quotas/native formats/SQL
-semantics or accepted policy changed. Original failures remain FAIL.
+`settled_owner_adoption_root_integration_20261103`, owns exact artifacts, critical
+reviews, actual commands, original failures and scoped corrections. R10 remains
+FAIL before recovery: its oracle incorrectly expected a deployment-root setting
+in accepted policy. The correction uses actual file-bound `config show`, separately
+matching nonroot policy identity; no default, limit, expected error or product
+change. R1–R10 original failures and read-only observation errors remain preserved.
 
-## Remaining acceptance and next bounded action
+## Current work and remaining gates
 
-Current P03-T01 Step3/T05 Steps2/4/7 and P02 succession own the remaining actual
-negative authority, unresolved/unknown COMMIT and original-expiry qualification.
-Connected SQL UNION 64/65 is now qualified: Root tool 82232 exited 0, receipt
-e64631ee, 12 literal cases/48 same-backend calls, 20 accepts/28 exact 23514 refusals. Pending
-and finalized seals both count; adoption retains the old-source obligation.
-Full Control schema/data are identical after rollback. This is accounting proof,
-not guarded adoption/native/authority/uncertain-COMMIT proof. Positive native
-85/86/139 science and activation 91 base are authenticated against the actual
-installed captures; this is not physical capacity qualification.
+Existing P03-T01 Step3/T05 Steps2/4/7 and P02 succession own the remaining critical
+negative authority, original-expiry, actual seal/adoption COMMIT ambiguity and
+committed-reservation-without-native-issuance qualification. Later lost-candidate
+and zero-new-query handoffs remain explicit subsequent M2 work. Full500,
+partitions, sparse growth, scheduling/live/NEG/import/fleet and physical capacity
+retain their existing later owners; no entire-P02 barrier is imposed.
 
-The existing SQL fixture/lab action in
-`.research/m2-continuation-union-fixture-20261103`, clean **283042de**, was independently
-reviewed by Astra before that new PG16.15 run. The current qualified a464
-product is reused; no rebuild. Its two owned containers are stopped (PID 0, no OOM);
-new internal no-port network empty/retained. Unique PG/streams/function/dumps are
-in `/home/tux/bigbrotr-implementation-20260917/runs/m2-continuation-union-sql-20261103`.
+Next bounded increment: before-forward/after-complete **seal COMMIT** loss, each
+with the explicit old Q2 plan-before prefix. A separately owned executed-statement
+proxy must prove actual INSERT0 1 then the selected COMMIT; expected seals0 versus
+one unadopted seal, exact Unknown/exit4, unchanged job/history/inputs/native85→86,
+no adoption/retry/new wire. Sol is implementing in
+`.research/m2-seal-commit-faults-20261103`, branch
+`work/m2-seal-commit-faults-20261103`, base **1b70f3da**. It is partial/NOT_RUN.
+Astra reviews final proxy/oracle boundaries before Root launches the pair.
 
-Later lost-candidate/zero-new-query process handoffs remain explicit next M2
-qualification. Full 500, partitions, sparse growth, scheduling/live/NEG/import/fleet
-and physical capacity retain existing later tasks, not prerequisites invented for
-this bounded slice. M1 evidence remains in the phase index; no all-P02 barrier.
+Current-artifact tutorial Nostr exclusion still requires selected-path review and
+qualification under P01-T08/P08-T11-T12/P10-T08-T10. Its production guard correctly
+retains its older reviewed scope. The corrected isolated Git unit supplies no new
+Nostr review; this is not a Capped refusal prerequisite.
 
 ## Resources, evidence and CI
 
-Current engine/compiler/installed tools are reaped; cache 115 is released and
-the four protected ELF fullstat/O_NOATIME postguards completed. SQL writer/reviewer
-work is complete; Astra supplied the next bounded installed negative schedule.
-Sol is implementing the bounded negative case in
-`.research/m2-unsettled-seal-refusal-20261103` on its separate branch, base a464cc63.
-Its edits are partial and NOT_RUN; Astra will review the final oracle before Root
-execution. No agent launches engines or compilers.
-Current capsule `.research/m2-adoption-core-qualification-20261103/a464cc63` and
-runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63`
-retain all private inputs/PG/native/logs. Old labs, cold-copy SQL-only observation,
-failed runs and worktrees stay preserved; [inventory](../research/laboratory-inventory.json)
-owns locations. No new cleanup; October31 recovery already reconciled.
+All engine/compiler/installed tools are reaped; cache115 is released and original
+four protected ELF fullstat/O_NOATIME postguards completed. R11 has19 stopped/PID0/
+noOOM containers,5 absent processes and1081 absent command PIDs,53 authenticated
+source files and an empty preserved borrowed bridge. R10/SQL/offline-config/source
+control containers are also stopped. No old owner/store/candidate is restarted.
+The executed fad2ddf1 and1b70f3da source worktrees are immutable. Active work is
+source-only in the new seal-COMMIT worktree; Root alone launches engines.
 
-Maintained acceptance source controls: 701 PASS/0 SKIP, Root tool 71764, receipt ec12eefc,
-remain valid for unchanged fixture code. Earlier export/proxy evidence is reused.
+Capsule `.research/m2-adoption-core-qualification-20261103/a464cc63` and runtime
+`/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63` retain
+private inputs/PG/native/logs. [Inventory](../research/laboratory-inventory.json)
+owns other locations. Preserve unique data and failures; no new cleanup.
+
+Current source coverage is composite:26 affected Capped controls PASS in the pinned
+image plus681 unchanged passes reused,707 covered; no full707 execution claimed.
+Original7ff full706 run remains705PASS/1ERROR; the isolated tutorial correction's
+14 affected controls PASS. Unchanged export13/proxy43 evidence is reused; the
+forthcoming proxy change invalidates its affected proof and must be tested.
 [5a9 CI41546602945](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945)
-is latest full hosted **PASS 36/36 + scope 20**. [P01](evidence/p01-ci-hosted-foundation-20261026.json)
-owns exact results, declared skips/ignores and public artifact/log inspection.
-This hosted result does not cover later M2; no current remote observer.
+is latest full hosted PASS36/36+scope20; [P01](evidence/p01-ci-hosted-foundation-20261026.json)
+owns exact results. It does not cover later M2. Work-branch push does not trigger
+this workflow; main integration must obtain actual hosted qualification.
 
-**Next:** review and qualify the maintained `settled-owner-adoption / plan-after`
-negative case: actual unknown Q2 COMMIT must prevent sealing/adoption or a second
-wire query; allowed source closure still has exact Native85→86 proof. Reuse current
-a464 artifacts; no build. Authority, original expiry, seal/adoption COMMIT ambiguity
-and later handoffs remain open in their existing tasks. No goal completion claimed.
+**Next:** finish/review the explicit seal-COMMIT pair and run only its necessary
+checks, reusing a464 artifacts and unchanged proofs. Other selected gates remain
+in their existing tasks. The complete goal remains ACTIVE and incomplete.

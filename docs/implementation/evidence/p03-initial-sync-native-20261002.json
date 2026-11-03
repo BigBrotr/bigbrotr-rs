@@ -2587,10 +2587,61 @@
       "source_worktree": "/home/tux/bigbrotr-rs/.research/m2-unsettled-seal-refusal-20261103",
       "branch": "work/m2-unsettled-seal-refusal-20261103",
       "base": "a464cc6346f5f09ce122644966c359fa96651aec",
-      "state": "Solsourceimplementationpartial_NOT_RUN",
+      "state": "BOUNDED_SCOPE_QUALIFIED_R11_ROOT83646_SOURCE8dc11504",
       "contract": "Existingplan-afterordinal2/retainedcatchup proxy:Q1settled,Q2COMMITservercomplete/clientundelivered,naturalServeexit4QuantumCommitUnknown,onlyoneREQ. Afterpositiveexclusion/leaseexpiryandstillunexpiredjob,actualrecover--seal-acquisition mustrefuseControlInvalidMetadata,zeroseals/adoptions,unchangedjob/history/progress/inputs;permittedNative85\u219286sourceclosuremustmatchexactoracle. Noactivation/retirement/retry.",
       "critical_prerequisites": "Astra boundedsource/callersreviewbeforeimplementation identifiedfailedCLIcanclose/sourcewithoutsuccessrelease;donotexpectglobalnochange orimmediateretry. Negativeclientneedsboundednosuccessorcompletion;positiveexit0/historyexpectationsremainstrict. Finalneworacle/sourcewillbecriticallyreviewedbeforeengine.",
-      "remaining": "Authoritywithdrawal/originalexpiry/actualseal-adoptionCOMMITambiguity/committedreservationwithoutnativeissuance remaincurrentowners; laterlostcandidate/zero-new-queryretained."
+      "remaining": "Authoritywithdrawal/originalexpiry/actualseal-adoptionCOMMITambiguity/committedreservationwithoutnativeissuance remaincurrentowners; laterlostcandidate/zero-new-queryretained.",
+      "original_commits": [
+        "9b968abc5962fb051ecbb4f78db0ecac837cf28d",
+        "7ffb0dab5faa8afe935aba83fd35a45de9834c76",
+        "fad2ddf1969314e5f2ce91b485e1ce73288bd9f9"
+      ],
+      "integrated_commits": [
+        "bad1f125",
+        "dea997d1",
+        "2a012f1e"
+      ]
+    },
+    "unsettled_seal_refusal_r10": {
+      "failure_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/unsettled-seal-fad2ddf1/installed-r10-failure-receipt.json",
+        "sha256": "1acce0d71758185350ab671433e033d12e058d9285bf3a57e0d786d51c155564"
+      },
+      "source_controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/unsettled-seal-fad2ddf1/source-controls-composite-receipt.json",
+        "sha256": "e536f832fd60c2fc4e18b71bb8d3c409652512db97b5ebf80b55cf0c36a65f19"
+      },
+      "critical_source_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/unsettled-seal-fad2ddf1/critical-review.json",
+        "sha256": "54138c0ea8eb5089e8be922872c041774d8390535c8e34daabc93f0128f5201e"
+      },
+      "result": "FAIL5PASS/1FAIL/1NOT_RUN,cleanupPASS,Root92205reaped1. Native85/pendingQ2prefixindependentlyverified; recovery/authinterval/native86NOT_RUN.",
+      "source_control_scope": "Actual7fffull706run705PASS/1ERROR(testassumedcurrentHEADdoconlyreviewed). OriginalFAIL44d7c484kept; fadonlyisolatedthatunitwithtrueGithistory,14affectedpinned-imagePASS0.224splus692unchangedPASSreused. No currentfull706rerunorNostrabsenceclaim.",
+      "current_nostr_gate": "ActualTutorialNostrguardstillpins4bb; apps treea464changedandlegitimatelyrefuses. ExistingP01-T08/P08-T11-T12/P10-T08-T10 mustownfreshselected-pathreview/currentartifacttutorialqualificationbeforeclaimingcurrentabsence. NotCappednegativeprerequisite; guardunchanged, no silentpinrefresh.",
+      "followup_worktree": "/home/tux/bigbrotr-rs/.research/m2-unsettled-root-config-20261103",
+      "followup_scope": "PartialSolfixture-onlyconfigshowrootbinding, actualofflinepreflightdd8c623f. Acceptednonrootdocumenthashesmatchshowinitial_policy; rootauthstring5000000/schema-default/locked/reloadlive-revocation-barrier; SQLlease60000000separate. RawTOMLomitsTTL. No product/defaultchange. Rootbyte/hashreplaybeforeanyR11."
+    },
+    "unsettled_seal_refusal_r11": {
+      "qualification": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/unsettled-root-1b70f3da/installed-r11-receipt.json",
+        "sha256": "d91c02b53384f7ead9bc46fdeb55b71a5a575214bbd310f853c4cc64f1e3a7bf"
+      },
+      "source": "1b70f3da5c1a37bc5f7361ea00cf92bdf1f30c1e",
+      "integrated": "8dc11504",
+      "root_tool": 83646,
+      "result": "PASS7/7,0SKIP/NOT_RUN;87.457s;independentSCIandcustodyPASS. TrueunknownQ2COMMITnowcannotseal/adopt/reissue. Actualconfigurationrootbinding/592ms<5s,source/native85\u219286 andallretaineddataqualified.",
+      "source_controls": "26currentaffectedCappedmodulePASS1.423s +681validunchangedcontrolsreused=707currentcoverage. No full707executionclaimed; original7ff706/error1FAILpreserved.",
+      "remaining": "ExistingP03/P02: realseal/adoptionCOMMITbefore/after,authoritywithdrawal,originalexpiry,committedreservationwithoutnativeissue;laterlostcandidate/zero-new-queryhandoffs. CurrentTutorialNostrreviewownsP01/P08/P10unchanged."
+    },
+    "next_seal_commit_faults": {
+      "owner": "ExistingP03-T01Step3/T05Steps2/4/7andP02succession",
+      "worktree": "/home/tux/bigbrotr-rs/.research/m2-seal-commit-faults-20261103",
+      "branch": "work/m2-seal-commit-faults-20261103",
+      "base": "1b70f3da5c1a37bc5f7361ea00cf92bdf1f30c1e",
+      "state": "Solpartialsource_NOT_RUN",
+      "bounded_outcome": "Twofreshcases,explicitoldQ2plan-beforeprefixthennewlinear-quantum-seal-faultbefore-forward/after-complete viaexecutedINSERT/COMMITobserver. SealCLIonceUnknown4/nostdout/newControlactive,0vs1unadoptedseal,noadoption/retry/nextwire;exactqueuedrev2/history/inputs/native85\u219286conservation.",
+      "preconditions": "Separateownedseal_proxy/preservedoldproxy;realoriginalleaseexpiry;endpointrewritebeforefile-boundconfigshow;exactexecutedINSERT0 1(notParsefallback),selectedserver0vs1/client0/fault1. Criticalsource+PASSoracle/proxycontrolsreviewbeforeengines.",
+      "not_in_scope": "Noadoption/candidateloss/retry/fleet/generalrewrite. Otherselectedgatesremainexplicit."
     }
   }
 }

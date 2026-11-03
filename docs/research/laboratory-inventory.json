@@ -79299,7 +79299,7 @@
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "Preserve originalR1\u2013R7FAIL/PG/native/logs, R8prelaunchsetupFAIL, currentqualifiedsource/artifacts andactualR9unique data. Priorresourcesareowned/stopped/retained in P03. No cleanup.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "Finish/reviewdeclaredplan-afterunsettledQ2sealingrefusal,thenRootactualsamequalifiedproductjourney. AllothercriticalnegativeandlatergatesremainexistingP03/P02owners.",
+        "next": "ReviewnewexecutedsealCOMMITfaultscopeandnecessarysource/proxycontrols, thenRootbefore/afterfreshinstalledpair. Reuseunchangeda464artifactsandvalidproofs;noearlyadoption/retryoroldlabrestart.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79405,8 +79405,50 @@
           "branch": "work/m2-unsettled-seal-refusal-20261103",
           "base": "a464cc6346f5f09ce122644966c359fa96651aec",
           "owner": "Solimplementation,Rootsoleintegrator/launcher,Astracriticalreviewbeforerun",
-          "state": "SOURCE_PARTIAL_NO_ENGINE_OR_COMPILER",
-          "preservation": "Currenta464productandoldSQL283frozenworktreesremainunchanged;onlynewmaintainedacceptancefilesareeditablehere."
+          "state": "FROZEN_FAD_EXECUTED_R10_FAIL_ALL_RESOURCES_STOPPED",
+          "preservation": "Currenta464productandoldSQL283frozenworktreesremainunchanged;onlynewmaintainedacceptancefilesareeditablehere.",
+          "head": "fad2ddf1969314e5f2ce91b485e1ce73288bd9f9",
+          "root_tool": 92205,
+          "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-unsettled-seal-r10",
+          "custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-unsettled-seal-r10/root-terminal.json",
+            "sha256": "31184fac56e7a2e3b215378168961a171561a043f2ba534b3cf928e91eb29023"
+          },
+          "failure_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/unsettled-seal-fad2ddf1/installed-r10-failure-receipt.json",
+            "sha256": "1acce0d71758185350ab671433e033d12e058d9285bf3a57e0d786d51c155564"
+          }
+        },
+        "unsettled_root_config_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-unsettled-root-config-20261103",
+          "branch": "work/m2-unsettled-root-config-20261103",
+          "base": "fad2ddf1969314e5f2ce91b485e1ce73288bd9f9",
+          "state": "FROZEN_1b_EXECUTED_R11_PASS_ALL_RESOURCES_STOPPED",
+          "owner": "Solsource,Astraboundedcriticalreview,Rootsoleintegrator/launcher",
+          "offline_config_preflight": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/root-configuration-preflight/result.json",
+            "sha256": "dd8c623f117cc12d62f9ce07aa9429b30b080ce954dc56b7f56c27bf1da3e844"
+          },
+          "preflight_resources": "c8a348e09efc4fb7acf32cca60bd65bf57200f19067c6f011d5f8fdb6dbcf2fa stopped/PID0/noOOM,networknone,copyTOMLonly; no originaldata/secretcontent/cachemounts.",
+          "head": "1b70f3da5c1a37bc5f7361ea00cf92bdf1f30c1e",
+          "root_tool": 83646,
+          "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-unsettled-seal-r11",
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/unsettled-root-1b70f3da/installed-r11-receipt.json",
+            "sha256": "d91c02b53384f7ead9bc46fdeb55b71a5a575214bbd310f853c4cc64f1e3a7bf"
+          },
+          "custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-unsettled-seal-r11/root-terminal.json",
+            "sha256": "0e89588149f514d2f6fab5fd379f90f41cbf98170b98f7a1e327dc5b2fce65ef"
+          }
+        },
+        "seal_commit_fault_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-seal-commit-faults-20261103",
+          "branch": "work/m2-seal-commit-faults-20261103",
+          "base": "1b70f3da5c1a37bc5f7361ea00cf92bdf1f30c1e",
+          "state": "PARTIAL_SOURCE_NO_ENGINE",
+          "owner": "Solimplementation/Astracriticalreviewbeforecampaigns/Rootsoleintegratorlauncher",
+          "preservation": "AllusedR10fad/R11onebsourceanduniquedatafrozen;no reusingoldowner/lostcandidate."
         }
       }
     }
