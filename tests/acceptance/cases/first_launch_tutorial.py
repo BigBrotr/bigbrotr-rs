@@ -20,7 +20,7 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = '540452150802e32a85001f6fa582535bfb0c5f92'
+REVIEWED_PRODUCT = '121aaf00389e549274e9d3f0af295fae953fb192'
 # Git objects bind product code/dependencies/configuration while permitting
 # documentation/acceptance-only changes. Independent review covered the changed
 # dispatch, Sync ownership, shared session/transport and relevant caller paths.
@@ -45,9 +45,11 @@ REVIEWED_PRODUCT = '540452150802e32a85001f6fa582535bfb0c5f92'
 # fresh initial tutorial Sync selects no sealed predecessor or successor writer.
 # Guarded session/transport, event handling, signer exclusion and dependencies
 # remain unchanged. This bounded source review does not qualify successor egress.
+# The compile correction changes only catalog slice representation and internal
+# PG proof-accessor visibility; all nine selected Nostr leaves are byte-identical.
 # This exclusion does not qualify general egress, Monitor internals or runtime.
 REVIEWED_CODE = {
-    'apps': '23cef8b7343c6972b4d64c220773f4d772dfb634',
+    'apps': 'b71c751c72f966f4d0bbe2d4f9879e4275b8ce18',
     'crates': '410f3dfbbd137be2f2809949520db0de0345a3ed',
     'Cargo.toml': '56ae310a952923810287d83b2c88349e3485f33b',
     'Cargo.lock': '133ff51c1c8bf71000fe7e99066bb08d4a48f31c',
@@ -68,7 +70,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed product54045215; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product121aaf00; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Ordinary Monitor startup without explicit initial --monitor-once and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]

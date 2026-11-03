@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-2026-11-03, Tux (2026-11-02 23:55 UTC checkpoint). **Goal ACTIVE:** complete selected
+2026-11-03, Tux (2026-11-03 00:07 UTC checkpoint). **Goal ACTIVE:** complete selected
 P00–P10/M1–M5. Q37/Q38/Q40/Q41/Q42 apply; Root is sole integrator.
 Sol/xhigh operates by default; bounded critical reviews use Astra/xhigh.
 Public development does not authorize official releases, packages or deployment.
@@ -8,7 +8,7 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and qualified recovery capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed clean HEAD **7c89f554** before this
+`work/m2-finite-history-20261101`, observed HEAD **121aaf00** before this
 checkpoint. Canonical main/origin/actual remote are **5a9b7cc4**, clean and pushed:
 qualified bounded Monitor recovery, connected fixtures and Mac path correction.
 The reviewed M2 production/oracle sources are integrated locally, not on main;
@@ -91,22 +91,31 @@ Migration45 requires61 ledger entries/86 tables. Exact7c89 portable suites PASS:
 692 acceptance/13 export/43 proxy, zero SKIP, including declared native-toolchain
 setup. Receipt3a2cd53e and original host fixture/environment failure are in P03.
 Documentation3/3 PASS at85b0fa3c remains valid for unchanged document inputs.
-Product compilation and installed acceptance remain **NOT_RUN**. Zero-query/
-custody, SQL65 and absent/uncertain adoption remain explicit qualification gates.
+First exact7c89 all-target compilation **FAIL** after11.535s: two internal proof
+accessors were private to the wrong ancestor and the catalog declared60/actual61.
+Correction121aaf00 scopes those accessors to postgres and uses a static slice,
+retaining the same61 records/checksums and authority. Compilation remains to
+verify. Original cheap preflight missing-CargoHome FAIL and corrected temporary-
+home two-check PASS are preserved separately. Receipt4a697ef8 binds raw failures,
+stopped builder877dff45, absent launcher, cache release/reacquisition and unchanged
+original4ELF fullstat/bytes. Release/Clippy/Rustdoc/tests/installed **NOT_RUN**.
+Nine selected tutorial Nostr leaves, other six code objects and vendor unchanged;
+bounded fence repinned to121aaf00, owning14 controls PASS. Zero-query/custody,
+SQL65 and absent/uncertain adoption remain explicit qualification gates.
 
 [Inventory](../research/laboratory-inventory.json) owns resources. All Root
 compiler/test/installed tools are terminal; no local engine/compiler/cache holder
-is active. Sol prepares the fresh exact7c89 production build capsule only; Root
+is active. Sol prepares the corrected exact-source production capsule only; Root
 is sole launcher/integrator. The hosted56226 observer remains active. Compiler11316 is reaped0,
 cache115 released/reacquired and original four protected ELF bytes/fullstat
 independently unchanged. Preserve datasets, failures, .research/worktrees and the
 borrowed bridge. October31 space recovery is reconciled; no cleanup was started.
 
-**Next Root action:** review the parameterized7c89 build capsule, execute actual
+**Next Root action:** freeze the mechanically corrected source, retarget the
+unchanged guarded build recipe, execute actual
 format/planning preflight, then fresh worker-bound product/observer qualification
-and the independent five-query same-job installed proof. Frozen clean source is
-`.research/m2-adoption-core-product-7c89f554`; outputs will use
-`/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-7c89f554`.
+and the independent five-query same-job installed proof. Failed frozen7c89 source/output remain preserved; the new exact-source capsule
+will retain explicit strict Rustdoc flags and temporary Cargo home setup.
 Keep strict Rustdoc flags explicit in the new wrapper; do not retroactively
 expand earlier local doc scope. Monitor full hosted acceptance proceeds in
 parallel. Preserve selected later tasks, performance/ClickHouse/coordinator
