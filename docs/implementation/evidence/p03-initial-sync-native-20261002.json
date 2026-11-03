@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "CORRECTED_RECORD_TYPES_REAL_PG_REGRESSION_STRICT_BUILD_RUST_OBSERVER_PASS_INSTALLED_R5_ACTIVE",
+    "status": "REAL_SAME_JOB_ADOPTION_CONFIRMED_POST_ADOPTION_DISPATCH_UNKNOWN_R5_FAIL",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "ObserveRoot12123 actualsamefivequeryjourney; preserveverdict andclosecustody. Classify anynewfailurebeforecorrection; maintain alllaterauthority/unknowncommit/expiry/lostcandidate/zeroquery gates.",
+    "next": "Unchangedproduct, bounded opt-in successor-role SQL statement observation with bothbindparameterlimits0 and targeted failurestatecapture, maintaining20s FAIL/oracle andalljoblimits. Reviewharness before nextinstalledrun.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2300,8 +2300,8 @@
     },
     "current_qualification": {
       "source": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
-      "state": "PASS_STRICT_FRESH_WORKER_BUILD_FOUR_RUST_TARGETS_OBSERVER_INSTALLED_R5_ACTIVE",
-      "next": "ObserveRoot12123 actualsamefivequeryjourney; preserveverdict andclosecustody. Classify anynewfailurebeforecorrection; maintain alllaterauthority/unknowncommit/expiry/lostcandidate/zeroquery gates.",
+      "state": "PASS_STRICT_BUILD_RUST_OBSERVER_INSTALLED_R5_FAIL_POST_ADOPTION_DISPATCH_UNKNOWN",
+      "next": "Unchangedproduct, bounded opt-in successor-role SQL statement observation with bothbindparameterlimits0 and targeted failurestatecapture, maintaining20s FAIL/oracle andalljoblimits. Reviewharness before nextinstalledrun.",
       "tree": "ab9897730d6f72525e007a5b643b755a44c6965d",
       "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
       "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc",
@@ -2331,9 +2331,36 @@
         "affected_rust": 81227,
         "observer": 9430,
         "assembly": 3193,
-        "installed_active": 12123
+        "installed_terminal": 12123
       },
-      "results": "Strict alltarget8.431/Clippy9.684/explicit-DwarningsRustdoc4.373PASS; fresh workerbeforeparent release170.396sPASS. Unfiltered705/234/40/24PASS,27sourceboundrequiredcontrolsPASS,5librarydedicatedignoresNOT_RUN. Exactparentobserver85.538sPASS. Compilercontainersstopped/PID0/noOOM/cache released/original4ELFpostguardscomplete. Private bundle assembled, installedR5 genuinelyrunning; no installedPASS yet."
+      "results": "Strict alltarget8.431/Clippy9.684/explicit-DwarningsRustdoc4.373PASS; fresh workerbeforeparent release170.396sPASS. Unfiltered705/234/40/24PASS,27sourceboundrequiredcontrolsPASS,5librarydedicatedignoresNOT_RUN. Exactparentobserver85.538sPASS. Compilercontainersstopped/PID0/noOOM/cache released/original4ELFpostguardscomplete. Private bundle assembled, installedR5 reaped1/5PASS1FAIL1NOT_RUN cleanupPASS; postadoption20swaitFAIL remains."
+    },
+    "installed_fifth_attempt": {
+      "failure_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/installed-r5-failure-receipt.json",
+        "sha256": "84ecfc5a1b44d228d5335299d57b9b9586736a367cebf8dc07862b900c7c3066"
+      },
+      "product": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
+      "root_tool": 12123,
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r5/root-terminal.json",
+        "sha256": "e644374b88cc924980f0a1137004a7ba77c8fb89d8a80e510c10dcb41e0ab940"
+      },
+      "result": "5PASS/1FAIL/1NOT_RUN,cleanupPASS;107.463s,reaped1. Same20s five-settled-query wait expired; successor activated/joined0, empty stderr, no new wire beyondQ1.",
+      "classification": "Unresolved. Coldcopy proves samejobqueuedrev3+atomicadoptiontarget2/currentControl5 andexactnominationeligibilitytrue; noepoch2quanta. Originaldeadline~56sremaining atactivation. No sourcefix, timeout/limit/expectedvalue tuning justified.",
+      "limits": "Atomicjobadoption isobserved, not acompletefivequery/nativefinal/continuedtraversalPASS. AllR1-R5originalFAIL retained. No originalR5restart."
+    },
+    "post_adoption_cold_observation": {
+      "root": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103",
+      "root_tool": 38005,
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103/result.json",
+        "sha256": "644a5b28601e07b14a6debe6ad911c5ce793161755b59b15b35a2f49d9ec1e85"
+      },
+      "scope": "Diagnosticreadonlycoldphysicalcopy only; noauthority/claim/native/prodPASS. PG16.15networknone/noports, actualownedsourcePGstopped, copied2134files/81849246bytes; originalfullfilehashesunchangedbefore/after. Threeownedcopy/PG/verifycontainersstopped/PID0/noOOM.",
+      "observed": "SameJobIdqueuedrevision3/Control5; finalizedsealprevious2\u2192adopted3/targetepoch2, acquisition_adopted_claimtrue, exactmaintainedSCAN_ADMISSIONS withrecordedadoptingtuple returnsadmission1eligibletrue. OnlyoldQ1; noepoch2plan/originalfiles. No time-sensitiveauthorityfunction replay afterdeadline.",
+      "independent_diagnosis": "Astra rulesoutrev2-onlynomination/queue/execution guardsandnewallocationdomainvisibilityrequirement. Sourcebudgets5base+33session+19Sync=57showsnoconcreteleak, notmeasuredusage. Quiet source/visibility/observation/plan-none orsilentscangrant remainpossible. Extra15s tailalonecannotdistinguishsilentscan; keep20s unchanged.",
+      "next": "ExistingP03-T01/T05 owner: Sol boundedmaintained opt-in SQLtrace andtargetedfailurecapture; Astrawillreviewactualdelta/sourcewrappers beforeR6. Productefd/artifactswillbereused, no speculativeproductfix orfreshbuild."
     }
   }
 }

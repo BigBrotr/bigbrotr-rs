@@ -79290,7 +79290,7 @@
         "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-record-types-20261103",
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc",
-        "state": "CURRENT_PRODUCT_AND_AFFECTED_RUST_OBSERVER_QUALIFIED_INSTALLED_R5_ACTIVE",
+        "state": "ALL_CURRENT_TOOLS_REAPED_PRODUCT_QUALIFIED_INSTALLED_R5_FAIL_UNKNOWN_DISPATCH",
         "root_tool": 12123,
         "launcher_pid": 2349007,
         "launcher_start_ticks": 42187398,
@@ -79299,7 +79299,7 @@
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "PreserveR1/R2/R3/R4originalFAIL/PG/native/logs, currentproduct/source/receipts andactiveR5unique data. No cleanup. Earlier compilerfailures andSQLsetupfailures unchanged; fullfutureacceptance gates remainopen.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "ObserveRoot12123 actualsamefivequeryjourney; preserveverdict andclosecustody. Classify anynewfailurebeforecorrection; maintain alllaterauthority/unknowncommit/expiry/lostcandidate/zeroquery gates.",
+        "next": "Unchangedproduct, bounded opt-in successor-role SQL statement observation with bothbindparameterlimits0 and targeted failurestatecapture, maintaining20s FAIL/oracle andalljoblimits. Reviewharness before nextinstalledrun.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79339,6 +79339,21 @@
         "installed_launch": {
           "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/root-installed-r5-launch.json",
           "sha256": "d8fd14c3c741fffff977748937c76113f7e7f4db004cbcf059d2849a7204c6a7"
+        },
+        "installed_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r5/root-terminal.json",
+          "sha256": "e644374b88cc924980f0a1137004a7ba77c8fb89d8a80e510c10dcb41e0ab940"
+        },
+        "post_adoption_cold_diagnostic": {
+          "root": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103",
+          "root_tool": 38005,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103/result.json",
+            "sha256": "644a5b28601e07b14a6debe6ad911c5ce793161755b59b15b35a2f49d9ec1e85"
+          },
+          "state": "THREE_CONTAINERS_STOPPED_RETAINED_NETWORK_NONE_NO_PORTS",
+          "source_preservation": "OriginalPGneverrestarted; all2134originalfileSHAunchanged. UniquePG/native/activation/inputdata andallFAIL preserved. CopyPGcontainsprivateDBdata, no publicupload.",
+          "resources": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103/resources.json"
         }
       }
     }
