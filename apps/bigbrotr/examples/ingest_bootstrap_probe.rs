@@ -1065,9 +1065,7 @@ fn main() {
         );
     assert_eq!(
         args.len(),
-        if physical_fixture.is_some() {
-            9
-        } else if args[1] == "successor-lineage-compacted-fault" {
+        if physical_fixture.is_some() || args[1] == "successor-lineage-compacted-fault" {
             9
         } else if args[1] == "successor-archive-attempt-holder" {
             7
