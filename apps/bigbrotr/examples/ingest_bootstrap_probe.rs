@@ -279,7 +279,10 @@ async fn run(
         .unwrap();
     let now: i64 = row.get(2);
     if physical {
-        assert_eq!(dataset, bigbrotr_model::DatasetId::from_bytes([1; 16]));
+        assert_eq!(
+            dataset,
+            bigbrotr_model::DatasetId::try_from([1; 16]).unwrap()
+        );
         assert_eq!(*instance.as_bytes(), [2; 16]);
     }
     let arrival_root = (mode.starts_with("source-arrival-") || mode.starts_with("source-job-"))
