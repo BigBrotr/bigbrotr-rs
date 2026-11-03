@@ -52,6 +52,8 @@ mod ingest_observation;
 mod ingest_owner;
 #[path = "support/ingest_pending_quota.rs"]
 mod ingest_pending_quota;
+#[path = "support/ingest_physical_growth.rs"]
+mod ingest_physical_growth;
 #[path = "support/ingest_recovery.rs"]
 mod ingest_recovery;
 #[path = "support/ingest_recovery_process.rs"]
@@ -243,8 +245,14 @@ async fn initialize_fixture(config: Config) {
     driver.await.unwrap().unwrap();
 }
 
-async fn run(mut config: Config, mode: &str, path: &Path) {
+async fn run(
+    mut config: Config,
+    mode: &str,
+    path: &Path,
+    physical_fixture: Option<ingest_physical_growth::Fixture>,
+) {
     // Current fixture bytes and digest are independent of the product codec.
+    let physical = physical_fixture.is_some();
     let source_mode = mode.starts_with("source-");
     let observation_mode = mode.starts_with("source-observation-");
     let socket_mode = mode.starts_with("source-socket-");
@@ -267,6 +275,10 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .try_into()
         .unwrap();
     let now: i64 = row.get(2);
+    if physical {
+        assert_eq!(dataset, bigbrotr_model::DatasetId::from_bytes([1; 16]));
+        assert_eq!(*instance.as_bytes(), [2; 16]);
+    }
     let arrival_root = (mode.starts_with("source-arrival-") || mode.starts_with("source-job-"))
         .then(|| crate::config::fixture_root(dataset, *instance.as_bytes()));
     let validate = |document: &str, digest| match &arrival_root {
@@ -300,7 +312,9 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             incarnation: [if mode == "inspect" { 42 } else { 41 }; 16]
                 .try_into()
                 .unwrap(),
-            lease_ttl: Duration::from_secs(if mode == "lease-control-expired" {
+            lease_ttl: Duration::from_secs(if physical {
+                ingest_physical_growth::LEASE_SECONDS
+            } else if mode == "lease-control-expired" {
                 2
             } else {
                 60
@@ -331,7 +345,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         observer_driver.await.unwrap().unwrap();
         return;
     }
-    let event_mode = mode.starts_with("event-");
+    let event_mode = physical || mode.starts_with("event-");
     let spec = InitialRegistration {
         dataset_id: dataset,
         instance_id: *instance.as_bytes(),
@@ -381,7 +395,9 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )]
         },
         producer_slot_id: [66; 16].try_into().unwrap(),
-        outstanding_request_limit: if dictionary_intern {
+        outstanding_request_limit: if physical {
+            64
+        } else if dictionary_intern {
             5
         } else if dictionary_append {
             4
@@ -394,7 +410,12 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         },
         intake_policy: fixture_intake_policy(),
         created_at_us: now,
-        lease_expires_at_us: now + 60_000_000,
+        lease_expires_at_us: now
+            + if physical {
+                ingest_physical_growth::LEASE_SECONDS as i64 * 1_000_000
+            } else {
+                60_000_000
+            },
     };
     let mut registration = RegistrationAttempt::new(spec.clone()).unwrap();
     assert_eq!(
@@ -449,7 +470,10 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
                     format: DescriptorLabel::new("nostr-jsonl".into()).unwrap(),
                     format_version: 1,
                     source_dataset_id: None,
-                    source_artifact_digest: ingest_event::source_digest(mode),
+                    source_artifact_digest: physical_fixture.as_ref().map_or_else(
+                        || ingest_event::source_digest(mode),
+                        |fixture| Digest256::from_bytes(fixture.identity.sha256),
+                    ),
                 }),
             )
             .unwrap(),
@@ -501,17 +525,22 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         },
     )
     .unwrap();
-    let budget = ResourceBudget::new(
-        ProcessEnvelope::new(
-            241 * MIB,
-            0,
-            // Socket work overlaps retained scope/visibility/observation grants.
-            ResourceLimits::new(96 * MIB, if socket_mode { 16 } else { 8 }, 144 * MIB, MIB),
-            WaiterLimits::new(1, 1),
-        )
-        .unwrap(),
+    let budget = physical_fixture.as_ref().map_or_else(
+        || {
+            ResourceBudget::new(
+                ProcessEnvelope::new(
+                    241 * MIB,
+                    0,
+                    // Socket work overlaps retained scope/visibility/observation grants.
+                    ResourceLimits::new(96 * MIB, if socket_mode { 16 } else { 8 }, 144 * MIB, MIB),
+                    WaiterLimits::new(1, 1),
+                )
+                .unwrap(),
+            )
+        },
+        |fixture| fixture.budget.clone(),
     );
-    let _inputs = grant(&budget, 24 * MIB, 0);
+    let _inputs = (!physical).then(|| grant(&budget, 24 * MIB, 0));
     let mut store = IngestStore::initialize(
         path,
         manifest,
@@ -543,6 +572,16 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     emit(
         serde_json::json!({"event":"initialized","dataset":dataset,"manifest":hex(manifest.encode().as_bytes())}),
     );
+    if let Some(fixture) = physical_fixture {
+        ingest_physical_growth::run(
+            owner, &observer, store, &spec, &intent, path, &budget, scope, fixture,
+        )
+        .await;
+        drop(observer);
+        ingest_closing::join(driver, false).await;
+        ingest_closing::join(observer_driver, false).await;
+        return;
+    }
     if mode.starts_with("event-closing-") || mode.starts_with("event-recovery-") {
         ingest_closing::run(
             config, owner, driver, &observer, store, &spec, &intent, path, &budget, mode, scope,
@@ -943,6 +982,16 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
 }
 fn main() {
     let args: Vec<_> = std::env::args().collect();
+    // This diagnostic has a closed CLI and verifies the whole pinned source
+    // before credentials are read or any PostgreSQL/native owner is opened.
+    let physical_fixture = if args
+        .get(1)
+        .is_some_and(|mode| mode.starts_with("physical-"))
+    {
+        Some(ingest_physical_growth::preflight(&args))
+    } else {
+        None
+    };
     if args.len() == 6 && args[1] == "compacted-history-fixture" {
         ingest_compacted_fixture::mutate_history(
             Path::new(&args[2]),
@@ -1006,7 +1055,9 @@ fn main() {
         );
     assert_eq!(
         args.len(),
-        if args[1] == "successor-lineage-compacted-fault" {
+        if physical_fixture.is_some() {
+            9
+        } else if args[1] == "successor-lineage-compacted-fault" {
             9
         } else if args[1] == "successor-archive-attempt-holder" {
             7
@@ -1273,7 +1324,7 @@ fn main() {
                 )
                 .await;
             } else {
-                run(config, &args[1], Path::new(&args[4])).await;
+                run(config, &args[1], Path::new(&args[4]), physical_fixture).await;
             }
         });
 }
