@@ -1,5 +1,108 @@
 # Current persisted policy and incompatible-format refusals
 
+## Bounded physical-growth diagnostic
+
+The maintained runner also has an opt-in **diagnostic**, requiring a fresh
+current parent/probe build and an unused private IPv4 /28:
+
+```sh
+python3 -m venv /absolute/physical-python
+/absolute/physical-python/bin/pip install secp256k1==0.14.0
+/absolute/physical-python/bin/python -B experiments/policy-versions/run.py \
+  /absolute/fresh-owned-pg-root /absolute/exact-build \
+  --physical-envelope --subnet ROOT_SELECTED_UNUSED_PRIVATE_28
+```
+
+Use the existing exact-revision build procedure; the new compiled probe mode
+requires its own build. The optional Python environment is a reproducible input,
+not a private cache prerequisite. The runner verifies both executable hashes and
+the complete source diff before engine setup. This mode permits only the existing
+noncompiled policy harness paths plus `physical_envelope.py` and its focused
+portable control. Changed compiled code, schema, policy fixture or unknown paths
+still refuse artifact reuse. No source/build receipt is rewritten to fit a run.
+The existing setup owns the two exact image identities, isolated internal bridge,
+no published ports, broad non-owner lab role, complete current migration catalog,
+retained PostgreSQL data and final container stop path.
+
+Two predeclared cases create separate fresh current databases/native roots.
+Case A has compressible `a` content. Case B uses independent deterministic
+SHAKE256 bytes encoded with JSON-safe base64, rather than a repeated random
+block. Each corpus contains **63 distinct valid signed complete events of exactly
+262144 bytes**, each followed by one JSONL newline. The maintained
+`identity-contract/signed_fixture.py` signer uses the public test secret1;
+its separate BIP340 group-equation checker and NIP01 canonical SHA256 verify every
+event. Source digests bind the genuine DatasetLineage descriptor. An independent
+CBOR/native oracle extends the existing signed-import fixture vocabulary to check
+all canonical requests, receipts, fact/batch digests, exact pending P, original
+names/bytes/hashes, complete native row digest and all64 PG reservations/outcomes.
+It separately compares every Control row/xmin and all original/native state across
+ordinary close/reopen. The accepted pending high/max-unit/event/outstanding limits
+and existing32MiB/64-file input guards are checked before load; neither policy
+nor the request65 guard is widened. PG's per-original65536-byte outcome allowance
+is included in the aggregate preflight.
+
+One genuine bootstrap advances ACK1. The63 direct imports commit native science
+and copy PG outcomes while retaining ACK1/outstanding63. They have no
+`acquisition_job_id`; no synthetic SQL job or source authority is inserted.
+**Event ACK64, retirement, receipt/input reclamation and OPEN65 remain NOT_RUN.**
+The fixture's current installed native profile uses32MiB cache,16MiB write-buffer
+manager,2MiB per-CF buffers,16MiB soft WAL target,64 open files, two background jobs
+and128MiB native allowance. It uses ordinary synced admission and automatic
+background work. There is no manual flush/compaction or native mutable escape.
+
+The readiness protocol is `physical-ready` → `load`; after31 admissions,
+`physical-checkpoint-ready` → launch real PG `CHECKPOINT` and send
+`checkpoint-started`; after63, `physical-load-complete` → keep the writer live for
+the predeclared30 seconds → freeze its LOG capture → `close`;
+`physical-closed` → `reopen`; `physical-reopened` → `finish`. Actual exit0 and joined
+driver cleanup remain necessary after `physical-complete`. Input validation occurs
+before the probe reads credentials or opens either engine. Gates have45-second
+individual/120-second total deadlines; the runner has25-second readiness,
+30-second load,150-second case and bounded output/sample/file/log caps recorded
+in `physical-plan.json`. Missing work evidence never extends these limits.
+
+The observer runs only inside the exactly owned containers under their configured
+lab UID. Open directory descriptors bind device/inode identity and `fstatvfs`;
+replacement, symlinks and cross-device traversal refuse. Regular-file allocation
+uses `st_blocks*512`, deduplicates device/inode, and separates native WAL, SST,
+MANIFEST, LOG, retained inputs, fixed source/preflight snapshot and PG
+data/WAL/temp/other classes. Native/input and
+PG directories are sampled every100ms, PG open-unlinked descriptors every500ms.
+Container-scoped descriptor censuses record positive deleted-but-open regular
+files and deduplicate their allocation. Permission failures and disappearance
+races are explicit partial/unknown coverage, never an assumed zero. Full final
+file identities accompany phase counts and non-atomic sampled peaks. Directory
+metadata and unrelated filesystem users remain outside the file totals;
+descriptor `f_bavail` captures their shared filesystem consequence without
+inventing a reservation for them.
+
+The real CHECKPOINT must advance PG requested-checkpoint statistics and actual
+checkpoint/WAL LSNs. Engine checkpoint start/completion logs and per-admission API
+wallclock intervals independently determine overlap; a readiness message or
+Docker launch time does not prove it. Missing overlap is `NOT_WITNESSED`.
+Incremental inode-bound LOG capture is frozen before close, excluding later
+diagnostic read-only opens and ordinary reopen. Positive automatic flush requires
+the pinned Rocks11.8.1 file-creation and post-MANIFEST commit evidence. Nontrivial
+automatic compaction requires newly built positive output tables, multiple input
+files and the complete same-thread install-OK summary. JSON start/finish alone
+cannot establish successful installation. The conservative parser requires one
+fresh-open retained LOG generation/session; rotations, missing/truncated records,
+manual/shutdown work and unmatched jobs cannot manufacture a positive witness.
+
+Results are `CAPTURED_PHYSICAL_DIAGNOSTIC` or explicitly `...WITH_GAPS`, with
+per-case failed/unknown captures retained. These source samples provide diagnostic
+peaks and positive work evidence. They supply **no numeric foreground d or
+completion R bound, runtime filesystem funding, capacity or OPEN65 guarantee**.
+Actual engine runs, physical failures, source-bound ACK/reclamation, concurrent
+writers and the remaining reserve domains retain their existing gates.
+
+Portable controls (no engines) are:
+
+```sh
+/absolute/physical-python/bin/python -B -m unittest discover \
+  -s tests/acceptance -p test_physical_envelope.py -v
+```
+
 The bounded connected quota wave reuses this runner and its actual non-owner
 lab-role verification:
 

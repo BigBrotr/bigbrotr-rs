@@ -28,6 +28,8 @@ selection.add_argument('--historical-integrity', action='store_true',
                     help='run the current original-policy/private-recovery batch instead of policy codec cases')
 selection.add_argument('--connected-quota', action='store_true',
                        help='run same-Control OPEN reconciliation, PG refusals and pre-effect pressure')
+selection.add_argument('--physical-envelope', action='store_true',
+                       help='run the bounded A/B allocated-file growth diagnostic; never enables OPEN65')
 parser.add_argument('--subnet', default='172.16.240.48/28')
 args = parser.parse_args()
 root, build = args.root, args.build
@@ -52,6 +54,9 @@ if receipt['source'] != revision:
     if args.connected_quota:
         permitted |= {'experiments/policy-versions/connected_quota.py',
                       'tests/acceptance/test_connected_quota.py'}
+    if args.physical_envelope:
+        permitted |= {'experiments/policy-versions/physical_envelope.py',
+                      'tests/acceptance/test_physical_envelope.py'}
     assert set(harness_changes) <= permitted, 'built product source changed beyond policy harness'
 
 
@@ -74,6 +79,9 @@ assert sha((build / 'bigbrotr').read_bytes()) == receipt['binary_sha256'], \
 current = json.loads((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_text())
 assert fingerprint(current, 3) == '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b'
 inventory = declared_inventory(SOURCE)
+if args.physical_envelope:
+    from physical_envelope import preflight as physical_preflight
+    physical_preflight(SOURCE)
 report = dict(format='bigbrotr-policy-versions-native/1', source=receipt['source'],
               harness_revision=revision, harness_only_changes=harness_changes,
               build=receipt, schema=inventory, status='RUNNING', cases=[],
@@ -99,7 +107,8 @@ def contents(database):
     branches = [f"SELECT '{name}' AS name, coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text), '[]') AS rows "
                 f"FROM (SELECT *, xmin::text AS lab_xmin FROM control.{name}) t" for name in names]
     return json.loads(lab.sql(state, database,
-        ('SET max_parallel_workers_per_gather=0; ' if args.historical_integrity or args.connected_quota else '')
+        ('SET max_parallel_workers_per_gather=0; '
+         if args.historical_integrity or args.connected_quota or args.physical_envelope else '')
         + 'SELECT jsonb_object_agg(name, rows) FROM (' + ' UNION ALL '.join(branches) + ') all_tables'))
 
 
@@ -139,7 +148,14 @@ try:
     state = lab.load(root)
     report['server'] = state['server']
     save()
-    if args.connected_quota:
+    if args.physical_envelope:
+        from physical_envelope import run as run_physical_envelope
+        result = run_physical_envelope(state, root, contents, record, prepare, call, inventory, SOURCE)
+        report['format'] = 'bigbrotr-physical-envelope-diagnostic/1'
+        report['physical_envelope'] = result
+        report['not_run'] = result['not_run']
+        report['status'] = result['status']
+    elif args.connected_quota:
         from connected_quota import run as run_connected_quota
         result = run_connected_quota(state, root, contents, record, prepare, call, inventory, SOURCE)
         report['format'] = 'bigbrotr-connected-quota-native/1'
