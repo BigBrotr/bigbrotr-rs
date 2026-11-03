@@ -336,13 +336,64 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             """))
         save(output/'wait-failure-snapshot.json',snapshot)
 
+    def successor_observation_timeout(self,output):
+        # Raw reopen restarts the accepted low-water stability interval. Bind
+        # its normalized microseconds to this actual successor and original job.
+        try:
+            state=self.adoption_retired;started=self.adoption_started
+            dataset=source.only(state['datasets']);job=source.only(state['jobs'])
+            detail=source.only(state['acquisition_jobs'])
+            previous=source.only(self.adoption_before['jobs'])
+            source.exact(detail,source.only(self.adoption_before['acquisition_jobs']),'original acquisition timing changed')
+            source.exact({key:job[key] for key in ('job_id','dataset_id','created_at_us','config_revision','policy_revision')},
+                {key:previous[key] for key in ('job_id','dataset_id','created_at_us','config_revision','policy_revision')},
+                'original accepted job changed')
+            assert started['state']=='activated' and started['producer_epoch']=='2'
+            assert detail['job_id']==job['job_id'] and detail['dataset_id']==job['dataset_id']==dataset['dataset_id']=='\\x'+started['dataset_id']
+            rows={kind:source.only(state[kind+'_revisions']) for kind in ('config','policy')}
+            for kind,row in rows.items():
+                assert row['dataset_id']==dataset['dataset_id']
+                source.clock(row['revision'],1,1)
+                source.exact(row['revision'],dataset[kind+'_revision'],'accepted dataset revision differs')
+                source.exact(row['revision'],job[kind+'_revision'],'accepted job revision differs')
+                assert str(row['revision'])==started[kind+'_revision']
+                assert row['document_digest']=='\\x'+started[kind+'_sha256'] and len(source.raw(row['document_digest']))==32
+                assert row['document']['format']=='bigbrotr-product-policy/3'
+            source.exact(rows['policy']['config_revision'],rows['config']['revision'],'accepted policy config differs')
+            stable=rows['config']['document']['settings']['runtime.pressure_stable_duration']
+            source.exact(stable,rows['policy']['document']['settings']['runtime.pressure_stable_duration'],
+                'accepted stability duration differs')
+            source.clock(stable,1,2**64-1)
+            created=source.clock(job['created_at_us'],1,2**63-1)
+            deadline=source.clock(detail['deadline_at_us'],created+1,2**63-1)
+            assert deadline-created==120_000_000
+            activated=source.clock(int(started['activated_at_us']),created,deadline-1)
+        except (AssertionError,KeyError,TypeError,ValueError) as error:
+            raise ValueError('successor observation prerequisite: accepted timing profile differs') from error
+        allowance=20_000_000
+        observation=stable+allowance
+        before=time.monotonic_ns()
+        now=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        elapsed_us=(time.monotonic_ns()-before+999)//1000
+        require(type(now) is int and activated<=now<=2**63-1,'successor observation prerequisite: database clock differs')
+        remaining=deadline-now-elapsed_us
+        save(output/'wait-observation-budget.json',dict(format='bigbrotr-adoption-successor-observation/1',
+            job_id=job['job_id'],config_revision=rows['config']['revision'],policy_revision=rows['policy']['revision'],
+            config_sha256=started['config_sha256'],policy_sha256=started['policy_sha256'],
+            stable_duration_us=stable,settlement_allowance_us=allowance,observation_duration_us=observation,
+            activated_at_us=activated,observed_database_at_us=now,clock_call_elapsed_us=elapsed_us,
+            original_deadline_at_us=deadline,remaining_us=remaining,fits_original_deadline=observation<remaining))
+        require(observation<remaining,'successor observation prerequisite: full stability and settlement window cannot fit original remaining job deadline')
+        return observation/1_000_000
+
     def wait_adoption_successor(self,successor,output):
+        timeout=self.successor_observation_timeout(output)
         def settled():
             require(not (self.home/'relay-error.json').exists(),'adoption relay failed')
             require(not (self.home/'relay-open-006.json').exists(),'adoption opened a sixth socket')
             if not (self.home/'capped-adoption-peer-complete.json').exists():return False
             return self.sql('bigbrotr_control',"SELECT count(*)=5 AND bool_and(disposition IS NOT NULL) FROM control.acquisition_quanta")=='t'
-        try:self.wait(settled,'five globally numbered settled acquisition queries',20,successor,self.client)
+        try:self.wait(settled,'five globally numbered settled acquisition queries',timeout,successor,self.client)
         except BaseException:
             try:self.capture_successor_wait_failure(output)
             except BaseException as error:

@@ -245,7 +245,17 @@ class CappedAdoptionControls(unittest.TestCase):
         runtime.config=root/'instance.toml'
         runtime.config.write_text('[postgres.control]\nuser = '+json.dumps(role)+'\ndatabase = '+json.dumps(database)+'\n')
         runtime.home=root;runtime.client=Mock()
-        runtime.adoption_before=dict(jobs=[dict(job_id='\\x'+'12'*16)])
+        dataset='\\x'+'11'*16;job='\\x'+'12'*16;digest='ab'*32
+        document=dict(format='bigbrotr-product-policy/3',settings={'runtime.pressure_stable_duration':30_000_000})
+        runtime.adoption_before=dict(datasets=[dict(dataset_id=dataset,config_revision=1,policy_revision=1)],
+            jobs=[dict(job_id=job,dataset_id=dataset,created_at_us=1_000_000,config_revision=1,policy_revision=1)],
+            acquisition_jobs=[dict(job_id=job,dataset_id=dataset,deadline_at_us=121_000_000)],
+            config_revisions=[dict(dataset_id=dataset,revision=1,document=copy.deepcopy(document),document_digest='\\x'+digest)],
+            policy_revisions=[dict(dataset_id=dataset,revision=1,config_revision=1,document=copy.deepcopy(document),document_digest='\\x'+digest)])
+        runtime.adoption_retired=copy.deepcopy(runtime.adoption_before)
+        runtime.adoption_started=dict(state='activated',producer_epoch='2',dataset_id=dataset[2:],
+            config_revision='1',policy_revision='1',config_sha256=digest,policy_sha256=digest,activated_at_us='64000000')
+        runtime.sql=Mock(return_value='65000000')
         runtime.launch=Mock(return_value='successor')
         return runtime
 
@@ -310,16 +320,16 @@ class CappedAdoptionControls(unittest.TestCase):
         for trace in (False,True):
             with self.subTest(trace=trace),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);runtime=self.successor_runtime(root,trace=trace)
-                original=ValueError('original twenty-second wait failure');runtime.wait=Mock(side_effect=original)
+                original=ValueError('original settled wait failure');runtime.wait=Mock(side_effect=original)
                 snapshot=dict(format='bigbrotr-adoption-successor-wait-diagnostic/1',jobs=dict(count=1,rows=[]),
                     seals=dict(count=1,rows=[]),quanta=dict(count=1,rows=[]),application_backends=dict(count=1,
                         rows=[dict(pid=123,backend_start='2026-11-03T00:00:00Z',state='idle',wait_event_type='Client',
                             wait_event='ClientRead',query_sha256='ab'*32)]))
-                runtime.sql=Mock(return_value=json.dumps(snapshot))
+                runtime.sql=Mock(side_effect=['65000000',json.dumps(snapshot)])
                 with self.assertRaises(ValueError) as raised:runtime.wait_adoption_successor('successor',root)
                 self.assertIs(raised.exception,original)
-                self.assertEqual(runtime.wait.call_args.args[1:],('five globally numbered settled acquisition queries',20,'successor',runtime.client))
-                self.assertEqual(runtime.wait.call_count,1);runtime.sql.assert_called_once()
+                self.assertEqual(runtime.wait.call_args.args[1:],('five globally numbered settled acquisition queries',50.,'successor',runtime.client))
+                self.assertEqual(runtime.wait.call_count,1);self.assertEqual(runtime.sql.call_count,2)
                 database,statement=runtime.sql.call_args.args;self.assertEqual(database,'actual_database')
                 self.assertIn('BEGIN READ ONLY;',statement);self.assertIn("SET LOCAL statement_timeout='3s';",statement)
                 self.assertIn("encode(sha256(convert_to(a.query,'UTF8')),'hex') AS query_sha256",statement)
@@ -335,16 +345,77 @@ class CappedAdoptionControls(unittest.TestCase):
             with self.subTest(save_error=save_error),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);runtime=self.successor_runtime(root)
                 original=RuntimeError('original wait failure');runtime.wait=Mock(side_effect=original)
-                runtime.sql=Mock(side_effect=OSError('private diagnostic failure detail'))
-                with patch.object(case,'save',side_effect=OSError('private receipt failure')) if save_error else patch.object(case,'save',wraps=case.save):
+                runtime.sql=Mock(side_effect=['65000000',OSError('private diagnostic failure detail')])
+                original_save=case.save
+                def save(path,value):
+                    if save_error and path.name!='wait-observation-budget.json':raise OSError('private receipt failure')
+                    return original_save(path,value)
+                with patch.object(case,'save',side_effect=save):
                     with self.assertRaises(RuntimeError) as raised:runtime.wait_adoption_successor('successor',root)
-                self.assertIs(raised.exception,original);runtime.sql.assert_called_once()
+                self.assertIs(raised.exception,original);self.assertEqual(runtime.sql.call_count,2)
                 if not save_error:
                     self.assertEqual(json.loads((root/'wait-failure-diagnostic-error.json').read_text()),dict(error='OSError'))
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);runtime=self.successor_runtime(root)
             runtime.wait=Mock();runtime.capture_successor_wait_failure=Mock()
             runtime.wait_adoption_successor('successor',root);runtime.capture_successor_wait_failure.assert_not_called()
+
+    def test_successor_observation_uses_exact_accepted_microseconds_and_existing_settlement_allowance(self):
+        for stable,seconds in ((30_000_000,50.),(1,20.000001),(1_234_567,21.234567),(35_000_000,55.)):
+            with self.subTest(stable=stable),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=self.successor_runtime(root)
+                for kind in ('config','policy'):
+                    runtime.adoption_retired[kind+'_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']=stable
+                before=copy.deepcopy((runtime.adoption_before,runtime.adoption_retired,runtime.adoption_started))
+                runtime.wait=Mock()
+                with patch.object(case.time,'monotonic_ns',side_effect=[1_000_000_000,1_001_000_000]):
+                    runtime.wait_adoption_successor('successor',root)
+                self.assertEqual(runtime.wait.call_args.args[1:],('five globally numbered settled acquisition queries',seconds,'successor',runtime.client))
+                runtime.sql.assert_called_once_with('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint')
+                budget=json.loads((root/'wait-observation-budget.json').read_text())
+                self.assertEqual((budget['stable_duration_us'],budget['settlement_allowance_us'],budget['observation_duration_us']),
+                    (stable,20_000_000,int(seconds*1_000_000)))
+                self.assertEqual((budget['observed_database_at_us'],budget['clock_call_elapsed_us'],budget['remaining_us']),
+                    (65_000_000,1000,55_999_000))
+                self.assertTrue(budget['fits_original_deadline']);self.assertEqual(budget['original_deadline_at_us'],121_000_000)
+                self.assertEqual((runtime.adoption_before,runtime.adoption_retired,runtime.adoption_started),before)
+
+    def test_successor_observation_refuses_unaccepted_disagreeing_or_malformed_timing_before_wait(self):
+        for change in ('zero','negative','boolean','float','string','u64-overflow','missing-stable','disagree',
+                'missing-config','duplicate-policy','wrong-format','wrong-dataset','wrong-digest','wrong-revision','new-deadline'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=self.successor_runtime(root);state=runtime.adoption_retired
+                values={'zero':0,'negative':-1,'boolean':True,'float':30_000_000.,'string':'30000000','u64-overflow':2**64}
+                if change in values:
+                    for kind in ('config','policy'):
+                        state[kind+'_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']=values[change]
+                elif change=='missing-stable':del state['policy_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']
+                elif change=='disagree':state['policy_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']=1
+                elif change=='missing-config':state['config_revisions']=[]
+                elif change=='duplicate-policy':state['policy_revisions']*=2
+                elif change=='wrong-format':state['config_revisions'][0]['document']['format']='bigbrotr-product-policy/2'
+                elif change=='wrong-dataset':state['policy_revisions'][0]['dataset_id']='\\x'+'22'*16
+                elif change=='wrong-digest':runtime.adoption_started['config_sha256']='cd'*32
+                elif change=='wrong-revision':state['datasets'][0]['config_revision']=2
+                else:state['acquisition_jobs'][0]['deadline_at_us']+=1
+                runtime.wait=Mock()
+                with self.assertRaisesRegex(ValueError,'successor observation prerequisite: accepted timing profile'):
+                    runtime.wait_adoption_successor('successor',root)
+                runtime.sql.assert_not_called();runtime.wait.assert_not_called()
+
+    def test_successor_observation_must_fit_remaining_original_deadline_including_clock_roundtrip(self):
+        for stable,now in ((36_000_000,65_000_000),(35_999_999,65_000_000),(30_000_000,100_000_000)):
+            with self.subTest(stable=stable,now=now),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=self.successor_runtime(root);runtime.sql.return_value=str(now)
+                for kind in ('config','policy'):
+                    runtime.adoption_retired[kind+'_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']=stable
+                runtime.wait=Mock()
+                with patch.object(case.time,'monotonic_ns',side_effect=[1_000_000_000,1_001_000_000]),\
+                        self.assertRaisesRegex(ValueError,'cannot fit original remaining job deadline'):
+                    runtime.wait_adoption_successor('successor',root)
+                runtime.wait.assert_not_called();self.assertEqual(runtime.sql.call_count,1)
+                budget=json.loads((root/'wait-observation-budget.json').read_text())
+                self.assertFalse(budget['fits_original_deadline']);self.assertEqual(budget['original_deadline_at_us'],121_000_000)
 
     def test_trace_cli_rejects_unrelated_cases_and_accepts_only_declared_adoption(self):
         spec=importlib.util.spec_from_file_location('adoption_trace_runner_control',ROOT/'tests/acceptance/run.py')
