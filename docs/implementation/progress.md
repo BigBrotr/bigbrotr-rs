@@ -9,10 +9,10 @@ instructions. Public development authorizes neither releases nor deployment.
 ## Revision and qualified capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, source HEAD **c17e26d0** integrates authority
-source52a550c7. This checkpoint and its owning evidence/inventory updates are the
-current Root-owned documentation increment. Last observed actual pushed work
-revision **f081bb9b** passed documentation controls and publication inspection.
+`work/m2-finite-history-20261101`, source HEAD **4c8bf234** integrates integrity
+sourcec584a7c2 after authority source52a550c7. This checkpoint and its owning evidence/inventory updates are the
+current Root-owned documentation increment. Last actual pushed work revision
+**107d8a66** passed documentation3/3/publication inspection (receipt58fe98a5).
 Canonical main/origin **5a9b7cc4** remain clean/pushed with full hosted PASS.
 
 Frozen product **a464cc63**, tree **390e0432**, retains strict all-target/Clippy/
@@ -20,7 +20,7 @@ explicit-Dwarnings Rustdoc, fresh worker-bound release and unfiltered
 711/237/40/24 Rust PASS, all27 retained and9 new required controls PASS;5 declared
 library ignores remain NOT_RUN. Observer qualified. Receipts
 b969f355/e1ba6c8a/61c0d2c0 bind artifacts. Product/observer/assembly have not changed;
-all23 declared inputs of the reused967 assembly match the executing52a source.
+all23 declared inputs of the reused967 assembly match the executingc584 source.
 
 [P03](evidence/p03-initial-sync-native-20261002.json), key
 `settled_owner_adoption_root_integration_20261103`, owns the qualified installed
@@ -53,25 +53,32 @@ inventing an R18 exit. Product/defaults/oracles/limits were unchanged.
 
 ## Current work and remaining gates
 
-Next bounded result under **P03-T01 Step3/T05 Steps2/4/7**: one discriminating
-historical workflow-integrity refusal. Astra's source-backed recommendation
-333c2f46 selects an explicit fixture-admin corruption of Q1's first effect
-mutation-request4→5 (one byte), preserving both93B entries/charge/native targets.
-Validate the authentic prefix first; allow only that field and its new xmin.
-Require actual executed seal INSERT0 1 followed by coverage SELECT false on the
-same real Control backend/transaction, then no committed seal/adoption/new wire.
-A generic InvalidMetadata refusal before that boundary is insufficient. Root's
-existing exact negative closure/native86/root5s/original120s guards remain.
-This is corruption proof, not genuine origin reservation/write evidence.
-Sol is implementing in a new separate worktree fromc17; Root alone integrates
-and launches. Final source/oracle critical review and cheap retained-capture
-preflight precede installed execution; new integrity proof remains **NOT_RUN**.
+**Workflow-integrity R20 now qualifies7/7 installed stages, independent science
+and actual Root custody.** Sourcec584a7c2/treee74249ba integrates as4c8bf234.
+Original Q1/native85 is authenticated before the one-byte admin replica seed
+(request4→5/newxmin only). Actual Control backend3316/T executes INSERT0 1 then
+coverage false/SELECT1 and rollback1, with zero selected COMMIT/error/fault.
+Natural4/exactInvalidMetadata leaves zero seals/adoption/newwire, full63-row
+native85→86, all5inputs/history/progress/seededxmins and job2 unchanged. Whole
+638.209ms fits root5s and original120s remains valid. Receipt **8ddd7be0** binds
+science9e15b4a9/custody58483693/review09d7f22a; all197 evidence hashes reconciled.
+This is metadata-corruption proof, not genuine origin reservation/write proof.
 
-Then close **exact absent/present uncertain-seal retry**: fresh exclusive recovery,
-same settled cut, committed seal's sealer/time/xmin preserved. Astra is bounding
-the valid lifecycle; two60s failed-Control waits cannot fit original120s. Choose
-a valid settled prefix/ownership lifecycle rather than extending deadlines/leases.
-No retry qualification is claimed yet.
+Next bounded result under **P03-T01 Step3/T05 Steps2/4/7**: exact absent/present
+uncertain-seal retry. Sol authors in `.research/m2-uncertain-seal-retry-20261103`,
+branch `work/m2-uncertain-seal-retry-20261103`, basec584a7c2. Astra reviews the
+source/oracles; final source/custody review and affected controls precede engines.
+The original prefix/initial60s wait stays. Positively join the failed command,
+native owner/driver/backend/proxy/diagnostic observer, then actual fresh native
+and PG advisory locks authorize product fencing of the unexpired failed Control.
+No second60s wait or administrative release is needed. Retry must return natural0,
+release its new Control and preserve exact existing seal ID/sealer/time/xmin;
+absent mode creates one correct seal. Full old source closure/native86/history/
+inputs/job2/deadline120s remain, retry<actual root5s, no adoption/new wire.
+Preserve old proxy config and distinct pre-reacquisition/final backend captures.
+The overwritten prior-absence evidence path found in review is corrected in the
+current source; final controls/frozen review remain. Host mock/setup failures are
+preserved. Both installed retries **NOT_RUN**.
 
 Later lost-candidate/zero-new-query handoffs, full500, partitions, sparse growth,
 scheduling/live/NEG/import/fleet and physical capacity retain existing task owners;
@@ -83,26 +90,31 @@ negative-outcome recovery implementation before integration.
 
 ## Resources and verification reuse
 
-R17/R19 each retain22 stopped/PID0/noOOM containers,7 absent recorded processes,
+R20 retains19 stopped/PID0/noOOM containers,6 absent recorded processes,1069
+absent command PIDs and53 source files (actual Root58002 REAPED0/terminal79c678,
+88.397s; separate custodydceec2). R17/R19 each retain22 stopped/PID0/noOOM
+containers,7 absent recorded processes,
 1124/1886 absent command PIDs and53 verified source files. All installed/compiler
 runs are reaped except explicitly unknown R18 outer status with stopped resources.
 No engine/compiler workload is active. Source author/reviewer tasks above are
-bounded; executed967/354/812/52a and original failed cases remain frozen.
+bounded; executed967/354/812/52a/c584 and original failed cases remain frozen.
 Cache115 is released; protected original4ELF fullstat/O_NOATIME postguards remain
 valid. Borrowed bridge is empty/preserved. No cleanup or new compilation.
 
 Capsules `.research/m2-adoption-core-qualification-20261103/a464cc63/installed`
 and runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63`
 retain inputs/proofs/logs. [Inventory](../research/laboratory-inventory.json) owns
-locations/states. Current52a affected87 acceptance+55proxy controls PASS in the
+locations/states. Currentc584 affected91 acceptance+59proxy controls PASS in the
 pinned image;634 unchanged acceptance and separate14tutorial proof are reused.
-No full721 run is claimed. Original full706 remains705PASS/1ERROR; all original
+No full725 run is claimed. Original full706 remains705PASS/1ERROR; all original
 FAIL/setup/replay errors and the R18 unknown remain classified and preserved.
 
 [5a9 CI41546602945](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945)
 is latest full hosted PASS36/36+scope20. It does not cover later M2; work-branch
 push does not trigger it. Main integration needs actual hosted qualification.
 
-**Next:** finish this coherent authority checkpoint's documentation/publication
-checks and push; critically review the bounded integrity source, verify retained
-fixture prerequisites cheaply, then run its one actual installed discriminator.
+**Next:** publish the coherent integrity qualification checkpoint after its
+required documentation/publication checks. Finish bounded retry-source review,
+then run the two real absent/present exact retries with unchanged product/limits.
+These are the remaining selected safety gates before M2 main integration and
+actual current hosted CI; later acquisition capabilities keep existing task owners.

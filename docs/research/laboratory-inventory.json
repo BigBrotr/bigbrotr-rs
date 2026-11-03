@@ -79561,6 +79561,30 @@
             "sha256": "34b0b5b5a4705fd13b83217bd91b3a031f11bfb7d23285b44bf2354d2d09f425"
           },
           "resources": "R17/R19 each22 stopped/PID0/noOOM containers,7 absent recorded processes,1124/1886 absent command PIDs and53 checked source files; borrowed bridge empty/preserved. R18 separate actual read-only stopped/absent observation retained with UNKNOWN outer reap. No compiler/cache/engine workload active after R19 terminal audit."
+        },
+        "continuation_integrity_refusal": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-continuation-integrity-refusal-20261103",
+          "branch": "work/m2-continuation-integrity-refusal-20261103",
+          "head": "c584a7c2865a3b940e86db165e732920e438694c",
+          "integrated": "4c8bf234",
+          "state": "QUALIFIED_STOPPED_RETAINED",
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/integrity-refusal-c584a7c2/installed-r20-receipt.json",
+            "sha256": "8ddd7be04ce52636c6a6b8ee3e53acb50c07e5f28fac407e98b76afdbe275804"
+          },
+          "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-continuation-integrity-r20",
+          "root_tool": 58002,
+          "resources": "19 stopped/PID0/noOOM containers17compose+2native,6absent recorded processes/1069absent commandPIDs,53sourcefiles,borrowedbridgeempty. Pinned sourcecontrols containerb5239d90 stopped0/PID0/noOOM. FrozenR20helper copies preserve actual80dc auditor/b393 invoke/c552 runner. No compiler/cache work or cleanup.",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/integrity-refusal-c584a7c2",
+          "setup_outcomes": "Original prelaunch input-shape failure8cb88b, independent read-setup errors and transient count metadata reconciliation retained separately; original admitted7ee6 source composite and immutable R20 bindings preserved."
+        },
+        "uncertain_seal_retry_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-uncertain-seal-retry-20261103",
+          "branch": "work/m2-uncertain-seal-retry-20261103",
+          "base": "c584a7c2865a3b940e86db165e732920e438694c",
+          "state": "SOL_SOURCE_IMPLEMENTATION_ASTRA_REVIEW_INSTALLED_NOT_RUN",
+          "owner": "Sol author; Root sole integrator/engine launcher; Astra critical review",
+          "scope": "Exact retry after absent/present seal uncertainty via real lock-based exclusion; no second lease wait/default/product changes. Preserve old proxy config and distinct prior/final backend observations."
         }
       }
     }

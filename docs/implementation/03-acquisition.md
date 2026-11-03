@@ -218,8 +218,9 @@ Same-job settled-boundary adoption uses migration0045 under T01 Step3/T05
 Steps2/4/7. The current product passes compiled qualification and the installed
 positive continuation, pending-plan refusal and seal/adoption-COMMIT before/after
 loss profiles, plus actual actor-grant withdrawal and genuine original-expiry
-refusals under fresh authority. Historical workflow-integrity refusal and exact
-uncertain-seal retry remain critical gates of these same tasks;
+refusals under fresh authority. One installed historical workflow-integrity
+refusal also proves actual INSERT→false coverage→rollback with conserved native
+evidence. Exact uncertain-seal retry remains a critical gate of these same tasks;
 later lost-candidate and zero-new-query handoffs remain explicit. Genuine origin
 reservation without native issuance remains uncovered P02-T02 Step4/P03 execution
 work: the unchanged pre-resolution refusal guards this strictly settled profile,
