@@ -31,6 +31,16 @@ The existing setup owns the two exact image identities, isolated internal bridge
 no published ports, broad non-owner lab role, complete current migration catalog,
 retained PostgreSQL data and final container stop path.
 
+After current-schema preparation, physical mode uses the maintained probe's
+`initialize-fixture` adapter, which calls real initialization and initial
+activation and joins its PG driver. This connected adapter setup is separate
+from CLI qualification. Its explicit inputs are dataset `01`×16, instance
+`02`×16, the frozen current managed document and accepted source digest `03`×32.
+The runner retains the initializer's actual exit/stdout/stderr, requires exit0
+and empty stderr, then independently checks those identities, exact revision1
+documents/digests, configuration/policy heads1, null topology, and absence of
+owner/producer/runtime/native workload before launching the physical probe.
+
 Two predeclared cases create separate fresh current databases/native roots.
 Case A has compressible `a` content. Case B uses independent deterministic
 SHAKE256 bytes encoded with JSON-safe base64, rather than a repeated random

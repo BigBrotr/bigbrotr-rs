@@ -156,6 +156,72 @@ class PhysicalScienceControls(unittest.TestCase):
             self.assertGreater(ratios['highentropy'],.70)
 
 
+def initialized_baseline():
+    document = json.loads((ROOT/'tests/fixtures/configuration/policy-v3.json').read_text())
+    common = dict(dataset_id='\\x'+'01'*16,revision=1,previous_revision=None,schema_version=3,
+        document=document,document_digest='\\x77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b')
+    return dict(datasets=[dict(dataset_id='\\x'+'01'*16,instance_id='\\x'+'02'*16,
+        config_revision=1,policy_revision=1,topology_generation=None)],
+        config_revisions=[dict(common,authority_mode='managed',accepted_source_digest='\\x'+'03'*32)],
+        policy_revisions=[dict(common,config_revision=1)],schema_versions=[dict(version=45)],
+        principals=[],management_audit=[],management_commands=[],owner_epochs=[],producer_epochs=[],jobs=[])
+
+
+class PhysicalSetupControls(unittest.TestCase):
+    def test_connected_initializer_captures_success_and_checks_the_fixed_baseline(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            case = Path(temporary)
+            baseline = initialized_baseline()
+            lab = SimpleNamespace(docker=Mock(return_value=SimpleNamespace(returncode=0,stdout='',stderr='')),
+                write_json=lambda path,value:path.write_text(json.dumps(value)))
+            contents,record = Mock(return_value=baseline),Mock()
+            observed = PHYSICAL.initialize_connected_fixture(lab,dict(client='owned'),case,
+                'physical_compressible','fresh_database',contents,record,ROOT)
+            self.assertEqual(observed,baseline)
+            lab.docker.assert_called_once_with('exec','owned','/build/ingest_bootstrap_probe','initialize-fixture',
+                'fresh_database','/lab/secrets/application','/lab/unused',check=False)
+            self.assertEqual((case/'initialize-fixture.stderr').read_text(),'')
+            proof = json.loads((case/'connected-fixture-setup.json').read_text())
+            self.assertEqual(proof['accepted_source_digest'],'03'*32)
+            self.assertEqual(proof['setup'],'connected-adapter-fixture')
+            self.assertEqual(proof['cli_initialization_qualification'],'NOT_RUN')
+            self.assertEqual(proof['exit_code'],0)
+
+    def test_wrong_baseline_dataset_refuses_before_any_physical_process_launch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            baseline = initialized_baseline()
+            baseline['datasets'][0]['dataset_id'] = '\\x'+'07'*16
+            lab = SimpleNamespace(docker=Mock(return_value=SimpleNamespace(returncode=0,stdout='',stderr='')),
+                write_json=lambda path,value:path.write_text(json.dumps(value)))
+            launch = Mock(side_effect=AssertionError('physical launch before fixed baseline'))
+            call = Mock(side_effect=AssertionError('physical setup must use connected initializer'))
+            with patch.dict(sys.modules,dict(lab=lab,fault_cases=SimpleNamespace(Process=launch))), \
+                    patch.object(PHYSICAL,'preflight',return_value={}), \
+                    patch.object(PHYSICAL,'make_corpus',return_value=([],dict(sha256='00'*32,bytes=0))):
+                with self.assertRaisesRegex(ValueError,'dataset01/instance02 before launch'):
+                    PHYSICAL.run(dict(client='owned'),output,Mock(return_value=baseline),Mock(),
+                        Mock(return_value=('fresh_database','/lab/config','unused')),call,{},ROOT)
+            launch.assert_not_called()
+            call.assert_not_called()
+            self.assertEqual(lab.docker.call_args.args[3],'initialize-fixture')
+            retained = json.loads((output/'physical_compressible/control-before.json').read_text())
+            self.assertEqual(retained['datasets'][0]['dataset_id'],'\\x'+'07'*16)
+
+    def test_initializer_nonzero_exit_or_stderr_refuses_before_baseline_read(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            for index,(code,error) in enumerate(((1,''),(0,'initializer failed'))):
+                case = Path(temporary)/str(index)
+                case.mkdir()
+                lab = SimpleNamespace(docker=Mock(return_value=SimpleNamespace(returncode=code,stdout='',stderr=error)))
+                contents = Mock(side_effect=AssertionError('baseline after failed initializer'))
+                with self.assertRaisesRegex(ValueError,'exit0 with empty stderr'):
+                    PHYSICAL.initialize_connected_fixture(lab,dict(client='owned'),case,'physical',
+                        'fresh_database',contents,Mock(),ROOT)
+                contents.assert_not_called()
+                self.assertEqual((case/'initialize-fixture.stderr').read_text(),error)
+
+
 class PhysicalTelemetryControls(unittest.TestCase):
     def test_allocated_bytes_inode_dedup_and_separate_input_domain(self):
         with tempfile.TemporaryDirectory() as temporary:

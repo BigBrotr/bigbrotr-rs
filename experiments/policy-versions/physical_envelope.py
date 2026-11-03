@@ -806,11 +806,62 @@ def verify_trace(trace, events, corpus, baseline, control, closed, reopened, com
                 original_bytes=sum(len(value) for value in expected['requests'].values()))
 
 
+def verify_fixture_baseline(baseline, source, native_root):
+    """Bind the existing connected initializer's fixed inputs before load."""
+    dataset, = baseline['datasets']
+    dataset_id,instance_id = '\\x'+'01'*16,'\\x'+'02'*16
+    require(dataset['dataset_id'] == dataset_id and dataset['instance_id'] == instance_id,
+            'physical fixture requires dataset01/instance02 before launch')
+    require(dataset['config_revision'] == dataset['policy_revision'] == 1
+        and dataset['topology_generation'] is None, 'fresh physical fixture heads/topology')
+    document = json.loads((source/'tests/fixtures/configuration/policy-v3.json').read_text())
+    canonical = json.dumps(document,sort_keys=True,ensure_ascii=False,separators=(',', ':')).encode()
+    expected_digest = digest(b'bigbrotr/product-policy/3\0'+canonical)
+    require(expected_digest == '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b',
+            'frozen current fixture document digest')
+    config, = baseline['config_revisions']
+    policy, = baseline['policy_revisions']
+    for row in (config,policy):
+        require(row['dataset_id'] == dataset_id and row['revision'] == 1
+            and row['previous_revision'] is None and row['schema_version'] == 3
+            and row['document'] == document and row['document_digest'] == '\\x'+expected_digest,
+            'complete frozen revision1 configuration/policy')
+    require(config['authority_mode'] == 'managed' and policy['config_revision'] == 1,
+            'managed fixture activation of configuration1')
+    require(config['accepted_source_digest'] == '\\x'+'03'*32,
+            'explicit connected fixture accepted_source_digest03')
+    allowed = {'schema_versions','datasets','principals','config_revisions','policy_revisions',
+               'management_audit','management_commands'}
+    require(all(not rows for name,rows in baseline.items() if name not in allowed),
+            'physical fixture has preexisting owner/producer/runtime workload')
+    require(not native_root.exists() and not native_root.is_symlink(), 'fresh physical native root')
+    return dict(setup='connected-adapter-fixture',dataset_id='01'*16,instance_id='02'*16,
+        config_revision=1,policy_revision=1,topology_generation=None,authority_mode='managed',
+        document_digest=expected_digest,accepted_source_digest='03'*32,
+        accepted_source_digest_origin='explicit existing initialize-fixture input [3;32]',
+        cli_initialization_qualification='NOT_RUN',native_workload='ABSENT')
+
+
+def initialize_connected_fixture(lab, state, case, name, database, contents, record, source):
+    initialized = lab.docker('exec',state['client'],'/build/ingest_bootstrap_probe',
+        'initialize-fixture',database,'/lab/secrets/application','/lab/unused',check=False)
+    (case/'initialize-fixture.stdout').write_text(initialized.stdout)
+    (case/'initialize-fixture.stderr').write_text(initialized.stderr)
+    passed = initialized.returncode == 0 and not initialized.stderr
+    record(name+'-connected-fixture-initialized',passed,exit_code=initialized.returncode,
+           stdout=initialized.stdout,stderr=initialized.stderr,setup='connected-adapter-fixture')
+    require(passed,'connected fixture initializer must exit0 with empty stderr')
+    baseline = contents(database)
+    lab.write_json(case/'control-before.json',baseline)
+    proof = verify_fixture_baseline(baseline,source,case/'store')
+    lab.write_json(case/'connected-fixture-setup.json',dict(proof,exit_code=initialized.returncode))
+    return baseline
+
+
 def run(state, output, contents, record, prepare, call, inventory, source):
     """Two fresh current databases/native roots; existing lab owns cleanup."""
     import lab
     from fault_cases import Process
-    activation = ('--request-id','04'*16,'--expected-revision','1')
     results = []
     lab.write_json(output/'physical-plan.json',dict(format='bigbrotr-physical-envelope-plan/1',**preflight(source)))
     for label in CASES:
@@ -820,11 +871,8 @@ def run(state, output, contents, record, prepare, call, inventory, source):
         events, corpus = make_corpus(case/'source.jsonl',label,source)
         lab.write_json(case/'source-oracle.json',corpus)
         phase(case,'preparation')
-        database,config,local = prepare(name,'managed')
-        call(name+'-initialize',database,'initialize',config)
-        call(name+'-activate',database,'activate-initial',config,extra=activation)
-        baseline = contents(database)
-        lab.write_json(case/'control-before.json',baseline)
+        database,_,_ = prepare(name,'managed')
+        baseline = initialize_connected_fixture(lab,state,case,name,database,contents,record,source)
         accepted, = baseline['policy_revisions']
         settings = accepted['document']['settings']
         require(settings['import.max_event_bytes'] == settings['ingest.max_event_bytes'] == EVENT_BYTES,
