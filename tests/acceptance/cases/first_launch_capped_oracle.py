@@ -290,7 +290,8 @@ def adoption_cardinality(state,slot,epoch):
     return sorted(tracked)
 
 
-def adoption_history(state,wires,events,first,second=None):
+def adoption_history(state,wires,events,first,second=None,*,successor_epoch=2):
+    assert type(successor_epoch) is int and 2<=successor_epoch<=255
     old_cut=second is None
     adoption_wires(wires,events,old_cut=old_cut)
     assert len(state['jobs'])==len(state['acquisition_jobs'])==1 and not state['acquisition_gaps']
@@ -301,7 +302,7 @@ def adoption_history(state,wires,events,first,second=None):
         expected.update({2:[(events[1],2,2,refs(2))],3:[(events[2],2,3,refs(3))],4:[(events[2],5,0,refs(3))],5:[]})
     rows=sorted(state['acquisition_quanta'],key=lambda row:row['quantum_number'])
     assert len(rows)==(1 if old_cut else 5)
-    assert [row['producer_epoch'] for row in rows]==([1] if old_cut else [1,2,2,2,2])
+    assert [row['producer_epoch'] for row in rows]==([1] if old_cut else [1,successor_epoch,successor_epoch,successor_epoch,successor_epoch])
     from installed_sync_oracle import decode
     slot='\\x'+decode(first['inputs'][0].split(b'\0',1)[1])[0][0].hex()
     for row in rows:
@@ -312,8 +313,8 @@ def adoption_history(state,wires,events,first,second=None):
         assert state['jobs'][0]['created_at_us']<=row['created_at_us']<=wire['connected_at_us']
         assert wire['sent_at_us']<=row['terminal_received_at_us']<=wire['closed_at_us']
         assert row['terminal_received_at_us']<=row['completed_at_us']<state['acquisition_jobs'][0]['deadline_at_us']
-        if row['producer_epoch']==2:
-            seal,=state['acquisition_continuations']
+        if row['producer_epoch']==successor_epoch:
+            seal=source.only(state['acquisition_continuations'],target_epoch=successor_epoch)
             assert seal['adopted_at_us']<=row['created_at_us']<=wire['connected_at_us']
             assert wire['closed_at_us']<state['acquisition_jobs'][0]['deadline_at_us']
     assert [row['classified_before'] for row in rows]==([0] if old_cut else [0,0,1,2,3])
@@ -323,11 +324,11 @@ def adoption_history(state,wires,events,first,second=None):
     assert result==dict(queries_spent=1 if old_cut else 5,attempted_prefix=0 if old_cut else 86400,
         gap_count=0 if old_cut else 2,pending_work='query_ready' if old_cut else 'settled',
         pending_interval=['0','24'] if old_cut else None)
-    adoption_page_checkpoints(state,wires,events,first,second)
+    adoption_page_checkpoints(state,wires,events,first,second,successor_epoch=successor_epoch)
     return result
 
 
-def adoption_page_checkpoints(state,wires,events,first,second=None):
+def adoption_page_checkpoints(state,wires,events,first,second=None,*,successor_epoch=2):
     """Rebuild the declared intermediate C2/C3, and bind old C5/new C4.
 
     These digests use complete independently encoded inputs/receipts/native
@@ -340,7 +341,7 @@ def adoption_page_checkpoints(state,wires,events,first,second=None):
     if second is None:return
     job=state['jobs'][0];detail=state['acquisition_jobs'][0]
     values={(cf,key.hex()):value.hex() for cf,key,value in second['native']}
-    common=dict(dataset_id=job['dataset_id'],producer_slot_id=old['producer_slot_id'],producer_epoch=2)
+    common=dict(dataset_id=job['dataset_id'],producer_slot_id=old['producer_slot_id'],producer_epoch=successor_epoch)
     for number,event in ((2,events[1]),(3,events[2])):
         row=source.only(state['acquisition_quanta'],quantum_number=number);wire=wires[number-1]
         original=second['inputs'][number-1]
@@ -359,7 +360,7 @@ def adoption_page_checkpoints(state,wires,events,first,second=None):
             issuer_epoch=row['issuer_epoch'],issuer_incarnation=row['issuer_incarnation'],committed_at_us=0,xmin='1',checkpoint_digest='\\x'+'00'*32)
         wanted='\\x'+typed.head_digest(head,[progress],dependencies,lambda dependency:typed.native_reference(dependency,values)).hex()
         assert row['checkpoint_sha256']==wanted,'retained intermediate page checkpoint differs'
-    current=source.only(state['producer_checkpoints'],producer_epoch=2)['checkpoint_digest']
+    current=source.only(state['producer_checkpoints'],producer_epoch=successor_epoch)['checkpoint_digest']
     assert all(source.only(state['acquisition_quanta'],quantum_number=n)['checkpoint_sha256']==current for n in (4,5))
 
 
@@ -734,9 +735,10 @@ def adoption_new_control(before,after,lower,upper,*,active):
     return current,role
 
 
-def adoption_recovery_prefix(before,sealed,retired,first):
+def adoption_recovery_prefix(before,sealed,retired,first,*,initial_exclusion='expired'):
     """Confirmed seal/retire effects only, including every unrelated row/xmin."""
     from initial_succession_oracle import exclusion
+    assert initial_exclusion in ('expired','exclusive-before-expiry')
     deadline=source.only(before['acquisition_jobs'])['deadline_at_us']-1
     job=source.only(before['jobs']);producer=source.only(before['producer_epochs'])
     slot=producer['producer_slot_id'];digest='\\x'+source.closure(first['manifest'],slot,1,first['inputs'],first['receipts'],17)
@@ -749,7 +751,9 @@ def adoption_recovery_prefix(before,sealed,retired,first):
             assert not retiring and owner['state']=='active'
             changed=source.only(after['owner_epochs'],resource_id=owner['resource_id'],epoch=owner['epoch'])
             changed_role=source.only(after['role_instances'],role_instance_id=owner['role_instance_id'])
-            source.clock(changed['released_at_us'],owner['lease_expires_at_us'],current['acquired_at_us'])
+            if initial_exclusion=='exclusive-before-expiry':
+                assert current['acquired_at_us']<owner['lease_expires_at_us']
+            source.clock(changed['released_at_us'],owner['lease_expires_at_us'] if initial_exclusion=='expired' else job['created_at_us'],current['acquired_at_us'])
             source.clock(changed_role['retired_at_us'],changed['released_at_us'],current['acquired_at_us'])
             adoption_xid(changed['xmin']);assert changed_role['xmin']==changed['xmin']
             wanted['owner_epochs'][wanted['owner_epochs'].index(owner)]=dict(owner,state='released',
@@ -824,7 +828,7 @@ def adoption_fault(before,after,first,wires,events,dump,before_us,returned_us,af
     adoption_exact_tables(wanted,after)
 
 
-def adoption_startup_cut(before,after,first,dump,before_us,returned_us):
+def adoption_startup_cut(before,after,first,dump,before_us,returned_us,*,renewed_ingest=False):
     """Exact active-zero prepare/activation layout, shared by declared startup refusals."""
     current,role=adoption_new_control(before,after,before_us,returned_us,active=True)
     assert returned_us<current['lease_expires_at_us']
@@ -841,8 +845,16 @@ def adoption_startup_cut(before,after,first,dump,before_us,returned_us):
     wanted=copy.deepcopy(before);wanted['owner_epochs'].append(current);wanted['role_instances'].append(role)
     inc=intent['target_incarnation'];target_role=intent['target_role_instance_id']
     assert inc not in (current['process_incarnation'],current['role_instance_id']) and target_role not in (current['process_incarnation'],current['role_instance_id'])
+    ingest_expiry,ingest_xmin=expires,tx
+    if renewed_ingest:
+        ingest=source.only(after['owner_epochs'],role='ingest',epoch=2)
+        ingest_expiry,ingest_xmin=ingest['lease_expires_at_us'],ingest['xmin']
+        source.clock(ingest_expiry-60_000_000,created,returned_us)
+        assert returned_us<ingest_expiry
+        adoption_xid(ingest_xmin)
+        assert ingest_xmin not in {row['xmin'] for rows in before.values() for row in rows}
     wanted['owner_epochs'].append(dict(old_ingest,epoch=2,role_instance_id=target_role,process_incarnation=inc,
-        acquired_at_us=created,lease_expires_at_us=expires,state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None,xmin=tx))
+        acquired_at_us=created,lease_expires_at_us=ingest_expiry,state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None,xmin=ingest_xmin))
     wanted['role_instances'].append(dict(dataset_id=dataset,role='ingest',role_instance_id=target_role,created_at_us=created,retired_at_us=None,xmin=tx))
     wanted['producer_epochs'].append(dict(producer,producer_epoch=2,producer_role_instance_id=target_role,producer_incarnation=inc,
         owner_epoch=2,owner_incarnation=inc,state='open',reserved_through_request=0,opened_at_us=created,retired_at_us=None,closure_digest=None,xmin=tx))
@@ -1064,13 +1076,24 @@ def adoption_successor_science(state,started,events,wires,dump,inputs,first,comp
     assert started['process_incarnation']==intent['target_incarnation'][2:] and started['producer_epoch']=='2'
     closed=adoption_closed_native(first,intent['producer_slot_id'])
     initial=successor_rows({(cf,key):value for cf,key,value in closed},manifest,source.raw(intent['producer_slot_id']),handoff)
-    model=SimpleNamespace(ds=source.only(state['datasets']),slot=intent['producer_slot_id'],legacy=intent,inputs={},
-        native=dict(event='dump-state',sequence=91,rows=[dict(cf=cf,key=key.hex(),value=value.hex()) for (cf,key),value in sorted(initial.items())]))
-    science=NetworkScience(model,dict(epoch=2,topology=1,manifest=manifest,domains=domains),acknowledge=True,
+    base=dict(event='dump-state',sequence=91,rows=[dict(cf=cf,key=key.hex(),value=value.hex()) for (cf,key),value in sorted(initial.items())])
+    return adoption_network_science(state,started,events,wires,dump,inputs,first,completed,manifest,handoff,base,epoch=2)
+
+
+def adoption_network_science(state,started,events,wires,dump,inputs,first,completed,manifest,handoff,base,*,epoch):
+    from types import SimpleNamespace
+    from installed_family_science import NetworkScience,decode
+    from transition_replay import native_rows
+    initial={(row['cf'],bytes.fromhex(row['key'])):bytes.fromhex(row['value']) for row in base['rows']}
+    slot='\\x'+started['producer_slot_id']
+    domains=[source.only(state['allocation_domains'],owner_epoch=epoch,dictionary_kind=k)['allocation_domain'] for k in range(1,10)]
+    model=SimpleNamespace(ds=source.only(state['datasets']),slot=slot,legacy=dict(previous_manifest='\\x'+first['manifest'].hex()),inputs={},
+        native=dict(event='dump-state',sequence=base['sequence'],rows=[dict(cf=cf,key=key.hex(),value=value.hex()) for (cf,key),value in sorted(initial.items())]))
+    science=NetworkScience(model,dict(epoch=epoch,topology=epoch-1,manifest=manifest,domains=domains),acknowledge=True,
         new_event=events[2],endpoint='ws://127.0.0.1:7447/installed-fixture',previous_event=events[1],previous_coordinates=(3,4,13,14,15,16))
     assert len(inputs)==3
     facts={int.from_bytes(bytes.fromhex(row['key'])[-8:],'big'):bytes.fromhex(row['value']) for row in dump['rows']
-        if row['cf']=='facts' and row['key'].startswith('0120') and int(row['key'][44:60],16)==2}
+        if row['cf']=='facts' and row['key'].startswith('0120') and int(row['key'][44:60],16)==epoch}
     at=lambda n:decode(facts[n][34:].split(b'\0',1)[1])[4]
     received=lambda n:decode(inputs[n-1].split(b'\0',1)[1])[3][5][0]
     old=source.clock(received(2),wires[1]['sent_at_us'],wires[1]['closed_at_us'])
@@ -1090,7 +1113,7 @@ def adoption_progress(state,report,events,wires,science,completed,*,epoch):
     import installed_progress_replay as typed
     from installed_progress_context_oracle import current_snapshot
     from installed_sync_oracle import decode
-    assert epoch in (1,2)
+    assert type(epoch) is int and 1<=epoch<=255
     job,detail,attribution=source.attribution(state,'b1')
     first=source.only(state['acquisition_quanta'],quantum_number=1 if epoch==1 else 2)
     owner=source.only(state['owner_epochs'],role='control',resource_id=first['issuer_resource'],epoch=first['issuer_epoch'],
@@ -1106,7 +1129,7 @@ def adoption_progress(state,report,events,wires,science,completed,*,epoch):
     if epoch==1:
         assert head['xmin']==source.only(state['producer_outcomes'],producer_epoch=1,request_sequence=5)['xmin']
     else:
-        assert int(typed.xid(head['xmin']))>max(int(typed.xid(row['xmin'])) for row in state['producer_outcomes'] if row['producer_epoch']==2), \
+        assert int(typed.xid(head['xmin']))>max(int(typed.xid(row['xmin'])) for row in state['producer_outcomes'] if row['producer_epoch']==epoch), \
             'final proof checkpoint must follow all successor mutation outcomes'
     wire=wires[0] if epoch==1 else wires[3];event=events[1] if epoch==1 else events[2]
     received=(decode(science['inputs'][4].split(b'\0',1)[1])[3][5][0] if epoch==1 else actual['observed_at_us'])
@@ -1120,15 +1143,15 @@ def adoption_progress(state,report,events,wires,science,completed,*,epoch):
     if epoch==1:expected['intent_digest']='\\x'+source.sha(science['inputs'][4])
     else:
         old=source.raw(source.only(state['allocation_domains'],owner_epoch=1,dictionary_kind=4)['allocation_domain'])
-        domains={row['dictionary_kind']:source.raw(row['allocation_domain']) for row in state['allocation_domains'] if row['owner_epoch']==2}
+        domains={row['dictionary_kind']:source.raw(row['allocation_domain']) for row in state['allocation_domains'] if row['owner_epoch']==epoch}
         ref=lambda kind:[ds,kind,domains[kind],1]
         expected['intent_digest']='\\x'+typed.certification_digest(event,[ds,4,old,3],ref(2),ref(2),[ref(1),ref(3),ref(5)],expected,wire).hex()
     values={(cf,key.hex()):value.hex() for cf,key,value in science['native']}
-    coordinates=[(1,n) for n in range(1,18)] if epoch==1 else [(1,n) for n in (3,4,13,14,15,16)]+[(2,n) for n in range(1,11)]
+    coordinates=[(1,n) for n in range(1,18)] if epoch==1 else [(1,n) for n in (3,4,13,14,15,16)]+[(epoch,n) for n in range(1,11)]
     dependencies=[]
     for source_epoch,sequence in coordinates:
         request=(1 if sequence<=2 else 2 if sequence==3 else 3 if sequence<=7 else 4 if sequence<=12 else 5) if epoch==1 else (
-            1 if (source_epoch,sequence)==(1,3) or source_epoch==2 and sequence<=4 else 2 if source_epoch==1 or sequence==5 else 3)
+            1 if (source_epoch,sequence)==(1,3) or source_epoch==epoch and sequence<=4 else 2 if source_epoch==1 or sequence==5 else 3)
         fact=bytes.fromhex(values['facts',(b'\x01\x20'+ds+bytes(4)+source.be(source_epoch)+source.be(sequence)).hex()])
         dependencies.append(dict(common,source_shard=0,source_epoch=source_epoch,source_sequence=sequence,payload_digest='\\x'+fact[2:34].hex(),
             xmin=source.only(state['producer_outcomes'],producer_epoch=epoch,request_sequence=request)['xmin']))
@@ -1140,4 +1163,4 @@ def adoption_progress(state,report,events,wires,science,completed,*,epoch):
     expected_head['checkpoint_digest']='\\x'+typed.head_digest(expected_head,[expected],dependencies,lambda row:typed.native_reference(row,values)).hex()
     actual_dependencies=sorted((row for row in state['producer_checkpoint_dependencies'] if row['producer_epoch']==epoch),
         key=lambda row:(row['source_shard'],row['source_epoch'],row['source_sequence']))
-    current_snapshot(head,[actual],actual_dependencies,expected_head,[expected],dependencies,values,prefix_profile=epoch==1)
+    current_snapshot(head,[actual],actual_dependencies,expected_head,[expected],dependencies,values,prefix_profile=epoch==1,producer_epoch=epoch)

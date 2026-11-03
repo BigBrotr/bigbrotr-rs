@@ -69,16 +69,16 @@ def projection(state,science,events,wires,epoch):
         request_id='\\x'+wire['request'][1].encode().hex(),event_ordinal=2 if epoch==1 else 1,wire_sequence=2 if epoch==1 else 1,
         input_sha256='\\x'+source.sha(quantum.wire_json(event)),classification=2 if epoch==1 else 5,mutation_request=5 if epoch==1 else None,
         classified_events=2 if epoch==1 else 3,successful_events=2 if epoch==1 else 3,rejected_events=0,
-        observed_at_us=wire['sent_at_us']+10,clock_resolution_us=1,clock_anomaly_flags=0,xmin='105' if epoch==1 else '204')
+        observed_at_us=wire['sent_at_us']+10,clock_resolution_us=1,clock_anomaly_flags=0,xmin='105' if epoch==1 else str(epoch*100+4))
     if epoch==1:progress['intent_digest']='\\x'+source.sha(science['inputs'][4])
     else:
         old=source.raw(source.only(state['allocation_domains'],owner_epoch=1,dictionary_kind=4)['allocation_domain'])
-        domains={row['dictionary_kind']:source.raw(row['allocation_domain']) for row in state['allocation_domains'] if row['owner_epoch']==2}
+        domains={row['dictionary_kind']:source.raw(row['allocation_domain']) for row in state['allocation_domains'] if row['owner_epoch']==epoch}
         ref=lambda kind:[source.raw(job['dataset_id']),kind,domains[kind],1]
         progress['intent_digest']='\\x'+certification_digest(event,[source.raw(job['dataset_id']),4,old,3],ref(2),ref(2),
             [ref(1),ref(3),ref(5)],progress,wire).hex()
     coordinates=([(1,n,n and (1 if n<=2 else 2 if n==3 else 3 if n<=7 else 4 if n<=12 else 5)) for n in range(1,18)] if epoch==1 else
-        [(1,3,1),(1,4,2),(1,13,2),(1,14,2),(1,15,2),(1,16,2)]+[(2,n,1 if n<=4 else 2 if n==5 else 3) for n in range(1,11)])
+        [(1,3,1),(1,4,2),(1,13,2),(1,14,2),(1,15,2),(1,16,2)]+[(epoch,n,1 if n<=4 else 2 if n==5 else 3) for n in range(1,11)])
     dependencies=[]
     for source_epoch,sequence,request in coordinates:
         fact=bytes.fromhex(values['facts',(b'\x01\x20'+source.raw(job['dataset_id'])+bytes(4)+source.be(source_epoch)+source.be(sequence)).hex()])
@@ -1982,55 +1982,58 @@ class CappedAdoptionControls(unittest.TestCase):
 
     def test_client_accepts_only_one_job_and_observes_its_original_time_after_host_gate(self):
         from linear_capped_client import run_adoption,adoption_status
-        with tempfile.TemporaryDirectory() as temporary:
-            root=Path(temporary);scope='12'*16;job='13'*16;session=root/'session.private';saved=dict(session='private')
-            session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
-            publish(root,'linear-quantum-fault.json','plan-before')
-            for name in ('prepared','adoption-old-cut','commands-finished'):(root/(name+'.continue')).write_text('released\n')
-            final=dict(format='bigbrotr-job-status/1',job_id=job,kind='acquisition',state='queued',job_revision='3',checkpoint_revision='0',
-                created_at_us=str(ACCEPTED),completed_at_us=None,observed_at_us=str(COMPLETED),reason_code=None,authority='observation-only',
-                linear_quantum=dict(format='bigbrotr-linear-quantum-status/2',quantum_number='5',scope_id=scope,entry_kind='request',
-                    disposition='window_closed',lower='0',upper='1',window_end='86400',horizon='86400',window_width='86400',query_budget=128,
-                    queries_spent=5,attempted_prefix='86400',gap_count=2,pending_work='settled',pending_interval=None,result='linear_observed',
-                    terminal='eose',gap=None,continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending'))
-            calls=[]
-            def request(method,path,body=None,headers=None):
-                calls.append((method,path,body))
-                if method=='GET':return (401,{}) if path.endswith('/me') else (200,final)
-                key=headers['Idempotency-Key'];answer=dict(created=True,command_key=key)
-                if path.endswith('/relay-endpoints'):answer.update(endpoint_id='11'*16)
-                elif path.endswith('/relay-enrollments'):answer.update(access_scope_id='14'*16,generation='1',enabled=True)
-                elif path.endswith('/acquisition-scopes'):answer.update(scope_id=scope)
-                elif path.endswith('/jobs'):answer.update(job_id=job,accepted_at_us=str(ACCEPTED),execution='unobserved',authority='acceptance-only')
-                return 202,answer
-            def relay(directory,listener,finished,errors,**kwargs):
-                self.assertEqual(kwargs,dict(adoption=True));finished.wait(3)
-            with patch('installed_sync_client.relay_listener',return_value=Mock()),patch.object(peer,'relay',side_effect=relay):
-                result=run_adoption(root,request,Mock(return_value={}),{},session,saved,{})
-            self.assertEqual(result['job_status'],final)
-            accepted=[body for method,path,body in calls if method=='POST' and path.endswith('/jobs')]
-            self.assertEqual(len(accepted),1);self.assertEqual(accepted[0]['deadline_us'],'120000000')
-            self.assertEqual([path for method,path,_ in calls if method=='GET'],['/management/v1/jobs/'+job,'/management/v1/me'])
-            self.assertEqual(len(json.loads((root/'adoption-old-cut.json').read_text())),4)
-            commands=json.loads((root/'adoption-old-cut.json').read_text())
-            with patch('installed_sync.validate_source') as checked_source,patch('installed_sync.validate_queued') as checked_job:
-                check.adoption_source({}, {},commands,principal='actor')
-                checked_source.assert_called_once_with({}, {},commands[:3],selector_document=check.ADOPTION_SELECTOR)
-                checked_job.assert_called_once_with({},commands,ordinal=1,key='b1'*16,total_jobs=1,expected_principal='actor')
-                for name in ('new-selector','new-deadline','replacement-job'):
-                    changed=copy.deepcopy(commands)
-                    if name=='new-selector':changed[2]['input']['selector']['filters'][0]['since']=23
-                    elif name=='new-deadline':changed[3]['input']['deadline_us']='240000000'
-                    else:changed.append(copy.deepcopy(changed[-1]))
-                    with self.subTest(name=name),self.assertRaises(AssertionError):check.adoption_source({}, {},changed,principal='actor')
-            for key,value in (('job_revision','2'),('created_at_us',str(ACCEPTED+1))):
-                changed=copy.deepcopy(final);changed[key]=value
-                with self.subTest(key=key),self.assertRaises(AssertionError):
-                    adoption_status(changed,dict(scope_id=scope),dict(job_id=job,accepted_at_us=str(ACCEPTED)))
-            for key,value in (('coverage','complete'),('gap_count',1),('retained_events',1),('queries_spent',4)):
-                changed=copy.deepcopy(final);changed['linear_quantum'][key]=value
-                with self.subTest(key=key),self.assertRaises(AssertionError):
-                    adoption_status(changed,dict(scope_id=scope),dict(job_id=job,accepted_at_us=str(ACCEPTED)))
+        for revision in (3,4):
+            with tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);scope='12'*16;job='13'*16;session=root/'session.private';saved=dict(session='private')
+                session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
+                publish(root,'linear-quantum-fault.json','plan-before')
+                if revision==4:publish(root,'linear-quantum-handoff.json','zero-query')
+                for name in ('prepared','adoption-old-cut','commands-finished'):(root/(name+'.continue')).write_text('released\n')
+                final=dict(format='bigbrotr-job-status/1',job_id=job,kind='acquisition',state='queued',job_revision=str(revision),checkpoint_revision='0',
+                    created_at_us=str(ACCEPTED),completed_at_us=None,observed_at_us=str(COMPLETED),reason_code=None,authority='observation-only',
+                    linear_quantum=dict(format='bigbrotr-linear-quantum-status/2',quantum_number='5',scope_id=scope,entry_kind='request',
+                        disposition='window_closed',lower='0',upper='1',window_end='86400',horizon='86400',window_width='86400',query_budget=128,
+                        queries_spent=5,attempted_prefix='86400',gap_count=2,pending_work='settled',pending_interval=None,result='linear_observed',
+                        terminal='eose',gap=None,continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending'))
+                calls=[]
+                def request(method,path,body=None,headers=None):
+                    calls.append((method,path,body))
+                    if method=='GET':return (401,{}) if path.endswith('/me') else (200,final)
+                    key=headers['Idempotency-Key'];answer=dict(created=True,command_key=key)
+                    if path.endswith('/relay-endpoints'):answer.update(endpoint_id='11'*16)
+                    elif path.endswith('/relay-enrollments'):answer.update(access_scope_id='14'*16,generation='1',enabled=True)
+                    elif path.endswith('/acquisition-scopes'):answer.update(scope_id=scope)
+                    elif path.endswith('/jobs'):answer.update(job_id=job,accepted_at_us=str(ACCEPTED),execution='unobserved',authority='acceptance-only')
+                    return 202,answer
+                def relay(directory,listener,finished,errors,**kwargs):
+                    self.assertEqual(kwargs,dict(adoption=True));finished.wait(3)
+                with patch('installed_sync_client.relay_listener',return_value=Mock()),patch.object(peer,'relay',side_effect=relay):
+                    result=run_adoption(root,request,Mock(return_value={}),{},session,saved,{})
+                self.assertEqual(result['job_status'],final)
+                if revision==4:self.assertEqual(result['handoff'],'zero-query');self.assertEqual(result['gate_seconds'],110)
+                accepted=[body for method,path,body in calls if method=='POST' and path.endswith('/jobs')]
+                self.assertEqual(len(accepted),1);self.assertEqual(accepted[0]['deadline_us'],'120000000')
+                self.assertEqual([path for method,path,_ in calls if method=='GET'],['/management/v1/jobs/'+job,'/management/v1/me'])
+                self.assertEqual(len(json.loads((root/'adoption-old-cut.json').read_text())),4)
+                commands=json.loads((root/'adoption-old-cut.json').read_text())
+                with patch('installed_sync.validate_source') as checked_source,patch('installed_sync.validate_queued') as checked_job:
+                    check.adoption_source({}, {},commands,principal='actor')
+                    checked_source.assert_called_once_with({}, {},commands[:3],selector_document=check.ADOPTION_SELECTOR)
+                    checked_job.assert_called_once_with({},commands,ordinal=1,key='b1'*16,total_jobs=1,expected_principal='actor')
+                    for name in ('new-selector','new-deadline','replacement-job'):
+                        changed=copy.deepcopy(commands)
+                        if name=='new-selector':changed[2]['input']['selector']['filters'][0]['since']=23
+                        elif name=='new-deadline':changed[3]['input']['deadline_us']='240000000'
+                        else:changed.append(copy.deepcopy(changed[-1]))
+                        with self.subTest(name=name),self.assertRaises(AssertionError):check.adoption_source({}, {},changed,principal='actor')
+                for key,value in (('job_revision','2'),('created_at_us',str(ACCEPTED+1))):
+                    changed=copy.deepcopy(final);changed[key]=value
+                    with self.subTest(key=key),self.assertRaises(AssertionError):
+                        adoption_status(changed,dict(scope_id=scope),dict(job_id=job,accepted_at_us=str(ACCEPTED)),job_revision=revision)
+                for key,value in (('coverage','complete'),('gap_count',1),('retained_events',1),('queries_spent',4)):
+                    changed=copy.deepcopy(final);changed['linear_quantum'][key]=value
+                    with self.subTest(key=key),self.assertRaises(AssertionError):
+                        adoption_status(changed,dict(scope_id=scope),dict(job_id=job,accepted_at_us=str(ACCEPTED)),job_revision=revision)
 
     def test_negative_client_keeps_peer_until_its_host_gate_and_makes_no_successor_call(self):
         from linear_capped_client import run_adoption

@@ -119,3 +119,19 @@ The maintained `workflow-effect` refusal fixture isolates this join with one
 privileged metadata-corruption byte, and requires the actual executed INSERT and
 false Boolean SELECT on the same Control transaction. This fixture administration
 does not represent a genuine origin reservation or an unissued native mutation.
+
+An adopted lifetime with no new query still owns the unfinished job. Its ordinary
+attribution request and checkpoint remain real retained work even when it has no
+job-bound request or committed quantum. Close and seal that actual activated
+lifetime with `--seal-activated-acquisition`, then retire it explicitly before
+starting a newly minted `--activate-successor` writer. The second seal retains
+the previous continuation and may keep the same last global quantum number.
+Neither the lack of a new REQ nor an old activation row permits skipping this
+obligation or reconstructing the departed writer.
+The explicit `--linear-quantum-handoff zero-query` acceptance profile keeps Sync
+selected and loses epoch2's first plan COMMIT before forwarding. It qualifies
+normal adoption before that fault, its real attribution input, the second
+seal/retirement and epoch3 adoption/resumed transcript. Its two accepted recovery
+stability intervals fit the unchanged original job and client deadlines through
+actual native/PG lock fencing; other profiles retain their existing lease waits.
+Installed execution of this profile is a separate qualification gate.

@@ -1707,7 +1707,7 @@ science and no next socket, followed by nonmutating historical-only restart.
 An unselected fault, generic error, timeout or early proxy closure is not PASS.
 Each execution needs its own fresh evidence directory.
 
-These maintained recipes use three-event pages and same-current-owner finite
+The capped/window recipes above use three-event pages and same-current-owner finite
 continuation. They do not qualify full500-event pages, partitioning, sparse
 growth, fresh-owner adoption or physical capacity; those remain P03/P02 tasks.
 The [P03 evidence](../implementation/evidence/p03-initial-sync-native-20261002.json)
@@ -1715,6 +1715,26 @@ owns actual results, original failures and remaining gates: implementation of a
 recipe or portable control is not an installed PASS. Portable controls use
 `python3 -B tools/ci.py --control-suite acceptance`; they do not replace these
 installed PostgreSQL/native/socket journeys or the separate restart on/off cases.
+
+For the explicit zero-new-query handoff, use the same candidate/observer/evidence
+arguments with `--linear-quantum-scenario settled-owner-adoption
+--linear-quantum-fault plan-before --linear-quantum-handoff zero-query`.
+It excludes the other fault/refusal/retry/trace modifiers. Sync remains selected:
+the original Q1 settles, epoch2 adopts revision3 and completes its ordinary
+attribution request1, then a distinct proxy loses its first plan COMMIT before
+forwarding. Natural exit4, no committed epoch2 quantum and no second REQ are
+required. The independent native cut is113, not an activation-only91 or zero
+inputs. Actual exclusive recovery seals and retires that zero-query lifetime;
+a newly created epoch3 writer adopts the same job at revision4 and resumes global
+queries2–5 with both gaps and the original scope/horizon/budget/deadline.
+This profile alone uses positively joined native/backend custody and product
+lock fencing instead of the initial60s lease wait. Both accepted30s stability
+intervals must fit the unchanged120s job and110s peer gate; no limit/default is
+raised. Its startup and settlement share one derived stage budget. Short
+recovery commands use the actual file-bound root authorization TTL; long Serve
+phases must renew ordinary policy/SQL authority. Installed qualification remains
+NOT_RUN until its actual result and custody are recorded. Source controls add
+`test_linear_handoff` to the existing owning acceptance modules.
 
 The frozen `tests/fixtures/acquisition/linear-window-events.json` contains an
 alternate body at second23 and two distinct bodies at second172801. These use

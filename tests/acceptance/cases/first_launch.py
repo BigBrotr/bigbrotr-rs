@@ -1371,6 +1371,8 @@ def first_launch(args, checks, inputs):
             from cases.first_launch_capped_quantum import CappedQuantumRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
         if getattr(args,'linear_quantum_scenario',None)=='settled-owner-adoption':
             from cases.first_launch_capped_quantum import CappedAdoptionRuntime as LinearQuantumRuntime,ADOPTION_LIMITS as QUANTUM_LIMITS
+            if getattr(args,'linear_quantum_handoff',None)=='zero-query':
+                from cases.first_launch_handoff import ZeroQueryHandoffRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
         if getattr(args,'linear_quantum_scenario',None)=='window-succession':
             from cases.first_launch_window_succession import WindowSuccessionRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
         runtime_type=LinearQuantumRuntime

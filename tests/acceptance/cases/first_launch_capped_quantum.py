@@ -471,7 +471,7 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         if unsettled:oracle.adoption_unsettled_history(self.adoption_before,wires,self.events,self.adoption_first)
         else:oracle.adoption_history(self.adoption_before,wires,self.events,self.adoption_first)
         oracle.adoption_progress(self.adoption_before,self.initialized,self.events,wires,self.adoption_first,time.time_ns()//1000,epoch=1)
-        self.wait_control_expiry(output)
+        self.wait_adoption_owner_exclusion(output)
         if unsettled:
             self.refuse_unsettled_seal()
             return
@@ -496,6 +496,7 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         save(output/'retirement-report.json',retired)
         self.adoption_retired,_=self.capture(output,'retired')
         self.backend_absence(output);self.wires(1)
+        if self.after_adoption_retirement(output,closed):return
         if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
             oracle.adoption_recovery_prefix(self.adoption_before,self.adoption_sealed,self.adoption_retired,self.adoption_first)
             self.prepare_authority_refusal()
@@ -532,6 +533,12 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
 
     def refuse_unsettled_seal(self):
         self.failed_seal()
+
+    def wait_adoption_owner_exclusion(self,output):
+        self.wait_control_expiry(output)
+
+    def after_adoption_retirement(self,output,closed):
+        return False
 
     def start_seal_proxy(self):
         require(self.quantum_fault=='plan-before','seal fault requires settled Q1 and absent Q2')

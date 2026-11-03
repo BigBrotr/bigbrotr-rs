@@ -1,4 +1,4 @@
-"""Literal epoch1/epoch2 progress expectations over existing scientific models.
+"""Literal declared-producer progress expectations over existing scientific models.
 
 The216/72-byte encoding is reused; semantic counts, coordinates and event/input
 meaning are reconstructed here. No SQL or native engine is opened by this file.
@@ -27,7 +27,7 @@ from installed_sync_oracle import decode, expected as initial_science, SIGNED_SH
 from initial_succession_oracle import only, same
 
 
-def current_head_core(head, *, prefix_profile):
+def current_head_core(head, *, prefix_profile, producer_epoch=None):
     """Validate the closed42 no-base profile before reusing format1 digest math.
 
     The caller selects fresh initial/epoch2 independently. This is neither an
@@ -38,14 +38,16 @@ def current_head_core(head, *, prefix_profile):
         for field in ('bytes','sha256','generation','retired','source')}
     assert set(head)==typed.HEAD_FIELDS|slots|{'prefix_profile'}, 'closed current checkpoint fields'
     assert head['prefix_profile'] is prefix_profile, 'current checkpoint profile differs'
-    assert head['producer_epoch']==(1 if prefix_profile else 2), 'current checkpoint epoch differs'
+    expected=(1 if prefix_profile else 2) if producer_epoch is None else producer_epoch
+    assert type(expected) is int and (expected==1 if prefix_profile else 2<=expected<=255)
+    assert head['producer_epoch']==expected, 'current checkpoint epoch differs'
     assert all(head[field] is None for field in slots), 'current journey requires no prefix base or prepare'
     return {field:head[field] for field in typed.HEAD_FIELDS}
 
 
 def current_snapshot(head, jobs, dependencies, expected_head, expected_jobs,
-                     expected_dependencies, native, *, prefix_profile):
-    core=current_head_core(head,prefix_profile=prefix_profile)
+                     expected_dependencies, native, *, prefix_profile, producer_epoch=None):
+    core=current_head_core(head,prefix_profile=prefix_profile,producer_epoch=producer_epoch)
     return typed.exact_snapshot(core,jobs,dependencies,expected_head,expected_jobs,
         expected_dependencies,native)
 

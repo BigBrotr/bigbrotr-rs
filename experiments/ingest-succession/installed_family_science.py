@@ -120,17 +120,9 @@ class NetworkScience(FactEncoding):
         witness = [self.ref(1), self.ref(3), self.ref(5)] if provenance else None
         return [received, self.ref(2), quality, witness]
 
-    def network(self, provenance, dictionary_at, received, recorded, resolution, historical=None,
-                *, additional_events=(), historical_first=False):
-        # Optional finite encoder seam only. Callers must independently bind
-        # all event literals and clocks; no ACK or complete-run result is inferred.
-        assert type(historical_first) is bool
-        assert not historical_first or (provenance and historical is not None and not additional_events
-            and self.previous_event['created_at']==23 and self.new_event['created_at']==1)
-        if additional_events:
-            assert isinstance(additional_events, (tuple,list)) and len(additional_events)==2
-            assert historical is None
-            assert len({self.new_event['id'],*(event['id'] for event,_,_,_ in additional_events)})==3
+    def attribution(self, dictionary_at, *, provenance=True):
+        """The same ordinary non-job-bound setup request, independently encoded."""
+        assert type(provenance) is bool
         definitions = [(2, 'observer', dict(clock='system-utc', vantage=None, software=None,
             method_id=None, public_key=None, route_class=None, software_version=None))]
         if provenance:
@@ -146,6 +138,20 @@ class NetworkScience(FactEncoding):
         original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, self.epoch, 1], 'admit-evidence', 1,
             [1, self.scope, entries]])
         self.commit(1, original, list(range(1, n + 1)), [(1, 3)] + [(self.epoch, k) for k in range(1, n + 1)])
+        return n
+
+    def network(self, provenance, dictionary_at, received, recorded, resolution, historical=None,
+                *, additional_events=(), historical_first=False):
+        # Optional finite encoder seam only. Callers must independently bind
+        # all event literals and clocks; no ACK or complete-run result is inferred.
+        assert type(historical_first) is bool
+        assert not historical_first or (provenance and historical is not None and not additional_events
+            and self.previous_event['created_at']==23 and self.new_event['created_at']==1)
+        if additional_events:
+            assert isinstance(additional_events, (tuple,list)) and len(additional_events)==2
+            assert historical is None
+            assert len({self.new_event['id'],*(event['id'] for event,_,_,_ in additional_events)})==3
+        n=self.attribution(dictionary_at,provenance=provenance)
         dictionary_count=n
         if historical_first:
             old_received,old_recorded,old_resolution=historical

@@ -3,10 +3,11 @@ from installed_sync_client import publish
 from linear_capped_transport import SELECTORS
 
 
-def adoption_status(observed,scope,receipt):
+def adoption_status(observed,scope,receipt,*,job_revision=3):
     from installed_sync_client import COMMON_SELECTOR,quantum_status
+    assert type(job_revision) is int and job_revision in (3,4)
     assert {key:value for key,value in observed.items() if key!='linear_quantum'}==dict(
-        format='bigbrotr-job-status/1',job_id=receipt['job_id'],kind='acquisition',state='queued',job_revision='3',
+        format='bigbrotr-job-status/1',job_id=receipt['job_id'],kind='acquisition',state='queued',job_revision=str(job_revision),
         checkpoint_revision='0',created_at_us=receipt['accepted_at_us'],completed_at_us=None,
         observed_at_us=observed['observed_at_us'],reason_code=None,authority='observation-only')
     entries=dict(enumerate((('request',0,86400,86400),('request',0,24,86400),('request',0,23,86400),
@@ -66,6 +67,10 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     seal_retry=json.loads(retry_path.read_text()) if retry_path.exists() else None
     assert seal_retry is None or (seal_retry=='exact' and fault=='plan-before' and seal_fault is not None
         and adoption_fault is authority_refusal is integrity_refusal is None)
+    handoff_path=directory/'linear-quantum-handoff.json'
+    handoff=json.loads(handoff_path.read_text()) if handoff_path.exists() else None
+    assert handoff is None or (handoff=='zero-query' and fault=='plan-before'
+        and seal_fault is seal_retry is adoption_fault is authority_refusal is integrity_refusal is None)
     observations=[];errors=[]
     def call(path,value,key):
         code,answer=request('POST','/management/v1/'+path,value,{**auth,'Idempotency-Key':key})
@@ -117,13 +122,14 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
             barrier('adoption-old-cut',110)
             code,observed=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)
             assert code==200
-            adoption_status(observed,scope,receipt)
+            adoption_status(observed,scope,receipt,job_revision=4 if handoff else 3)
             publish(directory,'linear-status-observations.json',[observed])
             logged_out=cli('logout','--session-ref','file:'+str(session))
             assert json.loads(session.read_text())==saved
             assert request('GET','/management/v1/me',headers=auth)[0]==401
             barrier('commands-finished',15)
             result=dict(login=logged_in,logout=logged_out,observations=observations,job_status=observed)
+            if handoff is not None:result.update(handoff=handoff,gate_seconds=110)
     finally:
         finished.set();worker.join(4)
         assert not worker.is_alive(),'adoption relay did not join'
