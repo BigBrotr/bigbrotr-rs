@@ -2914,6 +2914,12 @@
         "receipt": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/path-portability-receipt.json",
         "sha256": "0e39d7da8d45bea3243af6c3869e5d3314d4396cf428114ec4c7a65e48c1d366",
         "scope": "Root32903/24ff51: all12 focused controls PASS under a symlink temporary directory after positive-fixture path canonicalization. Scientific/runtime oracles and product bytes unchanged."
+      },
+      "attempted_work_contract": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/native-work-contract-decision.json",
+        "sha256": "b0acec5eb5612e8ab225982fdcb9169ada4137d54462dbde332c00b595e9c9b9",
+        "status": "Selected mandatory profile2 journal; implementation partial in separate author worktrees, no build or runtime qualification. Attempted B/N and O separate; journal readiness cannot enable OPEN65.",
+        "remaining": "Continuous native allocation/output debt, essential PG share and accepted completion remain physical gates. No compaction multiplier or sampled peak promoted to hard bound."
       }
     }
   }

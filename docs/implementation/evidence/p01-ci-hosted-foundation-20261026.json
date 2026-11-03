@@ -3045,5 +3045,36 @@
         "status": "PASS_BOUNDED_NO_NEW_CANDIDATES"
       }
     }
+  },
+  "physical_diagnostic_publication_20261103": {
+    "revision": "16ebcb8ec0a02d9ba43063428070c688df9495d9",
+    "run": 41730927655,
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41730927655",
+    "status": "LINUX_RUNNING_ORIGINAL_MAC_FIXTURE_FAIL",
+    "publication": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/physical-publication-main-receipt.json",
+      "sha256": "ef9a9b9c8d7eda8918969f901b657f44dd107162b9dc9a79db6db941c9c58653"
+    },
+    "original_mac": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-16eb-macos-sol-20261103/classification-receipt.json",
+      "sha256": "7a5ab1ab0ca59c1da02ca242d129d5183288013ec022309255a3f9a9c75f67e8"
+    },
+    "correction": {
+      "author_revision": "4940f7a85a85993c6fd7a0d8fe6d7c3f8ae4e8b6",
+      "integrated_work_revision": "b82cd0db353c87d53820599c7ce7f2df745d24b6",
+      "scope": "Only test fixture. Actual allocation remains exact st_blocks*512. Literal sparse and block-rounded controls reject all3 false mappings;12PASS/1optional signerSKIP. No product rebuild required."
+    },
+    "corrected_mac": {
+      "run": 41734939803,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41734939803",
+      "revision": "477ccb82bd490102b828a894aae9184e19b453eb",
+      "status": "IN_PROGRESS_NOT_QUALIFIED",
+      "publication": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-16eb-macos-sol-20261103/publication-and-dispatch.json",
+        "sha256": "fd9d943713e03bc9aa9c90223986b2b95227d3343cabb9952127fb39e5ce0d30"
+      },
+      "scope": "Declared Mac-only matrix with identical9 maintained commands; normalmain matrix unchanged. Existing main16e Linux runs not canceled/repeated."
+    },
+    "limits": "Original Mac FAIL and6NOT_RUN remain, not product/billing/cancellation failure. Corrected hosted success and new Linux outcomes pending; prior input-equivalent scopes remain valid only for unchanged inputs. No aggregate currentmain foundationPASS claimed."
   }
 }
