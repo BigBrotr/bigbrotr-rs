@@ -79609,14 +79609,14 @@
           "resources": "Each22stopped/PID0/noOOM containers19compose+3native,7absent recorded processes,1116/1120absent commandPIDs and53sourcefiles; borrowedbridgeempty. Pinned94 control container990c4d7f stopped0/PID0/noOOM. ImmutableR21/R22 helper copies preserve actualbfb auditor/b393 invoke/c552 runner. No engines/compiler/cache work active; no cleanup. Original outcomes/source/mock/replay setup failures preserved."
         },
         "main_integration_20261103": {
-          "revision": "04e1a32f5c1d79b96fb61dfa600269b7d5ed1e72",
-          "state": "PUSHED_HOSTED_FOUNDATION_PASS",
-          "publication_receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/publication-04e1a32f-main-receipt.json",
-          "actual_push_root": 63826,
-          "terminal": "706f2b",
-          "hosted_run": 41684911843,
-          "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41684911843",
-          "observations": "Actual current04e scope20 and foundation36/36 PASS, all three platforms. Selection skips/declared ignores remain unexecuted; no release/fullM2 claim.",
+          "revision": "2c68fa69409b8b0c179a5f394b4efeab63668b4c",
+          "state": "PUSHED_LINUX_HOSTED_RUNNING_MAC_FIXTURE_FAIL",
+          "publication_receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/publication-2c68fa69-main-receipt.json",
+          "actual_push_root": 83135,
+          "terminal": "8e1d47",
+          "hosted_run": 41708352094,
+          "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41708352094",
+          "observations": "Current2cscopePASS/Linuxfoundationrunning/Mac1portableclocksetupERRORbefore6nativechecks. Prior04eall36PASS retained inP01. No currentaggregatehostedPASS.",
           "hosted_evidence": {
             "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-retry-1c205f8a/hosted-04e-verification/receipt.json",
             "sha256": "bafc429d2ff7a6f0f42077e686ee40ac9d1c4e36e30361f496152a1ae9b2d5c0"
@@ -79630,7 +79630,7 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-20261103",
           "branch": "work/m2-zero-query-handoff-20261103",
           "base": "04e1a32f5c1d79b96fb61dfa600269b7d5ed1e72",
-          "state": "BOUNDED_R26_QUALIFIED_ALL_OWNED_RESOURCES_STOPPED",
+          "state": "R26_MAIN_INTEGRATED_HOSTED_MAC_TEST_FIX_PENDING",
           "owner": "Sol author, Root sole integrator/launcher, Astra bounded critical review",
           "scope": "Current product672 pending-pressure precheck/currentharnessa297; actual samejob zero-query intermediate epoch then epoch3, unchangedbudgets/data, strict independent logout+audit. Original8dd source and failures preserved.",
           "retained_preflight": "/home/tux/bigbrotr-rs/.research/m2-zero-query-handoff-checks-20261103/retained-attribution-preflight.json",

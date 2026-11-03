@@ -7,10 +7,10 @@ Astra/xhigh critical boundaries. No official release/package/deployment authoriz
 ## Revision and qualified work
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, source HEAD **a2975aa0**. Five local Root
-documentation edits: this checkpoint, P03 task notes, P01/P03 evidence and inventory.
-This recording commit may advance HEAD with documentation only. Last actual
-push/main/origin **04e1a32f** (atomic push63826/terminal706f2b/receipt366b5dbf).
+`work/m2-finite-history-20261101`, HEAD/main/origin **2c68fa69**, actual atomic
+push83135/terminal8e1d47/receipt302c80d3. Local work is one portable test-clock
+fixture correction plus P01/P03 evidence, inventory and this checkpoint. Runtime
+source remains a297/product672; no product or installed-oracle changes.
 Local source adds handoff8dd/ac1, CI scope306/ffb, pressure672, diagnostic7ee and logout-oraclea297.
 Main04e qualifies the bounded settled continuation/retry/refusal cases; retained
 current-a464 tutorialR16 qualifies signed history/export/restart. No fullM2 claim.
@@ -35,13 +35,24 @@ FAIL remain unchanged, with corrected retained replay separately marked diagnost
 
 ## Active slice and next action
 
-Finish the coherent documentation/publication checks, fast-forward main and push
-the qualified slice. Require a real hosted run for the new product/policy revision;
-do not infer its result from prior04e. Continue the next existing M2 capability by
-actual dependency while hosted checks run. Sol is reading the current full500/
-relay-clamp/lost-candidate dependencies to recommend one bounded useful increment;
-no new source, engine or parallel plan from that read. Required scientific tools
-remain in the repository; ignored capsules record evidence, not product prerequisites.
+Current2c hosted run41708352094 has a Mac portable-test setup failure: the unit
+budget scenario omitted a simulated Linux BOOTTIME. Toolchain/format PASS,
+acceptance745 has1error/13skip, and6 later native checks are NOT_RUN. This is not
+billing, cancellation or observed product failure. The local unit fixture now
+injects constant/clock and still proves missing-clock refusal;16 controls pass
+with BOOTTIME absent and the affected final control passes. P01 owns raw evidence.
+Commit/push the coherent work-branch correction, use an explicitly scoped manual
+Mac foundation qualification with the same9 maintained checks, and preserve both
+ongoing2cLinux runs. Do not push main while that would cancel those runs. Retain
+qualification SHA/workflow-matrix differences; do not call omitted Linux PASS.
+
+The next product dependency is selected P02-T02 Step4's physically guarded OPEN65,
+not allP02: absolute64 and current-domain provenance make a default500-witness
+page impossible today. Exact-profile d/R bounds/runtime enforcement remain open;
+keep the existing guard until demonstrated. P03-T05 owns subsequent500-frame/
+100-distinct B-witness composition. No dictionary alias/corpus/provenance change
+may replace that requirement. Required tools remain in the repository; ignored
+capsules record evidence rather than private product prerequisites.
 
 Owners P03-T01 Steps3/7 and P03-T05 Steps2/4/7 retain handoff and later lost-candidate/
 full500/partitions/sparse growth. Scheduling/live/NEG/import/fleet/physical capacity
@@ -71,5 +82,7 @@ exposure (new candidate was a synthetic fixture canary). Selection SKIP/declared
 ignores remain unrun. Local scope306/ffb passed21 controls/four exact helper paths;
 unknown/runtime/build/workflow/selector changes retain foundation. Next product/
 policy-containing main push needs real full hosted CI; work pushes trigger none.
-Compiled CI reuse remains P08-T11 Step2. Publish this coherent increment after its
-required qualification; retain incomplete evidence and source honestly.
+Current2c run41708352094 has the Mac gap above; Linux jobs remain active. Prior04e
+stays the last full hosted PASS, without covering the new product's missing Mac
+native checks. Compiled CI reuse remains P08-T11 Step2. Keep all incomplete gates
+and original failures explicit while continuing independent product work.

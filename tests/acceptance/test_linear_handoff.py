@@ -528,7 +528,11 @@ class HandoffControls(unittest.TestCase):
             with self.assertRaises(AssertionError):check.closed_attribution(science,'\\x'+started['producer_slot_id'],dump)
 
     def test_two_stability_intervals_must_fit_both_original_job_and_unchanged_client_gate(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        # Exercise the Linux-only observation contract through an explicit clock
+        # fixture on every CI host; macOS intentionally lacks CLOCK_BOOTTIME.
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(case.time,'CLOCK_BOOTTIME',7,create=True), \
+                patch.object(case.time,'clock_gettime_ns',return_value=0) as clock:
             root=Path(temporary);before,*_=zero_fixture(root)
             for kind in ('config','policy'):
                 before[kind+'_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']=30_000_000
@@ -544,6 +548,10 @@ class HandoffControls(unittest.TestCase):
             runtime.clock.return_value=ACCEPTED+5_000_000
             before['policy_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']=1
             with self.assertRaises(AssertionError):runtime.remaining_budget(root,2)
+            clock.assert_called_with(7)
+            before['policy_revisions'][0]['document']['settings']['runtime.pressure_stable_duration']=30_000_000
+            with patch.object(case.time,'CLOCK_BOOTTIME',None):
+                with self.assertRaisesRegex(ValueError,'requires Linux CLOCK_BOOTTIME'):runtime.remaining_budget(root,2)
 
     def test_selector_excludes_competing_profiles_before_creating_evidence(self):
         spec=importlib.util.spec_from_file_location('handoff_runner_control',ROOT/'tests/acceptance/run.py')

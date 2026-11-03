@@ -2988,5 +2988,21 @@
     },
     "timing": "Already required04e full foundation74m04/61m30/56m30; prior actual controls65/72/86s on different revision. No causal speedup/compiled-cache claim. Next policy-containing main push still requires actual full foundation.",
     "publication_scope": "Coherent R26 handoff/pressure/product/policy slice will require fullfoundation on next main revision; current04e hosted36PASS remains separate. Current211 affectedharness controls/build8cb/Rust658/observerda2/R26d21 qualified, no CI reduction."
+  },
+  "current_handoff_publication_20261103": {
+    "revision": "2c68fa69409b8b0c179a5f394b4efeab63668b4c",
+    "status": "PUSHED_LINUX_RUNNING_MAC_PORTABLE_FIXTURE_FAIL",
+    "run": 41708352094,
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41708352094",
+    "publication": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/publication-2c68fa69-main-receipt.json",
+      "sha256": "302c80d3c80c77840d435feb1cff2ecf74cf980f9cb91a7c5df37d8663010575"
+    },
+    "mac_failure": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-macos-failure-classification.json",
+      "sha256": "392807c2c9a87b9caa571bab384ec03fe61676576b12eab531f326986580d436"
+    },
+    "scope": "Current2cMac exact745modelcontrols:1error/13skip; actual toolchain/formatPASS,6laterfoundationcommandsNOT_RUN. OtherLinuxnativejobs still running; preserve without cancellation. Newfixture-only work needs realMacverification; do not infer from localLinuxsimulation or prior04e.",
+    "next": "Current unit-clock correction preserves realLinuxprecondition. Use a declared Mac-only manualqualification branch with identical product/config/native/build/check inputs and all9Macchecks; retain actualqualificationSHA/matrixdifference. Normalmainmatrix stays unchanged. Publish mainfix only after ongoing2cLinux runs finish, avoiding cancellation; futureproduct changes still require fullmatrix."
   }
 }

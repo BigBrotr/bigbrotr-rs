@@ -2116,7 +2116,7 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "MAIN04E_HOSTED_PASS_LOCAL_ZERO_QUERY_R26_QUALIFIED_PENDING_PUBLICATION",
+    "status": "BOUNDED_R26_MAIN2C_INTEGRATED_HOSTED_MAC_TEST_FIX_PENDING",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
@@ -2772,7 +2772,7 @@
       "remaining": "Selected settled-continuation integration safety gates now closed within recorded slices. Main/hosted qualification and later acquisition capabilities remain open; no lost-candidate/zero-new-query/origin-unissued/full500 qualification."
     },
     "zero_query_handoff": {
-      "status": "PASS_BOUNDED_INSTALLED_ZERO_QUERY_HANDOFF_PENDING_MAIN_PUBLICATION",
+      "status": "PASS_BOUNDED_INSTALLED_R26_MAIN2C_INTEGRATED",
       "owner": "P03-T01 Steps3/7; P03-T05 Steps2/4/7",
       "source": "8dd01592e6f7a215dd38daf727c9eb30ac282b65",
       "integrated": "ac1f332c",
@@ -2871,7 +2871,12 @@
       },
       "capability": "Same finite job moves rev2\u21923\u21924 across epoch1\u2192zero-query epoch2\u2192real epoch3. One ordinary814B attribution/no epoch2quantum, originalfiveREQs/128querybudget/120sjob/110sclient/root5s/SQL60s preserved; two seals/adoptions, all old data/xmins/native inputs exact. Native85/86/113/114/167/rows63/63/84/84/123; two real30s stability periods. Exact logout/session and its atomic audit independently modeled. Coverage stayspending.",
       "source_correction": "Fresh Sync nominations observe actual native pending pressure at existing250ms cadence, advancing accepted stability without avoidable nominationSQL/debt. Existing selected jobs/effect authorization remain strict; native wrappers reject uncertainty/poison. Tests/oracles reconcile ordinarySync diagnostics and real authenticated logout, not product/limit relaxations.",
-      "remaining": "Lost-candidate/full500/partitions/sparse, scheduling/live/NEG/import/fleet/capacity and genuine origin-unissued path remain existingtask gates. No fullM2/release/capacity/Archive proof from R26."
+      "remaining": "Lost-candidate/full500/partitions/sparse, scheduling/live/NEG/import/fleet/capacity and genuine origin-unissued path remain existingtask gates. No fullM2/release/capacity/Archive proof from R26.",
+      "publication": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/publication-2c68fa69-main-receipt.json",
+        "sha256": "302c80d3c80c77840d435feb1cff2ecf74cf980f9cb91a7c5df37d8663010575"
+      },
+      "hosted_gap": "P01owns2cMacportableclockfixture failure; Linuxnativejobsrunning. Unit-onlyfix preservesallR26runtime/product/oracle inputs, no product/probe rebuild or installedrepeat."
     }
   }
 }
