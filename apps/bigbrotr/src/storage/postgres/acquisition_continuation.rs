@@ -223,14 +223,16 @@ impl ControlSession {
             // closure below. A pending request never reaches this insertion.
             let mut id = [0; 16];
             getrandom::fill(&mut id).map_err(|_| OwnerError::Unavailable)?;
+            // Bind Rust's base wire types before target-domain coercion, including
+            // parameters reused by the SELECT's predicates and checkpoint join.
             let changed=tx.execute("INSERT INTO control.acquisition_continuations(continuation_id,dataset_id,job_id,previous_job_revision,previous_continuation, \
                 previous_owner_resource,previous_owner_epoch,previous_owner_incarnation,scope_id,enrollment_generation,route_id,producer_slot_id,producer_epoch,manifest_sha256,shard_id, \
                 source_sequence,source_digest,checkpoint_revision,complete_through_request,checkpoint_sha256,last_quantum_number,sealing_resource,sealing_epoch,sealing_incarnation,sealed_at_us) \
-                SELECT $1,$2,$3,$4::text::numeric,(SELECT continuation_id FROM control.acquisition_continuations WHERE job_id=$3 AND adopted_job_revision=$4::text::numeric), \
-                $5,$6::text::numeric,$7,$8,$9::text::numeric,$10,$11,$12::text::numeric,$13,$14,$15::text::numeric,$16,coalesce(h.checkpoint_revision,0),$17::text::numeric,h.checkpoint_digest, \
-                $18::text::numeric,$19,$20::text::numeric,$21,(extract(epoch FROM clock_timestamp())*1000000)::bigint \
-                FROM (SELECT 1) anchor LEFT JOIN control.producer_checkpoints h ON h.producer_slot_id=$11 AND h.producer_epoch=$12::text::numeric \
-                WHERE NOT EXISTS(SELECT 1 FROM control.acquisition_continuations WHERE job_id=$3 AND previous_job_revision=$4::text::numeric)",
+                SELECT $1::bytea,$2::bytea,$3::bytea,$4::text::numeric,(SELECT continuation_id FROM control.acquisition_continuations WHERE job_id=$3::bytea AND adopted_job_revision=$4::text::numeric), \
+                $5::bytea,$6::text::numeric,$7::bytea,$8::bytea,$9::text::numeric,$10::bytea,$11::bytea,$12::text::numeric,$13::bytea,$14::bigint,$15::text::numeric,$16::bytea,coalesce(h.checkpoint_revision,0),$17::text::numeric,h.checkpoint_digest, \
+                $18::text::numeric,$19::bytea,$20::text::numeric,$21::bytea,(extract(epoch FROM clock_timestamp())*1000000)::bigint \
+                FROM (SELECT 1) anchor LEFT JOIN control.producer_checkpoints h ON h.producer_slot_id=$11::bytea AND h.producer_epoch=$12::text::numeric \
+                WHERE NOT EXISTS(SELECT 1 FROM control.acquisition_continuations WHERE job_id=$3::bytea AND previous_job_revision=$4::text::numeric)",
                 &[&&id[..],&&context.dataset.as_bytes()[..],&&job.id.as_bytes()[..],&job.revision.to_string(),&&old_resource[..],&old_epoch.to_string(),&&old_incarnation[..],
                 &&job.scope.as_bytes()[..],&binding.enrollment_generation.get().to_string(),&&binding.route_id.as_bytes()[..],&&context.slot.as_bytes()[..],&context.epoch.to_string(),&&context.manifest[..],
                 &i64::from(context.shard),&source.sequence.to_string(),&&source.digest[..],&source.requests.to_string(),&last.to_string(),&&current.resource_id.as_bytes()[..],&current.epoch.get().to_string(),&&current.process_incarnation.as_bytes()[..]])

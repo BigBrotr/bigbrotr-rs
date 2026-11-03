@@ -375,15 +375,15 @@ impl ControlSession {
             {
                 return Err(OwnerError::InvalidMetadata.into());
             }
-            let changed=tx.execute("UPDATE control.acquisition_continuations SET target_epoch=$2::text::numeric,target_manifest_sha256=$3, \
-                activation_sha256=$4,adopting_resource=$5,adopting_epoch=$6::text::numeric,adopting_incarnation=$7, \
+            let changed=tx.execute("UPDATE control.acquisition_continuations SET target_epoch=$2::text::numeric,target_manifest_sha256=$3::bytea, \
+                activation_sha256=$4::bytea,adopting_resource=$5::bytea,adopting_epoch=$6::text::numeric,adopting_incarnation=$7::bytea, \
                 adopted_job_revision=previous_job_revision+1,adopted_at_us=(extract(epoch FROM clock_timestamp())*1000000)::bigint, \
-                adoption_transaction=pg_current_xact_id() WHERE continuation_id=$1 AND adopted_at_us IS NULL",
+                adoption_transaction=pg_current_xact_id() WHERE continuation_id=$1::bytea AND adopted_at_us IS NULL",
                 &[&&fixed::<16>(&row,0)?[..],&context.epoch.to_string(),&&context.manifest[..],&&activation[..],
                     &&control.resource_id.as_bytes()[..],&control.epoch.get().to_string(),&&control.process_incarnation.as_bytes()[..]])
                 .await.map_err(backend)?;
-            let changed_job=tx.execute("UPDATE control.jobs SET job_revision=job_revision+1,owner_resource_id=$3,owner_epoch=$4::text::numeric,owner_incarnation=$5 \
-                WHERE job_id=$1 AND state='queued' AND job_revision=$2::text::numeric AND checkpoint_revision=0",
+            let changed_job=tx.execute("UPDATE control.jobs SET job_revision=job_revision+1,owner_resource_id=$3::bytea,owner_epoch=$4::text::numeric,owner_incarnation=$5::bytea \
+                WHERE job_id=$1::bytea AND state='queued' AND job_revision=$2::text::numeric AND checkpoint_revision=0",
                 &[&&job_id.as_bytes()[..],&previous.to_string(),&&control.resource_id.as_bytes()[..],&control.epoch.get().to_string(),&&control.process_incarnation.as_bytes()[..]])
                 .await.map_err(backend)?;
             if (changed, changed_job) != (1, 1) {
