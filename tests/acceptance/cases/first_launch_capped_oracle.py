@@ -397,16 +397,21 @@ def adoption_seal_eligibility(state,observed_at_us):
     assert actor['active'] is True
     source.only(state['principal_grants'],dataset_id=job['dataset_id'],principal_id=detail['actor_id'],
         action='roles.control',resource_kind='dataset',resource_id=job['dataset_id'])
+    authorization=[]
     for kind in ('config','policy'):
         revision=source.only(state[kind+'_revisions'],dataset_id=job['dataset_id'],revision=job[kind+'_revision'])
         assert dataset[kind+'_revision']==job[kind+'_revision']==1
         assert revision['document']['format']=='bigbrotr-product-policy/3'
         assert revision['document']['settings']['sync.enabled'] is True
+        authorization.append(revision['document']['settings']['runtime.authorization_ttl'])
+    source.exact(authorization[0],authorization[1],'accepted authorization interval differs')
+    authorization_us=source.clock(authorization[0],1,2**64-1)
     scope=source.only(state['acquisition_scopes'],scope_id=detail['scope_id'])
     assert scope['policy_revision']==job['policy_revision']
     enrollment=source.only(state['relay_enrollments'],dataset_id=job['dataset_id'],
         endpoint_id=scope['endpoint_id'],access_scope_id=scope['access_scope_id'])
     assert enrollment['enabled'] is True and enrollment['generation']==1
+    return authorization_us
 
 
 def adoption_unsettled_refusal(before,after,first,wires,events,before_us,returned_us,after_us):

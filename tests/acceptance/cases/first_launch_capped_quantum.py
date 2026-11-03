@@ -488,14 +488,24 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         output=self.root/'unsettled-seal-refusal';output.mkdir(mode=0o700)
         clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
         before_us=int(self.sql('bigbrotr_control',clock))
-        oracle.adoption_seal_eligibility(self.adoption_before,before_us)
+        authorization_us=oracle.adoption_seal_eligibility(self.adoption_before,before_us)
+        boottime=getattr(time,'CLOCK_BOOTTIME',None)
+        require(boottime is not None,'unsettled seal refusal prerequisite: Linux CLOCK_BOOTTIME is required')
+        # Product policy authority uses Linux boottime too. Every fresh policy
+        # tracker is created inside this conservative whole-attempt interval.
+        started_ns=time.clock_gettime_ns(boottime)
         entry=self.launch('refuse-unsettled-seal','app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
         ended=self.docker('wait',entry['id'],timeout=180)
+        attempt_ns=time.clock_gettime_ns(boottime)-started_ns
         returned_us=int(self.sql('bigbrotr_control',clock))
         self.logs(entry,output);terminal=self.inspect(entry)
+        save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
+        save(output/'authorization-interval.json',dict(clock='CLOCK_BOOTTIME',elapsed_ns=attempt_ns,
+            accepted_authorization_ttl_us=authorization_us,command_returned_at_us=returned_us))
+        require(type(attempt_ns) is int and 0<=attempt_ns<authorization_us*1000,
+            'unsettled seal refusal prerequisite: recovery attempt exceeded accepted authorization interval')
         require(ended.stdout.strip()=='4' and terminal['State']['ExitCode']==4 and terminal['State']['Pid']==0
             and not terminal['State']['Running'] and not terminal['State']['OOMKilled'],'unsettled seal recovery did not exit4 naturally')
-        save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
         oracle.adoption_unsettled_error((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
         self.backend_absence(output)
         self.adoption_refused,_=self.capture(output,'refused')

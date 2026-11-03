@@ -246,7 +246,7 @@ def unsettled_fixture(root):
     before['local_accounts']=[dict(dataset_id=dataset,principal_id=job['principal_id'],active=True)]
     before['principal_grants']=[dict(dataset_id=dataset,principal_id=job['principal_id'],action='roles.control',
         resource_kind='dataset',resource_id=dataset)]
-    document=dict(format='bigbrotr-product-policy/3',settings={'sync.enabled':True})
+    document=dict(format='bigbrotr-product-policy/3',settings={'sync.enabled':True,'runtime.authorization_ttl':5_000_000})
     for kind in ('config','policy'):
         before[kind+'_revisions']=[dict(dataset_id=dataset,revision=1,document=copy.deepcopy(document))]
     before['acquisition_scopes'][0]['policy_revision']=1
@@ -320,11 +320,18 @@ class CappedAdoptionControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             baseline,closed,_,events,wires,first,_,_,start,end=unsettled_fixture(Path(temporary))
             for name in ('actor','grant','policy','source','expiry','old-owner-live','fresh-owner-expired','seal','activation',
+                    'authorization-zero','authorization-boolean','authorization-string','authorization-disagree','authorization-missing',
                     'retirement','closure-cut','closure-digest','deadline','job-xmin','old-row-xmin','pending-xmin','input','role','source-identity'):
                 before=copy.deepcopy(baseline);after=copy.deepcopy(closed);finish=end
                 if name=='actor':before['local_accounts'][0]['active']=False
                 elif name=='grant':before['principal_grants']=[]
                 elif name=='policy':before['policy_revisions'][0]['document']['settings']['sync.enabled']=False
+                elif name in ('authorization-zero','authorization-boolean','authorization-string'):
+                    for kind in ('config','policy'):
+                        before[kind+'_revisions'][0]['document']['settings']['runtime.authorization_ttl']={
+                            'authorization-zero':0,'authorization-boolean':True,'authorization-string':'5000000'}[name]
+                elif name=='authorization-disagree':before['policy_revisions'][0]['document']['settings']['runtime.authorization_ttl']=6_000_000
+                elif name=='authorization-missing':del before['policy_revisions'][0]['document']['settings']['runtime.authorization_ttl']
                 elif name=='source':before['relay_enrollments'][0]['enabled']=False
                 elif name=='expiry':finish=after['acquisition_jobs'][0]['deadline_at_us']
                 elif name=='old-owner-live':source.only(before['owner_epochs'],role='control')['lease_expires_at_us']=start+1
@@ -341,14 +348,14 @@ class CappedAdoptionControls(unittest.TestCase):
                 elif name=='input':after['producer_requests'][3]['request_digest']='\\x'+'ff'*32
                 elif name=='role':after['role_instances'].pop()
                 else:after['source_streams'][0]['shard_id']=1
-                with self.subTest(name=name),self.assertRaises((AssertionError,ValueError)):
+                with self.subTest(name=name),self.assertRaises((AssertionError,ValueError,KeyError)):
                     check.adoption_unsettled_refusal(before,after,first,wires,events,start,end,finish)
             for stdout,stderr in (('{}','error: producer operation unavailable: Control(InvalidMetadata)\n'),
                     ('','error: database constraint 23514\n'),('','error: producer operation unavailable: Control(Unavailable)\n'),('','')):
                 with self.subTest(stdout=stdout,stderr=stderr),self.assertRaises(AssertionError):check.adoption_unsettled_error(stdout,stderr)
 
     def test_failed_seal_requires_natural_exact_refusal_and_captures_before_releasing_peer(self):
-        for fault in ('none','exit','error','native'):
+        for fault in ('none','exit','error','native','authorization-duration','clock','clock-reversed'):
             with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);before,after,report,events,wires,first,_,closed,start,end=unsettled_fixture(root)
                 runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root
@@ -379,13 +386,30 @@ class CappedAdoptionControls(unittest.TestCase):
                     return 0
                 runtime.client.wait.side_effect=joined
                 if fault=='native':closed['sequence']=87
-                with patch.object(case.native,'census',return_value=closed) as census,patch.object(case,'stop_process'):
+                samples=[1_000_000_000,6_000_000_000] if fault=='authorization-duration' else [
+                    2_000_000_000,1_000_000_000] if fault=='clock-reversed' else [1_000_000_000,2_000_000_000]
+                with patch.object(case.native,'census',return_value=closed) as census,patch.object(case,'stop_process'),\
+                        patch.object(case.time,'CLOCK_BOOTTIME',None if fault=='clock' else 7,create=True),\
+                        patch.object(case.time,'clock_gettime_ns',side_effect=samples) as measured:
                     if fault=='none':runtime.refuse_unsettled_seal()
+                    elif fault in ('authorization-duration','clock-reversed'):
+                        with self.assertRaisesRegex(ValueError,'unsettled seal refusal prerequisite: recovery attempt exceeded accepted authorization interval'):
+                            runtime.refuse_unsettled_seal()
+                    elif fault=='clock':
+                        with self.assertRaisesRegex(ValueError,'unsettled seal refusal prerequisite: Linux CLOCK_BOOTTIME'):
+                            runtime.refuse_unsettled_seal()
                     else:
                         with self.assertRaises((AssertionError,ValueError)):runtime.refuse_unsettled_seal()
-                    runtime.launch.assert_called_once_with('refuse-unsettled-seal','app','ingest','recover','--file',
-                        '/etc/bigbrotr/instance.toml','--seal-acquisition')
-                    runtime.docker.assert_called_once_with('wait','ab'*32,timeout=180)
+                    if fault=='clock':runtime.launch.assert_not_called();runtime.docker.assert_not_called();measured.assert_not_called()
+                    else:
+                        runtime.launch.assert_called_once_with('refuse-unsettled-seal','app','ingest','recover','--file',
+                            '/etc/bigbrotr/instance.toml','--seal-acquisition')
+                        runtime.docker.assert_called_once_with('wait','ab'*32,timeout=180)
+                        self.assertEqual([observed.args for observed in measured.call_args_list],[(7,),(7,)])
+                    if fault=='authorization-duration':
+                        self.assertEqual(json.loads((root/'unsettled-seal-refusal/authorization-interval.json').read_text()),
+                            dict(clock='CLOCK_BOOTTIME',elapsed_ns=5_000_000_000,accepted_authorization_ttl_us=5_000_000,
+                                command_returned_at_us=end))
                     if fault=='none':
                         self.assertEqual(runtime.processes,[])
                         census.assert_called_once_with(runtime,root/'unsettled-seal-refusal',expected_writer_exit=4,
