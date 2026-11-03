@@ -92,20 +92,20 @@ class LinearQuantumRuntime(Runtime):
             boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority','empty-terminal-authority') else ('plan','held')
             path=self.source/'experiments/archive-engine/native_commit_proxy.py'
             self.inputs['acceptance_files_sha256'][str(path.relative_to(self.source))]=digest(path)
-            profile='default' if self.quantum_fault in ('plan-before','plan-after') else 'retained-catch-up'
+            ordinal=self.quantum_proxy_ordinal()
+            require(type(ordinal) is int and 1<=ordinal<=128,'invalid quantum proxy COMMIT ordinal')
+            profile='default' if ordinal==1 and self.quantum_fault in ('plan-before','plan-after') else 'retained-catch-up'
             mode=('hold-source-rollback-reply' if self.quantum_fault=='empty-terminal-authority' else
                 'hold-reply' if direction=='held' else 'before-forward' if direction=='before' else 'after-complete')
             target=('control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
                 'control-quantum-'+('plan' if boundary=='plan' else 'terminal'))
-            # Body/authority captures include more framed Control work before
-            # the selected boundary. Reuse the existing finite traffic profile;
+            # Later ordinals and body/authority captures include more framed
+            # Control work before the selected boundary. Reuse its finite profile;
             # this changes neither its64MiB/120s bounds nor product admission.
             self.quantum_proxy_binding=dict(source_sha256=digest(path),mode=mode,target=target,profile=profile,
                 frame_limit=20000 if profile=='default' else 131072,
                 connection_limit=16 if profile=='default' else 64,connection_limit_scope='lifetime',
                 wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432)
-            ordinal=self.quantum_proxy_ordinal()
-            require(type(ordinal) is int and 1<=ordinal<=128,'invalid quantum proxy COMMIT ordinal')
             if ordinal!=1:self.quantum_proxy_binding['commit_ordinal']=ordinal
             self.inputs['quantum_proxy']=self.quantum_proxy_binding
             command=[sys.executable,'-B',str(path),'--mode',mode,'--target',target,'--upstream-port','15432']

@@ -727,21 +727,32 @@ class LinearQuantumControls(unittest.TestCase):
                 self.assertEqual(saved['port'],34567)
                 self.assertEqual(saved['direct_recipe_sha256'],hashlib.sha256(original.encode()).hexdigest())
 
-    def test_fault_profiles_keep_plan_default_and_bound_body_terminal_and_authority_captures(self):
+    def test_fault_profiles_keep_first_plan_default_and_bound_completed_history_captures(self):
         from cases import first_launch_linear_quantum as case
-        vectors=(('plan-before','before-forward','plan','default',20000,16),
-            ('plan-after','after-complete','plan','default',20000,16),
-            ('terminal-before','before-forward','terminal','retained-catch-up',131072,64),
-            ('terminal-after','after-complete','terminal','retained-catch-up',131072,64),
-            ('gap-write','hold-reply','plan','retained-catch-up',131072,64),
-            ('stale-authority','hold-reply','plan','retained-catch-up',131072,64),
-            ('empty-terminal-authority','hold-source-rollback-reply','source-rollback','retained-catch-up',131072,64))
-        for fault,mode,target,profile,frames,connections in vectors:
-            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
+        from cases.first_launch_capped_quantum import CappedAdoptionRuntime
+        vectors=(('plan-before',1,'before-forward','plan','default',20000,16),
+            ('plan-after',1,'after-complete','plan','default',20000,16),
+            ('plan-before',2,'before-forward','plan','retained-catch-up',131072,64),
+            ('plan-after',2,'after-complete','plan','retained-catch-up',131072,64),
+            ('plan-before',128,'before-forward','plan','retained-catch-up',131072,64),
+            ('plan-after',128,'after-complete','plan','retained-catch-up',131072,64),
+            ('terminal-before',1,'before-forward','terminal','retained-catch-up',131072,64),
+            ('terminal-after',1,'after-complete','terminal','retained-catch-up',131072,64),
+            ('gap-write',1,'hold-reply','plan','retained-catch-up',131072,64),
+            ('stale-authority',1,'hold-reply','plan','retained-catch-up',131072,64),
+            ('empty-terminal-authority',1,'hold-source-rollback-reply','source-rollback','retained-catch-up',131072,64))
+        for fault,ordinal,mode,target,profile,frames,connections in vectors:
+            with self.subTest(fault=fault,ordinal=ordinal),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary)
-                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                # Exercise the real adoption override for its exact before-Q2
+                # route; other later ordinals isolate the base selector boundary.
+                runtime_type=CappedAdoptionRuntime if fault=='plan-before' and ordinal==2 else case.LinearQuantumRuntime
+                runtime=runtime_type(SimpleNamespace(evidence=root,
                     source_root=Path(__file__).resolve().parents[2],linear_quantum_fault=fault),
                     dict(acceptance_files_sha256={}))
+                if runtime_type is case.LinearQuantumRuntime and ordinal!=1:
+                    runtime.quantum_proxy_ordinal=Mock(return_value=ordinal)
+                self.assertEqual(runtime.quantum_proxy_ordinal(),ordinal)
                 runtime.home=root/'home';runtime.home.mkdir()
                 runtime.config=root/'instance.toml'
                 runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:15432"\n')
@@ -751,12 +762,14 @@ class LinearQuantumControls(unittest.TestCase):
                     target='control-quantum-'+target,profile=profile,frame_limit=frames,connection_limit=connections,
                     connection_limit_scope='lifetime',wire_limit=67108864,lifetime_seconds=120,
                     upstream_host='127.0.0.1',upstream_port=15432)
+                if ordinal!=1:binding['commit_ordinal']=ordinal
                 ready=dict(binding,event='ready',port=34567)
                 runtime.proxy_process=Mock(return_value=SimpleNamespace(process=SimpleNamespace(pid=123)))
                 runtime.proxy_event=Mock(return_value=ready)
                 with patch.object(case.Runtime,'bootstrap'):runtime.bootstrap()
                 expected=[case.sys.executable,'-B',str(source),'--mode',mode,'--target','control-quantum-'+target,
                     '--upstream-port','15432']
+                if ordinal!=1:expected+=['--commit-ordinal',str(ordinal)]
                 if profile!='default':expected+=['--profile','retained-catch-up']
                 runtime.proxy_process.assert_called_once_with(expected,input_pipe=True)
                 self.assertEqual(runtime.inputs['quantum_proxy'],binding)
