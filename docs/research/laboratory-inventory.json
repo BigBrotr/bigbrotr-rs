@@ -79299,7 +79299,7 @@
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "PreserveR1/R2/R3/R4originalFAIL/PG/native/logs, currentproduct/source/receipts andactiveR5unique data. No cleanup. Earlier compilerfailures andSQLsetupfailures unchanged; fullfutureacceptance gates remainopen.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "Implement/review boundedimmutable-read drain+knownrollback/nativeleasevalidation; actualfirstDMLgate afterhelperload; globalcancelrestoredforeffects, late-successoriginaldeadlinechecktypederrorsfirst. Thenfreshcurrentproduct/affectedtests/observer andsameinstalledjourney. Noexpectedexitweakening.",
+        "next": "Freshcurrentstrict/workerboundproduct,4affectedRusttargets withexplicitnew9+retained27controls, observer thenactualinstalledfivequery+orderlySTOP/fullscience. No reuseofoldeffdplannerbinary forchangedbehavior.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79366,11 +79366,14 @@
           "branch": "work/m2-adoption-plan-stop-20261103",
           "base": "89321b51",
           "owner": "Astraimplementationagent; independentAstrareviewerread-only; Rootintegrator/launcher",
-          "state": "SOURCE_IMPLEMENTATION_PENDING_FRESH_PRODUCT_QUALIFICATION",
+          "state": "CODE_COMMITTED_INTEGRATED_CRITICALLY_REVIEWED_NO_BUILD_OR_ENGINE_YET",
           "effective_review_configuration": {
             "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/plan-stop-reviewer-configuration.json",
             "sha256": "46fa64dfe8396fae2c458e6d08b713f5250a050ff0f795bc7af2773c6abf58ea"
-          }
+          },
+          "original_head": "91013605ac2619aec7a423bfce4817af3e0c6496",
+          "integrated_head": "2d070f62e5a7cb92585074e76320ccde8b0e70cf",
+          "ownership": "Astrawriter+independentAstrareview complete; Rootowns integration andallnextprocesses."
         },
         "acceptance_source_controls_32a5": {
           "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/acceptance-source-controls-32a5-receipt.json",

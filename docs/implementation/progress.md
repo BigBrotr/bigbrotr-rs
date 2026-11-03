@@ -8,7 +8,7 @@ releases nor packages/deployment.
 ## Revision and capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **89321b51** before this checkpoint.
+`work/m2-finite-history-20261101`, observed HEAD **2d070f62** before this checkpoint.
 Canonical main/origin/actual remote are **5a9b7cc4**, clean/pushed, full hosted PASS.
 Reviewed M2 production/oracle, fixture corrections, wire SQL types and now cached
 PL/pgSQL record types are integrated locally. No installed same-job continuation
@@ -138,12 +138,21 @@ image: **701PASS/0SKIP**, Root71764 reaped0, receiptec12eefc. This single full
 source-suite run follows the shared CLI/fixture changes; unchanged export/proxy
 controls remain reused. No cache/protectedELF/store/engine mounts; containerstopped.
 
-Astra writer owns `.research/m2-adoption-plan-stop-20261103` on
-`work/m2-adoption-plan-stop-20261103`, base89321b51. A second independent Astra
-reviews the exact read/effect/deadline boundary before qualification. Actual
-reviewer configuration Astra/xhigh is verified once from effective local metadata;
-no internal Codex state was modified. Root alone integrates/launches. No engine,
-compiler or cache holder active; source implementation/review remains in progress.
+Planner correction is integrated: original81780d93/91013605, Root981b92d5/
+2d070f62, three Rust files and the existing cancellation paragraph. Separate read
+cancellation drains only the pre-effect prefix, with known rollback and final
+native/lease validation. Each INSERT gates after its last load; admitted effects
+retain global cancellation and unknown-COMMIT handling. Typed errors precede the
+caller's original late-success deadline check; no committed plan becomes a STOP
+no-op. All SQL literals, native formats, quotas and accepted policy unchanged.
+
+Independent Astra review of final910 source/tree finds no issue; actual effective
+Astra/xhigh configuration was verified at creation without modifying internal
+Codex data. Writer format/parse/diff checks PASS. **Nine new Rust controls NOT_RUN**
+until Root's fresh compiler; exact six library/three binary names are in P03.
+Original R7 FAIL remains; final installed shutdown/Native139 still unqualified.
+Source work is saved in `.research/m2-adoption-plan-stop-20261103`, clean910.
+No agent writer, engine, compiler or cache holder active; Root alone launches.
 
 [Inventory](../research/laboratory-inventory.json) owns resources. Preserve unique
 data/failures/.research/worktrees. No new cleanup; October31 recovery reconciled.
@@ -154,12 +163,10 @@ strict checks, Rust and native controls. [P01](evidence/p01-ci-hosted-foundation
 owns exact results, skips/ignores and bounded public artifact/log inspection.
 No hosted observer active; this result does not cover later M2.
 
-**Next Root action:** collect/review the bounded planner STOP correction and
-source-bound discriminating tests. Preserve original lease/grant/deadline through
-immutable read and known rollback; gate immediately before actual INSERTs after
-loads, restore normal effect cancellation and preserve real errors/CommitUnknown.
-Then freeze and qualify a fresh changed product/affected Rust/observer using the
-retained guarded recipes and R7failure input; repeat the same installed journey.
-No fixture exit weakening, whole-planner false token or arbitrary timeout change.
-R5/R6/R7 remain original FAIL; all later negative/lost-candidate/zero-query gates
-remain open. Advance the next useful M2 capability after this slice closes.
+**Next Root action:** freeze reviewed current source plus this checkpoint; use
+existing generic guarded preparation with actualefd R7failure8127f56c. Run fresh
+strict/worker-bound product, four affected Rust targets with explicit new9 and
+retained27 passing controls, exact-parent observer, then the same five-query and
+clean-STOP installed journey. Preserve genuine errors, original deadlines and all
+later negative/lost-candidate/zero-query gates. No oldplannerbinary reuse for the
+changed responsibility. No goal/milestone completion inferred from source review.
