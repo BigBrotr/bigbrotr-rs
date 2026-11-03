@@ -8,34 +8,38 @@ releases nor packages/deployment.
 ## Revision and demonstrated capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **a464cc63** before this checkpoint.
+`work/m2-finite-history-20261101`, observed HEAD **4d683eaa** before this checkpoint.
 Canonical main/origin were **5a9b7cc4**, clean/pushed with full hosted PASS.
 The M2 continuation slice remains separate from main pending its negative gates.
-Current local changes are this checkpoint and its existing P03/inventory records.
+Branch commit **36d70ec4** is pushed; reviewed SQL fixture **283042de** is integrated
+locally as **4d683eaa**, with its qualification recorded below.
 
-The frozen clean product/acceptance **a464cc63**, tree390e0432, includes the
+The frozen clean product/acceptance **a464cc63**, tree **390e0432**, includes the
 independently reviewed planner STOP correction. Strict all-target, Clippy,
 explicit-Dwarnings Rustdoc and fresh worker-bound release PASS; unfiltered
-711/237/40/24 Rust tests PASS, including all27 retained and9 new required controls.
+711/237/40/24 Rust tests PASS, including all 27 retained and 9 new required controls.
 Five declared dedicated library ignores remain NOT_RUN. The exact-parent native
-observer and private installed bundle qualify. Root8816/24096/58693/56709 reaped0;
-receiptsb969f355/e1ba6c8a/61c0d2c0/767e9e47 bind actual current artifacts.
+observer and private installed bundle qualify. Root tools 8816/24096/58693/56709
+reaped with exit 0; receipts b969f355/e1ba6c8a/61c0d2c0/767e9e47 bind the artifacts.
 
-Installed **R9 Root73521 reaped0**,120.822s: all7 maintained stages PASS, including
+Installed **R9, Root tool 73521, exit 0**, 120.822 s: all 7 maintained stages PASS,
+including
 same-job adoption, five-query traversal and clean successor shutdown. Root custody
-69c7102d verifies21 containers stopped/PID0/noOOM,6 processes and1656 command PIDs
-absent,53 acceptance source files and an empty preserved borrowed bridge.
-Independent scientific receiptd2959b82 PASS verifies the same JobId/original120s/
-HWB128,5EVENTs/bodies24,23,1/two gaps, old rows/xmins/inputs and full native proofs.
-Actual censuses are85/86/139; activation91 is independently reconstructed, not a
-separate observed census. Coverage stays pending; negative/repeated gates remain. The separate R8 metadata setup failure8e68af44 occurred before
+69c7102d verifies 21 stopped containers (PID 0, no OOM), 6 absent processes and
+1656 absent command PIDs, 53 acceptance files and an empty preserved borrowed bridge.
+Independent scientific receipt d2959b82 PASS verifies the same JobId, original
+120 s deadline, H/W/B and query budget 128, 5 EVENTs, bodies 24/23/1, both gaps,
+old rows/xmins/inputs and full native proofs. Actual censuses are 85/86/139;
+activation 91 is independently reconstructed, not a separate observed census.
+Coverage stays pending; negative/repeated gates remain.
+The separate R8 metadata setup failure 8e68af44 occurred before
 the maintained runner/product started; its original log/session remain retained.
 
 [P03](evidence/p03-initial-sync-native-20261002.json),
 `settled_owner_adoption_root_integration_20261103`, owns exact artifacts, source
-identities, original R1–R7 failures, diagnoses and scoped corrections. R5/R6's20s
-wait could not cross accepted30s recovery stability; the fixture now derives
-30s+20s strictly within the original120s deadline. R7 reached five settled queries
+identities, original R1–R7 failures, diagnoses and scoped corrections. R5/R6's 20 s
+wait could not cross accepted 30 s recovery stability; the fixture now derives
+30 s + 20 s strictly within the original 120 s deadline. R7 reached five settled queries
 but failed STOP during immutable history validation. The current correction drains
 only that read prefix through authenticated rollback; each real write retains
 original cancellation and unknown-COMMIT handling. No quotas/native formats/SQL
@@ -43,44 +47,48 @@ semantics or accepted policy changed. Original failures remain FAIL.
 
 ## Remaining acceptance and next bounded action
 
-Current P03-T01 Step3/T05 Steps2/4/7 and P02 succession own the remaining SQL
-64/65 distinct claims/gaps/pending-or-finalized seals, authority, unresolved/unknown
-COMMIT and original-expiry qualification. Finalized seals retain the old-source
-obligation after adoption. Existing SQL typing proof is claim-only; Python union
-controls are not connected SQL proof. Positive Native85/86/139 science and activation91 base are authenticated against
-the actual installed captures; this is not physical capacity qualification.
+Current P03-T01 Step3/T05 Steps2/4/7 and P02 succession own the remaining actual
+negative authority, unresolved/unknown COMMIT and original-expiry qualification.
+Connected SQL UNION 64/65 is now qualified: Root tool 82232 exited 0, receipt
+e64631ee, 12 literal cases/48 same-backend calls, 20 accepts/28 exact 23514 refusals. Pending
+and finalized seals both count; adoption retains the old-source obligation.
+Full Control schema/data are identical after rollback. This is accounting proof,
+not guarded adoption/native/authority/uncertain-COMMIT proof. Positive native
+85/86/139 science and activation 91 base are authenticated against the actual
+installed captures; this is not physical capacity qualification.
 
-Sol is extending the existing SQL fixture and lab action in
-`.research/m2-continuation-union-fixture-20261103`, branch
-`work/m2-continuation-union-fixture-20261103`, basea464cc63. It is partial,
-not integrated or engine-tested. Astra reviews its literal oracle and PASS/FAIL
-handling before Root runs actual PG16.15 on a new empty current-schema database.
-Root reuses the unchanged qualified product; fixture-only changes require no build.
+The existing SQL fixture/lab action in
+`.research/m2-continuation-union-fixture-20261103`, clean **283042de**, was independently
+reviewed by Astra before that new PG16.15 run. The current qualified a464
+product is reused; no rebuild. Its two owned containers are stopped (PID 0, no OOM);
+new internal no-port network empty/retained. Unique PG/streams/function/dumps are
+in `/home/tux/bigbrotr-implementation-20260917/runs/m2-continuation-union-sql-20261103`.
 
 Later lost-candidate/zero-new-query process handoffs remain explicit next M2
-qualification. Full500, partitions, sparse growth, scheduling/live/NEG/import/fleet
+qualification. Full 500, partitions, sparse growth, scheduling/live/NEG/import/fleet
 and physical capacity retain existing later tasks, not prerequisites invented for
 this bounded slice. M1 evidence remains in the phase index; no all-P02 barrier.
 
 ## Resources, evidence and CI
 
-Current engine/compiler/installed tools are reaped; cache115 is released and
-original four protected ELF fullstat/O_NOATIME postguards completed. Sol fixture writer/Astra reviewer are the active agents;
-no agent launches engines or compilers. Root alone owns subsequent execution.
+Current engine/compiler/installed tools are reaped; cache 115 is released and
+the four protected ELF fullstat/O_NOATIME postguards completed. SQL writer/reviewer
+work is complete; Astra is resolving the next bounded installed negative schedules.
+No agent launches engines or compilers. Root alone owns subsequent execution.
 Current capsule `.research/m2-adoption-core-qualification-20261103/a464cc63` and
 runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63`
 retain all private inputs/PG/native/logs. Old labs, cold-copy SQL-only observation,
 failed runs and worktrees stay preserved; [inventory](../research/laboratory-inventory.json)
 owns locations. No new cleanup; October31 recovery already reconciled.
 
-Maintained acceptance source controls701PASS/0SKIP, Root71764, receiptec12eefc,
+Maintained acceptance source controls: 701 PASS/0 SKIP, Root tool 71764, receipt ec12eefc,
 remain valid for unchanged fixture code. Earlier export/proxy evidence is reused.
 [5a9 CI41546602945](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945)
-is latest full hosted **PASS36/36 +scope20**. [P01](evidence/p01-ci-hosted-foundation-20261026.json)
+is latest full hosted **PASS 36/36 + scope 20**. [P01](evidence/p01-ci-hosted-foundation-20261026.json)
 owns exact results, declared skips/ignores and public artifact/log inspection.
 This hosted result does not cover later M2; no current remote observer.
 
-**Next:** review and run the maintained
-SQL union fixture with current source/checksum and independent literal64/65
-expectations. Keep authority/uncertainty/expiry and later handoff gates explicit;
-no goal/milestone completion is inferred from this positive path.
+**Next:** extend the maintained installed harness for the necessary negative
+authority/uncertainty/expiry schedules after the bounded critical recommendation.
+Keep later handoff gates explicit; no goal/milestone completion is inferred from
+this positive path.

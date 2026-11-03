@@ -79299,7 +79299,7 @@
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "Preserve originalR1\u2013R7FAIL/PG/native/logs, R8prelaunchsetupFAIL, currentqualifiedsource/artifacts andactualR9unique data. Priorresourcesareowned/stopped/retained in P03. No cleanup.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "Review/runmaintainedSQLunionfixturebeforecurrentnegativeauthority/uncertainty/expiryandlaterhandoffs.",
+        "next": "Existingcurrentnegativeauthority/unresolved/unknownCOMMIT/originalexpiry usingmaintainedinstalledharness; laterlostcandidate/zero-new-queryhandsoffs retainP03/P02owners.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79386,6 +79386,19 @@
         "independent_scientific_audit": {
           "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/scientific-r9-receipt.json",
           "sha256": "d2959b82613248651a0e978bceadc34ce3f67b22de779faa01673458ab568f64"
+        },
+        "connected_sql_union": {
+          "root": "/home/tux/bigbrotr-rs/.research/m2-continuation-union-qualification-20261103/283042de",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-continuation-union-sql-20261103",
+          "source": "283042de7dcb9a6557f985b7f18f58a37f8e674b",
+          "root_tool": 82232,
+          "state": "PASS20ACCEPT28REFUSE_ALL_OWNED_RESOURCES_STOPPED_RETAINED",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-continuation-union-qualification-20261103/283042de/qualification-receipt.json",
+            "sha256": "e64631ee9c6786cbc37122aa47e27d5bbe42bdb091b586161b3f05651db76681"
+          },
+          "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-continuation-union-sql-20261103/resources.json",
+          "retention": "PreserveprivatePGdataset/protectedsecrets/rawstreams/function/dumps;nooriginaldata/cache/protectedELFmounts."
         }
       }
     }

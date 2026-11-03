@@ -2546,11 +2546,32 @@
       },
       "result": "PASS7/7maintainedstages,0SKIP/NOT_RUN. Independentartifactauditd2959b82PASS: exactsameJobId/original120s/HWB128,5queries/5EVENTs/bodies24,23,1/twogaps, oldrows/xmins/inputs,completeindependentnative85/86/139 andactivation91base,atomicqueuedrev2\u21923,actualclientstatus/logout,cleanSTOP0/emptystderr. Coveragepending; nofullphysicalcapacity/negative/repeated/fleet/Archiveclaim.",
       "resources": "21containers18compose3native stopped/PID0/noOOM,6processes+1656commandPIDsabsent,53sourcefilesverified,emptyborrowedbridgepreserved. OriginalR1\u2013R7FAIL andR8prelaunchsetupFAILunchanged.",
-      "remaining": "ConnectedSQLUNION64/65,actualnegativeauthority/unresolved-or-unknowncommit/originalexpiry; laterlostcandidate/zero-new-queryhandoffs remainexistingP03/P02owners.",
+      "remaining": "Actualnegativeauthority/unresolved-or-unknownCOMMIT/originalexpiry; laterlostcandidate/zero-new-queryhandoffs remainexistingP03/P02owners. ConnectedSQLUNION64/65nowPASSseparateentry.",
       "independent_scientific_audit": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/scientific-r9-receipt.json",
         "sha256": "d2959b82613248651a0e978bceadc34ce3f67b22de779faa01673458ab568f64"
       }
+    },
+    "connected_sql_union_qualification": {
+      "source": "283042de7dcb9a6557f985b7f18f58a37f8e674b",
+      "integrated": "4d683eaa",
+      "application_source": "a464cc6346f5f09ce122644966c359fa96651aec",
+      "critical_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-continuation-union-qualification-20261103/283042de/critical-source-review.json",
+        "sha256": "4ec060bc03eceaf9c1a73f0f452394ae5fb1925a22866c0ccedb3622e0e8e8d2"
+      },
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-continuation-union-qualification-20261103/283042de/qualification-receipt.json",
+        "sha256": "e64631ee9c6786cbc37122aa47e27d5bbe42bdb091b586161b3f05651db76681"
+      },
+      "root_tool": 82232,
+      "result": "PASS12literalprofiles/48samebackendorigin-modecallsacrossepochs1\u21922\u21923\u21921:20accepts/28exact23514refusals. Claims\u222aretainedgaps\u222apending/finalizedseals; mixedandfull64dedup, eachbranchunique65, isolated65, finalizedoldsourceobligationafterowner-move andpredicateexclusions.",
+      "preservation": "FullControlschema+data dumphashf89a3d80before/afterrollbackidentical. NewPG16.15,61ledgerrows/exact0045e0525b3c;nooverride.2newownedcontainersstopped/PID0/noOOM,internalnohostportnetworkemptyretained.",
+      "scope": "ActualSQLtyping/accounting only. No guardedadoption/native/authority/uncertainCOMMIT/concurrency/capacityclaim. ExistingP03-T01/T05 andP02 stillownnegativeauthority/unresolved/unknownCOMMIT/originalexpiry; laterlostcandidate/zero-queryhandoffs remain."
+    },
+    "publication_36d70ec4": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/publication-36d70ec4-receipt.json",
+      "sha256": "00ff4343ed120ad70761db61fb31f5dae20693b25163c6e26b69cd085754414c"
     }
   }
 }

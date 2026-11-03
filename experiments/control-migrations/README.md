@@ -34,7 +34,9 @@ synthetic metadata, then normal trigger mode is restored once before actual
 guard calls. All rows roll back. These deliberately incomplete metadata fixtures
 qualify SQL typing and UNION accounting only; they establish no native lifecycle,
 authorization, valid seal/adoption transition or installed deferred-COMMIT behavior.
-Execution of the extended UNION cases is **NOT_RUN** until separately recorded.
+Qualification of the extended UNION cases is recorded separately in
+`docs/implementation/evidence/p03-initial-sync-native-20261002.json`; a successful
+SQL result does not close the native/authority/uncertain-COMMIT gates.
 
 `lab.py` is the accompanying Docker laboratory orchestrator. It provisions a new
 owned directory, internal network with no published ports, PostgreSQL 16.15 and
