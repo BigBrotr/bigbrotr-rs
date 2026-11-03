@@ -2122,7 +2122,7 @@
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Freshcurrentstrict/workerboundproduct,4affectedRusttargets withexplicitnew9+retained27controls, observer thenactualinstalledfivequery+orderlySTOP/fullscience. No reuseofoldeffdplannerbinary forchangedbehavior.",
+    "next": "After coherent seal-pair publication, implement atomic adoption-COMMIT before/after loss under existingP03-T01Step3/T05Steps2/4/7/P02succession, with critical oracle/proxy review before engines; same settled prefix, unchanged product when actual boundaries permit.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2638,10 +2638,69 @@
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-seal-commit-faults-20261103",
       "branch": "work/m2-seal-commit-faults-20261103",
       "base": "1b70f3da5c1a37bc5f7361ea00cf92bdf1f30c1e",
-      "state": "Solpartialsource_NOT_RUN",
+      "state": "QUALIFIED_BOTH_INSTALLED_INDEPENDENT_SCIENCE_AND_CUSTODY_PASS",
       "bounded_outcome": "Twofreshcases,explicitoldQ2plan-beforeprefixthennewlinear-quantum-seal-faultbefore-forward/after-complete viaexecutedINSERT/COMMITobserver. SealCLIonceUnknown4/nostdout/newControlactive,0vs1unadoptedseal,noadoption/retry/nextwire;exactqueuedrev2/history/inputs/native85\u219286conservation.",
       "preconditions": "Separateownedseal_proxy/preservedoldproxy;realoriginalleaseexpiry;endpointrewritebeforefile-boundconfigshow;exactexecutedINSERT0 1(notParsefallback),selectedserver0vs1/client0/fault1. Criticalsource+PASSoracle/proxycontrolsreviewbeforeengines.",
-      "not_in_scope": "Noadoption/candidateloss/retry/fleet/generalrewrite. Otherselectedgatesremainexplicit."
+      "not_in_scope": "Noadoption/candidateloss/retry/fleet/generalrewrite. Otherselectedgatesremainexplicit.",
+      "source": "9670057773beb93ccba5690cbf38f556d2f58099",
+      "integrated": "7d8eff6b",
+      "controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/source-controls-composite-receipt.json",
+        "sha256": "f3098320000ef42fa43a5c4ca58187079e1b7612193711493fafd2425811bb8b"
+      },
+      "critical_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/critical-review.json",
+        "sha256": "384f8d238e58aba9b518691164233f7f93611b5b6680d8295557b4c380064edb"
+      },
+      "assembly": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/assembly-receipt.json",
+        "sha256": "d9c6539d32ad36647082aed21805aee3ea2860a38bc420f6fa5278176197202f"
+      },
+      "installed": {
+        "r12": {
+          "root_tool": 74461,
+          "exit_code": 0,
+          "seconds": 87.45099694601959,
+          "result": "PASS7/7,0SKIP/NOT_RUN; independent science and Root custody PASS",
+          "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-before-r12",
+          "maintained_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-before-r12/result.json",
+            "sha256": "bf930b24876e4926643b583b5ef93de48366f7f573d7b8a0aff1f1b0993ea5f2"
+          },
+          "custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-before-r12/root-terminal.json",
+            "sha256": "f609df8c3cad4b3f8b5ba41e0a0ec4f2090d47cc971cac8b0bbcc6a5c3d179f7"
+          },
+          "independent_science": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/scientific-r12-receipt.json",
+            "sha256": "909ca265ea87cb811e3a4c43777ece765166dd3124a220633d45576db34da0ef"
+          }
+        },
+        "r13": {
+          "root_tool": 93858,
+          "exit_code": 0,
+          "seconds": 87.64573236403521,
+          "result": "PASS7/7,0SKIP/NOT_RUN; independent science and Root custody PASS",
+          "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-after-r13",
+          "maintained_result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-after-r13/result.json",
+            "sha256": "5f02461b2a42b2ccf92495cfa061cf43fd630f46291343a991d23e87de642767"
+          },
+          "custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-after-r13/root-terminal.json",
+            "sha256": "0ad0e549c795a94800fa27ef17894ad2343e2fa12f010270ec557bb04d8ab911"
+          },
+          "independent_science": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/scientific-r13-receipt.json",
+            "sha256": "ae3ec0cefed6144219da6a51b26be89f3d75e3d13d6a573b9f2d3a006e2776a1"
+          }
+        }
+      },
+      "remaining": "Existing P03-T01Step3/T05Steps2/4/7/P02succession: atomic adoption COMMIT loss; current authority/original expiry and proof-integrity refusals; explicit uncertain-seal recovery must re-establish the same settled cut and preserve an existing exact seal attribution/time/xmin; committed reservation without native issuance. Later lost-candidate/zero-new-query handoffs, full500/partitions/sparse/scheduling/live/NEG/import/fleet/physical capacity retain their existing owners. Current Tutorial Nostr review remains P01-T08/P08-T11-T12/P10-T08-T10.",
+      "qualification": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/installed-pair-receipt.json",
+        "sha256": "267fcee6ae4b63aeb0d8594699f417f26af89a42f040a850fb97955337553de0"
+      }
     }
   }
 }

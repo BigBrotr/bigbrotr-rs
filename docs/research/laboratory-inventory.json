@@ -79446,9 +79446,32 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/m2-seal-commit-faults-20261103",
           "branch": "work/m2-seal-commit-faults-20261103",
           "base": "1b70f3da5c1a37bc5f7361ea00cf92bdf1f30c1e",
-          "state": "PARTIAL_SOURCE_NO_ENGINE",
+          "state": "QUALIFIED_BOTH_INSTALLED_INDEPENDENT_SCIENCE_AND_CUSTODY_PASS",
           "owner": "Solimplementation/Astracriticalreviewbeforecampaigns/Rootsoleintegratorlauncher",
-          "preservation": "AllusedR10fad/R11onebsourceanduniquedatafrozen;no reusingoldowner/lostcandidate."
+          "preservation": "AllusedR10fad/R11onebsourceanduniquedatafrozen;no reusingoldowner/lostcandidate.",
+          "head": "9670057773beb93ccba5690cbf38f556d2f58099",
+          "integrated": "7d8eff6b",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577",
+          "assembly": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/assembly-seal-commit-96700577",
+          "installed": {
+            "r12": {
+              "root_tool": 74461,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-before-r12",
+              "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-before-r12/resources.json",
+              "state": "STOPPED_RETAINED"
+            },
+            "r13": {
+              "root_tool": 93858,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-after-r13",
+              "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-seal-commit-after-r13/resources.json",
+              "state": "STOPPED_RETAINED"
+            }
+          },
+          "resource_state": "Both installed cases stopped/PID0/noOOM:19containers,6absent processes each;1071/1072absent command PIDs respectively;53source files each; borrowed bridge empty/preserved. Both portable control containers stopped, original split-module launcher FAIL retained. No compiler/cache4-original-ELF mounts or cleanup.",
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/installed-pair-receipt.json",
+            "sha256": "267fcee6ae4b63aeb0d8594699f417f26af89a42f040a850fb97955337553de0"
+          }
         }
       }
     }
