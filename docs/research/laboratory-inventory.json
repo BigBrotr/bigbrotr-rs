@@ -79290,7 +79290,7 @@
         "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-record-types-20261103",
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc",
-        "state": "R7_INSTALLED_ACTIVE_UNCHANGED_EFD_PRODUCT_ACCEPTED_STABILITY_OBSERVATION",
+        "state": "R7_AND_PORTABLE_SOURCE_TOOLS_REAPED_FIVEQUERY_REACHED_PRODUCT_STOP_FIX_ACTIVE",
         "root_tool": 93131,
         "launcher_pid": 2431574,
         "launcher_start_ticks": 42562228,
@@ -79299,7 +79299,7 @@
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "PreserveR1/R2/R3/R4originalFAIL/PG/native/logs, currentproduct/source/receipts andactiveR5unique data. No cleanup. Earlier compilerfailures andSQLsetupfailures unchanged; fullfutureacceptance gates remainopen.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "Observe/reapRoot93131; authenticate actualderivedbudget, maintainedfivequeryscience andterminalcustody. Reuseunchangedefdproduct; R5/R6stillFAIL. No positivepost-stableorfinalNative139claim untilactualproof.",
+        "next": "Implement/review boundedimmutable-read drain+knownrollback/nativeleasevalidation; actualfirstDMLgate afterhelperload; globalcancelrestoredforeffects, late-successoriginaldeadlinechecktypederrorsfirst. Thenfreshcurrentproduct/affectedtests/observer andsameinstalledjourney. Noexpectedexitweakening.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79341,8 +79341,8 @@
           "sha256": "8769142af736927fd22af971728977c8d6b7153b0931f7cf3dd44e697969cb57"
         },
         "installed_terminal": {
-          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r6/root-terminal.json",
-          "sha256": "202616e6f89eb44d6d24b96dbd982a770fd8f6bfff92749babd212b412ead05c"
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r7/root-terminal.json",
+          "sha256": "bc6a8537603657bcc6b6b4175852e5fa3f8ab8c657b3b47cb55df144fc54715d"
         },
         "post_adoption_cold_diagnostic": {
           "root": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103",
@@ -79360,7 +79360,22 @@
           }
         },
         "dispatch_observation_source": "ObservationSol447/Root074 andtimingSolee09/Root32a5committed/reviewed; frozen32a5retained. No sourcewriteractive, Rootaloneintegrates/launches. Productefd unchanged.",
-        "case_resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r7/resources.json"
+        "case_resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r7/resources.json",
+        "planner_stop_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-adoption-plan-stop-20261103",
+          "branch": "work/m2-adoption-plan-stop-20261103",
+          "base": "89321b51",
+          "owner": "Astraimplementationagent; independentAstrareviewerread-only; Rootintegrator/launcher",
+          "state": "SOURCE_IMPLEMENTATION_PENDING_FRESH_PRODUCT_QUALIFICATION",
+          "effective_review_configuration": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/plan-stop-reviewer-configuration.json",
+            "sha256": "46fa64dfe8396fae2c458e6d08b713f5250a050ff0f795bc7af2773c6abf58ea"
+          }
+        },
+        "acceptance_source_controls_32a5": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/acceptance-source-controls-32a5-receipt.json",
+          "sha256": "ec12eefc682dce148fc8f93c10d384022c4d34d0cf16a766900ce7227776bbd4"
+        }
       }
     }
   }

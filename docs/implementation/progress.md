@@ -8,7 +8,7 @@ releases nor packages/deployment.
 ## Revision and capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **32a5b147** before this checkpoint.
+`work/m2-finite-history-20261101`, observed HEAD **89321b51** before this checkpoint.
 Canonical main/origin/actual remote are **5a9b7cc4**, clean/pushed, full hosted PASS.
 Reviewed M2 production/oracle, fixture corrections, wire SQL types and now cached
 PL/pgSQL record types are integrated locally. No installed same-job continuation
@@ -116,11 +116,35 @@ and independently reviewed. Nine focused timing controls PASS; actualR6 input
 replay derives50s at activation+1s and refuses when only35.85s remain. This replay
 is source-only. No product policy, original deadline or scientific oracle changes.
 
-R7 **ACTIVE Root93131**, runner2431574/start42562228. Same qualifiedefd product,
-worker, Rust and observer; frozen acceptance32a5/tree4ed2f1ac differs only3docs+3
-reviewed acceptancefiles. Admissioncf911030/privateassembly6d5b8c70/startreceipt
-are linked from P03. The actual live derivation remains pending until startup.
-Root alone launches; agents saved work and no compiler/cache holder is active.
+R7 Root93131 reaped1,119.976s, **5PASS/1FAIL/1NOT_RUN,cleanupPASS**. The actual
+50s observation budget fits55.577289s of the original remaining duration. First
+epoch2 reservation occurs30.188s after activation, with3 requests/outcomes and
+progress. All five queries settle on the same rev3 job; installed status reports
+5/128 queries,2 gaps, frozen86400 horizon and pending coverage. Full Native139/
+final independent science is still NOT_RUN.
+
+The failure is now **product orderly STOP during pre-effect history validation**:
+after status/logout, the successor exits4 with Quantum(Native(AuthorityUnavailable))
+at a5.35ms quantum-plan read with seconds of original authority remaining.
+PG historySELECT/ROLLBACK09:45:38.363 is inside actual STOP.340656–.412713; no next
+planINSERT. The planner mixes pure history reads and later exclusion/plan writes;
+only the immutable prefix may drain STOP. Genuine errors and uncertain commits
+must remain fatal. R7 failure8127f56c/new-product-failure input preserve the result.
+Custodybc6a8537:20 stopped/PID0/noOOM containers,5 processes and1627 command PIDs
+absent,53 sourcefiles authenticated, borrowed bridge empty/preserved.
+
+All affected acceptance source controls now pass in the pinned native-toolchain
+image: **701PASS/0SKIP**, Root71764 reaped0, receiptec12eefc. This single full
+source-suite run follows the shared CLI/fixture changes; unchanged export/proxy
+controls remain reused. No cache/protectedELF/store/engine mounts; containerstopped.
+
+Astra writer owns `.research/m2-adoption-plan-stop-20261103` on
+`work/m2-adoption-plan-stop-20261103`, base89321b51. A second independent Astra
+reviews the exact read/effect/deadline boundary before qualification. Actual
+reviewer configuration Astra/xhigh is verified once from effective local metadata;
+no internal Codex state was modified. Root alone integrates/launches. No engine,
+compiler or cache holder active; source implementation/review remains in progress.
+
 [Inventory](../research/laboratory-inventory.json) owns resources. Preserve unique
 data/failures/.research/worktrees. No new cleanup; October31 recovery reconciled.
 
@@ -130,11 +154,12 @@ strict checks, Rust and native controls. [P01](evidence/p01-ci-hosted-foundation
 owns exact results, skips/ignores and bounded public artifact/log inspection.
 No hosted observer active; this result does not cover later M2.
 
-**Next Root action:** observe/reap actualRoot93131; authenticate its actual
-accepted-policy/remaining-time derivation, maintained five-query scientific verdict
-and terminal custody with reviewed auditorcb279. Do not restart on observation
-timeout or infer PASS from startup. Productefd and default30s hysteresis are
-unchanged, original120s job expiry and all science/budgets remain mandatory.
-R5/R6 keep their original FAIL. Build/installed recipes and cold setup retain the
-paths above; preserve all later negative/lost-candidate/zero-query gates, then
-advance the next useful M2 capability after this slice closes.
+**Next Root action:** collect/review the bounded planner STOP correction and
+source-bound discriminating tests. Preserve original lease/grant/deadline through
+immutable read and known rollback; gate immediately before actual INSERTs after
+loads, restore normal effect cancellation and preserve real errors/CommitUnknown.
+Then freeze and qualify a fresh changed product/affected Rust/observer using the
+retained guarded recipes and R7failure input; repeat the same installed journey.
+No fixture exit weakening, whole-planner false token or arbitrary timeout change.
+R5/R6/R7 remain original FAIL; all later negative/lost-candidate/zero-query gates
+remain open. Advance the next useful M2 capability after this slice closes.

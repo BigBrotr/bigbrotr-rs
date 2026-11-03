@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "CONTRACT_DERIVED_RECOVERY_OBSERVATION_WINDOW_REVIEWED_R7_ACTIVE",
+    "status": "REAL_FIVE_QUERY_ADOPTION_REACHED_R7_PRODUCT_ORDERLY_STOP_GAP",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Observe/reapRoot93131; authenticate actualderivedbudget, maintainedfivequeryscience andterminalcustody. Reuseunchangedefdproduct; R5/R6stillFAIL. No positivepost-stableorfinalNative139claim untilactualproof.",
+    "next": "Implement/review boundedimmutable-read drain+knownrollback/nativeleasevalidation; actualfirstDMLgate afterhelperload; globalcancelrestoredforeffects, late-successoriginaldeadlinechecktypederrorsfirst. Thenfreshcurrentproduct/affectedtests/observer andsameinstalledjourney. Noexpectedexitweakening.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2300,7 +2300,7 @@
     },
     "current_qualification": {
       "source": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
-      "state": "PRODUCT_AND_OBSERVER_UNCHANGED_REVIEWED_STABLE_WINDOW_R7_ACTIVE",
+      "state": "EFD_QUALIFIED_FIVE_QUERY_SCOPE_REACHED_R7_STOP_FAIL_ALL_TOOLS_REAPED",
       "next": "Unchangedproduct, bounded opt-in successor-role SQL statement observation with bothbindparameterlimits0 and targeted failurestatecapture, maintaining20s FAIL/oracle andalljoblimits. Reviewharness before nextinstalledrun.",
       "tree": "ab9897730d6f72525e007a5b643b755a44c6965d",
       "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
@@ -2331,10 +2331,13 @@
         "affected_rust": 81227,
         "observer": 9430,
         "assembly": 3193,
-        "installed_terminal": 12123,
-        "installed_active": 93131
+        "installed_terminal": 93131
       },
-      "results": "Strict alltarget8.431/Clippy9.684/explicit-DwarningsRustdoc4.373PASS; fresh workerbeforeparent release170.396sPASS. Unfiltered705/234/40/24PASS,27sourceboundrequiredcontrolsPASS,5librarydedicatedignoresNOT_RUN. Exactparentobserver85.538sPASS. Compilercontainersstopped/PID0/noOOM/cache released/original4ELFpostguardscomplete. Private bundle assembled, installedR5 reaped1/5PASS1FAIL1NOT_RUN cleanupPASS; postadoption20swaitFAIL remains."
+      "results": "Strict alltarget8.431/Clippy9.684/explicit-DwarningsRustdoc4.373PASS; fresh workerbeforeparent release170.396sPASS. Unfiltered705/234/40/24PASS,27sourceboundrequiredcontrolsPASS,5librarydedicatedignoresNOT_RUN. Exactparentobserver85.538sPASS. Compilercontainersstopped/PID0/noOOM/cache released/original4ELFpostguardscomplete. Private bundle assembled, installedR5 reaped1/5PASS1FAIL1NOT_RUN cleanupPASS; postadoption20swaitFAIL remains.",
+      "new_product_failure_input": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed-product-failure-receipt.json",
+        "sha256": "8127f56cf2f4512b8e6af96c359ee447f0d36bc4e4478848983f9fa149ee1ab8"
+      }
     },
     "installed_fifth_attempt": {
       "failure_receipt": {
@@ -2423,10 +2426,31 @@
       },
       "active_launch": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/root-installed-r7-launch.json",
-        "sha256": "8769142af736927fd22af971728977c8d6b7153b0931f7cf3dd44e697969cb57"
+        "sha256": "8769142af736927fd22af971728977c8d6b7153b0931f7cf3dd44e697969cb57",
+        "status_note": "Actuallaunchreceiptretained; Root93131nowreaped1, notcurrentlyactive."
       },
       "root_tool": 93131,
       "next": "Observe/reapRoot93131; authenticate actualderivedbudget, maintainedfivequeryscience andterminalcustody. Reuseunchangedefdproduct; R5/R6stillFAIL. No positivepost-stableorfinalNative139claim untilactualproof."
+    },
+    "installed_seventh_attempt": {
+      "failure_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/installed-r7-failure-receipt.json",
+        "sha256": "8127f56cf2f4512b8e6af96c359ee447f0d36bc4e4478848983f9fa149ee1ab8"
+      },
+      "root_tool": 93131,
+      "result": "5PASS/1FAIL/1NOT_RUN,cleanupPASS,119.976s. Samejobfivegloballysettledqueries andactualstatus/logout reached; STOPthenexit4atpurehistoryread. Finalnative/scientificstageNOT_RUN.",
+      "actual_timing": "Actual30s+20s bound fits55.577289soriginalremaining. Firstepoch2reservation30.188027safteractivation;3epoch2requests/outcomes andprogress present. All5quanta terminal; currentjobstatusrev3queries5/budget128/gaps2/horizon86400/coveragepending andpendingworksettled. No data-set/scientificcompletenessclaim beyondobservedrows/status.",
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r7/root-terminal.json",
+        "sha256": "bc6a8537603657bcc6b6b4175852e5fa3f8ab8c657b3b47cb55df144fc54715d"
+      },
+      "diagnosis": "Astra scopedread/effectboundaryreview: next_window authenticateshistory beforeDML; globalSTOP foldstoNativeAuthorityUnavailable andtrace.finish(error) precedesSTOPcheck. ActualPGbackend3444 SELECT+ROLLBACKat09:45:38.363insideDockerSTOP.340656\u2013.412713; noextraINSERT. Do notsilencegenuineauthority/corruption/expiry/rollback/unknowncommit errors.",
+      "fix_ownership": "Astrawriter /root/m2_adoption_fault_profile_review owns .research/m2-adoption-plan-stop-20261103 branchwork/m2-adoption-plan-stop-20261103 at89321b51. IndependentAstra /root/m2_plan_stop_critical_review read-onlyreviewsbeforefreshproductqualification; Rootsoleintegrator/launcher.",
+      "next": "Implement/review boundedimmutable-read drain+knownrollback/nativeleasevalidation; actualfirstDMLgate afterhelperload; globalcancelrestoredforeffects, late-successoriginaldeadlinechecktypederrorsfirst. Thenfreshcurrentproduct/affectedtests/observer andsameinstalledjourney. Noexpectedexitweakening."
+    },
+    "acceptance_source_controls_32a5": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/acceptance-source-controls-32a5-receipt.json",
+      "sha256": "ec12eefc682dce148fc8f93c10d384022c4d34d0cf16a766900ce7227776bbd4"
     }
   }
 }
