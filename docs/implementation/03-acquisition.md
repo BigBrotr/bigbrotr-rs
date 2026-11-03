@@ -217,8 +217,9 @@ Full traversal, current CLI coverage, age bands and live/NEG remain later work.
 Same-job settled-boundary adoption uses migration0045 under T01 Step3/T05
 Steps2/4/7. The current product passes compiled qualification and the installed
 positive continuation, pending-plan refusal and seal/adoption-COMMIT before/after
-loss profiles. Focused current-authority/original-expiry and integrity refusals,
-plus exact uncertain-seal retry remain critical gates of these same tasks;
+loss profiles, plus actual actor-grant withdrawal and genuine original-expiry
+refusals under fresh authority. Historical workflow-integrity refusal and exact
+uncertain-seal retry remain critical gates of these same tasks;
 later lost-candidate and zero-new-query handoffs remain explicit. Genuine origin
 reservation without native issuance remains uncovered P02-T02 Step4/P03 execution
 work: the unchanged pre-resolution refusal guards this strictly settled profile,

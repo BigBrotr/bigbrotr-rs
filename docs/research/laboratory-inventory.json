@@ -79526,9 +79526,41 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/m2-continuation-authority-refusals-20261103",
           "branch": "work/m2-continuation-authority-refusals-20261103",
           "base": "7df3a767327b11dbeaa8b6a2b1d3e237f63db3b7",
-          "state": "SOL_BOUNDED_SOURCE_ASSIGNMENT_BOTH_INSTALLED_NOT_RUN",
+          "state": "QUALIFIED_R17_R19_STOPPED_RETAINED_R18_OUTER_REAP_UNKNOWN",
           "owner": "Sol implementation, Root sole integrator/launcher, Astra final critical review before engines",
-          "scope": "Grant withdrawal and real original-deadline expiry at new0045helper; no product/default/limit/migration changes or wider qualification."
+          "scope": "Grant withdrawal and real original-deadline expiry at new0045helper; no product/default/limit/migration changes or wider qualification.",
+          "head": "52a550c78dc75c766f4f5e0fb40a896a803aeee2",
+          "integrated": "c17e26d0",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/authority-refusals-52a550c7",
+          "cases": {
+            "r17": {
+              "root_tool": 92671,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-continuation-grant-r17",
+              "state": "QUALIFIED_STOPPED_RETAINED"
+            },
+            "r18": {
+              "root_tool": 32214,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-continuation-expiry-r18",
+              "session": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-continuation-expiry-r18-session.json",
+              "state": "MAINTAINED7PASS_OUTER_REAP_UNKNOWN_ALL_OWNED_RESOURCES_STOPPED",
+              "gap_receipt": "authority-refusals-52a550c7/r18-reap-observation-gap.json"
+            },
+            "r19": {
+              "root_tool": 63186,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-continuation-expiry-r19",
+              "session": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-continuation-expiry-r19-session.json",
+              "runner_pid": 2879989,
+              "runner_start_ticks": 44907097,
+              "state": "QUALIFIED_STOPPED_RETAINED",
+              "terminal_chunk": "2319f9",
+              "exit_code": 0
+            }
+          },
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/authority-refusals-52a550c7/installed-pair-receipt.json",
+            "sha256": "34b0b5b5a4705fd13b83217bd91b3a031f11bfb7d23285b44bf2354d2d09f425"
+          },
+          "resources": "R17/R19 each22 stopped/PID0/noOOM containers,7 absent recorded processes,1124/1886 absent command PIDs and53 checked source files; borrowed bridge empty/preserved. R18 separate actual read-only stopped/absent observation retained with UNKNOWN outer reap. No compiler/cache/engine workload active after R19 terminal audit."
         }
       }
     }
