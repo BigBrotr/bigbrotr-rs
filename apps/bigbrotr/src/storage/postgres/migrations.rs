@@ -25,7 +25,7 @@ impl Migration {
 }
 
 // Application order matches migrations/manifest.json, independent of reserved ID order.
-static MIGRATIONS: [Migration; 60] = [
+static MIGRATIONS: &[Migration] = &[
     Migration {
         version: 1,
         name: "0001_control.sql",
@@ -525,7 +525,7 @@ static MIGRATIONS: [Migration; 60] = [
 ];
 
 pub fn catalog() -> &'static [Migration] {
-    &MIGRATIONS
+    MIGRATIONS
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

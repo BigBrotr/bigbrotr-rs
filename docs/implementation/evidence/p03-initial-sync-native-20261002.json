@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "SOURCE_INTEGRATED_PORTABLE_PASS_BUILD_AND_INSTALLED_NOT_RUN",
+    "status": "FIRST_COMPILE_FAIL_MECHANICAL_SOURCE_CORRECTION_PENDING_REQUALIFICATION",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Review fresh exact7c89 build capsule and run actual format/planning preflight before worker-bound product/observer build; then independently checked installed five-query same-job continuation. New authority/unknown outcome/SQL65/later zero-query paths remain gates.",
+    "next": "Freeze corrected source after bounded tutorial input-fence reconciliation, then repeat actual cheap preflight and affected compilation; reuse prior independent contract/oracle reviews and unchanged portable inputs. Real five-query same-job and new SQL/unknown outcomes remain unqualified.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2135,6 +2135,14 @@
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/portable-receipt.json",
       "sha256": "3a2cd53e84bb47e4e51f8d7f2ed97beecd1ac6354f82fe1e8e8b2758af536647",
       "result": "692 acceptance/13 export/43 proxy PASS, zero SKIP, in pinned declared native-toolchain image. No product compilation/engine acceptance."
+    },
+    "first_compile": {
+      "source": "7c89f554e2b50a9627a85b7995b3ad2b2d49d1d6",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/7c89f554/failure-receipt.json",
+      "sha256": "4a697ef8c823f75dc452d8e4c6c3dc9730ec8524114231ed79be50e8ace081b7",
+      "result": "Root41175 reaped1; all-target11.535s FAIL on two E0624 continuation accessors and stale static migration count60/actual61. StrictClippy/Rustdoc/release/tests/engines NOT_RUN. Container877dff45 stopped/PID0/noOOM, launcherabsent, Rootcache115reacquired/released/nooverlap and original4ELFfullstat/O_NOATIMEsha guardPASS.",
+      "setup": "Original cheap preflight missingCargoHome FAIL before rustfmt; distinct R2 explicit temporaryCargoHome format/planningPASS. Both originalresults/logs/recipes retained.",
+      "correction": "Restrict two positive successor proof accessors to the postgres ancestor, their intended sibling consumer; no public API/constructor or authority change. Make migration catalog a static slice to avoid redundant manual array length; same61 ordered SQL records/checksums/plan logic. Compilation remains to verify."
     }
   }
 }
