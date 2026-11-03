@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "Root302312fc before checkpoint; canonicalmain/origin/remote5a9b7cc4, no newpush",
-      "state": "Product5e strict/release/fouraffectedRust/observerPASS. InstalledR1FAIL fixtureproxydefaultcap; allresourcesclosed, sourcecorrection700 integrated302, rerunpending criticalprovenance review.",
+      "observed_source": "Root4bbfd218 before SQLfix checkpoint; canonicalmain/origin/actualremote5a9b7cc4, latestfullhostedPASS, no newpush",
+      "state": "R2oracleshapefixed(A6), R3nowpassesNative85prefix/progress butactualsealSQLbindfailed. Reviewedproduct7d/Root4bb explicitbasecasts, freshrealPG PREPARE3 +originalnegativePASS; currentcorrectedbuild/installedpending.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79077,11 +79077,11 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root soleintegrator/launcher; no localengine/compiler/cacheholder active afterR1.",
-        "source": "Solprofilefix700 committed/clean integrated302; Astra profile/cause reviewcomplete, bounded reused-product/acceptance identitywrapper review active. No implementationwriters.",
-        "hosted": "Root56226 singleobserver5a9run41546602945 remains active; no duplicate/supersedingpush."
+        "integrator": "Root soleintegrator/launcher. No engine/compiler/cacheholder/sourcewriter active atcheckpoint.",
+        "source": "Solproduct7d clean/sourcecriticalAstrareviewcomplete. Existinggenericparent/affectedrecipes ready; freshcurrent-source qualification next.",
+        "hosted": "Rootwatch56226reaped0/noexpiry, driver2138096/GH2138099absent; delegatedacquisition36470/verifier37653reaped0. Source5a9full36/scope20PASS withpublicaudit, no activehostedobserver."
       },
-      "resources": "Current5e build57670/Rust75466/observer66112 allreaped0/stopped/PID0/noOOM/cachereleased, original4ELFguards completed. InstalledR1Root71098reaped1/15containersstopped/215recordedPIDsabsent/groupempty/proxyjoinedexit3/bridgepreserved; originalcleanupFAIL retained, independentclosure receipt0b850122. Source/traffic/logs/failuredata retained; no cleanup.",
+      "resources": "5e build/test/probe stopped/reaped0. R1/R2/R3actualFAIL preserved; R3Root84616reaped1,17containersstopped/PID0/noOOM,4recordedprocesses+1039commandPIDsabsent,53acceptancefilesverified/bridgeempty. PreserveR3partialNativeclosing/PGstate, no restart/mutation. NewSQLpreparelab Root79572reaped0:bothownedcontainersstopped/PID0/noOOM, internalnohostportsnetwork retained. Cache115released/original4ELFguardvalid. No cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79173,12 +79173,16 @@
         "tool": 56226,
         "run": 41546602945,
         "source": "5a9b7cc4c16027776a26f96d4eb7f54f22a5c58f",
-        "state": "ACTIVE_ROOT_SINGLE_OBSERVER",
+        "state": "REAPED_ROOT56226_EXIT0_NO_EXPIRY_PIDS_ABSENT",
         "identity": {
           "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/watch-identity.json",
           "sha256": "ccc2dd55a55c8838ec0efb01474e1a75000c83189e5c041b7154ffc65c6beb09"
         },
-        "prior": "551 terminal failure receipts remain owned by P01; observer61745 reaped1 without expiry, PIDs absent."
+        "prior": "551 terminal failure receipts remain owned by P01; observer61745 reaped1 without expiry, PIDs absent.",
+        "terminal_receipt": {
+          "path": ".research/ci-publication-20261026/monitor-guards-main-5a9b7cc4-20261103/ci-observation/terminal-audit.json",
+          "sha256": "a7ab38bdb9b3f905a075504139cc5de2f3bc5a5d2c40b6cd1623051d6637a957"
+        }
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",
@@ -79285,16 +79289,27 @@
         "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-recovery-20261103",
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee",
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee",
-        "state": "Product5e strict/release/fouraffectedRust/observerPASS. InstalledR1FAIL fixtureproxydefaultcap; allresourcesclosed, sourcecorrection700 integrated302, rerunpending criticalprovenance review.",
-        "root_tool": 71098,
+        "state": "R2oracleshapefixed(A6), R3nowpassesNative85prefix/progress butactualsealSQLbindfailed. Reviewedproduct7d/Root4bb explicitbasecasts, freshrealPG PREPARE3 +originalnegativePASS; currentcorrectedbuild/installedpending.",
+        "root_tool": 84616,
         "launcher_pid": 2155776,
         "launcher_start_ticks": "39157296",
         "container": "b10368be772d56a85295895c1b9fc406fae3ff3a75fedd3f67ce74c0b1804d0b",
         "cache_lock": "RELEASED",
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "Originalfourfailedcompile/lintattempts and cheapmissingCargoHomeFAIL preserved.7cportable692/13/43PASS and currentboundedtutorial14PASS reused within unchanged scopes. Newinstalledfivequery/custody/SQL65/unknownoutcome/laterzeroqueryNOT_RUN.",
-        "failure_custody": "P03 installed_first_attempt.custody",
-        "next": "Reuse qualified5e parent/worker/observer; samejourney R2 only after boundedprovenance review. No new product build needed."
+        "failure_custody": "P03 installed_third_attempt/productfailure receipt +root-terminal97a78d20",
+        "next": "Freshproduct/worker/affectedRust/observer fromreviewedtypedSQLsource, then samefivequeryjourney; old5e onlyremainsvalidforunchangedresponsibilities/schema initializer.",
+        "sql_parameter_preflight": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
+          "state": "STOPPED_RETAINED_NO_HOST_PORTS",
+          "tool": 79572,
+          "result": "PASS3inferredtypevectors/originalnegative42P08;0executedproductDML,0datasets. Migrationownerroleonly, notruntimeauth/nativeproof. Initialsetupmetadata/subnetfailures retained.",
+          "receipt_sha256": "bf6fdd56690ee795927b8889048b6cd3a27f08913fa0722c7f7ed6fbbc7b4a2f",
+          "containers": [
+            "a2c796bcabb263058d5ea9de1166e9550f54e9104e510b068c179c9e92dbd513",
+            "3d79ee0f660e3514bf545b8ad8ab3c7b0e6f805afadf6d455a955cd70f321506"
+          ]
+        }
       }
     }
   }

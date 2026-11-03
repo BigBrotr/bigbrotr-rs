@@ -20,39 +20,18 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = 'c3e51a903c4d391083526856d9ca5cc50d1f6ea0'
-# Git objects bind product code/dependencies/configuration while permitting
-# documentation/acceptance-only changes. Independent review covered the changed
-# dispatch, Sync ownership, shared session/transport and relevant caller paths.
-# The selected initial Sync profile cannot construct or arm the separate explicit
-# once-only Monitor profile. Its only Nostr text sends remain REQ/CLOSE, including
-# when receiving AUTH; no signer or event-publication path is reachable.
-# Bind vendor code/provenance strictly; only its nonexecutable guide may vary.
-# The cc8bdcf8 delta adds initial-only Monitor checkpoint/ACK and a defensive
-# retirement veto. Independent review confirmed tutorial Sync keeps monitor=None
-# and cannot select the separate Monitor profile; unchanged signer/transport
-# evidence remains applicable to this selected path.
-# The reviewed C3 delta adds historical recovery/checkpoint behavior, with no
-# signing/network capability or route from this fresh Sync startup. Independent
-# review reused the earlier exclusion; Root authenticated unchanged selected
-# entrypoints and dependency/configuration objects. Test fixtures also normalize
-# owned temporary roots without changing the production selection guard.
-# The later apps delta contains only the exact cfg(test) owner hook and private
-# Monitor outcome/connected-guard fixtures. Their reviewed test-only custody cannot enter the release
-# tutorial; all selected entrypoints and the other six objects remain unchanged.
-# Settled-job succession adds authenticated PG/native custody and explicit recover
-# modes. Of the selected Nostr entrypoints, only recover flag parsing changed;
-# fresh initial tutorial Sync selects no sealed predecessor or successor writer.
-# Guarded session/transport, event handling, signer exclusion and dependencies
-# remain unchanged. This bounded source review does not qualify successor egress.
-# The compile correction changes only catalog slice representation and internal
-# PG proof-accessor visibility and imports of the existing live runtime context;
-# the redundant non-Drop progress view release has no destructor. All nine
-# selected Nostr leaves are byte-identical. Recovery helper reordering and
-# removing the equivalent borrowed-proof drop do not change executable checks.
-# This exclusion does not qualify general egress, Monitor internals or runtime.
+REVIEWED_PRODUCT = '4bbfd218589485c0053b8680c6e238ada93cb781'
+# Bind product code, dependencies and configuration while permitting docs/tests
+# to vary. The reviewed fresh initial Sync dispatch cannot select the separate
+# explicit Monitor or successor profiles. Its Nostr sends remain REQ/CLOSE,
+# including received AUTH; it has no reachable signing/publication operation.
+# Reuse that selected-path review: the current delta only gives existing PG
+# continuation/adoption parameters explicit base wire types. All nine selected
+# Nostr leaves, other six code objects and executable vendor inputs are unchanged.
+# Only vendor's nonexecutable README may vary under the independent guard below.
+# This does not qualify successor/general egress, Monitor internals or runtime.
 REVIEWED_CODE = {
-    'apps': '53bc4eba74074646b019181f84640b6ce83d3e23',
+    'apps': '74bdf1ab7ee41306c5b071e23bc7ad51fe77ca00',
     'crates': '410f3dfbbd137be2f2809949520db0de0345a3ed',
     'Cargo.toml': '56ae310a952923810287d83b2c88349e3485f33b',
     'Cargo.lock': '133ff51c1c8bf71000fe7e99066bb08d4a48f31c',
@@ -73,7 +52,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed productc3e51a90; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product4bbfd218; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Ordinary Monitor startup without explicit initial --monitor-once and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]
