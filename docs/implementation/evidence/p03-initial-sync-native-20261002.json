@@ -2567,11 +2567,30 @@
       "root_tool": 82232,
       "result": "PASS12literalprofiles/48samebackendorigin-modecallsacrossepochs1\u21922\u21923\u21921:20accepts/28exact23514refusals. Claims\u222aretainedgaps\u222apending/finalizedseals; mixedandfull64dedup, eachbranchunique65, isolated65, finalizedoldsourceobligationafterowner-move andpredicateexclusions.",
       "preservation": "FullControlschema+data dumphashf89a3d80before/afterrollbackidentical. NewPG16.15,61ledgerrows/exact0045e0525b3c;nooverride.2newownedcontainersstopped/PID0/noOOM,internalnohostportnetworkemptyretained.",
-      "scope": "ActualSQLtyping/accounting only. No guardedadoption/native/authority/uncertainCOMMIT/concurrency/capacityclaim. ExistingP03-T01/T05 andP02 stillownnegativeauthority/unresolved/unknownCOMMIT/originalexpiry; laterlostcandidate/zero-queryhandoffs remain."
+      "scope": "ActualSQLtyping/accounting only. No guardedadoption/native/authority/uncertainCOMMIT/concurrency/capacityclaim. ExistingP03-T01/T05 andP02 stillownnegativeauthority/unresolved/unknownCOMMIT/originalexpiry; laterlostcandidate/zero-queryhandoffs remain.",
+      "subnet_cli_controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-continuation-union-qualification-20261103/283042de/subnet-cli-controls.json",
+        "sha256": "85dc634d96e0db8dafdba3d0815aa79a5bcdddf6494b09a47278159d43554a45"
+      },
+      "subnet_cli_scope": "ExposeexistingownedsetupsubnetvalidationthroughCLI(--subnet);defaultNone/explicitprivate/28forwarding2controlsPASS,qualifiedsetupfunctionASTunchanged. No engine/buildrerun. Makesactualownedlabnetworkselectionavailablewithoutprivateimportcommands."
     },
     "publication_36d70ec4": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/publication-36d70ec4-receipt.json",
       "sha256": "00ff4343ed120ad70761db61fb31f5dae20693b25163c6e26b69cd085754414c"
+    },
+    "publication_550bca6d": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-continuation-union-qualification-20261103/283042de/publication-550bca6d-receipt.json",
+      "sha256": "a359a170d953d7ce9c017dfa5382bbbe1b3b65ee025a9acfe32ef9ad8fcaa8b6"
+    },
+    "next_unsettled_seal_refusal": {
+      "owner": "ExistingP03-T01Step3/T05Steps2/4/7andP02succession",
+      "source_worktree": "/home/tux/bigbrotr-rs/.research/m2-unsettled-seal-refusal-20261103",
+      "branch": "work/m2-unsettled-seal-refusal-20261103",
+      "base": "a464cc6346f5f09ce122644966c359fa96651aec",
+      "state": "Solsourceimplementationpartial_NOT_RUN",
+      "contract": "Existingplan-afterordinal2/retainedcatchup proxy:Q1settled,Q2COMMITservercomplete/clientundelivered,naturalServeexit4QuantumCommitUnknown,onlyoneREQ. Afterpositiveexclusion/leaseexpiryandstillunexpiredjob,actualrecover--seal-acquisition mustrefuseControlInvalidMetadata,zeroseals/adoptions,unchangedjob/history/progress/inputs;permittedNative85\u219286sourceclosuremustmatchexactoracle. Noactivation/retirement/retry.",
+      "critical_prerequisites": "Astra boundedsource/callersreviewbeforeimplementation identifiedfailedCLIcanclose/sourcewithoutsuccessrelease;donotexpectglobalnochange orimmediateretry. Negativeclientneedsboundednosuccessorcompletion;positiveexit0/historyexpectationsremainstrict. Finalneworacle/sourcewillbecriticallyreviewedbeforeengine.",
+      "remaining": "Authoritywithdrawal/originalexpiry/actualseal-adoptionCOMMITambiguity/committedreservationwithoutnativeissuance remaincurrentowners; laterlostcandidate/zero-new-queryretained."
     }
   }
 }

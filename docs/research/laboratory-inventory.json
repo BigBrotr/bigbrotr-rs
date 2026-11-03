@@ -79299,7 +79299,7 @@
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "Preserve originalR1\u2013R7FAIL/PG/native/logs, R8prelaunchsetupFAIL, currentqualifiedsource/artifacts andactualR9unique data. Priorresourcesareowned/stopped/retained in P03. No cleanup.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "Existingcurrentnegativeauthority/unresolved/unknownCOMMIT/originalexpiry usingmaintainedinstalledharness; laterlostcandidate/zero-new-queryhandsoffs retainP03/P02owners.",
+        "next": "Finish/reviewdeclaredplan-afterunsettledQ2sealingrefusal,thenRootactualsamequalifiedproductjourney. AllothercriticalnegativeandlatergatesremainexistingP03/P02owners.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79399,6 +79399,14 @@
           },
           "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-continuation-union-sql-20261103/resources.json",
           "retention": "PreserveprivatePGdataset/protectedsecrets/rawstreams/function/dumps;nooriginaldata/cache/protectedELFmounts."
+        },
+        "unsettled_seal_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-unsettled-seal-refusal-20261103",
+          "branch": "work/m2-unsettled-seal-refusal-20261103",
+          "base": "a464cc6346f5f09ce122644966c359fa96651aec",
+          "owner": "Solimplementation,Rootsoleintegrator/launcher,Astracriticalreviewbeforerun",
+          "state": "SOURCE_PARTIAL_NO_ENGINE_OR_COMPILER",
+          "preservation": "Currenta464productandoldSQL283frozenworktreesremainunchanged;onlynewmaintainedacceptancefilesareeditablehere."
         }
       }
     }

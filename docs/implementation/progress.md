@@ -8,11 +8,12 @@ releases nor packages/deployment.
 ## Revision and demonstrated capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **4d683eaa** before this checkpoint.
+`work/m2-finite-history-20261101`, observed HEAD **550bca6d** before this checkpoint.
 Canonical main/origin were **5a9b7cc4**, clean/pushed with full hosted PASS.
 The M2 continuation slice remains separate from main pending its negative gates.
-Branch commit **36d70ec4** is pushed; reviewed SQL fixture **283042de** is integrated
-locally as **4d683eaa**, with its qualification recorded below.
+Branch **550bca6d** is pushed, including reviewed SQL fixture **283042de** integrated
+as **4d683eaa** and its actual qualification. Only setup CLI/documentation and this
+checkpoint are being updated; no product code changed.
 
 The frozen clean product/acceptance **a464cc63**, tree **390e0432**, includes the
 independently reviewed planner STOP correction. Strict all-target, Clippy,
@@ -73,8 +74,11 @@ this bounded slice. M1 evidence remains in the phase index; no all-P02 barrier.
 
 Current engine/compiler/installed tools are reaped; cache 115 is released and
 the four protected ELF fullstat/O_NOATIME postguards completed. SQL writer/reviewer
-work is complete; Astra is resolving the next bounded installed negative schedules.
-No agent launches engines or compilers. Root alone owns subsequent execution.
+work is complete; Astra supplied the next bounded installed negative schedule.
+Sol is implementing the bounded negative case in
+`.research/m2-unsettled-seal-refusal-20261103` on its separate branch, base a464cc63.
+Its edits are partial and NOT_RUN; Astra will review the final oracle before Root
+execution. No agent launches engines or compilers.
 Current capsule `.research/m2-adoption-core-qualification-20261103/a464cc63` and
 runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63`
 retain all private inputs/PG/native/logs. Old labs, cold-copy SQL-only observation,
@@ -88,7 +92,8 @@ is latest full hosted **PASS 36/36 + scope 20**. [P01](evidence/p01-ci-hosted-fo
 owns exact results, declared skips/ignores and public artifact/log inspection.
 This hosted result does not cover later M2; no current remote observer.
 
-**Next:** extend the maintained installed harness for the necessary negative
-authority/uncertainty/expiry schedules after the bounded critical recommendation.
-Keep later handoff gates explicit; no goal/milestone completion is inferred from
-this positive path.
+**Next:** review and qualify the maintained `settled-owner-adoption / plan-after`
+negative case: actual unknown Q2 COMMIT must prevent sealing/adoption or a second
+wire query; allowed source closure still has exact Native85→86 proof. Reuse current
+a464 artifacts; no build. Authority, original expiry, seal/adoption COMMIT ambiguity
+and later handoffs remain open in their existing tasks. No goal completion claimed.

@@ -458,6 +458,7 @@ if __name__ == "__main__":
     parser.add_argument("--run-name", default="smoke")
     parser.add_argument("--build", type=Path)
     parser.add_argument("--source", type=Path)
+    parser.add_argument("--subnet", help="Optional unused private IPv4 /28 for the owned setup network")
     args = parser.parse_args()
     if not re.fullmatch(r"[a-z_]{1,20}", args.run_name):
         parser.error("run-name must contain 1..20 lowercase letters/underscores")
@@ -466,7 +467,7 @@ if __name__ == "__main__":
     if args.action == "setup":
         if not args.build or not args.source or not args.build.is_absolute() or not args.source.is_absolute():
             parser.error("setup requires absolute build and source paths")
-        setup(args.root, args.build, args.source, args.run_name)
+        setup(args.root, args.build, args.source, args.run_name, subnet=args.subnet)
     elif args.action == "smoke":
         smoke(args.root, args.run_name)
     elif args.action == "schema":
