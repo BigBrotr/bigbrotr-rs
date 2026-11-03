@@ -698,6 +698,13 @@ and queryable with truthful role readiness, without implicit public publishing.
   refusals without Ready output. Signed acquisition and the exact 353-byte export
   pass. Evidence and terminal custody are linked under inventory key
   `implementation_first_launch_maintained_20261026.tutorial_extension`.
+  Current product `a464cc63` also passes all seven installed tutorial stages with
+  acceptance `812cfb1c`, independently replayed three-query peer/science/export
+  predicates and a source-reviewed Nostr exclusion. See the current-artifact
+  tutorial requalification in [the P01 report](evidence/p01-ci-hosted-foundation-20261026.json).
+  The earlier 25-connection fixture remains historical evidence, not the current
+  query expectation. Neither result claims a runtime signing counter or general
+  egress exclusion.
 - [x] **Step 7:** Update tutorial/health/default documentation from observed behavior;
   document the slice's available features without marking the whole phase set done.
   The qualified tutorial, verification guide and Control-runtime documentation

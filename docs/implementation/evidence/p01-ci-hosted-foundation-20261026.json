@@ -3150,5 +3150,19 @@
         "sha256": "fa1f886162a7bcf5f13115ff8e1f0f15ad64de6b0e3cbf5948f7d823791c894b"
       }
     }
+  },
+  "current_artifact_tutorial_requalification": {
+    "owner": "P01-T08/P01-T09Steps6/7/P08-T11-T12/P10-T08-T10",
+    "status": "LOCAL_ACTUAL_CURRENT_PRODUCT_ALL7_AND_INDEPENDENT_REPLAY_PASS_HOSTED_M2_PENDING",
+    "product": "a464cc6346f5f09ce122644966c359fa96651aec",
+    "acceptance": "812cfb1cf87fff4933702d9fc0b72bec02669f97",
+    "integrated": "f0652560",
+    "qualification": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/current-tutorial-812cfb1c/installed-tutorial-receipt.json",
+      "sha256": "7d4c46800a8cee46062671d5bd5f75be5057034cd9639cd2ab3be33a6ff724ff"
+    },
+    "result": "Root54376 exit0 in57.320s; all7 installed stages PASS. Current3-query peer transcripts close completely with no outbound EVENT; reviewed7 code objects/9 Nostr leaves/vendor profile, actual owned listeners, exact capability refusals, signed history, byte-exact353-byte export and ordinary restart pass.",
+    "limits": "No standalone native/Archive all-row census, runtime signing counter, general egress or signing-enabled/Monitor support. Old25connection fixture retains its own source scope. Original replay metadata/overbroad-release assertion failures preserved; no product rerun or weakened original predicate.",
+    "hosted": "Latest full hosted main5a9/run41546602945 does not cover later M2; work-branch publication is not a hosted execution."
   }
 }

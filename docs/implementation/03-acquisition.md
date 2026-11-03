@@ -216,10 +216,13 @@ boundary. See the [owning quantum contract](../reference/producer-request-inputs
 Full traversal, current CLI coverage, age bands and live/NEG remain later work.
 Same-job settled-boundary adoption uses migration0045 under T01 Step3/T05
 Steps2/4/7. The current product passes compiled qualification and the installed
-positive continuation, pending-plan refusal and seal-COMMIT before/after loss
-profiles. Adoption-COMMIT ambiguity, current authority/original expiry and
-committed reservation without native issuance remain critical gates of these
-same tasks; later lost-candidate and zero-new-query handoffs remain explicit.
+positive continuation, pending-plan refusal and seal/adoption-COMMIT before/after
+loss profiles. Focused current-authority/original-expiry and integrity refusals,
+plus exact uncertain-seal retry remain critical gates of these same tasks;
+later lost-candidate and zero-new-query handoffs remain explicit. Genuine origin
+reservation without native issuance remains uncovered P02-T02 Step4/P03 execution
+work: the unchanged pre-resolution refusal guards this strictly settled profile,
+without requiring implementation of negative-outcome recovery before integration.
 It uses explicit seals and actual native succession; it does not resume a
 departed native incarnation. The [Sync report](evidence/p03-initial-sync-native-20261002.json)
 records actual finite and two-scope execution and seven selected PG fault profiles

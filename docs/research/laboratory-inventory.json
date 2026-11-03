@@ -74419,16 +74419,32 @@
         "scope": "No M1 blocker in the scoped evidence collection; earlier on/off results retain their original sources and scopes. Not Step1/whole-phase completion."
       },
       "current_product_requalification": {
-        "status": "PASS_ALL7_STAGES_ON_REVIEWED_6CBE",
-        "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
-        "candidate_manifest_sha256": "7c31d836d9cdfb378d38b317261307ec589a1ca1ce664aa10af8744df4fa7ffb",
-        "acceptance_revision": "441d332e791f25bd0ef36f2c553076433820d1a7",
-        "root_receipt": {
-          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-tutorial-r1/root-terminal.json",
-          "sha256": "96dae4c73444242d2661af2bc276da7eb3cf148e34acfafda47c71c6d472ad55"
+        "status": "PASS_CURRENT_A464_ALL7_AND_INDEPENDENT_REPLAY",
+        "product_revision": "a464cc6346f5f09ce122644966c359fa96651aec",
+        "candidate_manifest_sha256": "40a1f5c3a2877bb48384bfe8bef80eb0e0a0a19645545485f8769dde96b0301b",
+        "acceptance_revision": "812cfb1cf87fff4933702d9fc0b72bec02669f97",
+        "source_worktree": "/home/tux/bigbrotr-rs/.research/m2-current-tutorial-nostr-20261103",
+        "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-tutorial-current-r16",
+        "qualification": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/current-tutorial-812cfb1c/installed-tutorial-receipt.json",
+          "sha256": "7d4c46800a8cee46062671d5bd5f75be5057034cd9639cd2ab3be33a6ff724ff"
         },
-        "scope": "Same 6cbe/candidate: external runtime, exact 353-byte signed export, 25 complete controlled-peer transcripts/no outbound Nostr EVENT, reviewed signer exclusion, owned listeners and exact capability refusals. Not general egress exclusion.",
-        "resources": "All 18 owned containers stopped0/PID0/noOOM; runner/application/clients absent, native closed, owner release committed and bridge empty. Original 99b7 tutorial remains separately identified."
+        "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-tutorial-current-r16/resources.json",
+        "root_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-tutorial-current-r16/root-terminal.json",
+          "sha256": "6f3490529ccf51c9afc3131f1ab4bb64f8422225a438e6282cc15b107600a660"
+        },
+        "resource_state": "18containersstopped0/PID0/noOOM,3recordedprocessesand810commandPIDsabsent,31sourcefiles,bridgeempty. Original4ELFfullstatpostguardcompleted; no compiler/cache/newassembly/cleanup.",
+        "scope": "Current3query controlledpeer/source-boundnoSigner, listeners, signed353byte history/export andordinaryrestart only; no native census/general egress. IngestSQLownershipmayremain; actualControlrelease/nativecloseverified.",
+        "previous_qualification": {
+          "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
+          "acceptance_revision": "441d332e791f25bd0ef36f2c553076433820d1a7",
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-tutorial-r1/root-terminal.json",
+            "sha256": "96dae4c73444242d2661af2bc276da7eb3cf148e34acfafda47c71c6d472ad55"
+          }
+        },
+        "retention": "Freeze812andallcurrentR16rawdata/logs/proofs; preserve prior6cbe/99b7 originals and replay-only failures."
       }
     }
   },
@@ -79472,6 +79488,47 @@
             "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/installed-pair-receipt.json",
             "sha256": "267fcee6ae4b63aeb0d8594699f417f26af89a42f040a850fb97955337553de0"
           }
+        },
+        "adoption_commit_fault_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-adoption-commit-faults-20261103",
+          "branch": "work/m2-adoption-commit-faults-20261103",
+          "base": "5f84dd29aac3c1a0bcb73ba9d81b9d9f12b033b6",
+          "state": "QUALIFIED_BOTH_INSTALLED_AND_INDEPENDENT_SCIENCE_CUSTODY_PASS",
+          "owner": "Sol source implementation; Root sole integrator/launcher; bounded Astra critical review before engines",
+          "preparation": "/home/tux/bigbrotr-rs/.research/m2-adoption-installed-preparation-20261103",
+          "preparation_status": "Final source/controls/private interfaces critically reviewed, actual R14/R15 complete; immutable r14/r15 preparation snapshots retained.",
+          "preservation": "All executed source/data frozen; bothcases22stopped/PID0/noOOM containers,7absentprocesses,1121/1111absentcommandPIDs,53sourcefiles andemptyborrowedbridge. No rebuild, fresh assembly or cleanup.",
+          "head": "3546933f7f7caa969907e8665787bfff6d2bc78c",
+          "integrated": [
+            "ec03a747",
+            "7df3a767"
+          ],
+          "qualification": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/adoption-commit-3546933f/installed-pair-receipt.json",
+            "sha256": "6563937534a6658f4599c4568c868379d5402802638324b3b885f289c98d4fc8"
+          },
+          "cases": {
+            "r14": {
+              "root_tool": 45014,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-adoption-commit-before-r14",
+              "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-adoption-commit-before-r14/resources.json",
+              "state": "STOPPED_RETAINED"
+            },
+            "r15": {
+              "root_tool": 24190,
+              "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-adoption-commit-after-r15",
+              "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-adoption-commit-after-r15/resources.json",
+              "state": "STOPPED_RETAINED"
+            }
+          }
+        },
+        "continuation_authority_refusal_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-continuation-authority-refusals-20261103",
+          "branch": "work/m2-continuation-authority-refusals-20261103",
+          "base": "7df3a767327b11dbeaa8b6a2b1d3e237f63db3b7",
+          "state": "SOL_BOUNDED_SOURCE_ASSIGNMENT_BOTH_INSTALLED_NOT_RUN",
+          "owner": "Sol implementation, Root sole integrator/launcher, Astra final critical review before engines",
+          "scope": "Grant withdrawal and real original-deadline expiry at new0045helper; no product/default/limit/migration changes or wider qualification."
         }
       }
     }

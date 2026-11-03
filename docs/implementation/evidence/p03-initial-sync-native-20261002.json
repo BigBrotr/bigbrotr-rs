@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "PLANNER_STOP_CORRECTION_INTEGRATED_INDEPENDENTLY_REVIEWED_FRESH_PRODUCT_PENDING",
+    "status": "CURRENT_A464_COMPILED_POSITIVE_AND_UNKNOWN_SEAL_ADOPTION_BOUNDARIES_QUALIFIED_M2_OPEN",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
-    "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "After coherent seal-pair publication, implement atomic adoption-COMMIT before/after loss under existingP03-T01Step3/T05Steps2/4/7/P02succession, with critical oracle/proxy review before engines; same settled prefix, unchanged product when actual boundaries permit.",
+    "review": "Initial source-only review, before the separately recorded qualification: Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
+    "next": "Focused actual continuation-authority refusal pair under existingP03-T01Step3/T05Steps2/4/7: withdraw exact job actor roles.control grant versus genuine original deadline expiry, each after confirmed seal/retire and with fresh Control/root policy. Observe real new helper BB001/reason/backend, unchanged job/unadoptedseal/native91 and no new wire. Existing integrity refusal/exact uncertain-seal retry remain current safety gates; later candidate/zero-new-query/full500 stay in their tasks.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2701,6 +2701,34 @@
         "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/seal-commit-96700577/installed-pair-receipt.json",
         "sha256": "267fcee6ae4b63aeb0d8594699f417f26af89a42f040a850fb97955337553de0"
       }
-    }
+    },
+    "adoption_commit_faults": {
+      "owner": "P03-T01Step3/P03-T05Steps2/4/7/P02succession",
+      "status": "QUALIFIED_BOTH_ACTUAL_MODES_INDEPENDENT_SCIENCE_AND_CUSTODY_PASS",
+      "source": "3546933f7f7caa969907e8665787bfff6d2bc78c",
+      "source_tree": "3f98da861d7fb63e0b420defacdd09e5b9a8280f",
+      "original_commits": [
+        "6b48b741747c9e0c05d0e7ce8ee67d7720965e5b",
+        "3546933f7f7caa969907e8665787bfff6d2bc78c"
+      ],
+      "integrated_commits": [
+        "ec03a747",
+        "7df3a767"
+      ],
+      "qualification": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/adoption-commit-3546933f/installed-pair-receipt.json",
+        "sha256": "6563937534a6658f4599c4568c868379d5402802638324b3b885f289c98d4fc8"
+      },
+      "result": "R14 Root45014/90.605s and R15 Root24190/90.252s both pass7/7 stages. Actual final UPDATE1 then COMMIT completion server0/1 and client0; both caller outcomes remain Quantum(CommitUnknown). Before-forward preserves exact unadopted seal/job revision2; after-complete commits all9 adoption fields and job revision3. Native85/86/91, all5 original inputs/history/progress and no new wire are verified. Whole attempts708/690ms fit5s; both fresh SQL leases remain valid and original120s duration is unchanged.",
+      "source_fixes": "Canonical dictionary-key/row order only; values/types/xmins/multiplicity remain exact. Original synthetic setup failures and pre-normalization source controls retained; no product/runtime failure or native-format/default/limit change.",
+      "remaining": "Focused current authority/original expiry, historical-segment/workflow integrity refusal and exact uncertain-seal retry remain same owners. Later candidate/zero-new-query/fullwalker/capacity remain separate."
+    },
+    "reserved_unissued_composition": {
+      "status": "GENUINE_ORIGIN_COMPOSITION_UNCOVERED",
+      "owner": "P02-T02Step4/P03execution",
+      "distinction": "R11pendingQ2 is different. Older installed_recovery replica-mode copied reservation metadata is not genuine origin-call proof.",
+      "current_boundary": "Unchanged recovery.rs issued!=reserved refuses before SourceResolution for non-Resolve actions; new continuation Source accepts only the resulting opaque resolved capability. Preserve this open composition without making implementation of negative-outcome recovery a prerequisite to strictly settled continuation."
+    },
+    "current_artifact_tutorial_owner": "Current a464 tutorial and selected Nostr exclusion are locally qualified by R16 with independent replay. P01 report.current_artifact_tutorial_requalification owns the evidence and limits; hosted current M2 remains pending main integration. No broad signing or egress claim."
   }
 }
