@@ -159,6 +159,9 @@ class PhysicalTelemetryControls(unittest.TestCase):
                 self.assertEqual(value['allocated_bytes'],actual.st_blocks*512)
                 self.assertEqual(value['classification'],'SST')
                 self.assertLess(value['allocated_bytes'],value['logical_bytes'])
+                self.assertEqual(sample['directories']['.']['inode'],root.stat().st_ino)
+                self.assertEqual(sample['directory_allocated_bytes'],root.stat().st_blocks*512)
+                self.assertEqual(sample['classes']['DIRECTORY_METADATA']['allocated_bytes'],root.stat().st_blocks*512)
             finally: bound.close()
 
     def test_descriptor_binding_refuses_path_replacement_and_symlinks(self):

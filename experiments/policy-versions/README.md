@@ -71,8 +71,10 @@ PG directories are sampled every100ms, PG open-unlinked descriptors every500ms.
 Container-scoped descriptor censuses record positive deleted-but-open regular
 files and deduplicate their allocation. Permission failures and disappearance
 races are explicit partial/unknown coverage, never an assumed zero. Full final
-file identities accompany phase counts and non-atomic sampled peaks. Directory
-metadata and unrelated filesystem users remain outside the file totals;
+file identities accompany phase counts and non-atomic sampled peaks. Root and
+subdirectory allocations use descriptor-observed blocks in the separate
+`DIRECTORY_METADATA` class, with full directory identities. Unrelated filesystem
+users remain outside these directory/file totals;
 descriptor `f_bavail` captures their shared filesystem consequence without
 inventing a reservation for them.
 

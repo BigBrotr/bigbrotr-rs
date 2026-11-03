@@ -142,8 +142,18 @@ class BoundRoot:
         current = os.stat(self.path, follow_symlinks=False)
         require((current.st_dev, current.st_ino) == tuple(self.identity.values()), 'root path identity changed')
         vfs = os.fstatvfs(self.fd)
-        records, missing, seen = {}, [], set()
+        records, directories, missing, seen = {}, {}, [], set()
         entries = 0
+
+        def directory_record(value, relative):
+            key = (value.st_dev,value.st_ino)
+            if key in seen: return
+            seen.add(key)
+            directories[relative] = dict(device=value.st_dev,inode=value.st_ino,
+                logical_bytes=0,allocated_bytes=value.st_blocks*512,links=value.st_nlink,
+                metadata_size=value.st_size,classification='DIRECTORY_METADATA')
+
+        directory_record(os.fstat(self.fd),'.')
 
         def walk(directory, prefix=''):
             nonlocal entries
@@ -163,7 +173,11 @@ class BoundRoot:
                         require(value.st_dev == self.identity['device'], 'cross-device physical root')
                         if stat.S_ISDIR(value.st_mode):
                             child = os.open(entry.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory)
-                            try: walk(child, relative+'/')
+                            try:
+                                actual = os.fstat(child)
+                                require((actual.st_dev,actual.st_ino) == (value.st_dev,value.st_ino), 'directory changed during open')
+                                directory_record(actual,relative)
+                                walk(child, relative+'/')
                             finally: os.close(child)
                         else:
                             require(stat.S_ISREG(value.st_mode), 'special file in physical root')
@@ -175,17 +189,18 @@ class BoundRoot:
                         missing.append(relative)
         walk(self.fd)
         classes = {}
-        for value in records.values():
+        for value in [*records.values(),*directories.values()]:
             target = classes.setdefault(value['classification'], dict(files=0, logical_bytes=0, allocated_bytes=0))
             for field in ('logical_bytes', 'allocated_bytes'): target[field] += value[field]
             target['files'] += 1
         result = dict(identity=self.identity, classes=classes,
-            census_sha256=digest(compact(sorted(records.items()))),
+            census_sha256=digest(compact(dict(files=sorted(records.items()),directories=sorted(directories.items())))),
+            directory_allocated_bytes=sum(value['allocated_bytes'] for value in directories.values()),
             disappeared_during_sample=missing, snapshot_atomic=False,
             filesystem=dict(fsid=vfs.f_fsid, block_bytes=vfs.f_frsize,
                 available_bytes=vfs.f_bavail*vfs.f_frsize, free_bytes=vfs.f_bfree*vfs.f_frsize,
                 total_bytes=vfs.f_blocks*vfs.f_frsize))
-        if full: result['files'] = records
+        if full: result.update(files=records,directories=directories)
         return result
 
 
