@@ -1,19 +1,40 @@
 # PostgreSQL control constraint fixture
 
-`acquisition_continuation_capacity.sql` is a narrow current-schema45 regression
-for cached PL/pgSQL record types. On a fresh empty database migrated through45,
-run it with `psql -X --no-password -v ON_ERROR_STOP=1
+`acquisition_continuation_capacity.sql` exercises cached PL/pgSQL record types
+and the current-schema45 workflow JobId union. Its12 literal cases each call the
+actual guard across epochs1→2→3→1 in one backend: **20 accepts and28 exact23514
+refusals**. Original claim-only64/65 controls remain. Overlapping claims/gaps/
+pending seals reach exactly64; each branch separately adds the65th identity;
+three full64-row branches still deduplicate to64. Isolated gap/pending-seal65
+controls check each branch's own bound. Finalized seals retain64/65 old-source
+obligations after synthetic job-owner moves. Predicate controls exclude other
+claim datasets/kinds/owner tuples, unowned jobs and other gap/seal slots/epochs.
+
+After the existing `setup`, run the maintained action with a new run name:
+
+```sh
+python3 -B experiments/control-migrations/lab.py continuation-capacity --root /owned/lab/runtime --run-name continuation_union
+```
+
+It creates a new database, migrates with the actual current build, requires61
+ledger rows and the exact0045 checksum, and retains migration/fixture streams,
+named case counts, function/source/artifact hashes and full Control schema/data
+dumps before/after rollback under `continuation_union-continuation-capacity/`.
+Existing reports/configurations/databases refuse reuse. The clean setup harness
+must match this checkout; only these SQL/README/`lab.py` paths may differ from the
+declared clean product build. No function override or ledger rewrite is performed.
+Use the existing `stop` action afterward; resources remain owned and retained.
+
+For direct execution on another fresh empty database migrated through45, use
+`psql -X --no-password -v ON_ERROR_STOP=1
 --set=expected_migration_45_sha256=<SHA-256 of the applied 0045 SQL>
 --file=experiments/control-migrations/acquisition_continuation_capacity.sql`.
 Use the owned fixture-superuser connection: transaction-local replica mode seeds
 synthetic metadata, then normal trigger mode is restored once before actual
-guard calls across epochs1→2→3→1 in the same backend. Four64-identity accepts and
-four exact65-identity refusals must succeed; all rows roll back. This qualifies
-SQL typing and claim accounting only, not native lifecycle, authorization,
-cross-branch UNION deduplication or installed deferred-COMMIT behavior. Retain
-both output streams and the actual ledger/function source identities. An explicit
-transactional function override can diagnose a correction before rebuilding,
-but must be recorded separately and must never change the migration ledger.
+guard calls. All rows roll back. These deliberately incomplete metadata fixtures
+qualify SQL typing and UNION accounting only; they establish no native lifecycle,
+authorization, valid seal/adoption transition or installed deferred-COMMIT behavior.
+Execution of the extended UNION cases is **NOT_RUN** until separately recorded.
 
 `lab.py` is the accompanying Docker laboratory orchestrator. It provisions a new
 owned directory, internal network with no published ports, PostgreSQL 16.15 and

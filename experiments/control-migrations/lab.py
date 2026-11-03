@@ -189,9 +189,11 @@ def migrate(state, action, path, *, user="bigbrotr_migrator", password="migrator
                *([] if target is None else ["--target", str(target)]))
 
 
-def schema_digest(state, database):
+def schema_digest(state, database, *, capture=None):
     dump = docker("exec", state["postgres"], "pg_dump", "--no-password", "-U", "postgres", "-d", database,
                   "--schema=control", "--no-owner", "--no-privileges").stdout
+    if capture is not None:
+        capture.write_text(dump)
     # Recent pg_dump patches randomize their psql restrict token. It is neither
     # database content nor schema; retain every other byte in this comparison.
     stable = "\n".join(line for line in dump.splitlines() if not line.startswith(("\\restrict ", "\\unrestrict ")))
@@ -235,6 +237,111 @@ def schema_cases(root, run_name):
     print(json.dumps(report))
     if not passed:
         raise RuntimeError("actual schema fixture failed; inspect retained stdout/stderr")
+
+
+def continuation_capacity(root, run_name):
+    if not root.is_absolute() or not re.fullmatch(r"[a-z_]{1,20}", run_name):
+        raise RuntimeError("capacity root must be absolute and run-name contain 1..20 lowercase letters/underscores")
+    state = load(root)
+    source = Path(__file__).resolve().parents[2]
+    revision = command(["git", "-C", str(source), "rev-parse", "HEAD"]).stdout.strip()
+    if state["source"] != str(source) or state["harness_revision"] != revision or command(
+            ["git", "-C", str(source), "status", "--porcelain", "--untracked-files=all"]).stdout:
+        raise RuntimeError("capacity requires the clean selected laboratory harness")
+    application_source = state["build"]["build_info"]["source"]
+    if application_source.get("dirty") is not False or not re.fullmatch(r"[0-9a-f]{40}", application_source["revision"]):
+        raise RuntimeError("capacity requires a declared clean product build")
+    names = ("experiments/control-migrations/acquisition_continuation_capacity.sql",
+             "experiments/control-migrations/lab.py", "experiments/control-migrations/README.md")
+    changed = command(["git", "-C", str(source), "diff", "--name-only", "--no-renames",
+                       application_source["revision"], revision]).stdout.splitlines()
+    if not set(changed).issubset(names):
+        raise RuntimeError("capacity harness differs from the product outside its three declared fixture paths")
+    output = root / (run_name + "-continuation-capacity")
+    database = "bb_" + run_name + "_continuation_capacity"
+    if output.exists() or (root / (database + ".toml")).exists():
+        raise RuntimeError("refusing to overwrite capacity evidence or configuration")
+    output.mkdir(mode=0o700, exist_ok=False)
+    fixture = source / names[0]
+    migration = source / "migrations/postgres/0045_acquisition_continuations.sql"
+    expected = hashlib.sha256(migration.read_bytes()).hexdigest()
+    report = dict(format="bigbrotr-continuation-capacity/1", status="RUNNING", database=database,
+                  fixture_role="postgres_fixture_superuser", scope="SQL typing and UNION accounting only; no native, authority or deferred-COMMIT proof",
+                  source_files_sha256={name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in names},
+                  migration45_sha256=expected, binary_sha256=state["binary_sha256"],
+                  application_source=application_source, harness_revision=revision, server=state["server"])
+    write_json(output / "result.json", report)
+
+    def captured(label, action):
+        try:
+            result = action()
+        except subprocess.TimeoutExpired as error:
+            for stream in ("stdout", "stderr"):
+                partial = getattr(error, stream) or ""
+                if isinstance(partial, bytes):
+                    partial = partial.decode(errors="replace")
+                (output / (label + "." + stream)).write_text(partial)
+            report[label + "_exit"] = None
+            raise
+        (output / (label + ".stdout")).write_text(result.stdout)
+        (output / (label + ".stderr")).write_text(result.stderr)
+        report[label + "_exit"] = result.returncode
+        return result
+
+    try:
+        observed_binary = docker("exec", state["client"], "sha256sum", "/build/bigbrotr").stdout.split()
+        if observed_binary != [state["binary_sha256"], "/build/bigbrotr"]:
+            raise RuntimeError("capacity executable differs from its setup build receipt")
+        sql(state, "postgres", f"CREATE DATABASE {database} OWNER bigbrotr_migrator;")
+        report["phase"] = "migrate"
+        result = captured("migrate", lambda: migrate(state, "apply", config(root, state, database), target=None))
+        if result.returncode or result.stderr or json.loads(result.stdout).get("status") != "applied":
+            raise RuntimeError("capacity current-schema migration failed")
+        ledger = json.loads(sql(state, database, "SELECT json_build_object('count',count(*),'migration45_sha256',"
+            "max(encode(checksum,'hex')) FILTER(WHERE migration=45)) FROM control.schema_versions;"))
+        report["ledger"] = ledger
+        if ledger != dict(count=61, migration45_sha256=expected):
+            raise RuntimeError("capacity requires the exact current61-row schema45 ledger")
+        function = sql(state, database, "SELECT pg_get_functiondef('control.require_acquisition_workflow_capacity(bytea,numeric)'::regprocedure);")
+        (output / "capacity-function.sql").write_text(function + "\n")
+        report["capacity_function_sha256"] = hashlib.sha256(function.encode()).hexdigest()
+        report["before_schema_and_data_sha256"] = schema_digest(state, database, capture=output / "before.sql")
+        try:
+            report["phase"] = "fixture"
+            result = captured("fixture", lambda: docker("exec", "-i", state["postgres"], "psql", "-X", "-A", "-t", "-q", "--no-password",
+                "-U", "postgres", "-d", database, "-v", "ON_ERROR_STOP=1", "-v", "expected_migration_45_sha256=" + expected,
+                data=fixture.read_text(), check=False))
+        finally:
+            report["phase"] = "after_fixture"
+            report["after_schema_and_data_sha256"] = schema_digest(state, database, capture=output / "after.sql")
+        if result.returncode or result.stderr:
+            raise RuntimeError("capacity fixture failed; inspect retained stdout/stderr")
+        summary = json.loads(result.stdout)
+        report["summary"] = summary
+        accepted = ("claims64", "overlapping_union64", "three_full_branches_union64",
+                    "finalized_seals64_after_owner_move", "predicate_exclusions_union64")
+        refused = ("claims65", "claim_adds_unique65", "gap_adds_unique65", "pending_seal_adds_unique65",
+                   "gaps65", "pending_seals65", "finalized_seals65_after_owner_move")
+        case_counts = {name: dict(accepted=4, refused=0) for name in accepted}
+        case_counts.update({name: dict(accepted=0, refused=4) for name in refused})
+        backend = summary.get("backend_pid")
+        if type(backend) is not int or backend <= 0 or summary != dict(
+                scope="isolated_sql_typing_and_accounting_not_native_authority", positives=20, refusals=28,
+                case_counts=case_counts, epoch_order=[1, 2, 3, 1], backend_pid=backend, schema45_ledger_sha256=expected):
+            raise RuntimeError("capacity fixture summary differs from the literal named48-call expectations")
+        if report["before_schema_and_data_sha256"] != report["after_schema_and_data_sha256"]:
+            raise RuntimeError("capacity rollback changed the full Control schema or data")
+        if report["source_files_sha256"] != {name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in names}:
+            raise RuntimeError("capacity fixture source changed during execution")
+        report.update(status="PASS", phase="complete")
+    except BaseException as error:
+        report.update(status="FAIL", failure=type(error).__name__)
+        raise
+    finally:
+        report["artifacts_sha256"] = {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(output.iterdir()) if path.name != "result.json"}
+        write_json(output / "result.json", report)
+    print(json.dumps(dict(status=report["status"], output=str(output), positives=20, refusals=28)))
 
 
 def smoke(root, run_name):
@@ -346,7 +453,7 @@ def stop(root):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["setup", "smoke", "schema", "stop"])
+    parser.add_argument("action", choices=["setup", "smoke", "schema", "continuation-capacity", "stop"])
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--run-name", default="smoke")
     parser.add_argument("--build", type=Path)
@@ -364,5 +471,7 @@ if __name__ == "__main__":
         smoke(args.root, args.run_name)
     elif args.action == "schema":
         schema_cases(args.root, args.run_name)
+    elif args.action == "continuation-capacity":
+        continuation_capacity(args.root, args.run_name)
     else:
         stop(args.root)
