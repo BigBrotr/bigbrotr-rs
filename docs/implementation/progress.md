@@ -8,7 +8,7 @@ releases nor packages/deployment.
 ## Revision and capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **4bbfd218** before this checkpoint.
+`work/m2-finite-history-20261101`, observed HEAD **3cece39b** before this checkpoint.
 Canonical main/origin/actual remote are **5a9b7cc4**, clean/pushed and full hosted
 foundation PASS. Reviewed M2 production/oracle and two fixture corrections are
 integrated locally. The new SQL wire-type correction requires a fresh product
@@ -65,14 +65,23 @@ existing tasks, not prerequisites invented for this bounded profile.
 
 ## Resources and hosted CI
 
-All local build/test/observer/installed tools are reaped. R3 Root84616 custody
+Current corrected source **3cece39b**, tree0125b48b, is frozen clean in
+`.research/m2-adoption-core-product-types-20261103`. Actual format/planning plus
+all-target7.880s/strictClippy9.833s/explicit-DwarningsRustdoc4.174s PASS.
+Worker-bound release builder **Root33233** is ACTIVE: launcher2223430/ticks39571381,
+container5138e566; cache115 held exclusively, original4ELF beforeguards passed.
+Actual release/artifacts/tests/observer/installed remain pending. Prepared current
+child library/probe capsules are actual-parentUNBOUND/NOT_RUN.
+
+Prior build/test/observer/installed tools are reaped. R3 Root84616 custody
 **97a78d20**:17 containers stopped/PID0/noOOM,4 processes and1039 command PIDs
 absent,53 acceptance files verified, borrowed bridge1699209a empty/preserved.
 R3 Native closing may precede failed SQL; preserve its original store/PG/logs,
 never claim Native rollback or restart that failure merely for a preflight.
 New SQL prepare lab Root79572 is stopped/retained, internal/nohostports, separate
 from R3. Source agents finished; no engine/compiler/cache holder or source writer
-is active. Original four protected ELF fullstat/O_NOATIME guards remain valid.
+is active except the named current builder/cacheholder. Original four protected
+ELF fullstat/O_NOATIME postguards wait its actual termination.
 [Inventory](../research/laboratory-inventory.json) owns exact resources. Preserve
 unique data/failures/.research/worktrees; no new cleanup. October31 recovery is
 already reconciled.
@@ -87,9 +96,9 @@ or provideralerts within bounded/asynchronous scanner limits. Root56226 and
 agent36470/37653 are reaped; no hosted observer active. Original551/16ad FAIL and
 historicalf4ad PASS remain. This hosted result does not cover later M2.
 
-**Next Root action:** freeze the reviewed SQL correction/tutorial input fence,
-parameterize the existing builder using5e's actual installed-failure receipt,
-run fresh worker-bound product/affected Rust/observer qualification and repeat
+**Next Root action:** reap33233 and authenticate the actual current build using
+the unchanged verifier (write actual session/reap metadata first). Bind prepared
+affected Rust and observer only to a real current PASS receipt, then repeat the
 same installed five-query journey. Retained recipes are under
 `.research/m2-adoption-core-qualification-20261103`; SQL preflight is
 `/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103`.

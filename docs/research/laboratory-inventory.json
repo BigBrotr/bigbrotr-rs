@@ -79054,7 +79054,7 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "Root4bbfd218 before SQLfix checkpoint; canonicalmain/origin/actualremote5a9b7cc4, latestfullhostedPASS, no newpush",
+      "observed_source": "Root3cece39b before activebuildcheckpoint; canonicalmain5a9 latestfullhostedPASS/no newpush",
       "state": "R2oracleshapefixed(A6), R3nowpassesNative85prefix/progress butactualsealSQLbindfailed. Reviewedproduct7d/Root4bb explicitbasecasts, freshrealPG PREPARE3 +originalnegativePASS; currentcorrectedbuild/installedpending.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
@@ -79079,9 +79079,10 @@
       "active_assignments": {
         "integrator": "Root soleintegrator/launcher. No engine/compiler/cacheholder/sourcewriter active atcheckpoint.",
         "source": "Solproduct7d clean/sourcecriticalAstrareviewcomplete. Existinggenericparent/affectedrecipes ready; freshcurrent-source qualification next.",
-        "hosted": "Rootwatch56226reaped0/noexpiry, driver2138096/GH2138099absent; delegatedacquisition36470/verifier37653reaped0. Source5a9full36/scope20PASS withpublicaudit, no activehostedobserver."
+        "hosted": "Rootwatch56226reaped0/noexpiry, driver2138096/GH2138099absent; delegatedacquisition36470/verifier37653reaped0. Source5a9full36/scope20PASS withpublicaudit, no activehostedobserver.",
+        "local": "Root33233/launcher2223430 ticks39571381/container5138e566 ACTIVEworker-parentrelease; exclusivecache115held. Current3cece childlibrary/probeonlysourceprepared, actualparentUNBOUND/NOT_RUN."
       },
-      "resources": "5e build/test/probe stopped/reaped0. R1/R2/R3actualFAIL preserved; R3Root84616reaped1,17containersstopped/PID0/noOOM,4recordedprocesses+1039commandPIDsabsent,53acceptancefilesverified/bridgeempty. PreserveR3partialNativeclosing/PGstate, no restart/mutation. NewSQLpreparelab Root79572reaped0:bothownedcontainersstopped/PID0/noOOM, internalnohostportsnetwork retained. Cache115released/original4ELFguardvalid. No cleanup.",
+      "resources": "Current3cece builder5138e566 ACTIVE withfreshoriginal4ELFfullstat/O_NOATIME/no-cache-overlap guards passed beforelaunch; postguardswaitactualterminal. Prior5e/R1/R2/R3 andSQLtypepreflight79572 allterminal/stopped, no installedengine/cleanup/sourcewriter. Borrowedbridge1699209a/data/failures preserved.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79285,16 +79286,16 @@
         }
       },
       "settled_adoption_qualification": {
-        "source": "5e1a99ee8862efb6a1cb2faf8016c75f1dd95484",
-        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-recovery-20261103",
-        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee",
-        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee",
-        "state": "R2oracleshapefixed(A6), R3nowpassesNative85prefix/progress butactualsealSQLbindfailed. Reviewedproduct7d/Root4bb explicitbasecasts, freshrealPG PREPARE3 +originalnegativePASS; currentcorrectedbuild/installedpending.",
-        "root_tool": 84616,
-        "launcher_pid": 2155776,
-        "launcher_start_ticks": "39157296",
-        "container": "b10368be772d56a85295895c1b9fc406fae3ff3a75fedd3f67ce74c0b1804d0b",
-        "cache_lock": "RELEASED",
+        "source": "3cece39bb0d864daecd234e2331b0ac9fcdf4618",
+        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-types-20261103",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b",
+        "state": "ACTIVE_CORRECTED_WORKER_PARENT_RELEASE_AFTER_STRICT3PASS",
+        "root_tool": 33233,
+        "launcher_pid": 2223430,
+        "launcher_start_ticks": "39571381",
+        "container": "5138e5665fae7b1d1bc6d9cafcbb50b3feb82d79043a5200054bb9daf69b3094",
+        "cache_lock": "HELD_EXCLUSIVELY",
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "Originalfourfailedcompile/lintattempts and cheapmissingCargoHomeFAIL preserved.7cportable692/13/43PASS and currentboundedtutorial14PASS reused within unchanged scopes. Newinstalledfivequery/custody/SQL65/unknownoutcome/laterzeroqueryNOT_RUN.",
         "failure_custody": "P03 installed_third_attempt/productfailure receipt +root-terminal97a78d20",

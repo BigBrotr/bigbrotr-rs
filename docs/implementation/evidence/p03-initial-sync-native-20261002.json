@@ -2116,7 +2116,7 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "INSTALLED_R2_ORACLE_FIXED_R3_PRODUCT_SQL_BIND_DEFECT_FIXED_PREPARE_PASS_FRESH_BUILD_PENDING",
+    "status": "CORRECTED_SQL_REAL_TYPE_PREFLIGHT_AND_STRICT_PASS_FRESH_RELEASE_ACTIVE",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
@@ -2167,36 +2167,14 @@
       "correction": "c3e51a90 moves exact unchanged continuation_grant before cfg(test) module and removes borrowed proof drop with allnative/SQL/lease validations unchanged; no allowance/limit/oracle weakened."
     },
     "current_qualification": {
-      "source": "5e1a99ee8862efb6a1cb2faf8016c75f1dd95484",
-      "tree": "914a9ffc69f21d5154e488e6f4363ae8e98a51d9",
-      "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee",
-      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee",
-      "strict_preflight": {
-        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee/out/compile-preflight/result.json",
-        "sha256": "74109a044143938b1e9dc3d7c36c2b9a9f65433ce1d9efc142e1fe6fef21c05c",
-        "result": "All-target6.577s/strictClippy11.586s/explicit-DwarningsRustdoc4.022sPASS; actual cheapformat/planningPASS. No testassertion/release/installed claim."
-      },
-      "root_tool": 57670,
-      "state": "PASS_EXACT_SOURCE_BUILD_FOUR_AFFECTED_RUST_TARGETS_NATIVE_OBSERVER_INSTALLED_PENDING",
-      "next": "Finish bounded product/acceptance identity-wrapper review, run same installed fivequery journey with correctedexistingprofile and unchanged5e artifacts. Preserve originalFAIL and require exacttarget2/1/1+fault1, Q1settled/Q2absent, oldownerexclusion and entire independent samejob/native/history oracle. Any furtherfailure requires newclassification, no automaticboundswidening.",
-      "build_receipt": {
-        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee/build-receipt.json",
-        "sha256": "b60d6d631334fe95259f2e28abe939628923cdbc199865ed6d449303c5c2c1e3",
-        "root_tool": 57670,
-        "result": "REAPED0, worker-bound releasePASS; containerb10368be stopped/PID0/noOOM/cache released, unchanged original4ELFfullstatO_NOATIMEguards."
-      },
-      "affected_rust": {
-        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee/library/qualification-receipt.json",
-        "sha256": "9273f668e7acafd0d44fad930260311a8d5a4624ed4d1e1ce90695b990284c1c",
-        "root_tool": 75466,
-        "result": "Unfiltered705library/234binary/40schema/24examplePASS, zero filtered,27requiredcontrols explicitlyPASS; five dedicatedlibignoresNOT_RUN. Actualcontainer66c783a8 stopped/PID0/noOOM/cache released."
-      },
-      "observer": {
-        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee/probe/terminal-receipt.json",
-        "sha256": "c46ad038060cbfe448a07c7ed685d691b69457e680c6394bceb086581c10bf68",
-        "root_tool": 66112,
-        "result": "Maintainedexact-parentobserverPASS; actualefc042e1 stopped/PID0/noOOM/cache released; binary3c83b9e4/33986600B, no nativecensusclaim."
-      }
+      "source": "3cece39bb0d864daecd234e2331b0ac9fcdf4618",
+      "tree": "0125b48bbedccec4ccca8bce97205db6d9105ec1",
+      "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b",
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b",
+      "root_tool": 33233,
+      "state": "ACTIVE_WORKER_BOUND_RELEASE_BUILD_AFTER_STRICT_PASS",
+      "strict": "Actualformat/planningPASS; alltarget7.880s/strictClippy9.833s/explicit-DwarningsRustdoc4.174sPASS. Release/result/test/observer/installed notyetqualified.",
+      "provenance": "Reviewed7d queries/Root4bb sourceSHA unchanged; realcurrent-schemaPREPARE3+oldnegative42P08PASS reused. Genericpreparedchild library/probeactual-parentUNBOUND/NOT_RUN."
     },
     "installed_first_attempt": {
       "product": "5e1a99ee8862efb6a1cb2faf8016c75f1dd95484",
@@ -2241,6 +2219,38 @@
       "root_tool": 79572,
       "result": "PASS PostgreSQL160015/currentempty61receipt schema45:all3undeclaredPREPAREinferredexactRustbaseparamtypes, no productDML EXECUTE; originalnegativeSQLfails42P08at3. Bothownedlabcontainersstopped/PID0/noOOM; internalnoportnetworkretained.",
       "scope": "Migrationownerparameterinferenceonly, notruntimeControlauthorization ornative/recovery/installedproof. OriginalR3neverrestarted. Initial no-free192subnet preallocationNOT_RUN andwrongdiagnosticcolumnsetupFAIL preserved; correctedknown45lookup reusedsameemptynewownedlab."
+    },
+    "qualified_product_5e_before_sql_correction": {
+      "source": "5e1a99ee8862efb6a1cb2faf8016c75f1dd95484",
+      "tree": "914a9ffc69f21d5154e488e6f4363ae8e98a51d9",
+      "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee",
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee",
+      "strict_preflight": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-5e1a99ee/out/compile-preflight/result.json",
+        "sha256": "74109a044143938b1e9dc3d7c36c2b9a9f65433ce1d9efc142e1fe6fef21c05c",
+        "result": "All-target6.577s/strictClippy11.586s/explicit-DwarningsRustdoc4.022sPASS; actual cheapformat/planningPASS. No testassertion/release/installed claim."
+      },
+      "root_tool": 57670,
+      "state": "PASS_EXACT_SOURCE_BUILD_FOUR_AFFECTED_RUST_TARGETS_NATIVE_OBSERVER_INSTALLED_PENDING",
+      "next": "Finish bounded product/acceptance identity-wrapper review, run same installed fivequery journey with correctedexistingprofile and unchanged5e artifacts. Preserve originalFAIL and require exacttarget2/1/1+fault1, Q1settled/Q2absent, oldownerexclusion and entire independent samejob/native/history oracle. Any furtherfailure requires newclassification, no automaticboundswidening.",
+      "build_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee/build-receipt.json",
+        "sha256": "b60d6d631334fe95259f2e28abe939628923cdbc199865ed6d449303c5c2c1e3",
+        "root_tool": 57670,
+        "result": "REAPED0, worker-bound releasePASS; containerb10368be stopped/PID0/noOOM/cache released, unchanged original4ELFfullstatO_NOATIMEguards."
+      },
+      "affected_rust": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee/library/qualification-receipt.json",
+        "sha256": "9273f668e7acafd0d44fad930260311a8d5a4624ed4d1e1ce90695b990284c1c",
+        "root_tool": 75466,
+        "result": "Unfiltered705library/234binary/40schema/24examplePASS, zero filtered,27requiredcontrols explicitlyPASS; five dedicatedlibignoresNOT_RUN. Actualcontainer66c783a8 stopped/PID0/noOOM/cache released."
+      },
+      "observer": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/5e1a99ee/probe/terminal-receipt.json",
+        "sha256": "c46ad038060cbfe448a07c7ed685d691b69457e680c6394bceb086581c10bf68",
+        "root_tool": 66112,
+        "result": "Maintainedexact-parentobserverPASS; actualefc042e1 stopped/PID0/noOOM/cache released; binary3c83b9e4/33986600B, no nativecensusclaim."
+      }
     }
   }
 }
