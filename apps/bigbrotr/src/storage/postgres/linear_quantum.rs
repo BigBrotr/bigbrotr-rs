@@ -363,7 +363,8 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
     mut traversal: Traversal,
     control: ControlOwner,
     grant: QuantumGrant,
-) -> Result<LinearQuantum, QuantumError> {
+    before_write: impl FnOnce() -> Result<bool, QuantumError>,
+) -> Result<Option<LinearQuantum>, QuantumError> {
     let snapshot = load(tx, context).await.map_err(|_| QuantumError::Context)?;
     if snapshot.complete != snapshot.reserved {
         return Err(QuantumError::Context);
@@ -389,6 +390,9 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
         + 2097152
         + 3 * 1024
         + 256 * maximum_dependencies as i64;
+    if !before_write()? {
+        return Ok(None);
+    }
     tx.execute("INSERT INTO control.acquisition_quanta(quantum_id,quantum_number,dataset_id,job_id,scope_id,
         enrollment_generation,route_id,producer_slot_id,producer_epoch,manifest_sha256,
         issuer_resource,issuer_epoch,issuer_incarnation,interval_lower,interval_upper,horizon,window_end,window_width,query_budget,query_number,
@@ -411,7 +415,7 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
     dependencies
         .try_reserve_exact(maximum_dependencies)
         .map_err(|_| QuantumError::Capacity)?;
-    Ok(LinearQuantum {
+    Ok(Some(LinearQuantum {
         id,
         context,
         job: job.id,
@@ -430,7 +434,7 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
             dependencies,
             _grant: grant,
         })),
-    })
+    }))
 }
 
 #[allow(
@@ -446,7 +450,8 @@ pub(in crate::storage::postgres::control_owner) async fn exclude(
     control: ControlOwner,
     traversal: &mut Traversal,
     span: crate::acquisition::quantum::Exclusion,
-) -> Result<(), QuantumError> {
+    before_write: impl FnOnce() -> Result<bool, QuantumError>,
+) -> Result<bool, QuantumError> {
     let snapshot = load(tx, context).await.map_err(|_| QuantumError::Context)?;
     if snapshot.complete != snapshot.reserved
         || traversal.entries as usize > 3 * usize::from(traversal.geometry.budget)
@@ -466,6 +471,9 @@ pub(in crate::storage::postgres::control_owner) async fn exclude(
     } else {
         "selector_excluded"
     };
+    if !before_write()? {
+        return Ok(false);
+    }
     tx.execute("INSERT INTO control.acquisition_quanta(quantum_id,quantum_number,entry_kind,dataset_id,
         job_id,scope_id,enrollment_generation,route_id,producer_slot_id,producer_epoch,manifest_sha256,
         issuer_resource,issuer_epoch,issuer_incarnation,interval_lower,interval_upper,horizon,window_end,
@@ -486,7 +494,7 @@ pub(in crate::storage::postgres::control_owner) async fn exclude(
         .await.map_err(failure)?;
     traversal.geometry.exclude(span)?;
     traversal.entries += 1;
-    Ok(())
+    Ok(true)
 }
 
 pub(in crate::storage::postgres::control_owner) async fn finish(

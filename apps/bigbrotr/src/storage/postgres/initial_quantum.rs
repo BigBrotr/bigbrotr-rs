@@ -2,6 +2,61 @@
 use super::producer_progress::quantum::{self, LinearQuantum, QuantumCapture, QuantumGrant};
 use super::*;
 use crate::acquisition::{quantum::QuantumError, scope::StoredAcquisitionScope};
+use std::sync::atomic::Ordering;
+
+/// Only the immutable prefix may drain a requested stop. The first INSERT is
+/// admitted immediately after `before_write`, with no intervening await. From
+/// that point every authority/delivery check sees the original stop token.
+struct PlanCancellation<'a> {
+    requested: &'a AtomicBool,
+    reading: AtomicBool,
+    writing: AtomicBool,
+}
+impl<'a> PlanCancellation<'a> {
+    fn new(requested: &'a AtomicBool) -> Option<Self> {
+        if requested.load(Ordering::Acquire) {
+            return None;
+        }
+        Some(Self {
+            requested,
+            reading: AtomicBool::new(false),
+            writing: AtomicBool::new(false),
+        })
+    }
+    fn token(&self) -> &AtomicBool {
+        if self.writing.load(Ordering::Acquire) {
+            self.requested
+        } else {
+            &self.reading
+        }
+    }
+    fn stopped_before_write(&self) -> bool {
+        !self.writing.load(Ordering::Acquire) && self.requested.load(Ordering::Acquire)
+    }
+    fn before_write(
+        &self,
+        check: impl FnOnce(&AtomicBool) -> Result<(), AdmissionError>,
+    ) -> Result<bool, QuantumError> {
+        // Genuine authority failure precedes a simultaneous orderly stop.
+        check(self.token()).map_err(QuantumError::Native)?;
+        if self.stopped_before_write() {
+            return Ok(false);
+        }
+        self.writing.store(true, Ordering::Release);
+        Ok(true)
+    }
+}
+
+/// A read result supplies no reusable custody until rollback and both delivery
+/// checks have succeeded. The caller retains its original operation deadline.
+async fn rollback_plan_read(
+    rollback: impl std::future::Future<Output = Result<(), InitialEventError>>,
+    mut validate: impl FnMut() -> Result<(), InitialEventError>,
+) -> Result<(), InitialEventError> {
+    validate()?;
+    rollback.await?;
+    validate()
+}
 
 pub enum LinearQuantumSource<'a> {
     Initial(
@@ -75,16 +130,17 @@ impl ControlSession {
         grant: QuantumGrant,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<LinearQuantum>, InitialEventError> {
+        let Some(cancellation) = PlanCancellation::new(input.cancelled) else {
+            return Ok(None);
+        };
         let (mut native, authority) = source.split();
         let context = authority.progress_context(native.manifest());
         let control = self.identity;
         let policy = PolicyEpoch::new(authority.policy().policy_revision);
+        let mut operation = input.operation(authority)?;
+        operation.cancelled = cancellation.token();
         let (tx, mut lease) = self
-            .begin_initial_native_operation::<AdmissionError>(
-                &native,
-                input.operation(authority)?,
-                &mut validate,
-            )
+            .begin_initial_native_operation::<AdmissionError>(&native, operation, &mut validate)
             .await?;
         let job = super::super::acquisition_claims::read(&tx, context.dataset, input.job)
             .await
@@ -95,7 +151,7 @@ impl ControlSession {
         }
         let permit = grant.permit.clone();
         let read = native
-            .quantum_progress_read(&permit, input.cancelled)
+            .quantum_progress_read(&permit, cancellation.token())
             .map_err(InitialEventError::Native)?;
         let mut traversal = quantum::next_window(
             &tx,
@@ -107,13 +163,14 @@ impl ControlSession {
             control,
             input.window_width_seconds,
             input.query_budget,
-            &mut || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            &mut || {
+                producer_progress::recovery::authority(&mut lease, policy, cancellation.token())
+            },
         )
         .await
         .map_err(InitialEventError::Quantum)?;
-        let mut local_written = false;
         while let Some(span) = traversal.geometry.exclusion(input.scope.selector()) {
-            quantum::exclude(
+            let written = quantum::exclude(
                 &tx,
                 context,
                 &job,
@@ -122,12 +179,20 @@ impl ControlSession {
                 control,
                 &mut traversal,
                 span,
+                || {
+                    cancellation.before_write(|token| {
+                        producer_progress::recovery::authority(&mut lease, policy, token)
+                    })
+                },
             )
             .await
             .map_err(InitialEventError::Quantum)?;
-            local_written = true;
+            if !written {
+                break;
+            }
         }
-        let plan = if traversal.geometry.settled
+        let plan = if cancellation.stopped_before_write()
+            || traversal.geometry.settled
             || traversal.geometry.spent == traversal.geometry.budget
         {
             None
@@ -141,21 +206,24 @@ impl ControlSession {
                 geometry.horizon,
             )
             .map_err(InitialEventError::Quantum)?;
-            Some(
-                quantum::prepare(
-                    &tx,
-                    context,
-                    &job,
-                    input.scope.identity(),
-                    input.source,
-                    window,
-                    traversal,
-                    control,
-                    grant,
-                )
-                .await
-                .map_err(InitialEventError::Quantum)?,
+            quantum::prepare(
+                &tx,
+                context,
+                &job,
+                input.scope.identity(),
+                input.source,
+                window,
+                traversal,
+                control,
+                grant,
+                || {
+                    cancellation.before_write(|token| {
+                        producer_progress::recovery::authority(&mut lease, policy, token)
+                    })
+                },
             )
+            .await
+            .map_err(InitialEventError::Quantum)?
         };
         producer_progress::recovery::require_read(
             &tx,
@@ -164,22 +232,37 @@ impl ControlSession {
             context.slot,
             &permit,
             None,
-            || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+            || producer_progress::recovery::authority(&mut lease, policy, cancellation.token()),
         )
         .await
         .map_err(InitialEventError::Progress)?;
+        if !cancellation.writing.load(Ordering::Acquire) {
+            rollback_plan_read(
+                async {
+                    tx.rollback()
+                        .await
+                        .map_err(|_| InitialEventError::DeliveryUnknown)
+                },
+                || {
+                    native.validate_delivery(cancellation.token(), &mut lease, policy)?;
+                    initial_history::check_delivery(&mut lease, policy, cancellation.token())
+                        .map_err(InitialEventError::Compacted)
+                },
+            )
+            .await?;
+            if self.client.is_closed() {
+                return Err(InitialEventError::DeliveryUnknown);
+            }
+            native.delivered();
+            self.available = true;
+            return Ok(None);
+        }
         native.validate_delivery(input.cancelled, &mut lease, policy)?;
         initial_history::check_delivery(&mut lease, policy, input.cancelled)
             .map_err(InitialEventError::Compacted)?;
-        if plan.is_some() || local_written {
-            tx.commit()
-                .await
-                .map_err(|_| InitialEventError::Quantum(QuantumError::CommitUnknown))?;
-        } else {
-            tx.rollback()
-                .await
-                .map_err(|_| InitialEventError::DeliveryUnknown)?;
-        }
+        tx.commit()
+            .await
+            .map_err(|_| InitialEventError::Quantum(QuantumError::CommitUnknown))?;
         if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
         }
@@ -413,5 +496,212 @@ impl ControlSession {
         native.delivered();
         self.available = true;
         Ok(adopted)
+    }
+}
+
+#[cfg(test)]
+mod plan_stop_tests {
+    use super::*;
+    use std::{
+        cell::Cell,
+        future::Future,
+        pin::pin,
+        task::{Context, Poll, Waker},
+    };
+
+    fn authority(token: &AtomicBool) -> Result<(), AdmissionError> {
+        if token.load(Ordering::Acquire) {
+            Err(AdmissionError::AuthorityUnavailable)
+        } else {
+            Ok(())
+        }
+    }
+
+    #[test]
+    fn stopped_plan_never_admits_its_read_prefix() {
+        assert!(PlanCancellation::new(&AtomicBool::new(true)).is_none());
+    }
+
+    #[tokio::test]
+    async fn stop_during_plan_read_drains_rollback_without_admitting_write() {
+        let requested = AtomicBool::new(false);
+        let cancellation = PlanCancellation::new(&requested).unwrap();
+        let writes = Cell::new(0);
+        let validations = Cell::new(0);
+        let rollbacks = Cell::new(0);
+        let (read_done, read_wait) = tokio::sync::oneshot::channel();
+        let (rollback_done, rollback_wait) = tokio::sync::oneshot::channel();
+        let mut operation = pin!(async {
+            read_wait.await.unwrap();
+            authority(cancellation.token()).unwrap();
+            if cancellation.before_write(authority).unwrap() {
+                writes.set(writes.get() + 1);
+            }
+            rollback_plan_read(
+                async {
+                    rollbacks.set(rollbacks.get() + 1);
+                    rollback_wait.await.unwrap();
+                    Ok(())
+                },
+                || {
+                    validations.set(validations.get() + 1);
+                    authority(cancellation.token()).map_err(InitialEventError::Native)
+                },
+            )
+            .await
+        });
+        let mut context = Context::from_waker(Waker::noop());
+        assert!(operation.as_mut().poll(&mut context).is_pending());
+        requested.store(true, Ordering::Release);
+        read_done.send(()).unwrap();
+        assert!(operation.as_mut().poll(&mut context).is_pending());
+        assert_eq!(
+            (writes.get(), rollbacks.get(), validations.get()),
+            (0, 1, 1)
+        );
+        rollback_done.send(()).unwrap();
+        assert_eq!(operation.as_mut().poll(&mut context), Poll::Ready(Ok(())));
+        assert_eq!(
+            (writes.get(), rollbacks.get(), validations.get()),
+            (0, 1, 2)
+        );
+        assert!(cancellation.stopped_before_write());
+    }
+
+    #[tokio::test]
+    async fn stopped_plan_preserves_authentication_and_rollback_failures() {
+        for failure in [
+            AdmissionError::StateMismatch,
+            AdmissionError::CommitUnknown,
+            AdmissionError::AuthorityUnavailable,
+        ] {
+            let requested = AtomicBool::new(false);
+            let cancellation = PlanCancellation::new(&requested).unwrap();
+            requested.store(true, Ordering::Release);
+            assert_eq!(
+                cancellation.before_write(|_| Err(failure)),
+                Err(QuantumError::Native(failure))
+            );
+            for after_rollback in [false, true] {
+                let polled = Cell::new(false);
+                let validations = Cell::new(0);
+                assert_eq!(
+                    rollback_plan_read(
+                        async {
+                            polled.set(true);
+                            Ok(())
+                        },
+                        || {
+                            validations.set(validations.get() + 1);
+                            if after_rollback && validations.get() == 1 {
+                                Ok(())
+                            } else {
+                                Err(InitialEventError::Native(failure))
+                            }
+                        },
+                    )
+                    .await,
+                    Err(InitialEventError::Native(failure))
+                );
+                assert_eq!(polled.get(), after_rollback);
+            }
+        }
+        let validations = Cell::new(0);
+        assert_eq!(
+            rollback_plan_read(async { Err(InitialEventError::DeliveryUnknown) }, || {
+                validations.set(validations.get() + 1);
+                Ok(())
+            },)
+            .await,
+            Err(InitialEventError::DeliveryUnknown)
+        );
+        assert_eq!(validations.get(), 1);
+    }
+
+    #[tokio::test]
+    async fn settled_plan_stop_during_rollback_keeps_the_read_token() {
+        let requested = AtomicBool::new(false);
+        let cancellation = PlanCancellation::new(&requested).unwrap();
+        let validations = Cell::new(0);
+        let (done, wait) = tokio::sync::oneshot::channel();
+        let mut rollback = pin!(rollback_plan_read(
+            async {
+                wait.await.unwrap();
+                Ok(())
+            },
+            || {
+                validations.set(validations.get() + 1);
+                authority(cancellation.token()).map_err(InitialEventError::Native)
+            },
+        ));
+        let mut context = Context::from_waker(Waker::noop());
+        assert!(rollback.as_mut().poll(&mut context).is_pending());
+        assert_eq!(validations.get(), 1);
+        requested.store(true, Ordering::Release);
+        done.send(()).unwrap();
+        assert_eq!(rollback.as_mut().poll(&mut context), Poll::Ready(Ok(())));
+        assert_eq!(validations.get(), 2);
+        assert!(cancellation.stopped_before_write());
+        assert!(!std::ptr::eq(cancellation.token(), &requested));
+    }
+
+    #[tokio::test]
+    async fn stopped_plan_cannot_outlive_policy_during_rollback() {
+        use crate::runtime::policy_authority::{LeaseError, installed_with_clock};
+        for expire_before in [true, false] {
+            let requested = AtomicBool::new(false);
+            let cancellation = PlanCancellation::new(&requested).unwrap();
+            requested.store(true, Ordering::Release);
+            let (mut lease, clock) = installed_with_clock();
+            let expired = clock.0.get().unwrap() + Duration::from_secs(6);
+            if expire_before {
+                clock.0.set(Ok(expired));
+            }
+            let rollbacks = Cell::new(0);
+            let result = rollback_plan_read(
+                async {
+                    rollbacks.set(rollbacks.get() + 1);
+                    clock.0.set(Ok(expired));
+                    Ok(())
+                },
+                || {
+                    authority(cancellation.token()).map_err(InitialEventError::Native)?;
+                    lease.check_delivery(PolicyEpoch::new(1)).map_err(|_| {
+                        InitialEventError::Native(AdmissionError::AuthorityUnavailable)
+                    })
+                },
+            )
+            .await;
+            assert_eq!(
+                result,
+                Err(InitialEventError::Native(
+                    AdmissionError::AuthorityUnavailable
+                ))
+            );
+            assert_eq!(rollbacks.get(), usize::from(!expire_before));
+            assert_eq!(
+                lease.check_delivery(PolicyEpoch::new(1)),
+                Err(LeaseError::Expired)
+            );
+        }
+    }
+
+    #[test]
+    fn first_plan_effect_restores_real_stop_for_every_later_boundary() {
+        let requested = AtomicBool::new(false);
+        let cancellation = PlanCancellation::new(&requested).unwrap();
+        assert!(!std::ptr::eq(cancellation.token(), &requested));
+        assert_eq!(cancellation.before_write(authority), Ok(true));
+        assert!(std::ptr::eq(cancellation.token(), &requested));
+        requested.store(true, Ordering::Release);
+        assert!(!cancellation.stopped_before_write());
+        assert_eq!(
+            cancellation.before_write(authority),
+            Err(QuantumError::Native(AdmissionError::AuthorityUnavailable))
+        );
+        assert_eq!(
+            authority(cancellation.token()),
+            Err(AdmissionError::AuthorityUnavailable)
+        );
     }
 }

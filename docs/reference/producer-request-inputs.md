@@ -910,13 +910,23 @@ wire operation. A committed local settlement can return without a socket, but a
 later nomination must revalidate history before returning a no-op. Preserve the
 existing job/source/producer locks and native view through full pre-COMMIT closure.
 
-Sync drains only already-admitted immutable visibility/attribution reads during
+Sync drains already-admitted immutable visibility/attribution reads during
 orderly stop, using their original policy/grants/deadline and explicit rollback.
 Stop before polling skips the read; after completion all errors and the required
 post-append mapping invariant precede discarding a successful result. This does
 not shield dictionary append, certification/progress, quantum writes or ACKs;
 their uncertain outcomes still require recovery. The report records the original
 installed stop failure and the correction's separate qualification status.
+
+The mixed quantum planner also drains its immutable authentication prefix before
+any INSERT is admitted. Each exclusion/plan checks stop and the original authority
+after its last SQL read, immediately before admitting its INSERT. A requested stop
+before that boundary completes the native/progress validation and confirmed
+rollback before returning no plan. A settled no-op follows the same drain through
+rollback. After the first INSERT admission, ordinary cancellation and unknown
+commit handling remain in force for the rest of that operation. Genuine read,
+native, authority, rollback and deadline failures still precede orderly stop;
+neither a successful plan nor an error is discarded by the caller.
 
 Fresh0043 uses these discriminated profile2 shapes in its pending index, charges,
 admission guards, terminal selection and recovery. A local

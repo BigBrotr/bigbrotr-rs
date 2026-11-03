@@ -190,6 +190,35 @@ pub(super) async fn lookup<T>(
     Ok(result.filter(|_| !cancelled.load(Ordering::Acquire)))
 }
 
+/// The planner owns its read/effect stop boundary. Never discard a successfully
+/// committed plan here: only its authenticated no-effect path returns None.
+async fn planning<T>(
+    trace: Trace<'_>,
+    deadline: Instant,
+    cancelled: &AtomicBool,
+    future: impl std::future::Future<Output = std::result::Result<Option<T>, InitialEventError>>,
+) -> Result<Option<T>> {
+    trace.enter(Stage::QuantumPlan, None, None);
+    if cancelled.load(Ordering::Acquire) {
+        return Ok(None);
+    }
+    let result = commands::sync_operation(
+        trace,
+        deadline,
+        &AtomicBool::new(false),
+        Stage::QuantumPlan,
+        None,
+        None,
+        future,
+    )
+    .await?
+    .map_err(error)?;
+    if Instant::now() >= deadline {
+        return Err((4, "initial Sync deadline; preserve original outcome".into()));
+    }
+    Ok(result)
+}
+
 /// Absence is permitted before interning, but not after its confirmed append.
 /// Validate this inside the drained read, before a stop can discard success.
 pub(super) fn committed_observation<T>(
@@ -468,13 +497,10 @@ impl Sync {
             return Ok(());
         }
         let ttl = work.remaining()?;
-        let Some(plan) = commands::sync_operation(
+        let Some(plan) = planning(
             work.trace,
             work.deadline,
             &work.cancel.requested,
-            Stage::QuantumPlan,
-            None,
-            None,
             work.commands.owner.plan_linear_quantum(
                 work.writer.quantum_source(work.context)?,
                 LinearQuantumRequest {
@@ -493,7 +519,6 @@ impl Sync {
             ),
         )
         .await?
-        .map_err(error)?
         else {
             return Ok(());
         };
@@ -878,6 +903,95 @@ fn validate_sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn planner_progress() -> tokio::sync::watch::Sender<Progress> {
+        tokio::sync::watch::channel(Progress {
+            deadline: Instant::now() + Duration::from_secs(1),
+            phase: None,
+            initialized: None,
+            shutdown: None,
+            sync: None,
+            capacity: None,
+        })
+        .0
+    }
+
+    #[tokio::test]
+    async fn stopped_quantum_planner_never_polls_the_operation() {
+        let progress = planner_progress();
+        let polled = Cell::new(false);
+        let result = planning(
+            Trace::new(&progress),
+            Instant::now() + Duration::from_secs(1),
+            &AtomicBool::new(true),
+            async {
+                polled.set(true);
+                Ok(Some(1))
+            },
+        )
+        .await;
+        assert_eq!(result, Ok(None));
+        assert!(!polled.get());
+    }
+
+    #[tokio::test]
+    async fn quantum_planner_stop_never_discards_a_result_or_typed_failure() {
+        use bigbrotr::{acquisition::quantum::QuantumError, storage::rocks::store::AdmissionError};
+        for result in [
+            Ok(None),
+            Ok(Some(7)),
+            Err(InitialEventError::DeliveryUnknown),
+            Err(InitialEventError::Native(AdmissionError::StateMismatch)),
+            Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            )),
+            Err(InitialEventError::Quantum(QuantumError::CommitUnknown)),
+        ] {
+            let progress = planner_progress();
+            let requested = AtomicBool::new(false);
+            let observed = planning(
+                Trace::new(&progress),
+                Instant::now() + Duration::from_secs(1),
+                &requested,
+                async {
+                    requested.store(true, Ordering::Release);
+                    result
+                },
+            )
+            .await;
+            assert_eq!(observed, result.map_err(error));
+        }
+    }
+
+    #[tokio::test]
+    async fn quantum_planner_late_success_refuses_but_typed_failure_keeps_precedence() {
+        use bigbrotr::acquisition::quantum::QuantumError;
+        for result in [
+            Ok(Some(1)),
+            Ok(None),
+            Err(InitialEventError::Quantum(QuantumError::CommitUnknown)),
+        ] {
+            let progress = planner_progress();
+            let requested = AtomicBool::new(false);
+            let observed = planning(
+                Trace::new(&progress),
+                Instant::now() + Duration::from_millis(10),
+                &requested,
+                async {
+                    requested.store(true, Ordering::Release);
+                    // As for immutable lookups: a synchronous last poll can
+                    // finish after the timer's last observation of its deadline.
+                    std::thread::sleep(Duration::from_millis(15));
+                    result
+                },
+            )
+            .await;
+            match result {
+                Err(failure) => assert_eq!(observed, Err(error(failure))),
+                Ok(_) => assert!(observed.unwrap_err().1.starts_with("initial Sync deadline")),
+            }
+        }
+    }
 
     #[test]
     fn idle_nomination_creates_no_full_work_debt_and_selected_job_survives_waits() {
