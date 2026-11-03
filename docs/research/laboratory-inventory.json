@@ -79286,20 +79286,20 @@
         }
       },
       "settled_adoption_qualification": {
-        "source": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
-        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-record-types-20261103",
-        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
-        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc",
-        "state": "R7_AND_PORTABLE_SOURCE_TOOLS_REAPED_FIVEQUERY_REACHED_PRODUCT_STOP_FIX_ACTIVE",
-        "root_tool": 93131,
-        "launcher_pid": 2431574,
-        "launcher_start_ticks": 42562228,
+        "source": "a464cc6346f5f09ce122644966c359fa96651aec",
+        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-plan-stop-20261103",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63",
+        "state": "R9_REAPED0_MAINTAINED7PASS_INDEPENDENT_SCIENCE_PASS_CUSTODY_CLOSED",
+        "root_tool": 73521,
+        "launcher_pid": 2494212,
+        "launcher_start_ticks": 42903404,
         "container": null,
         "cache_lock": "RELEASED_NO_ACTIVE_COMPILER",
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
-        "retention": "PreserveR1/R2/R3/R4originalFAIL/PG/native/logs, currentproduct/source/receipts andactiveR5unique data. No cleanup. Earlier compilerfailures andSQLsetupfailures unchanged; fullfutureacceptance gates remainopen.",
+        "retention": "Preserve originalR1\u2013R7FAIL/PG/native/logs, R8prelaunchsetupFAIL, currentqualifiedsource/artifacts andactualR9unique data. Priorresourcesareowned/stopped/retained in P03. No cleanup.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "Freshcurrentstrict/workerboundproduct,4affectedRusttargets withexplicitnew9+retained27controls, observer thenactualinstalledfivequery+orderlySTOP/fullscience. No reuseofoldeffdplannerbinary forchangedbehavior.",
+        "next": "Review/runmaintainedSQLunionfixturebeforecurrentnegativeauthority/uncertainty/expiryandlaterhandoffs.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79313,16 +79313,16 @@
         },
         "qualification_receipts": {
           "build_receipt": {
-            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/build-receipt.json",
-            "sha256": "4458baf3391bdd1e19591365bc659390c8f0cc761f0c2f9f397700e74ddb5693"
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/build-receipt.json",
+            "sha256": "b969f3554c2a99ce379f1ca849949e65919e213283a57ce3a004f1e917ba912a"
           },
           "affected_rust": {
-            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/library/qualification-receipt.json",
-            "sha256": "c91097c3344c434e309d00c6485de0b7092d66178adef50a2ded77067e89fcae"
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/library/qualification-receipt.json",
+            "sha256": "e1ba6c8aa848f8ce48f409aee5543708ff8a7a45aa0ea2264245f13c5519b5be"
           },
           "observer": {
-            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/probe/terminal-receipt.json",
-            "sha256": "a8b2c76cad68c779ed1958c73546c58b8958789912d4f398aed4615c536014fb"
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/probe/terminal-receipt.json",
+            "sha256": "61c0d2c0123e6dc37ba418e6a71012066b27683d3aac8de9dd754c8b51849495"
           }
         },
         "record_type_sql_preflight": {
@@ -79337,12 +79337,8 @@
           "scope": "SQL typing/claimaccounting only, not UNIONdedup/native/authority/lifecycle/deferredCOMMIT or adjacent fullcontinuationguard qualification. Maintained fixture and declared command in repository; actualcurrentfreshbuild/installed stillrequired."
         },
         "installed_launch": {
-          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/root-installed-r7-launch.json",
-          "sha256": "8769142af736927fd22af971728977c8d6b7153b0931f7cf3dd44e697969cb57"
-        },
-        "installed_terminal": {
-          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r7/root-terminal.json",
-          "sha256": "bc6a8537603657bcc6b6b4175852e5fa3f8ab8c657b3b47cb55df144fc54715d"
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/root-installed-r9-launch.json",
+          "sha256": "305bf7051a5982868b405d57d3bc7f21c30e02c36142eb486e909a5f2b579eaa"
         },
         "post_adoption_cold_diagnostic": {
           "root": "/home/tux/bigbrotr-rs/.research/m2-adoption-poststart-diagnostic-20261103",
@@ -79359,25 +79355,37 @@
             "sha256": "ac2e1a58641eb545ac1f6cee0bf6a68ac68a4e17b608bc008256b781960e6ae1"
           }
         },
-        "dispatch_observation_source": "ObservationSol447/Root074 andtimingSolee09/Root32a5committed/reviewed; frozen32a5retained. No sourcewriteractive, Rootaloneintegrates/launches. Productefd unchanged.",
-        "case_resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r7/resources.json",
+        "dispatch_observation_source": "Maintained observation/timingtools unchanged in currenta464; no additional variant. Prior701acceptancecontrolsPASS retained in P03.",
+        "case_resources": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-settled-owner-adoption-r9/resources.json",
         "planner_stop_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/m2-adoption-plan-stop-20261103",
           "branch": "work/m2-adoption-plan-stop-20261103",
           "base": "89321b51",
           "owner": "Astraimplementationagent; independentAstrareviewerread-only; Rootintegrator/launcher",
-          "state": "CODE_COMMITTED_INTEGRATED_CRITICALLY_REVIEWED_NO_BUILD_OR_ENGINE_YET",
+          "state": "SOURCE_CRITICALLY_REVIEWED_BUILD_9NEW_CONTROLS_INSTALLED_POSITIVE_STOP_PASS",
           "effective_review_configuration": {
             "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/plan-stop-reviewer-configuration.json",
             "sha256": "46fa64dfe8396fae2c458e6d08b713f5250a050ff0f795bc7af2773c6abf58ea"
           },
           "original_head": "91013605ac2619aec7a423bfce4817af3e0c6496",
           "integrated_head": "2d070f62e5a7cb92585074e76320ccde8b0e70cf",
-          "ownership": "Astrawriter+independentAstrareview complete; Rootowns integration andallnextprocesses."
+          "ownership": "Sourcewriter/reviewercomplete; Rootsoleintegrator/launcher, Solread-onlycurrentresultauditor."
         },
         "acceptance_source_controls_32a5": {
           "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/acceptance-source-controls-32a5-receipt.json",
           "sha256": "ec12eefc682dce148fc8f93c10d384022c4d34d0cf16a766900ce7227776bbd4"
+        },
+        "prior_installed_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc/acceptance-settled-owner-adoption-r7/root-terminal.json",
+          "sha256": "bc6a8537603657bcc6b6b4175852e5fa3f8ab8c657b3b47cb55df144fc54715d"
+        },
+        "installed_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-a464cc63/acceptance-settled-owner-adoption-r9/root-terminal.json",
+          "sha256": "69c7102d875f40f7156c7c70fa0117e26d7d1f7322555a4fbaac042b6a9af7cc"
+        },
+        "independent_scientific_audit": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/a464cc63/installed/scientific-r9-receipt.json",
+          "sha256": "d2959b82613248651a0e978bceadc34ce3f67b22de779faa01673458ab568f64"
         }
       }
     }
