@@ -203,7 +203,50 @@ def epoch3_native(retired,state,science,dump=None):
     return manifest,handoff,expected
 
 
-def final_rows(before,after,first,attribution,started,wires,events,dump,inputs,lower,upper,*,preparation_ttl_us):
+def logout_rows(before,after,settled,client,current,lower,upper):
+    """One authenticated logout after the settled cut, with its atomic audit."""
+    from linear_capped_client import adoption_status
+    tables=('browser_sessions','management_audit')
+    base.adoption_exact_tables({name:before[name] for name in tables},{name:settled[name] for name in tables})
+    session=source.only(before['browser_sessions']);revoked=source.only(after['browser_sessions'])
+    job=source.only(before['jobs']);detail=source.only(before['acquisition_jobs'])
+    assert session['revoked_at_us'] is None and session['dataset_id']==job['dataset_id'] and session['principal_id']==job['principal_id']
+    binding=dict(dataset_id=job['dataset_id'],actor_id=job['principal_id'],job_id=job['job_id'],session_id=session['session_id'],
+        actor_credential_revision=session['credential_revision'],actor_authentication_revision=session['authentication_revision'])
+    source.exact({key:detail[key] for key in binding},binding,'logout session is not the original authenticated job session')
+    source.exact({key:client[key] for key in ('status','handoff','gate_seconds')},
+        dict(status='PASS',handoff='zero-query',gate_seconds=110),'logout client profile differs')
+    source.exact(client['logout'],dict(format='bigbrotr-cli-logout/1',status='revocation-acknowledged',
+        local_file='retained',drain='unobserved'),'explicit client logout was not acknowledged')
+    status=client['job_status']
+    adoption_status(status,dict(scope_id=detail['scope_id'][2:]),
+        dict(job_id=job['job_id'][2:],accepted_at_us=str(job['created_at_us'])),job_revision=4)
+    observed=status['observed_at_us']
+    assert type(observed) is str and observed==str(int(observed)),'noncanonical status clock'
+    completed=max(row['completed_at_us'] for row in after['acquisition_quanta'])
+    source.clock(int(observed),max(lower,current['acquired_at_us'],completed),current['released_at_us'])
+    at=source.clock(revoked['revoked_at_us'],max(session['issued_at_us'],int(observed)),current['released_at_us'])
+    source.clock(current['released_at_us'],at,upper)
+    tx=revoked['xmin'];base.adoption_xid(tx)
+    assert tx not in {row['xmin'] for rows in before.values() for row in rows if 'xmin' in row}
+    old_ids={row['audit_id'] for row in before['management_audit']}
+    audit,=[row for row in after['management_audit'] if row['audit_id'] not in old_ids]
+    assert len(source.raw(audit['audit_id']))==16 and any(source.raw(audit['audit_id']))
+    source.clock(audit['created_at_us'],at,current['released_at_us'])
+    assert audit['xmin']==tx
+    assert tx not in {row['xmin'] for rows in after.values() for row in rows
+        if 'xmin' in row and row is not revoked and row is not audit},'logout reused another transaction'
+    expected_session=dict(session,revoked_at_us=at,xmin=tx)
+    expected_audit=dict(audit_id=audit['audit_id'],dataset_id=job['dataset_id'],actor_id=job['principal_id'],
+        action='browser.session.revoke',outcome='accepted',created_at_us=audit['created_at_us'],
+        config_revision=job['config_revision'],policy_revision=job['policy_revision'],subject_id=session['session_id'],
+        reason=None,requester_database_role=None,requester_os_uid=None,xmin=tx)
+    expected=dict(browser_sessions=[expected_session],management_audit=before['management_audit']+[expected_audit])
+    base.adoption_exact_tables(expected,{name:after[name] for name in tables})
+    return expected
+
+
+def final_rows(before,after,first,attribution,started,wires,events,dump,inputs,lower,upper,*,preparation_ttl_us,settled,client_result):
     """New epoch3 activation/adoption/work only; every epoch1/2 byte and xmin retained."""
     base.adoption_seal_eligibility(before,lower,job_revision=3);base.adoption_seal_eligibility(after,upper,job_revision=4)
     current,control_role=base.adoption_new_control(before,after,lower,upper,active=False)
@@ -285,5 +328,6 @@ def final_rows(before,after,first,attribution,started,wires,events,dump,inputs,l
     wanted['jobs']=[dict(source.only(before['jobs']),job_revision=4,owner_resource_id=current['resource_id'],owner_epoch=current['epoch'],owner_incarnation=current['process_incarnation'],xmin=adoption_tx)]
     for table in ('producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies','acquisition_progress','acquisition_quanta'):
         wanted[table]+=[r for r in after[table] if r['producer_epoch']==3]
+    wanted.update(logout_rows(before,after,settled,client_result,current,lower,upper))
     base.adoption_exact_tables(wanted,after)
     return science

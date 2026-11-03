@@ -218,7 +218,8 @@ class ZeroQueryHandoffRuntime(CappedAdoptionRuntime):
         dump=native.census(self,output,writer_terminal=self.root/'handoff-successor/terminal-container.json')
         inputs=source.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],3,3)
         science=oracle.final_rows(self.handoff_retired,state,self.adoption_first,self.handoff_attribution,self.handoff_final_started,
-            self.wires(5),self.events,dump,inputs,self.handoff_final_lower,self.handoff_final_upper,preparation_ttl_us=self.handoff_root_ttl)
+            self.wires(5),self.events,dump,inputs,self.handoff_final_lower,self.handoff_final_upper,preparation_ttl_us=self.handoff_root_ttl,
+            settled=self.handoff_live,client_result=load(self.home/'client-result.json'))
         for epoch,count,expected in ((1,5,self.adoption_first['inputs']),(2,1,self.handoff_attribution['inputs'])):
             require(source.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],epoch,count)==expected,'ancestor input bytes changed')
         files=self.files(self.state/'data/ingest/producer-inputs-v1')

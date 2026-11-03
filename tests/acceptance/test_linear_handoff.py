@@ -79,6 +79,18 @@ def zero_fixture(root):
 
 def journey_fixture(root):
     before,zero,first,started,wires,events,dump,inputs,lower,upper,fault=zero_fixture(root)
+    job=source.only(zero['jobs']);issued=job['created_at_us']-1000
+    session=dict(session_id='\\x'+'e1'*16,dataset_id=job['dataset_id'],principal_id=job['principal_id'],
+        credential_revision=1,authentication_revision=1,token_digest='\\x'+'e2'*32,csrf_digest='\\x'+'e3'*32,
+        issued_at_us=issued,expires_at_us=issued+28_800_000_000,idle_window_us=1_800_000_000,
+        last_seen_at_us=issued+100,idle_expires_at_us=issued+100+1_800_000_000,revoked_at_us=None,xmin='50')
+    issue=dict(audit_id='\\x'+'e4'*16,dataset_id=job['dataset_id'],actor_id=job['principal_id'],
+        action='browser.session.issue',outcome='accepted',created_at_us=issued+10,config_revision=1,policy_revision=1,
+        subject_id=session['session_id'],reason=None,requester_database_role=None,requester_os_uid=None,xmin='49')
+    for state in (before,zero):
+        state['browser_sessions']=[dict(session)];state.setdefault('management_audit',[]).append(dict(issue))
+        source.only(state['acquisition_jobs']).update(actor_id=job['principal_id'],session_id=session['session_id'],
+            actor_credential_revision=1,actor_authentication_revision=1)
     science=check.zero_query_cut(before,zero,first,started,wires,events,dump,inputs,lower,upper,fault)
     job=zero['jobs'][0];slot='\\x'+started['producer_slot_id'];ds=job['dataset_id']
     def control(state,epoch,at,tx):
@@ -186,7 +198,22 @@ def journey_fixture(root):
     started3=dict(state='activated',producer_epoch='3',dataset_id=ds[2:],producer_slot_id=slot[2:],owner_resource_id=ingest['resource_id'][2:],
         process_incarnation=inc[2:],role_instance_id=role[2:],prepared_at_us=str(created),lease_expires_at_us=str(created+5_000_000),
         config_revision='1',policy_revision='1',activated_at_us=str(created+100),acquisition='finite-successor',ready=False)
-    return zero,sealed,retired,science,bounds,reports,after,started3,all_wires,events,first,model.native,full['inputs'],begin,begin+3_100_000
+    settled=copy.deepcopy(after)
+    revoked=begin+2_900_000
+    source.only(after['browser_sessions']).update(revoked_at_us=revoked,xmin='350')
+    after['management_audit'].append(dict(issue,audit_id='\\x'+'e5'*16,action='browser.session.revoke',
+        created_at_us=revoked+10,xmin='350'))
+    observed=max(row['completed_at_us'] for row in after['acquisition_quanta'])+100
+    status=dict(format='bigbrotr-job-status/1',job_id=job['job_id'][2:],kind='acquisition',state='queued',job_revision='4',
+        checkpoint_revision='0',created_at_us=str(job['created_at_us']),completed_at_us=None,observed_at_us=str(observed),
+        reason_code=None,authority='observation-only',linear_quantum=dict(format='bigbrotr-linear-quantum-status/2',
+            quantum_number='5',scope_id=source.only(zero['acquisition_jobs'])['scope_id'][2:],entry_kind='request',
+            disposition='window_closed',lower='0',upper='1',window_end='86400',horizon='86400',window_width='86400',
+            query_budget=128,queries_spent=5,attempted_prefix='86400',gap_count=2,pending_work='settled',pending_interval=None,
+            result='linear_observed',terminal='eose',gap=None,continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending'))
+    client=dict(status='PASS',handoff='zero-query',gate_seconds=110,job_status=status,logout=dict(format='bigbrotr-cli-logout/1',
+        status='revocation-acknowledged',local_file='retained',drain='unobserved'))
+    return zero,sealed,retired,science,bounds,reports,after,started3,all_wires,events,first,model.native,full['inputs'],begin,begin+3_100_000,settled,client
 
 
 class HandoffControls(unittest.TestCase):
@@ -387,9 +414,10 @@ class HandoffControls(unittest.TestCase):
 
     def test_epoch3_requires_real_lineage_atomic_revision4_and_independently_encoded_science(self):
         with tempfile.TemporaryDirectory() as temporary:
-            _,_,retired,attribution,_,_,after,started,wires,events,first,dump,inputs,lower,upper=journey_fixture(Path(temporary))
+            _,_,retired,attribution,_,_,after,started,wires,events,first,dump,inputs,lower,upper,settled,client=journey_fixture(Path(temporary))
             def verify(state=after,native=dump,originals=inputs):
-                return check.final_rows(retired,state,first,attribution,started,wires,events,native,originals,lower,upper,preparation_ttl_us=5_000_000)
+                return check.final_rows(retired,state,first,attribution,started,wires,events,native,originals,lower,upper,
+                    preparation_ttl_us=5_000_000,settled=settled,client_result=client)
             verify();self.assertEqual(dump['sequence'],167)
             for table,index,key,value in (('jobs',0,'job_revision',3),('jobs',0,'xmin','999'),
                     ('acquisition_continuations',0,'sealed_at_us',lower),('acquisition_continuations',1,'adoption_transaction','999'),
@@ -405,6 +433,73 @@ class HandoffControls(unittest.TestCase):
             with self.assertRaises((AssertionError,ValueError)):verify(state=changed)
             with self.assertRaises(AssertionError):verify(native=dict(dump,sequence=166))
             with self.assertRaises(AssertionError):verify(originals=inputs[:-1])
+
+    def test_logout_preserves_the_one_original_authenticated_session(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            _,_,before,_,_,_,after,_,_,_,_,_,_,lower,upper,settled,client=journey_fixture(Path(temporary))
+            current=source.only(after['owner_epochs'],role='control',epoch=7)
+            def verify(old=before,state=after):return check.logout_rows(old,state,settled,client,current,lower,upper)
+            expected=verify();self.assertEqual(expected['browser_sessions'],after['browser_sessions'])
+            for key,value in (('session_id','\\x'+'f0'*16),('principal_id','\\x'+'f0'*16),('dataset_id','\\x'+'f0'*16),
+                    ('credential_revision',2),('authentication_revision',2),('token_digest','\\x'+'f0'*32),
+                    ('csrf_digest','\\x'+'f0'*32),('issued_at_us',0),('expires_at_us',upper),('last_seen_at_us',lower),
+                    ('idle_expires_at_us',upper),('idle_window_us',1),('revoked_at_us',None),('revoked_at_us',True),
+                    ('revoked_at_us',int(client['job_status']['observed_at_us'])-1),('revoked_at_us',current['released_at_us']+1)):
+                changed=copy.deepcopy(after);changed['browser_sessions'][0][key]=value
+                with self.subTest(session=key,value=value),self.assertRaises((AssertionError,ValueError)):verify(state=changed)
+            for count in (0,2):
+                changed=copy.deepcopy(after);changed['browser_sessions']*=count
+                with self.subTest(session_count=count),self.assertRaises(ValueError):verify(state=changed)
+            for key,value in (('actor_id','\\x'+'f0'*16),('session_id','\\x'+'f0'*16),('dataset_id','\\x'+'f0'*16),
+                    ('job_id','\\x'+'f0'*16),('actor_credential_revision',2),('actor_authentication_revision',2),('actor_credential_revision',True)):
+                changed=copy.deepcopy(before);changed['acquisition_jobs'][0][key]=value
+                with self.subTest(binding=key),self.assertRaises(AssertionError):verify(old=changed)
+
+    def test_logout_requires_one_exact_atomic_audit_and_a_fresh_separate_transaction(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            _,_,before,_,_,_,after,_,_,_,_,_,_,lower,upper,settled,client=journey_fixture(Path(temporary))
+            current=source.only(after['owner_epochs'],role='control',epoch=7)
+            def verify(state=after):return check.logout_rows(before,state,settled,client,current,lower,upper)
+            verify();self.assertEqual(len(after['management_audit']),len(before['management_audit'])+1)
+            for key,value in (('actor_id','\\x'+'f0'*16),('subject_id','\\x'+'f0'*16),('dataset_id','\\x'+'f0'*16),
+                    ('action','browser.session.issue'),('outcome','rejected'),('config_revision',2),('policy_revision',2),
+                    ('reason','invented'),('requester_database_role','admin'),('requester_os_uid',1000),('xmin','351'),
+                    ('audit_id','\\x'+'00'*16),('audit_id',before['management_audit'][0]['audit_id']),
+                    ('created_at_us',after['browser_sessions'][0]['revoked_at_us']-1),('created_at_us',current['released_at_us']+1)):
+                changed=copy.deepcopy(after);changed['management_audit'][-1][key]=value
+                with self.subTest(audit=key,value=value),self.assertRaises((AssertionError,ValueError)):verify(changed)
+            for fault in ('missing-revoke','missing-old','changed-old','extra-audit'):
+                changed=copy.deepcopy(after)
+                if fault=='missing-revoke':changed['management_audit'].pop()
+                elif fault=='missing-old':changed['management_audit'].pop(0)
+                elif fault=='changed-old':changed['management_audit'][0]['created_at_us']+=1
+                else:changed['management_audit'].append(dict(changed['management_audit'][-1],audit_id='\\x'+'f0'*16))
+                with self.subTest(fault=fault),self.assertRaises((AssertionError,ValueError)):verify(changed)
+            collision=source.only(after['producer_requests'],producer_epoch=3,request_sequence=3)['xmin']
+            for tx in (before['browser_sessions'][0]['xmin'],'0350',str(2**32),collision):
+                changed=copy.deepcopy(after);changed['browser_sessions'][0]['xmin']=changed['management_audit'][-1]['xmin']=tx
+                with self.subTest(transaction=tx),self.assertRaises(AssertionError):verify(changed)
+
+    def test_logout_requires_the_unchanged_settled_cut_and_exact_client_acknowledgment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            _,_,before,_,_,_,after,_,_,_,_,_,_,lower,upper,settled,client=journey_fixture(Path(temporary))
+            current=source.only(after['owner_epochs'],role='control',epoch=7)
+            def verify(cut=settled,result=client):return check.logout_rows(before,after,cut,result,current,lower,upper)
+            verify()
+            for table,key in (('browser_sessions','last_seen_at_us'),('management_audit','created_at_us')):
+                changed=copy.deepcopy(settled);changed[table][0][key]+=1
+                with self.subTest(cut=table),self.assertRaises(AssertionError):verify(cut=changed)
+            for key,value in (('status','FAIL'),('handoff',None),('gate_seconds',111)):
+                changed=copy.deepcopy(client);changed[key]=value
+                with self.subTest(client=key),self.assertRaises(AssertionError):verify(result=changed)
+            for key,value in (('format','wrong'),('status','unobserved'),('local_file','deleted'),('drain','complete'),('extra',1)):
+                changed=copy.deepcopy(client);changed['logout'][key]=value
+                with self.subTest(ack=key),self.assertRaises(AssertionError):verify(result=changed)
+            for key,value in (('job_id','f0'*16),('job_revision','3'),('observed_at_us',True),
+                    ('observed_at_us','0'+client['job_status']['observed_at_us']),('observed_at_us',str(lower)),
+                    ('observed_at_us',str(after['browser_sessions'][0]['revoked_at_us']+1))):
+                changed=copy.deepcopy(client);changed['job_status'][key]=value
+                with self.subTest(status=key,value=value),self.assertRaises((AssertionError,ValueError)):verify(result=changed)
 
     def test_zero_query_cut_authenticates_one_real_attribution_and_all_native_rows(self):
         with tempfile.TemporaryDirectory() as temporary:
