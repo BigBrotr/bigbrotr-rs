@@ -1,6 +1,6 @@
 //! Installed continuous succession from a positively verified terminal lineage.
 //! Historical inspection never adopts a candidate or recreates a live writer.
-use super::*;
+use super::{owner::RuntimeContext, *};
 use bigbrotr::storage::{
     postgres::control_owner::{
         InitialHistoryRequest, PolicySnapshot, SuccessorActivation, SuccessorHistory,

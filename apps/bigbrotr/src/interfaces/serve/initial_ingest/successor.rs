@@ -1,5 +1,5 @@
 //! Explicit installed 1→2 lifetime; every native handle stays on this worker.
-use super::*;
+use super::{owner::RuntimeContext, *};
 use bigbrotr::storage::{
     postgres::{
         control_owner::{
