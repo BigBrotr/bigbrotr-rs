@@ -54,6 +54,10 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     adoption_fault=json.loads(adoption_path.read_text()) if adoption_path.exists() else None
     assert adoption_fault is None or (fault=='plan-before' and seal_fault is None
         and adoption_fault in ('before-forward','after-complete'))
+    authority_path=directory/'linear-quantum-authority-refusal.json'
+    authority_refusal=json.loads(authority_path.read_text()) if authority_path.exists() else None
+    assert authority_refusal is None or (fault=='plan-before' and seal_fault is adoption_fault is None
+        and authority_refusal in ('actor-grant','original-expiry'))
     observations=[];errors=[]
     def call(path,value,key):
         code,answer=request('POST','/management/v1/'+path,value,{**auth,'Idempotency-Key':key})
@@ -80,17 +84,24 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     worker.start()
     try:
         barrier('prepared',15)
-        receipt=call('jobs',dict(kind='acquisition',scope_id=scope['scope_id'],deadline_us='120000000',**revisions),'b1'*16)
+        job_input=dict(kind='acquisition',scope_id=scope['scope_id'],deadline_us='120000000',**revisions)
+        receipt=call('jobs',job_input,'b1'*16)
         assert receipt['execution']=='unobserved' and receipt['authority']=='acceptance-only'
         # No HTTP poll while the original process is deliberately lost. The
         # same authenticated session later observes the same accepted JobId.
-        if fault=='plan-after' or seal_fault is not None or adoption_fault is not None:
-            completion=('adoption-commit-fault' if adoption_fault is not None else
+        if fault=='plan-after' or seal_fault is not None or adoption_fault is not None or authority_refusal is not None:
+            completion=('continuation-authority-refusal' if authority_refusal is not None else
+                'adoption-commit-fault' if adoption_fault is not None else
                 'seal-commit-fault' if seal_fault is not None else 'unsettled-seal-refusal')
             publish(directory,'adoption-old-cut.json',observations)
-            barrier(completion,110)
+            # Genuine expiry consumes the original declared duration before a
+            # fresh startup. Reuse the existing20s settlement allowance only for
+            # this observation gate; the job deadline and all old110s gates stay.
+            seconds=int(job_input['deadline_us'])/1_000_000+20 if authority_refusal=='original-expiry' else 110
+            barrier(completion,seconds)
             assert json.loads(session.read_text())==saved
             result=dict(login=logged_in,observations=observations,job_status=None,completion=completion)
+            if authority_refusal is not None:result.update(authority_refusal=authority_refusal,gate_seconds=seconds)
         else:
             barrier('adoption-old-cut',110)
             code,observed=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)

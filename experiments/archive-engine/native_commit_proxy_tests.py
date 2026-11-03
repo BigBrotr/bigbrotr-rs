@@ -16,7 +16,16 @@ import unittest
 from unittest.mock import patch
 
 from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
-                                IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, failure_kind, gap_write_refusal)
+                                IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, failure_kind, gap_write_refusal,continuation_authority_refusal)
+
+AUTHORITY_QUERY=b'SELECT control.require_acquisition_continuation_authority($1,$2)'
+
+
+def authority_error(**changes):
+    fields=dict(S=b'ERROR',V=b'ERROR',C=b'BB001',M=b'acquisition job requires current authority and original remaining duration',
+        D=b'private values never recorded',W=b'private context never recorded',F=b'private server file',R=b'exec_stmt_raise')
+    fields.update(changes)
+    return b''.join(key.encode()+value+b'\0' for key,value in fields.items() if value is not None)+b'\0'
 
 ADOPTION_CAS_QUERY=(b'UPDATE control.jobs SET job_revision=job_revision+1,owner_resource_id=$3::bytea,'
     b'owner_epoch=$4::text::numeric,owner_incarnation=$5::bytea WHERE job_id=$1::bytea AND state=\'queued\' '
@@ -459,6 +468,19 @@ class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
 
 
 class ClosedProfile(unittest.TestCase):
+    def test_continuation_authority_profile_and_error_parser_require_exact_real_helper_reason(self):
+        self.assertTrue(continuation_authority_refusal(authority_error()))
+        for error in (authority_error(C=b'23514'),authority_error(M=b'Control authority expired'),authority_error(M=None),
+                authority_error()[:-1],authority_error()[:-1]+b'CBB001\0\0',authority_error()[:-1]+b'Mother\0\0'):
+            self.assertFalse(continuation_authority_refusal(error))
+        self.assertTrue(control_target_query('control-acquisition-authority',AUTHORITY_QUERY))
+        self.assertFalse(control_target_query('control-acquisition-authority',AUTHORITY_QUERY+b'; SELECT 1'))
+        proxy=Proxy('pass','control-acquisition-authority',profile='retained-catch-up')
+        self.assertEqual((proxy.frame_limit,proxy.connection_limit,proxy.lifetime_seconds,MAX_WIRE),(131072,64,120,64*1024*1024))
+        for options in ({'mode':'before-forward'},{'mode':'after-complete'},{'defer_arm':True},{'lifetime_seconds':180},{'commit_ordinal':2}):
+            values=dict(mode='pass',target='control-acquisition-authority');values.update(options)
+            with self.subTest(options=options),self.assertRaises(ValueError):Proxy(**values)
+
     def test_adoption_profile_matches_only_final_job_cas_and_keeps_existing_bounds(self):
         self.assertTrue(control_target_query('control-acquisition-adoption',ADOPTION_CAS_QUERY))
         self.assertTrue(control_target_query('control-acquisition-adoption',ADOPTION_CAS_QUERY.replace(b' WHERE ',b'\n WHERE   ')))
@@ -724,6 +746,69 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def test_continuation_authority_observer_forwards_only_actual_execute_error_without_wire_data(self):
+        async with SocketProxy(self,'pass',target='control-acquisition-authority',deferred=False,profile='retained-catch-up') as proxy:
+            c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+            error=authority_error();begin=[(b'C',b'BEGIN\0'),(b'Z',b'T')]
+            # The same SQLSTATE/message during Parse or Bind is not execution.
+            await self.exchange(c,b'P',b'bad\0'+AUTHORITY_QUERY+b'\0\0\0',[(b'E',error)])
+            await self.exchange(c,b'S',b'',[(b'Z',b'I')])
+            await self.exchange(c,b'P',b'cached\0SELECT 1\0\0\0',[(b'1',b'')])
+            await self.exchange(c,b'S',b'',[(b'Z',b'I')])
+            await self.exchange(c,b'P',b'cached\0'+AUTHORITY_QUERY+b'\0\0\0',[(b'E',error)])
+            await self.exchange(c,b'S',b'',[(b'Z',b'I')])
+            await self.exchange(c,b'Q',b'BEGIN\0',begin)
+            await self.exchange(c,b'B',b'\0cached\0\0\0\0\0\0\0',[(b'2',b'')])
+            await self.exchange(c,b'E',b'\0'*5,[(b'E',error)])
+            await self.exchange(c,b'S',b'',[(b'Z',b'E')])
+            await self.exchange(c,b'Q',b'ROLLBACK\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+            await self.exchange(c,b'P',b'helper\0'+AUTHORITY_QUERY+b'\0\0\0',[(b'1',b'')])
+            await self.exchange(c,b'S',b'',[(b'Z',b'I')])
+            await self.exchange(c,b'Q',b'BEGIN\0',begin)
+            await self.exchange(c,b'B',b'\0helper\0\0\0\0\0\0\0',[(b'E',error)])
+            await self.exchange(c,b'S',b'',[(b'Z',b'E')])
+            await self.exchange(c,b'Q',b'ROLLBACK\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+            await self.exchange(c,b'Q',b'BEGIN\0',begin)
+            await self.exchange(c,b'B',b'\0helper\0\0\0\0\0\0\0',[(b'2',b'')])
+            await self.exchange(c,b'E',b'\0'*5,[(b'E',error)])
+            marker=await proxy.event('continuation-authority-refused')
+            self.assertEqual({key:marker[key] for key in ('backend_pid','role','database','executed','transaction','sqlstate')},
+                dict(backend_pid=7331,role='bigbrotr_control',database='bigbrotr_control',executed=True,transaction='T',sqlstate='BB001'))
+            await self.exchange(c,b'S',b'',[(b'Z',b'E')])
+            await self.exchange(c,b'Q',b'ROLLBACK\0',[(b'C',b'ROLLBACK\0'),(b'Z',b'I')])
+            await proxy.stop();terminal=proxy.events[-1]
+            self.assertEqual([terminal[key] for key in ('authority_execute_errors','authority_refusals','authority_successes','data_queries','data_commits','faults')],[1,1,0,0,0,0])
+            self.assertNotIn('private',json.dumps(proxy.events));self.assertNotIn(AUTHORITY_QUERY.decode(),json.dumps(proxy.events))
+
+    async def test_continuation_authority_success_or_other_execute_error_cannot_be_a_refusal(self):
+        for failure in (False,True):
+            async with SocketProxy(self,'pass',target='control-acquisition-authority',deferred=False) as proxy:
+                c=await proxy.connect('bigbrotr_control','bigbrotr_control')
+                await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+                await self.exchange(c,b'P',b'helper\0'+AUTHORITY_QUERY+b'\0\0\0',[(b'1',b'')])
+                await self.exchange(c,b'B',b'\0helper\0\0\0\0\0\0\0',[(b'2',b'')])
+                response=(b'E',authority_error(M=b'other guard')) if failure else (b'C',b'SELECT 1\0')
+                await self.exchange(c,b'E',b'\0'*5,[response])
+                await self.exchange(c,b'S',b'',[(b'Z',b'E' if failure else b'T')])
+                await proxy.stop();terminal=proxy.events[-1]
+                self.assertEqual((terminal['authority_execute_errors'],terminal['authority_refusals'],terminal['authority_successes']),
+                    (int(failure),0,int(not failure)))
+                self.assertFalse(any(value['event']=='continuation-authority-refused' for value in proxy.events))
+
+    async def test_continuation_authority_requires_control_login_positive_pid_and_open_transaction(self):
+        for user,database,pid,transaction in (('reader','bigbrotr_control',7331,True),('bigbrotr_control','catalog',7331,True),
+                ('bigbrotr_control','bigbrotr_control',0,True),('bigbrotr_control','bigbrotr_control',7331,False)):
+            with self.subTest(user=user,database=database,pid=pid,transaction=transaction):
+                async with SocketProxy(self,'pass',target='control-acquisition-authority',deferred=False,unexpected=1) as proxy:
+                    with self.assertRaises((asyncio.IncompleteReadError,ConnectionResetError,TimeoutError)):
+                        c=await proxy.connect(user,database,backend_pid=pid)
+                        if transaction:await self.exchange(c,b'Q',b'BEGIN\0',[(b'C',b'BEGIN\0'),(b'Z',b'T')])
+                        await self.exchange(c,b'P',b'helper\0'+AUTHORITY_QUERY+b'\0\0\0',[(b'1',b'')])
+                        await self.exchange(c,b'B',b'\0helper\0\0\0\0\0\0\0',[(b'2',b'')])
+                        await self.exchange(c,b'E',b'\0'*5,[(b'E',authority_error())])
+                    await proxy.stop();terminal=proxy.events[-1]
+                    self.assertEqual((terminal['authority_execute_errors'],terminal['authority_refusals'],terminal['faults']),(0,0,0))
+
     async def adoption_execute(self,connection,*,name=b'adopt',query=ADOPTION_CAS_QUERY,parse=True,result=b'UPDATE 1\0'):
         if parse:await self.exchange(connection,b'P',name+b'\0'+query+b'\0\0\0',[(b'1',b'')])
         await self.exchange(connection,b'B',b'\0'+name+b'\0\0\0\0\0\0\0',[(b'2',b'')])

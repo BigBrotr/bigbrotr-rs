@@ -27,6 +27,7 @@ ADOPTION_LIMITS=[
     'The plan-after variant retains Q1 wire, five original inputs/outcomes, queued revision2 and pending Q2; native85 to86/source close are permitted, no continuation seal is created, and retirement/activation/successor are not attempted. Other negative schedules, repeated successor loss, OPEN65, full500, fleet and Archive remain outside this case.',
     'The explicit seal-fault variant retains plan-before Q2 absence, then loses a separate executed seal INSERT COMMIT before forwarding or after server completion. It requires caller CommitUnknown, zero or one unadopted seal respectively, native85 to86, unchanged job/history/inputs and no second wire. It never retires, activates, adopts or retries.',
     'The explicit adoption-fault variant confirms normal sealing/retirement, then loses the executed final job-owner CAS COMMIT before forwarding or after completion. Both stop startup without success JSON or another wire, retain exact active-zero native91 and active Control/Ingest custody; only the after-complete cut atomically adopts the seal/job. No retry or lost-candidate recovery is attempted.',
+    'The explicit authority-refusal variants confirm sealing/retirement before removing only the original actor grant or genuinely waiting past the original120s deadline. A transparent observer must see the actual executed0045 helper refuse BB001 under fresh Control/root authority, with exact unadopted job/seal/history and active-zero native91. Only the expiry observation gate uses120s+the existing20s settlement allowance; no job deadline, SQL lease or policy TTL changes.',
 ]
 
 
@@ -257,6 +258,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             self.inputs['linear_quantum_seal_fault']=self.args.linear_quantum_seal_fault
         if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
             self.inputs['linear_quantum_adoption_fault']=self.args.linear_quantum_adoption_fault
+        if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
+            self.inputs['linear_quantum_authority_refusal']=self.args.linear_quantum_authority_refusal
         path='tests/fixtures/acquisition/settled-owner-adoption.json'
         self.inputs['adoption_expectation_sha256']=digest(self.source/path)
         oracle.adoption_manifest(load(self.source/path))
@@ -276,6 +279,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             save(self.home/'linear-quantum-seal-fault.json',self.args.linear_quantum_seal_fault)
         if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
             save(self.home/'linear-quantum-adoption-fault.json',self.args.linear_quantum_adoption_fault)
+        if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
+            save(self.home/'linear-quantum-authority-refusal.json',self.args.linear_quantum_authority_refusal)
         self.events=corpus(self.home)[:3]
 
     def successor_sql_login(self):
@@ -476,6 +481,12 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         save(output/'retirement-report.json',retired)
         self.adoption_retired,_=self.capture(output,'retired')
         self.backend_absence(output);self.wires(1)
+        if getattr(self.args,'linear_quantum_authority_refusal',None) is not None:
+            oracle.adoption_recovery_prefix(self.adoption_before,self.adoption_sealed,self.adoption_retired,self.adoption_first)
+            self.prepare_authority_refusal()
+            self.start_authority_proxy()
+            self.failed_adoption(authority=self.args.linear_quantum_authority_refusal)
+            return
         if getattr(self.args,'linear_quantum_adoption_fault',None) is not None:
             oracle.adoption_recovery_prefix(self.adoption_before,self.adoption_sealed,self.adoption_retired,self.adoption_first)
             self.start_adoption_proxy()
@@ -515,17 +526,22 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         require(self.quantum_fault=='plan-before','adoption fault requires settled Q1 and absent Q2')
         self.start_commit_proxy('adoption',self.args.linear_quantum_adoption_fault,'control-acquisition-adoption')
 
+    def start_authority_proxy(self):
+        require(self.quantum_fault=='plan-before','authority refusal requires settled Q1 and absent Q2')
+        self.start_commit_proxy('authority','pass','control-acquisition-authority')
+
     def start_commit_proxy(self,kind,mode,target):
         require(self.resources['quantum_proxy']['status']=='joined','seal proxy requires joined original Q2 proxy')
         original=self.config.read_text()
         require(tomllib.loads(original)['postgres']['control']['endpoint']=='127.0.0.1:15432','seal proxy requires direct Control upstream')
-        require(mode in ('before-forward','after-complete'),'invalid closed COMMIT fault mode')
+        require(mode in (('pass',) if kind=='authority' else ('before-forward','after-complete')),'invalid closed proxy mode')
         path=self.source/'experiments/archive-engine/native_commit_proxy.py'
         binding=dict(source_sha256=digest(path),mode=mode,target=target,
             profile='retained-catch-up',frame_limit=131072,connection_limit=64,connection_limit_scope='lifetime',
             wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432,
             catalog_manager='CatalogManager',catalog_reader='bigbrotr_receipt_reader',catalog_database='bbpub_normal',
             armed=True,commit_ordinal=1)
+        if kind=='authority':del binding['commit_ordinal']
         resource=kind+'_proxy';stem=kind+'-proxy'
         setattr(self,resource+'_binding',binding);self.inputs[resource]=binding
         route=self.proxy_process([sys.executable,'-B',str(path),'--mode',mode,'--target',target,
@@ -546,6 +562,17 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
 
     def validate_adoption_proxy(self,value,event):
         self.validate_commit_proxy(value,event,self.adoption_proxy_binding)
+
+    def validate_authority_proxy(self,value,event):
+        self.validate_commit_proxy(value,event,self.authority_proxy_binding)
+
+    def validate_authority_refusal_terminal(self,value):
+        self.validate_authority_proxy(value,'terminal')
+        require(all(value[key]>0 for key in ('frames','connections','bytes')),'authority refusal lacks framed Control traffic')
+        expected=dict(authority_execute_errors=1,authority_refusals=1,authority_successes=0,
+            data_queries=0,data_commits=0,server_complete=0,client_complete=0,faults=0)
+        require(all(type(value.get(key)) is int and value[key]==count for key,count in expected.items()),
+            'authority proxy did not observe exactly one real helper refusal')
 
     def validate_commit_proxy(self,value,event,binding):
         require(value.get('event')==event and all(type(value.get(key)) is type(expected) and value[key]==expected
@@ -582,11 +609,73 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             self.stop_owned_proxy(self.adoption_route,'adoption_proxy','adoption-proxy',
                 getattr(self,'adoption_proxy_ready',None),self.validate_adoption_proxy)
 
+    def stop_authority_proxy(self):
+        if hasattr(self,'authority_route'):
+            self.stop_owned_proxy(self.authority_route,'authority_proxy','authority-proxy',
+                getattr(self,'authority_proxy_ready',None),self.validate_authority_proxy)
+
     def cleanup(self):
-        try:self.stop_adoption_proxy()
+        try:self.stop_authority_proxy()
         finally:
-            try:self.stop_seal_proxy()
-            finally:super().cleanup()
+            try:self.stop_adoption_proxy()
+            finally:
+                try:self.stop_seal_proxy()
+                finally:super().cleanup()
+
+    def prepare_authority_refusal(self):
+        profile=self.args.linear_quantum_authority_refusal
+        require(profile in ('actor-grant','original-expiry'),'invalid continuation authority profile')
+        output=self.root/'continuation-authority-refusal';output.mkdir(mode=0o700)
+        started=time.monotonic()
+        clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
+        eligible_us=int(self.sql('bigbrotr_control',clock));self.authority_eligible_us=eligible_us
+        oracle.adoption_seal_eligibility(self.adoption_retired,eligible_us)
+        job=source.only(self.adoption_retired['jobs']);detail=source.only(self.adoption_retired['acquisition_jobs'])
+        if profile=='actor-grant':
+            grant=source.only(self.adoption_retired['principal_grants'],dataset_id=job['dataset_id'],principal_id=job['principal_id'],
+                action='roles.control',resource_kind='dataset',resource_id=job['dataset_id'])
+            dataset,actor=(source.raw(job[key]).hex() for key in ('dataset_id','principal_id'))
+            removed=json.loads(self.sql('bigbrotr_control',f"WITH removed AS (DELETE FROM control.principal_grants g "
+                f"WHERE dataset_id=decode('{dataset}','hex') AND principal_id=decode('{actor}','hex') "
+                f"AND action='roles.control' AND resource_kind='dataset' AND resource_id=decode('{dataset}','hex') "
+                "RETURNING to_jsonb(g)||jsonb_build_object('xmin',g.xmin::text) AS row) SELECT coalesce(jsonb_agg(row),'[]'::jsonb) FROM removed"))
+            source.exact(removed,[grant],'authority fixture did not remove exactly the accepted actor grant')
+            save(output/'removed-grant.json',dict(eligible_at_us=eligible_us,removed=removed))
+        else:
+            remaining=detail['deadline_at_us']-eligible_us
+            require(0<remaining<=120_000_000,'original expiry prerequisite: remaining duration differs')
+            deadline=started+remaining/1_000_000+5
+            witness=dict(status='FAIL',accepted_at_us=job['created_at_us'],original_deadline_at_us=detail['deadline_at_us'],
+                eligible_at_us=eligible_us,remaining_us=remaining,observation_allowance_seconds=5,
+                started_monotonic=started,deadline_monotonic=deadline,observations=1,last_observed_at_us=eligible_us)
+            def expired():
+                require(time.monotonic()<deadline,'original expiry observation budget exhausted')
+                at=int(self.sql('bigbrotr_control',clock))
+                require(at>=witness['last_observed_at_us'],'original expiry PostgreSQL clock regressed')
+                witness.update(last_observed_at_us=at,observations=witness['observations']+1)
+                return at>=detail['deadline_at_us']
+            try:
+                self.wait(expired,'genuine original acquisition deadline expiry',deadline-time.monotonic(),client=self.client)
+                witness['status']='PASS'
+            finally:
+                witness['finished_monotonic']=time.monotonic();save(output/'expiry-wait.json',witness)
+        self.authority_prepared,_=self.capture(output,'prepared')
+        at=int(self.sql('bigbrotr_control',clock))
+        oracle.continuation_authority_setup(self.adoption_retired,self.authority_prepared,profile,eligible_us,at)
+        save(output/'prepared-clock.json',dict(eligible_at_us=eligible_us,prepared_at_us=at,profile=profile,
+            accepted_at_us=job['created_at_us'],original_deadline_at_us=detail['deadline_at_us']))
+
+    def observe_authority_refusal(self,output):
+        observed=self.proxy_event(self.authority_route,'continuation-authority-refused',5)
+        save(output/'authority-refusal.json',observed)
+        self.stop_authority_proxy()
+        terminal=load(self.root/'authority-proxy-terminal.json');self.validate_authority_refusal_terminal(terminal)
+        markers=[json.loads(line) for line in load(self.root/'authority-proxy.json')['stdout'].splitlines()]
+        selected,=[value for value in markers if value.get('event')=='continuation-authority-refused']
+        require(selected==observed and all(type(observed.get(key)) is int and observed[key]==terminal[key]
+            for key in ('authority_execute_errors','authority_refusals','authority_successes','faults')),
+            'actual helper refusal differs from joined observer')
+        return observed
 
     def observe_commit_fault(self,kind,output,counter,marker):
         fault=self.proxy_event(getattr(self,kind+'_route'),'fault',5);save(output/'commit-fault.json',fault)
@@ -605,17 +694,21 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         require(selected==fault and executed['backend_pid']==fault['backend_pid'],'executed statement and COMMIT backend differ')
         return fault
 
-    def failed_adoption(self):
-        mode=self.args.linear_quantum_adoption_fault
-        output=self.root/'adoption-commit-fault';output.mkdir(mode=0o700)
+    def failed_adoption(self,*,authority=None):
+        mode=getattr(self.args,'linear_quantum_adoption_fault',None)
+        completion='continuation-authority-refusal' if authority else 'adoption-commit-fault'
+        show_label='continuation-root-config' if authority else 'adoption-root-config'
+        baseline=self.authority_prepared if authority else self.adoption_retired
+        output=self.root/completion;output.mkdir(mode=0o700,exist_ok=authority is not None)
         document_sha256=digest(self.config)
-        resolved=self.finite('adoption-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+        resolved=self.finite(show_label,'config','show','--file','/etc/bigbrotr/instance.toml')
         require(digest(self.config)==document_sha256,'adoption fault prerequisite: root file changed during config show')
-        authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,self.adoption_retired)
-        show_sha256=digest(self.root/'bootstrap/adoption-root-config.stdout')
+        authorization_us=oracle.adoption_root_authorization(resolved,document_sha256,baseline)
+        show_sha256=digest(self.root/'bootstrap'/(show_label+'.stdout'))
         clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
         before_us=int(self.sql('bigbrotr_control',clock))
-        oracle.adoption_seal_eligibility(self.adoption_retired,before_us)
+        if authority:oracle.continuation_authority_setup(self.adoption_retired,baseline,authority,self.authority_eligible_us,before_us)
+        else:oracle.adoption_seal_eligibility(baseline,before_us)
         boottime=getattr(time,'CLOCK_BOOTTIME',None)
         require(boottime is not None,'adoption fault prerequisite: Linux CLOCK_BOOTTIME is required')
         require(digest(self.config)==document_sha256,'adoption fault prerequisite: root file changed before startup')
@@ -636,27 +729,32 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             'adoption fault prerequisite: startup exceeded resolved root authorization interval')
         require(ended.stdout.strip()=='4' and terminal['State']['ExitCode']==4 and terminal['State']['Pid']==0
             and not terminal['State']['Running'] and not terminal['State']['OOMKilled'],'adoption startup did not exit4 naturally')
-        oracle.adoption_fault_error((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
-        fault=self.observe_commit_fault('adoption',output,'adoption_cas_complete','adoption-cas-complete')
+        diagnostic=oracle.continuation_authority_error if authority else oracle.adoption_fault_error
+        diagnostic((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
+        fault=self.observe_authority_refusal(output) if authority else self.observe_commit_fault('adoption',output,'adoption_cas_complete','adoption-cas-complete')
         self.backend_absence(output)
         self.adoption_failed,_=self.capture(output,'failed')
         dump=native.census(self,output,expected_writer_exit=4,writer_terminal=output/'terminal-container.json')
         after_us=int(self.sql('bigbrotr_control',clock));wires=self.wires(1)
-        oracle.adoption_fault(self.adoption_retired,self.adoption_failed,self.adoption_first,wires,self.events,dump,
-            before_us,returned_us,after_us,mode,fault)
+        if authority:
+            oracle.continuation_authority_refusal(self.adoption_retired,baseline,self.adoption_failed,self.adoption_first,wires,self.events,dump,
+                self.authority_eligible_us,before_us,returned_us,after_us,authority,fault)
+        else:oracle.adoption_fault(baseline,self.adoption_failed,self.adoption_first,wires,self.events,dump,before_us,returned_us,after_us,mode,fault)
         oracle.adoption_progress(self.adoption_failed,self.initialized,self.events,wires,self.adoption_first,after_us,epoch=1)
         require(source.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,5)==self.adoption_first['inputs']
             and self.files(self.state/'data/ingest/producer-inputs-v1')==self.adoption_original_files,'failed adoption changed original input custody')
         require(self.client.poll() is None,'negative peer exited before failed adoption evidence')
         self.loopback_listener(self.owned_listeners(self.client.pid),7447)
+        eligibility=(dict(actor_active=True,actor_grant_present=authority=='original-expiry',original_deadline_passed=authority=='original-expiry')
+            if authority else dict(source_and_actor_eligible=True))
         save(output/'original-duration.json',dict(before_us=before_us,command_returned_at_us=returned_us,after_us=after_us,
-            original_deadline_at_us=self.adoption_retired['acquisition_jobs'][0]['deadline_at_us'],source_and_actor_eligible=True))
+            original_deadline_at_us=self.adoption_retired['acquisition_jobs'][0]['deadline_at_us'],**eligibility))
         self.adoption_failure_dump=dump
-        (self.home/'adoption-commit-fault.continue').write_text('unknown adoption retained SQL/native and live listener checked\n')
+        (self.home/(completion+'.continue')).write_text('failed startup retained SQL/native and live listener checked\n')
         require(self.client.wait(timeout=6)==0 and not (self.home/'client.stderr').read_bytes(),'negative adoption client failed')
         stop_process(self.client);self.processes.remove(self.client)
         result=load(self.home/'client-result.json')
-        require(result['status']=='PASS' and result['completion']=='adoption-commit-fault' and result['job_status'] is None,
+        require(result['status']=='PASS' and result['completion']==completion and result['job_status'] is None,
             'negative adoption client completion differs')
         require(not (self.home/'linear-status-observations.json').exists() and not (self.home/'commands-finished.json').exists(),
             'failed adoption made a successor status request')
@@ -733,6 +831,18 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.source_unchanged()
         output=self.root/'linear-quantum';output.mkdir(mode=0o700)
         state,_=self.capture(output,'after');self.backend_absence(output)
+        authority=getattr(self.args,'linear_quantum_authority_refusal',None)
+        if authority is not None:
+            oracle.adoption_exact_tables(self.adoption_failed,state)
+            wires=self.wires(1);oracle.adoption_history(state,wires,self.events,self.adoption_first)
+            oracle.adoption_activated_native(self.authority_prepared,state,self.adoption_first,self.adoption_failure_dump)
+            joined=load(self.home/'capped-adoption-peer-joined.json')
+            require(joined['requests']==1 and joined['listener_closed'] is True and joined['errors']==0,'authority peer did not join after Q1')
+            save(output/'verdict.json',dict(status='PASS',scenario='settled-owner-adoption',fault=self.quantum_fault,
+                authority_refusal=authority,outcome='continuation-authority-refused',caller_outcome='refused',same_job=True,
+                job_revision=2,wire_queries=1,pending_plans=0,mutation_requests=5,continuation_seals=1,adopted_seals=0,
+                successor_activations=1,native_sequence=91,coverage='pending'))
+            return
         adoption_mode=getattr(self.args,'linear_quantum_adoption_fault',None)
         if adoption_mode is not None:
             canonical=lambda snapshot:{table:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows) for table,rows in snapshot.items()}

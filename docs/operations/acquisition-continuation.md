@@ -81,3 +81,16 @@ wire work is authorized. A lost activated candidate is never recreated from its
 activation row; use the existing recovery/retirement procedure and a newly minted
 successor. Whole-intent abandonment remains a separate explicit cancellation
 choice and never masquerades as continuation.
+
+Continuation also rechecks the original actor's active account and exact Control
+grant, the original deadline, and the unchanged accepted policy/source. A job
+authority refusal can occur after fresh native activation: startup stops with
+`initial native batch unavailable: Control(Backend)`. That broad diagnostic alone
+does not identify the guard. The maintained refusal profiles require the actual
+executed `require_acquisition_continuation_authority` error `BB001` with reason
+`acquisition job requires current authority and original remaining duration`,
+while fresh Control/Ingest leases and root authorization remain valid. Preserve
+the unadopted seal, old job and activated candidate; do not extend the deadline
+or infer permission to retry. These profiles cover exact actor-grant removal and
+genuine original expiry; other authority and lost-candidate operations retain
+their separate qualification gates.

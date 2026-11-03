@@ -393,7 +393,202 @@ def adoption_fault_fixture(root,mode):
     return before,sealed,retired,after,report,events,wires,first,dump,begun,returned,dict(backend_pid=7404)
 
 
+def authority_fixture(root,profile):
+    original,sealed,retired,after,report,events,wires,first,dump,start,end,fault=adoption_fault_fixture(root,'before-forward')
+    eligible=start-500_000;prepared=copy.deepcopy(retired)
+    grant=source.only(retired['principal_grants']);shadow=dict(grant,action='status.read')
+    for state in (retired,prepared,after):state['principal_grants'].append(copy.deepcopy(shadow))
+    if profile=='actor-grant':
+        prepared['principal_grants'].remove(grant);after['principal_grants'].remove(grant)
+    else:
+        delta=retired['acquisition_jobs'][0]['deadline_at_us']+1_000_000-start
+        for table,rows in after.items():
+            for row in rows:
+                fresh=(table=='owner_epochs' and row['state']=='active' or table=='role_instances' and row['retired_at_us'] is None
+                    or table in ('initial_ingest_successions','initial_ingest_activations') or table=='allocation_domains' and row['owner_epoch']==2
+                    or table=='producer_epochs' and row['producer_epoch']==2 or table=='source_streams' and row['owner_epoch']==2
+                    or table=='topology_generations' and row['generation']==1)
+                if fresh:
+                    for key in ('acquired_at_us','lease_expires_at_us','created_at_us','opened_at_us','activated_at_us'):
+                        if key in row:row[key]+=delta
+        start+=delta;end+=delta
+    observed=dict(event='continuation-authority-refused',classification='acquisition-continuation-authority',sqlstate='BB001',
+        reason='acquisition job requires current authority and original remaining duration',backend_pid=fault['backend_pid'],
+        role='bigbrotr_control',database='bigbrotr_control',executed=True,transaction='T')
+    return retired,prepared,after,report,events,wires,first,dump,eligible,start,end,observed
+
+
 class CappedAdoptionControls(unittest.TestCase):
+    def test_authority_selector_requires_only_its_explicit_plan_before_profile(self):
+        spec=importlib.util.spec_from_file_location('authority_runner_control',ROOT/'tests/acceptance/run.py')
+        runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+        common=['run.py','p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption','--linear-quantum-fault','plan-before']
+        for profile in ('actor-grant','original-expiry'):
+            with tempfile.TemporaryDirectory() as temporary:
+                tail=['--source-root',str(ROOT),'--evidence',str(Path(temporary)/'evidence'),'--linear-quantum-authority-refusal',profile]
+                with patch.object(sys,'argv',common+tail),patch.object(sys,'stdout'),patch('cases.first_launch.first_launch') as launched:
+                    self.assertEqual(runner.main(),2)
+                self.assertEqual(launched.call_args.args[0].linear_quantum_authority_refusal,profile)
+        for prefix in (['run.py','p01-t01','--binary',sys.executable],['run.py','p03-linear-quantum'],common[:-1]+['plan-after'],
+                common+['--linear-quantum-trace-successor-sql'],common+['--linear-quantum-seal-fault','before-forward'],
+                common+['--linear-quantum-adoption-fault','after-complete']):
+            with tempfile.TemporaryDirectory() as temporary:
+                evidence=Path(temporary)/'evidence'
+                with patch.object(sys,'argv',prefix+['--source-root',str(ROOT),'--evidence',str(evidence),
+                        '--linear-quantum-authority-refusal','actor-grant']),patch.object(sys,'stderr'),self.assertRaises(SystemExit) as raised:runner.main()
+                self.assertEqual(raised.exception.code,2);self.assertFalse(evidence.exists())
+
+    def test_authority_route_keeps_original_proxy_and_untriggered_cleanup_honest(self):
+        from installed import set_value
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.CappedAdoptionRuntime)
+            runtime.root=root;runtime.source=ROOT;runtime.config=root/'instance.toml'
+            runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:15432"\n');runtime.set_value=set_value
+            runtime.quantum_fault='plan-before';original=Mock();runtime.route=original
+            old=dict(status='joined',pid=42,port=9999);runtime.resources=dict(quantum_proxy=old.copy(),cleanup_errors=[])
+            runtime.inputs=dict(quantum_proxy=dict(original=True));runtime.record_resources=Mock()
+            route=Mock();route.process.pid=43;route.process.poll.return_value=0;route.wait.return_value=0
+            route.threads=[];route.stderr=b'';route.overflow=False;runtime.proxy_process=Mock(return_value=route)
+            runtime.proxy_event=Mock(side_effect=lambda *args:dict(runtime.authority_proxy_binding,event='ready',port=12347))
+            runtime.start_authority_proxy();self.assertIs(runtime.route,original);self.assertEqual(runtime.resources['quantum_proxy'],old)
+            self.assertFalse(hasattr(runtime,'adoption_route'));self.assertFalse(hasattr(runtime,'seal_route'))
+            self.assertEqual(runtime.inputs['authority_proxy']['mode'],'pass');self.assertNotIn('commit_ordinal',runtime.inputs['authority_proxy'])
+            self.assertEqual(tomllib.loads(runtime.config.read_text())['postgres']['control']['endpoint'],'127.0.0.1:12347')
+            terminal=dict(runtime.authority_proxy_binding,event='terminal',unexpected=0,frames=0,connections=0,bytes=0,
+                **dict.fromkeys(('authority_execute_errors','authority_refusals','authority_successes','data_queries','data_commits',
+                    'server_complete','client_complete','faults'),0))
+            route.stdout=(json.dumps(runtime.authority_proxy_ready)+'\n'+json.dumps(terminal)+'\n').encode()
+            runtime.proxy_observation=Mock(return_value=dict(stdout=route.stdout.decode(),stderr='',overflow=False))
+            runtime.stop_authority_proxy();self.assertEqual(runtime.resources['authority_proxy']['status'],'joined')
+            self.assertEqual(runtime.resources['cleanup_errors'],[])
+            with self.assertRaises(ValueError):runtime.validate_authority_refusal_terminal(terminal)
+
+    def test_authority_preparation_deletes_only_exact_grant_or_observes_original_pg_deadline(self):
+        for profile in ('actor-grant','original-expiry'):
+            with self.subTest(profile=profile),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);original,prepared,after,report,events,wires,first,dump,eligible,start,end,marker=authority_fixture(root,profile)
+                runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.adoption_retired=original
+                runtime.args=SimpleNamespace(linear_quantum_authority_refusal=profile);runtime.client=Mock()
+                deadline=original['acquisition_jobs'][0]['deadline_at_us']
+                grant=source.only(original['principal_grants'],action='roles.control')
+                answers=[str(eligible),json.dumps([grant]),str(start)] if profile=='actor-grant' else [
+                    str(eligible),str(deadline-1),str(deadline+1),str(start)]
+                runtime.sql=Mock(side_effect=answers);runtime.capture=Mock(return_value=(prepared,{}))
+                def waited(test,label,seconds,**kwargs):
+                    self.assertEqual(label,'genuine original acquisition deadline expiry');self.assertEqual(kwargs,dict(client=runtime.client))
+                    self.assertAlmostEqual(seconds,(deadline-eligible)/1_000_000+5)
+                    self.assertFalse(test());self.assertTrue(test())
+                runtime.wait=Mock(side_effect=waited)
+                with patch.object(case.time,'monotonic',return_value=1):runtime.prepare_authority_refusal()
+                self.assertEqual(runtime.authority_eligible_us,eligible);self.assertEqual(runtime.authority_prepared,prepared)
+                if profile=='actor-grant':
+                    runtime.wait.assert_not_called();sql=runtime.sql.call_args_list[1].args[1]
+                    self.assertIn("action='roles.control' AND resource_kind='dataset'",sql)
+                    self.assertIn("principal_id=decode('"+original['jobs'][0]['principal_id'][2:]+"','hex')",sql)
+                    self.assertIn("resource_id=decode('"+original['jobs'][0]['dataset_id'][2:]+"','hex')",sql)
+                    removed=json.loads((root/'continuation-authority-refusal/removed-grant.json').read_text())
+                    self.assertEqual(removed['removed'],[grant])
+                else:
+                    runtime.wait.assert_called_once();witness=json.loads((root/'continuation-authority-refusal/expiry-wait.json').read_text())
+                    self.assertEqual((witness['status'],witness['original_deadline_at_us'],witness['last_observed_at_us']),('PASS',deadline,deadline+1))
+                    self.assertFalse(any('DELETE' in call.args[1] or 'UPDATE' in call.args[1] for call in runtime.sql.call_args_list))
+
+    def test_authority_startup_needs_real_joined_helper_error_and_live_root_authority(self):
+        for profile in ('actor-grant','original-expiry'):
+            for failure in (None,'diagnostic','unexecuted','pid','elapsed'):
+                with self.subTest(profile=profile,failure=failure),tempfile.TemporaryDirectory() as temporary:
+                    root=Path(temporary);original,prepared,after,report,events,wires,first,dump,eligible,start,end,marker=authority_fixture(root,profile)
+                    runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root;runtime.home=root/'peer';runtime.home.mkdir()
+                    runtime.state=root/'state';runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
+                    runtime.args=SimpleNamespace(linear_quantum_adoption_fault=None,linear_quantum_trace_successor_sql=False)
+                    runtime.adoption_retired=original;runtime.authority_prepared=prepared;runtime.authority_eligible_us=eligible
+                    runtime.adoption_first=first;runtime.initialized=report;runtime.events=events;runtime.authority_route=Mock()
+                    document_sha256=case.digest(runtime.config)
+                    def finite(*args):
+                        (root/'bootstrap').mkdir();observed=root_configuration_report(document_sha256)
+                        publish(root/'bootstrap','continuation-root-config.stdout',observed);return observed
+                    runtime.finite=Mock(side_effect=finite)
+                    directory=runtime.state/'data/ingest/producer-inputs-v1';directory.mkdir(parents=True)
+                    for number,data in enumerate(first['inputs'],1):
+                        (directory/f"{report['producer_slot_id']}-0000000000000001-{number:016x}.cbor").write_bytes(data)
+                    runtime.adoption_original_files={'old-inputs':'exact'};runtime.files=Mock(return_value=runtime.adoption_original_files)
+                    runtime.sql=Mock(side_effect=[str(start),str(end),str(end+5_000_000)])
+                    runtime.launch=Mock(return_value=dict(id='ab'*32));runtime.docker=Mock(return_value=SimpleNamespace(stdout='4\n'))
+                    runtime.inspect=Mock(return_value=dict(Id='ab'*32,State=dict(ExitCode=4,Pid=0,Running=False,OOMKilled=False)))
+                    def logs(entry,output):
+                        (output/'serve.stdout').write_text('')
+                        (output/'serve.stderr').write_text('error: initial native batch unavailable: '
+                            +('Quantum(CommitUnknown)' if failure=='diagnostic' else 'Control(Backend)')+'\n')
+                    runtime.logs=Mock(side_effect=logs)
+                    runtime.authority_proxy_binding=dict(mode='pass',target='control-acquisition-authority',frame_limit=131072,
+                        connection_limit=64,wire_limit=64*1024*1024)
+                    terminal=dict(runtime.authority_proxy_binding,event='terminal',unexpected=0,frames=30,connections=1,bytes=1024,
+                        authority_execute_errors=int(failure!='unexecuted'),authority_refusals=int(failure!='unexecuted'),authority_successes=0,
+                        data_queries=0,data_commits=0,server_complete=0,client_complete=0,faults=0)
+                    observed=dict(terminal,**marker)
+                    if failure=='pid':observed['backend_pid']=9999
+                    runtime.proxy_event=Mock(return_value=observed)
+                    def stop_proxy():
+                        publish(root,'authority-proxy-terminal.json',terminal)
+                        publish(root,'authority-proxy.json',dict(stdout=json.dumps(observed)))
+                    runtime.stop_authority_proxy=Mock(side_effect=stop_proxy);runtime.backend_absence=Mock()
+                    runtime.capture=Mock(return_value=(after,{}));runtime.wires=Mock(return_value=wires)
+                    def census(*args,**kwargs):
+                        runtime.stop_authority_proxy.assert_called_once();runtime.backend_absence.assert_called_once()
+                        self.assertFalse((runtime.home/'continuation-authority-refusal.continue').exists());return dump
+                    runtime.client=Mock(pid=12345);runtime.client.poll.return_value=None;runtime.processes=[runtime.client]
+                    runtime.wait=Mock();runtime.owned_listeners=Mock(return_value=['listener']);runtime.loopback_listener=Mock()
+                    (runtime.home/'client.stderr').write_text('')
+                    publish(runtime.home,'client-result.json',dict(status='PASS',completion='continuation-authority-refusal',job_status=None))
+                    def joined(*,timeout):
+                        self.assertTrue((runtime.home/'continuation-authority-refusal.continue').exists())
+                        self.assertTrue((root/'continuation-authority-refusal/original-duration.json').exists());return 0
+                    runtime.client.wait.side_effect=joined
+                    with patch.object(case.native,'census',side_effect=census),patch.object(case,'stop_process'),\
+                            patch.object(case.time,'CLOCK_BOOTTIME',7,create=True),patch.object(case.time,'clock_gettime_ns',
+                                side_effect=[1_000_000_000,6_000_000_000 if failure=='elapsed' else 2_000_000_000]):
+                        if failure is None:runtime.failed_adoption(authority=profile)
+                        else:
+                            with self.assertRaises((AssertionError,ValueError)):runtime.failed_adoption(authority=profile)
+                    runtime.finite.assert_called_once_with('continuation-root-config','config','show','--file','/etc/bigbrotr/instance.toml')
+                    runtime.wait.assert_not_called()
+                    if failure is None:runtime.client.wait.assert_called_once_with(timeout=6)
+                    else:runtime.client.wait.assert_not_called()
+
+    def test_continuation_authority_discriminates_only_the_declared_grant_or_original_expiry(self):
+        for profile in ('actor-grant','original-expiry'):
+            with self.subTest(profile=profile),tempfile.TemporaryDirectory() as temporary:
+                original,prepared,after,report,events,wires,first,dump,eligible,start,end,observed=authority_fixture(Path(temporary),profile)
+                def verify(state=after,marker=observed,begun=start):
+                    check.continuation_authority_refusal(original,prepared,state,first,wires,events,dump,eligible,begun,end,end+5_000_000,profile,marker)
+                verify();check.adoption_progress(after,report,events,wires,first,end+5_000_000,epoch=1)
+                for key,value in (('sqlstate','23514'),('reason','other guard'),('backend_pid',9999),('role','postgres'),
+                        ('database','other'),('executed',False),('transaction','I')):
+                    with self.subTest(marker=key),self.assertRaises(AssertionError):verify(marker=dict(observed,**{key:value}))
+                for table,index,key,value in (('local_accounts',0,'active',False),('jobs',0,'job_revision',3),
+                        ('acquisition_jobs',0,'deadline_at_us',original['acquisition_jobs'][0]['deadline_at_us']+1),
+                        ('acquisition_continuations',0,'xmin','99999'),('producer_epochs',1,'reserved_through_request',1),
+                        ('producer_outcomes',0,'xmin','99999'),('config_revisions',0,'document_digest','\\x'+'ff'*32),
+                        ('owner_epochs',4,'lease_expires_at_us',end),('owner_epochs',5,'lease_expires_at_us',end)):
+                    changed=copy.deepcopy(after);changed[table][index][key]=value
+                    with self.subTest(table=table,key=key),self.assertRaises((AssertionError,ValueError)):verify(changed)
+                changed=copy.deepcopy(prepared)
+                changed['principal_grants']=[]
+                with self.assertRaises(AssertionError):check.continuation_authority_setup(original,changed,profile,eligible,start)
+                deadline=original['acquisition_jobs'][0]['deadline_at_us']
+                with self.assertRaises(AssertionError):
+                    check.continuation_authority_setup(original,prepared,profile,eligible,deadline if profile=='actor-grant' else deadline-1)
+                for table in ('local_accounts','policy_revisions','source_streams','acquisition_jobs'):
+                    changed=copy.deepcopy(prepared);changed[table][0]['xmin']='99999'
+                    with self.subTest(prepared=table),self.assertRaises(AssertionError):
+                        check.continuation_authority_setup(original,changed,profile,eligible,start)
+                changed=copy.deepcopy(after);changed['acquisition_continuations'][0]['target_epoch']=2
+                with self.assertRaises((AssertionError,ValueError)):verify(changed)
+                with self.assertRaises(AssertionError):
+                    check.continuation_authority_refusal(original,prepared,after,first,wires,events,dict(dump,sequence=92),eligible,start,end,end+5_000_000,profile,observed)
+                check.continuation_authority_error('','error: initial native batch unavailable: Control(Backend)\n')
+                with self.assertRaises(AssertionError):check.continuation_authority_error('','error: initial native batch unavailable: Quantum(CommitUnknown)\n')
+
     def test_adoption_proxy_has_separate_route_file_binding_and_clean_unreached_cleanup(self):
         from installed import set_value
         with tempfile.TemporaryDirectory() as temporary:
@@ -1515,15 +1710,18 @@ class CappedAdoptionControls(unittest.TestCase):
 
     def test_negative_client_keeps_peer_until_its_host_gate_and_makes_no_successor_call(self):
         from linear_capped_client import run_adoption
-        for fault,seal,adoption,gate in (('plan-after',None,None,'unsettled-seal-refusal'),
-                ('plan-before','before-forward',None,'seal-commit-fault'),('plan-before','after-complete',None,'seal-commit-fault'),
-                ('plan-before',None,'before-forward','adoption-commit-fault'),('plan-before',None,'after-complete','adoption-commit-fault')):
+        for fault,seal,adoption,authority,gate in (('plan-after',None,None,None,'unsettled-seal-refusal'),
+                ('plan-before','before-forward',None,None,'seal-commit-fault'),('plan-before','after-complete',None,None,'seal-commit-fault'),
+                ('plan-before',None,'before-forward',None,'adoption-commit-fault'),('plan-before',None,'after-complete',None,'adoption-commit-fault'),
+                ('plan-before',None,None,'actor-grant','continuation-authority-refusal'),
+                ('plan-before',None,None,'original-expiry','continuation-authority-refusal')):
             with tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);session=root/'session.private';saved=dict(session='private')
                 session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
                 publish(root,'linear-quantum-fault.json',fault);(root/'prepared.continue').write_text('prepared\n')
                 if seal is not None:publish(root,'linear-quantum-seal-fault.json',seal)
                 if adoption is not None:publish(root,'linear-quantum-adoption-fault.json',adoption)
+                if authority is not None:publish(root,'linear-quantum-authority-refusal.json',authority)
                 calls=[];result=[];errors=[];peer_started=threading.Event();peer_joined=threading.Event();cli=Mock()
                 def request(method,path,body=None,headers=None):
                     calls.append((method,path,body));self.assertEqual(method,'POST')
@@ -1553,6 +1751,7 @@ class CappedAdoptionControls(unittest.TestCase):
                 self.assertFalse(worker.is_alive());self.assertFalse(errors);self.assertTrue(peer_joined.is_set())
                 self.assertEqual(len(calls),4);cli.assert_not_called()
                 self.assertEqual(result[0]['completion'],gate);self.assertIsNone(result[0]['job_status'])
+                if authority is not None:self.assertEqual(result[0]['gate_seconds'],140 if authority=='original-expiry' else 110)
 
 
 if __name__=='__main__':unittest.main()

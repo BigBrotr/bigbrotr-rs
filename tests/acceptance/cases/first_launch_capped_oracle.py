@@ -668,8 +668,26 @@ def adoption_fault(before,after,first,wires,events,dump,before_us,returned_us,af
     revision=3 if mode=='after-complete' else 2
     adoption_seal_eligibility(before,before_us);adoption_seal_eligibility(after,after_us,job_revision=revision)
     adoption_history(before,wires,events,first);adoption_history(after,wires,events,first)
-    current,role=adoption_new_control(before,after,before_us,returned_us,active=True)
+    wanted,current,activation,manifest,handoff,expected=adoption_startup_cut(before,after,first,dump,before_us,returned_us)
     assert type(fault['backend_pid']) is int and fault['backend_pid']==current['control_backend_pid']
+    job=source.only(before['jobs'])
+    if mode=='after-complete':
+        seal=source.only(after['acquisition_continuations']);old_seal=source.only(before['acquisition_continuations'])
+        tx=seal['xmin'];assert adoption_xid(tx)==adoption_xid(seal['adoption_transaction'],bits=64)&0xffffffff
+        assert tx not in (old_seal['xmin'],job['xmin'],activation['xmin'],expected['xmin'])
+        source.clock(seal['adopted_at_us'],activation['activated_at_us'],returned_us)
+        wanted['acquisition_continuations']=[dict(old_seal,target_epoch=2,target_manifest_sha256='\\x'+source.sha(manifest),
+            activation_sha256='\\x'+source.sha(handoff),adopting_resource=current['resource_id'],adopting_epoch=current['epoch'],
+            adopting_incarnation=current['process_incarnation'],adopted_job_revision=3,adopted_at_us=seal['adopted_at_us'],
+            adoption_transaction=seal['adoption_transaction'],xmin=tx)]
+        wanted['jobs']=[dict(job,job_revision=3,owner_resource_id=current['resource_id'],owner_epoch=current['epoch'],
+            owner_incarnation=current['process_incarnation'],xmin=tx)]
+    adoption_exact_tables(wanted,after)
+
+
+def adoption_startup_cut(before,after,first,dump,before_us,returned_us):
+    """Exact active-zero prepare/activation layout, shared by declared startup refusals."""
+    current,role=adoption_new_control(before,after,before_us,returned_us,active=True)
     assert returned_us<current['lease_expires_at_us']
     manifest,handoff,_=adoption_activated_native(before,after,first,dump)
     intent=source.only(after['initial_ingest_successions']);activation=source.only(after['initial_ingest_activations'])
@@ -721,22 +739,47 @@ def adoption_fault(before,after,first,wires,events,dump,before_us,returned_us,af
     wanted['initial_ingest_activations']=[dict({key:expected[key] for key in fields},activated_by_resource=current['resource_id'],
         activated_by_epoch=current['epoch'],activated_by_incarnation=current['process_incarnation'],activated_at_us=activation['activated_at_us'],
         activation_transaction=activation['activation_transaction'],xmin=activation_tx)]
-    if mode=='after-complete':
-        seal=source.only(after['acquisition_continuations']);old_seal=source.only(before['acquisition_continuations'])
-        tx=seal['xmin'];assert adoption_xid(tx)==adoption_xid(seal['adoption_transaction'],bits=64)&0xffffffff
-        assert tx not in (old_seal['xmin'],job['xmin'],activation_tx,expected['xmin'])
-        source.clock(seal['adopted_at_us'],activation['activated_at_us'],returned_us)
-        wanted['acquisition_continuations']=[dict(old_seal,target_epoch=2,target_manifest_sha256='\\x'+source.sha(manifest),
-            activation_sha256='\\x'+source.sha(handoff),adopting_resource=current['resource_id'],adopting_epoch=current['epoch'],
-            adopting_incarnation=current['process_incarnation'],adopted_job_revision=3,adopted_at_us=seal['adopted_at_us'],
-            adoption_transaction=seal['adoption_transaction'],xmin=tx)]
-        wanted['jobs']=[dict(job,job_revision=3,owner_resource_id=current['resource_id'],owner_epoch=current['epoch'],
-            owner_incarnation=current['process_incarnation'],xmin=tx)]
-    adoption_exact_tables(wanted,after)
+    return wanted,current,activation,manifest,handoff,expected
 
 
 def adoption_fault_error(stdout,stderr):
     assert stdout=='' and stderr=='error: initial native batch unavailable: Quantum(CommitUnknown)\n'
+
+
+def continuation_authority_setup(original,prepared,profile,eligible_us,observed_us):
+    """Only one deliberate grant removal or genuine expiry differs from eligible input."""
+    assert profile in ('actor-grant','original-expiry') and eligible_us<=observed_us
+    adoption_seal_eligibility(original,eligible_us)
+    job=source.only(original['jobs']);detail=source.only(original['acquisition_jobs'])
+    wanted=copy.deepcopy(original)
+    if profile=='actor-grant':
+        grant=source.only(wanted['principal_grants'],dataset_id=job['dataset_id'],principal_id=job['principal_id'],
+            action='roles.control',resource_kind='dataset',resource_id=job['dataset_id'])
+        wanted['principal_grants'].remove(grant)
+        source.clock(observed_us,job['created_at_us'],detail['deadline_at_us']-1)
+    else:source.clock(observed_us,detail['deadline_at_us'],(1<<63)-1)
+    adoption_exact_tables(wanted,prepared)
+
+
+def continuation_authority_refusal(original,prepared,after,first,wires,events,dump,eligible_us,
+        before_us,returned_us,after_us,profile,observed):
+    """Prove the job-specific guard refused while fresh global startup authority held."""
+    assert before_us<=returned_us<=after_us
+    continuation_authority_setup(original,prepared,profile,eligible_us,before_us)
+    job=source.only(original['jobs']);deadline=source.only(original['acquisition_jobs'])['deadline_at_us']
+    if profile=='actor-grant':source.clock(after_us,job['created_at_us'],deadline-1)
+    else:source.clock(after_us,deadline,(1<<63)-1)
+    adoption_history(prepared,wires,events,first);adoption_history(after,wires,events,first)
+    wanted,current,*_=adoption_startup_cut(prepared,after,first,dump,before_us,returned_us)
+    expected=dict(event='continuation-authority-refused',classification='acquisition-continuation-authority',
+        sqlstate='BB001',reason='acquisition job requires current authority and original remaining duration',
+        backend_pid=current['control_backend_pid'],role='bigbrotr_control',database='bigbrotr_control',executed=True,transaction='T')
+    source.exact({key:observed.get(key) for key in expected},expected,'actual helper refusal/backend differs')
+    adoption_exact_tables(wanted,after)
+
+
+def continuation_authority_error(stdout,stderr):
+    assert stdout=='' and stderr=='error: initial native batch unavailable: Control(Backend)\n'
 
 
 def adoption_transition(before,sealed,retired,after,first):

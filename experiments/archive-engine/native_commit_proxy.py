@@ -36,6 +36,7 @@ MEASUREMENT_CHECKPOINT_QUERY = b"""UPDATE control.producer_checkpoints SET
 
 
 CONTROL_TARGETS = {
+    'control-acquisition-authority': b'SELECT CONTROL.REQUIRE_ACQUISITION_CONTINUATION_AUTHORITY($1,$2)',
     'control-acquisition-adoption': (b'UPDATE CONTROL.JOBS SET JOB_REVISION=JOB_REVISION+1,OWNER_RESOURCE_ID=$3::BYTEA,'
         b'OWNER_EPOCH=$4::TEXT::NUMERIC,OWNER_INCARNATION=$5::BYTEA WHERE JOB_ID=$1::BYTEA AND STATE=\'QUEUED\' '
         b'AND JOB_REVISION=$2::TEXT::NUMERIC AND CHECKPOINT_REVISION=0'),
@@ -70,7 +71,7 @@ CONTROL_TARGETS = {
 def control_target_query(target, query):
     if target == 'control-measurement-checkpoint':
         return b' '.join(query.upper().split()) == b' '.join(MEASUREMENT_CHECKPOINT_QUERY.upper().split())
-    if target in ('control-closed-reclamation','control-quantum-source-rollback','control-acquisition-adoption'):
+    if target in ('control-closed-reclamation','control-quantum-source-rollback','control-acquisition-adoption','control-acquisition-authority'):
         return b' '.join(query.upper().split()) == CONTROL_TARGETS[target]
     if target in ('control-pin-release','control-index-publication'):
         return query == CONTROL_TARGETS[target]
@@ -119,6 +120,20 @@ def gap_write_refusal(body):
         return None
     return {name: value for key, name, value in ((b's', 'schema', 'control'),
             (b't', 'table', 'acquisition_quanta')) if key in selected}
+
+
+def continuation_authority_refusal(body):
+    """Recognize one actual helper reason; never retain arbitrary error fields."""
+    fields=body.split(b'\0')
+    if fields[-2:]!=[b'',b'']:return False
+    selected={}
+    for field in fields[:-2]:
+        if not field:return False
+        key=field[:1]
+        if key in (b'C',b'M'):
+            if key in selected:return False
+            selected[key]=field[1:]
+    return selected=={b'C':b'BB001',b'M':b'acquisition job requires current authority and original remaining duration'}
 
 
 class SessionCommandObserver:
@@ -344,6 +359,10 @@ class Proxy:
                  index_consumer=None, hold_index_publication=False, commit_ordinal=1):
         self.mode = mode
         self.target = target
+        self.authority_target = target == 'control-acquisition-authority'
+        if self.authority_target and (mode!='pass' or defer_arm or lifetime_seconds!=120
+                or profile not in ('default','retained-catch-up')):
+            raise ValueError('acquisition-authority-profile')
         self.quantum_commit_target = target in ('control-quantum-plan', 'control-quantum-terminal')
         self.seal_commit_target = target == 'control-acquisition-seal'
         self.adoption_commit_target = target == 'control-acquisition-adoption'
@@ -440,6 +459,8 @@ class Proxy:
             self.report['seal_inserts_complete'] = 0
         if self.adoption_commit_target:
             self.report['adoption_cas_complete'] = 0
+        if self.authority_target:
+            self.report.update(authority_execute_errors=0,authority_refusals=0,authority_successes=0)
         if target == 'control-quantum-plan':
             self.report['gap_write_rejections'] = 0
             self.quantum_selected_session = self.quantum_selected_backend_pid = None
@@ -459,7 +480,7 @@ class Proxy:
         quantum_summary = self.target.startswith('control-quantum-') and event in (
             'ready', 'terminal', 'quantum-gap-write-rejected')
         measurement_summary = self.target == 'control-measurement-checkpoint' and event in ('ready','terminal')
-        seal_summary = self.closed_commit_target and event in ('ready','terminal')
+        seal_summary = (self.closed_commit_target or self.authority_target) and event in ('ready','terminal')
         if quantum_summary or measurement_summary or seal_summary:
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit, connection_limit_scope='lifetime',
@@ -666,6 +687,10 @@ class Proxy:
                 raise ValueError('acquisition-adoption-backend' if self.adoption_commit_target else 'acquisition-seal-backend')
             session_commands = SessionCommandObserver(self.target,
                 command_complete=b'UPDATE 1\0' if self.adoption_commit_target else b'INSERT 0 1\0',track_errors=True)
+        if self.authority_target:
+            if parameters.get(b'user')!=b'bigbrotr_control' or database!=b'bigbrotr_control':
+                raise ValueError('acquisition-authority-backend')
+            session_commands=SessionCommandObserver(self.target,command_complete=b'SELECT 1\0',track_errors=True)
         quantum_session = object() if self.target == 'control-quantum-plan' else None
         gap_commands = (SessionCommandObserver('control-quantum-terminal', track_errors=True)
                         if quantum_session is not None and self.mode == 'hold-reply' else None)
@@ -734,11 +759,23 @@ class Proxy:
                     if selected and not await self.hold('resume-authority', state['backend_pid']):
                         return
                 if session_commands is not None:
+                    if (self.authority_target and not frontend and tag==b'E' and session_commands.failing_execute()):
+                        if not progress_transaction or state['backend_pid'] is None or state['backend_pid']<=0:
+                            raise ValueError('acquisition-authority-transaction')
+                        self.report['authority_execute_errors']+=1
+                        if continuation_authority_refusal(body):
+                            self.report['authority_refusals']+=1
+                            self.emit('continuation-authority-refused',classification='acquisition-continuation-authority',
+                                sqlstate='BB001',reason='acquisition job requires current authority and original remaining duration',
+                                backend_pid=state['backend_pid'],role='bigbrotr_control',database='bigbrotr_control',
+                                executed=True,transaction='T')
                     if frontend:
                         session_commands.frontend(tag, body, eligible=(not (release_target or index_target or measurement_target or source_target) or
                             (self.armed and not self.target_selected)))
-                    elif session_commands.backend(tag, body) and (not self.closed_commit_target or session_commands.executing_target):
-                        if measurement_target:
+                    elif session_commands.backend(tag, body) and (not (self.closed_commit_target or self.authority_target) or session_commands.executing_target):
+                        if self.authority_target:
+                            self.report['authority_successes']+=1
+                        elif measurement_target:
                             if not progress_transaction or state['backend_pid'] is None or self.target_selected:
                                 raise ValueError('measurement-checkpoint-transaction')
                             self.target_selected=True;state['data']=True
@@ -842,7 +879,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target):
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target or self.authority_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -954,7 +991,7 @@ class Proxy:
                     if ordinary_target:
                         self.emit('reader-selected', backend_pid=state['backend_pid'],
                                   connection_number=connection_number, admitted_after_arm=True)
-                if not frontend and (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target):
+                if not frontend and (progress_target or release_target or index_target or measurement_target or source_target or self.executed_commit_target or self.authority_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
                         state['commit_selected'] = False
