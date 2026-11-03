@@ -20,6 +20,12 @@ const INPUT_DATA_BYTES: u64 = 24 * MIB;
 const MAX_EVENTS: usize = 63;
 pub const LEASE_SECONDS: u64 = 180;
 
+pub fn limits() -> RocksNativeLimits {
+    // Match the installed initial owner's complete native profile, while the
+    // older finite probe modes retain their existing32-file setting.
+    limits_with_open_files(64)
+}
+
 pub struct Fixture {
     pub identity: SourceIdentity,
     pub budget: ResourceBudget,
@@ -252,6 +258,18 @@ fn credit(store: &IngestStore, spec: &InitialRegistration) -> serde_json::Value 
     serde_json::json!({"issued":credit.issued_through(),"acknowledged":credit.acknowledged_through(),"outstanding":credit.outstanding_requests(),"retired":credit.retired_through()})
 }
 
+fn observed_at_unix_us() -> u64 {
+    // Diagnostic overlap observation only; this never supplies event time,
+    // source identity, scheduling authority or a policy lease.
+    u64::try_from(
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_micros(),
+    )
+    .unwrap()
+}
+
 fn pending(
     store: &IngestStore,
     first: bigbrotr_model::SourceRecordId,
@@ -295,6 +313,7 @@ pub async fn run(
 ) {
     assert_eq!(spec.dataset_id, [1; 16].try_into().unwrap());
     assert_eq!(spec.instance_id, [2; 16]);
+    assert_eq!(store.native_limits(), limits());
     let gates = Gates::new();
     let cancelled = AtomicBool::new(false);
     let manifest = *store.manifest();
@@ -343,7 +362,7 @@ pub async fn run(
     );
     assert_eq!(credit(&store, spec)["acknowledged"], 1);
     emit(
-        serde_json::json!({"event":"physical-ready","events":fixture.records.len(),"source_bytes":fixture.identity.bytes,"source_sha256":hex(&fixture.identity.sha256),"retained_input_upper_bound":fixture.retained_input_upper_bound,"lease_seconds":LEASE_SECONDS,"gate_deadline_seconds":120,"receipt":hex(&bootstrap_bytes),"pending":expected_batches[0].1,"credit":credit(&store,spec),"profile":{"block_cache_bytes":32*MIB,"write_buffer_manager_bytes":16*MIB,"per_cf_write_buffer_bytes":2*MIB,"max_total_wal_bytes":16*MIB,"max_background_jobs":2,"native_allowance_bytes":128*MIB}}),
+        serde_json::json!({"event":"physical-ready","events":fixture.records.len(),"source_bytes":fixture.identity.bytes,"source_sha256":hex(&fixture.identity.sha256),"retained_input_upper_bound":fixture.retained_input_upper_bound,"lease_seconds":LEASE_SECONDS,"gate_deadline_seconds":120,"receipt":hex(&bootstrap_bytes),"pending":expected_batches[0].1,"credit":credit(&store,spec),"profile":{"block_cache_bytes":32*MIB,"write_buffer_manager_bytes":16*MIB,"per_cf_write_buffer_bytes":2*MIB,"max_total_wal_bytes":16*MIB,"max_open_files":64,"max_background_jobs":2,"native_allowance_bytes":128*MIB}}),
     );
     gates.wait(b"load\n").await;
     let lineage = QualifiedRef {
@@ -372,6 +391,7 @@ pub async fn run(
         )
         .unwrap();
         let request_digest = prepared.request_digest();
+        let admission_started_at_unix_us = observed_at_unix_us();
         let stored = owner
             .admit_initial_event(
                 &mut store,
@@ -405,6 +425,7 @@ pub async fn run(
             )
             .await
             .unwrap();
+        let observed_at_unix_us = observed_at_unix_us();
         let AdmissionOutcome::Durable(receipt) = stored.outcome() else {
             panic!("verified distinct diagnostic event refused")
         };
@@ -433,7 +454,7 @@ pub async fn run(
         assert_eq!(copied.policy_epoch.get(), 1);
         let expected = pending(&store, first, budget);
         emit(
-            serde_json::json!({"event":"physical-admitted","index":index+1,"request_sequence":index+2,"event_id":id.to_string(),"recorded_at":456,"request_digest":request_digest.to_string(),"input_bytes":reservation.input_bytes,"line":position.line,"byte_start":position.byte_start,"byte_end":position.byte_end,"record_sha256":hex(&position.sha256),"receipt":hex(&bytes),"outcome_sha256":hex(&copied.outcome_sha256),"pending":expected,"credit":credit(&store,spec)}),
+            serde_json::json!({"event":"physical-admitted","index":index+1,"request_sequence":index+2,"event_id":id.to_string(),"recorded_at":456,"admission_started_at_unix_us":admission_started_at_unix_us,"observed_at_unix_us":observed_at_unix_us,"request_digest":request_digest.to_string(),"input_bytes":reservation.input_bytes,"line":position.line,"byte_start":position.byte_start,"byte_end":position.byte_end,"record_sha256":hex(&position.sha256),"receipt":hex(&bytes),"outcome_sha256":hex(&copied.outcome_sha256),"pending":expected,"credit":credit(&store,spec)}),
         );
         expected_batches.push((first, expected));
         assert_eq!(credit(&store, spec)["acknowledged"], 1);
@@ -461,6 +482,7 @@ pub async fn run(
         ingest_owner::grant(budget, 128 * MIB),
     )
     .unwrap();
+    assert_eq!(store.native_limits(), limits());
     ingest_owner::reconcile_initial_pending_quota(
         &mut owner,
         &mut store,

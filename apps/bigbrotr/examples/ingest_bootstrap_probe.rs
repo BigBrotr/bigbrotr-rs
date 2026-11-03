@@ -103,12 +103,15 @@ fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
     Ok(())
 }
 fn limits() -> RocksNativeLimits {
+    limits_with_open_files(32)
+}
+fn limits_with_open_files(max_open_files: u32) -> RocksNativeLimits {
     RocksNativeLimits::new(RocksNativeSettings {
         block_cache_bytes: 32 * MIB,
         write_buffer_manager_bytes: 16 * MIB,
         per_cf_write_buffer_bytes: 2 * MIB,
         max_total_wal_bytes: 16 * MIB,
-        max_open_files: 32,
+        max_open_files,
         max_background_jobs: 2,
         native_allowance_bytes: 128 * MIB,
     })
@@ -544,7 +547,11 @@ async fn run(
     let mut store = IngestStore::initialize(
         path,
         manifest,
-        limits(),
+        if physical {
+            ingest_physical_growth::limits()
+        } else {
+            limits()
+        },
         ingest_owner::grant(&budget, 128 * MIB),
     )
     .unwrap();
