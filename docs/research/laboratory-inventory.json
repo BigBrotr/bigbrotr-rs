@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-11-01",
+  "updated_at": "2026-11-03T21:00:42.177711+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -79713,6 +79713,46 @@
           },
           "current_source_worktree": "/home/tux/bigbrotr-rs/.research/m2-handoff-logout-oracle-20261103",
           "current_source_revision": "a2975aa03e11f9ca3b3d80c2b945d93baa772edf"
+        },
+        "completed_source_ref_retirement_20261103": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/completed-source-branch-retirement.json",
+          "sha256": "92cf2c348ed2c16251134a68c37967fbda2f7008f4c21453110cf6aae5633cc0",
+          "state": "Five reconciled local author refs retired; all five clean detached exact-source worktrees/commits and ignored/external evidence retained. No remote author refs existed or were deleted."
+        },
+        "clock_portability_followup": {
+          "work_revision": "ec1ee119c4190fcaa90769a171e1dfbc04db9443",
+          "work_state": "PUSHED_WORK_BRANCH_NOT_YET_MAIN",
+          "qualification_revision": "3f9149453bfc433f08f12ed8838f9e35113434c6",
+          "qualification_worktree": "/home/tux/bigbrotr-rs/.research/ci-macos-handoff-clock-20261103",
+          "run": 41713160167,
+          "state": "REMOTE_MAC_FOUNDATION_RUNNING",
+          "terminal_original_run": 41708352094,
+          "original_status": "LINUX_X86_ARM_PASS_MAC_FIXTURE_FAIL",
+          "evidence": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-verification/receipt.json"
+        },
+        "physical_growth_diagnostic_in_progress": {
+          "owner_task": "P02-T02 Step4, prerequisite for physically guarded same-owner OPEN65 and later P03-T05 fullpage composition",
+          "base": "ec1ee119c4190fcaa90769a171e1dfbc04db9443",
+          "authors": [
+            {
+              "model": "gpt-6.1-sol",
+              "reasoning_effort": "xhigh",
+              "branch": "work/m2-physical-envelope-probe-20261103",
+              "worktree": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-probe-20261103",
+              "scope": "Existing native/Control probe; bounded signed-input load and ordinary reopen"
+            },
+            {
+              "model": "gpt-6.1-sol",
+              "reasoning_effort": "xhigh",
+              "branch": "work/m2-physical-envelope-runner-20261103",
+              "worktree": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-runner-20261103",
+              "scope": "Existing connected runner, independent corpora/oracles and bounded allocation/checkpoint observations"
+            }
+          ],
+          "critical_review": "Astra/xhigh on actual native lifecycle oracle and persistent funding boundary before Root engines",
+          "status": "SOURCE_AUTHORING_NOT_INTEGRATED_BUILD_AND_REAL_ENGINES_NOT_RUN",
+          "scope": "Two finite max-size corpora within absolute64; direct imports do not qualify acquisition-bound reclaim or finalACK64. No numeric physical reserve guarantee or OPEN65 enabled.",
+          "local_processes": "No new engine/compiler launched; Root remains sole launcher/integrator. Agents author source only."
         }
       }
     }

@@ -2991,7 +2991,7 @@
   },
   "current_handoff_publication_20261103": {
     "revision": "2c68fa69409b8b0c179a5f394b4efeab63668b4c",
-    "status": "PUSHED_LINUX_RUNNING_MAC_PORTABLE_FIXTURE_FAIL",
+    "status": "TERMINAL_LINUX_PASS_MAC_FIXTURE_FAIL_CORRECTION_IN_QUALIFICATION",
     "run": 41708352094,
     "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41708352094",
     "publication": {
@@ -3002,7 +3002,25 @@
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-macos-failure-classification.json",
       "sha256": "392807c2c9a87b9caa571bab384ec03fe61676576b12eab531f326986580d436"
     },
-    "scope": "Current2cMac exact745modelcontrols:1error/13skip; actual toolchain/formatPASS,6laterfoundationcommandsNOT_RUN. OtherLinuxnativejobs still running; preserve without cancellation. Newfixture-only work needs realMacverification; do not infer from localLinuxsimulation or prior04e.",
-    "next": "Current unit-clock correction preserves realLinuxprecondition. Use a declared Mac-only manualqualification branch with identical product/config/native/build/check inputs and all9Macchecks; retain actualqualificationSHA/matrixdifference. Normalmainmatrix stays unchanged. Publish mainfix only after ongoing2cLinux runs finish, avoiding cancellation; futureproduct changes still require fullmatrix."
+    "scope": "Exact2c is terminalFAIL from Mac portable clock fixture. Both Linux foundation jobs completedPASS. This is fixture setup, not billing/cancellation or observed product failure; no aggregate3platformPASS.",
+    "next": "Integrate/publish source-only clockfix and concise evidence after terminal2c Linux. Await actual3fMacnine checks; normalmain controls must also execute. Future product/native/build changes still select fullfoundation.",
+    "linux_qualification": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/hosted-2c-verification/receipt.json",
+      "sha256": "bf285d149ad44e8e4216d6bb05de0847189e12b2545d927ae43c29cce05f3a31",
+      "status": "Both Linux platforms PASS all27 selected checks;1592 Rust passes each. Ignores6/5 remain unrun. All exact source-file hashes/build bindings verified. Original Mac FAIL/6NOT_RUN preserved.",
+      "public_output": "511 files/7619464 bytes, bounded scan found no new candidates; no concrete exposure identified."
+    },
+    "clock_correction": {
+      "revision": "ec1ee119c4190fcaa90769a171e1dfbc04db9443",
+      "qualification_revision": "3f9149453bfc433f08f12ed8838f9e35113434c6",
+      "run": 41713160167,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41713160167",
+      "state": "IN_PROGRESS",
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/672a3865/installed/zero-query-a2975aa0/ci-clock-work-publication-and-dispatch.json",
+        "sha256": "5a16cedbeda4e5705aeab9b37ba04fd09397e560b537ebb7a95f82203895dd4d"
+      },
+      "scope": "OnlyMac matrix, same9 maintained checks; all nonworkflow source/build/check inputs equalec1. Does not count omitted Linux asPASS or replace normal3platform workflow."
+    }
   }
 }

@@ -7,9 +7,10 @@ Astra/xhigh critical boundaries. No official release/package/deployment authoriz
 ## Revision and qualified work
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, HEAD/main/origin **2c68fa69**, actual atomic
-push83135/terminal8e1d47/receipt302c80d3. Local work is one portable test-clock
-fixture correction plus P01/P03 evidence, inventory and this checkpoint. Runtime
+`work/m2-finite-history-20261101`, HEAD/origin-work **ec1ee119**; main/origin-main
+**2c68fa69**, atomic push83135/terminal8e1d47/receipt302c80d3. Work-branch clock
+correction and Mac-only qualification3f were pushed by37050/terminal55a7ae.
+Local changes reconcile terminal CI, retained refs and the next bounded diagnostic. Runtime
 source remains a297/product672; no product or installed-oracle changes.
 Local source adds handoff8dd/ac1, CI scope306/ffb, pressure672, diagnostic7ee and logout-oraclea297.
 Main04e qualifies the bounded settled continuation/retry/refusal cases; retained
@@ -35,21 +36,31 @@ FAIL remain unchanged, with corrected retained replay separately marked diagnost
 
 ## Active slice and next action
 
-Current2c hosted run41708352094 has a Mac portable-test setup failure: the unit
-budget scenario omitted a simulated Linux BOOTTIME. Toolchain/format PASS,
-acceptance745 has1error/13skip, and6 later native checks are NOT_RUN. This is not
-billing, cancellation or observed product failure. The local unit fixture now
-injects constant/clock and still proves missing-clock refusal;16 controls pass
-with BOOTTIME absent and the affected final control passes. P01 owns raw evidence.
-Commit/push the coherent work-branch correction, use an explicitly scoped manual
-Mac foundation qualification with the same9 maintained checks, and preserve both
-ongoing2cLinux runs. Do not push main while that would cancel those runs. Retain
-qualification SHA/workflow-matrix differences; do not call omitted Linux PASS.
+Current2c hosted run41708352094 is terminalFAIL: both Linux platforms PASS all27
+selected checks (1592 Rust passes each,6/5 ignores NOT_RUN), independently bound
+to exact source/build inputs. Mac's original unit-clock fixture error preserves
+6 later checks NOT_RUN; it is setup, not billing/cancellation or observed product
+failure. P01 links the terminal receipt and bounded public-output scan (511 files,
+no new candidates or concrete exposure). Local16 clock controls plus final
+control PASS. Manual Mac-only fullfoundation3f run41713160167 remains active:
+https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41713160167 . Its only source
+difference fromec1 is the declared workflow matrix; normal main retains3platforms.
+Publish the coherent clock fix/evidence to main now the original Linux jobs have
+finished, then verify the actual Mac9 and normal main control results. Do not call
+scoped qualification an exactmain/all36 aggregatePASS.
 
 The next product dependency is selected P02-T02 Step4's physically guarded OPEN65,
 not allP02: absolute64 and current-domain provenance make a default500-witness
 page impossible today. Exact-profile d/R bounds/runtime enforcement remain open;
-keep the existing guard until demonstrated. P03-T05 owns subsequent500-frame/
+keep the existing guard until demonstrated. Two Sol/xhigh source authors now
+extend the existing connected probe/runner for finite≤64 physical diagnostics:
+63 distinct256KiB signed events in compressible/high-entropy corpora, actual
+allocation and PostgreSQL checkpoint observations, ordinary reopen. Astra/xhigh
+reviews lifecycle/oracle guarantees before Root engines. Source is partial in
+separate inventoried worktrees; no new build/engine launched. Direct imports
+cannot claim finalACK64 or acquisition-bound reclaim. Numericald/R and runtime
+funding remain open; these measurements alone cannot establish them.
+P03-T05 owns subsequent500-frame/
 100-distinct B-witness composition. No dictionary alias/corpus/provenance change
 may replace that requirement. Required tools remain in the repository; ignored
 capsules record evidence rather than private product prerequisites.
@@ -67,8 +78,10 @@ R26 Root29534 actually reaped0 (terminal76e58e). Custody697afe4a verifies28 stop
 containers,9 absent recorded processes,981 absent commandPIDs,55 source pins and
 empty preserved borrowed bridge. Earlier failures also stopped; no local engine/
 compiler active, cache115 released and original4ELF fullstat guards completed.
-Preserve worktrees, databases, inputs, logs and failures. Retire only reconciled
-redundant branch refs after main integration; source worktrees stay pinned.
+Preserve worktrees, databases, inputs, logs and failures. Five reconciled local
+author refs have now been retired; all exact-source worktrees/commits remain
+clean and detached, with no remote ref or artifact deletion. Inventory links
+the retirement receipt92cf2c34. Active integration/qualification refs stay intact.
 [Inventory](../research/laboratory-inventory.json) owns resource states.
 Capsules `.research/m2-adoption-core-qualification-20261103/{a464cc63,672a3865}`
 and `runs/m2-adoption-core-*` under `/home/tux/bigbrotr-implementation-20260917`
@@ -82,7 +95,7 @@ exposure (new candidate was a synthetic fixture canary). Selection SKIP/declared
 ignores remain unrun. Local scope306/ffb passed21 controls/four exact helper paths;
 unknown/runtime/build/workflow/selector changes retain foundation. Next product/
 policy-containing main push needs real full hosted CI; work pushes trigger none.
-Current2c run41708352094 has the Mac gap above; Linux jobs remain active. Prior04e
+Current2c run41708352094 has bothLinuxPASS and the Mac gap above. Prior04e
 stays the last full hosted PASS, without covering the new product's missing Mac
 native checks. Compiled CI reuse remains P08-T11 Step2. Keep all incomplete gates
 and original failures explicit while continuing independent product work.
