@@ -2158,6 +2158,13 @@
       "result": "Root92588 reaped1; all-targetPASS9.383s/strictClippyFAIL12.687s sole drop_non_drop; Rustdoc/release/tests/installedNOT_RUN. Builderd16e3ebd stopped/PID0/noOOM/cache released and launcherpost4ELFguardscompleted.",
       "correction": "35bdff93 removes redundantdrop(read) after lastread.validate. ProgressRead holds borrowed store/scratch references, has noDrop; NLL ends immutable borrow before later mutable native checks. Every existing native/SQL/lease/deliverycheck unchanged.",
       "reuse": "Same parameterized existing build preparer now accepts exactsource/revision/tree/q/runtime; no new framework or repeated historical audit."
+    },
+    "fourth_compile": {
+      "source": "2a88ae1940b5a6f364b655430c52f97f78aa7f47",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/2a88ae19/failure-receipt.json",
+      "sha256": "e8a80f10bf2544c287c6bec962600fa0aac0da1b14cce64b0b4bef83cfb32c79",
+      "result": "Root42042reaped1; alltargetPASS7.732s/strictClippyFAIL13.238s on bin items_after_test_module and drop_non_drop only. Rustdoc/release/tests/installedNOT_RUN. Builder38bd8ec8 terminal/cache released/post4ELFguardscompleted.",
+      "correction": "c3e51a90 moves exact unchanged continuation_grant before cfg(test) module and removes borrowed proof drop with allnative/SQL/lease validations unchanged; no allowance/limit/oracle weakened."
     }
   }
 }
