@@ -1,5 +1,20 @@
 # PostgreSQL control constraint fixture
 
+`acquisition_continuation_capacity.sql` is a narrow current-schema45 regression
+for cached PL/pgSQL record types. On a fresh empty database migrated through45,
+run it with `psql -X --no-password -v ON_ERROR_STOP=1
+--set=expected_migration_45_sha256=<SHA-256 of the applied 0045 SQL>
+--file=experiments/control-migrations/acquisition_continuation_capacity.sql`.
+Use the owned fixture-superuser connection: transaction-local replica mode seeds
+synthetic metadata, then normal trigger mode is restored once before actual
+guard calls across epochs1→2→3→1 in the same backend. Four64-identity accepts and
+four exact65-identity refusals must succeed; all rows roll back. This qualifies
+SQL typing and claim accounting only, not native lifecycle, authorization,
+cross-branch UNION deduplication or installed deferred-COMMIT behavior. Retain
+both output streams and the actual ledger/function source identities. An explicit
+transactional function override can diagnose a correction before rebuilding,
+but must be recorded separately and must never change the migration ledger.
+
 `lab.py` is the accompanying Docker laboratory orchestrator. It provisions a new
 owned directory, internal network with no published ports, PostgreSQL 16.15 and
 a finite-lived client container. It refuses existing resources, never deletes

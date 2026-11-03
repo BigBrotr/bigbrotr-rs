@@ -111,7 +111,8 @@ DECLARE p control.producer_epochs%ROWTYPE; original record; retained integer;
 BEGIN
     SELECT * INTO STRICT p FROM control.producer_epochs WHERE producer_slot_id=wanted_slot AND producer_epoch=wanted_epoch;
     IF wanted_epoch=1 THEN
-        SELECT registered_by_resource_id AS resource,registered_by_epoch AS epoch,registered_by_incarnation AS incarnation
+        -- RECORD field types must match the lineage helper across cached calls.
+        SELECT registered_by_resource_id::bytea AS resource,registered_by_epoch::numeric AS epoch,registered_by_incarnation::bytea AS incarnation
             INTO STRICT original FROM control.producer_slots WHERE producer_slot_id=wanted_slot;
     ELSE
         SELECT * INTO STRICT original FROM control.ingest_lineage_activation(p.owner_resource_id,wanted_epoch);
@@ -196,7 +197,7 @@ BEGIN
         RAISE EXCEPTION 'continuation requires its exact excluded previous job and closed source' USING ERRCODE='23514';
     END IF;
     IF c.producer_epoch=1 THEN
-        SELECT registered_by_resource_id AS resource,registered_by_epoch AS epoch,registered_by_incarnation AS incarnation
+        SELECT registered_by_resource_id::bytea AS resource,registered_by_epoch::numeric AS epoch,registered_by_incarnation::bytea AS incarnation
             INTO STRICT a FROM control.producer_slots WHERE producer_slot_id=c.producer_slot_id;
     ELSE
         SELECT * INTO STRICT a FROM control.ingest_lineage_activation(p.owner_resource_id,c.producer_epoch);
