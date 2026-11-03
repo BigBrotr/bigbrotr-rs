@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "RECORD_TYPE_PRODUCT_DEFECT_CORRECTED_REAL_PG_REGRESSION_PASS_FRESH_PRODUCT_PENDING",
+    "status": "CORRECTED_RECORD_TYPES_REAL_PG_REGRESSION_STRICT_BUILD_RUST_OBSERVER_PASS_INSTALLED_R5_ACTIVE",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Freeze current reviewed source plus coherent checkpoint; use retained generic guarded builder with R4failure receipt, then current affectedRust/observer and identical fivequeryinstalled journey. No old3ceceproduct reuse for changed migration.",
+    "next": "ObserveRoot12123 actualsamefivequeryjourney; preserveverdict andclosecustody. Classify anynewfailurebeforecorrection; maintain alllaterauthority/unknowncommit/expiry/lostcandidate/zeroquery gates.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2285,19 +2285,55 @@
       "original": "a0de6cf00f6047c495dd11d31ed4e8386833a1af",
       "integrated": "53bfa450fbc31f69e3e1599bc0989dc1fcd6aae5",
       "scope": "Normalize only2epoch1 SELECT projections to lineage helper basebytea/numeric/bytea in owning0045. No values/predicates/thresholds/CAS/authority/transaction changes. Q40preproductioncorrection in place; no oldledger rewritten.",
-      "review": "Astra independently read owning0045/contract and reviewed actual2projectiondiff, nofinding; narrow regression-fixture review pending. Sol agent prepared code/fixture before modelcapacityfailure; Root completed fixture, executed actualpreflight and committed/integrated.",
+      "review": "Astra independently completed a0de6cf0/owning0045/contract/maintainedfixture/README andactualSQLpreflight review: nofinding, no modelcapacitylimitation. Original42804, samebackend64/65 sequence, committedsource/override/artifacthashes, rollbackdigests andstoppedcustody authenticated. Root8a0f4f6b reviewreceipt linksactualfinalmessage.",
       "preflight": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-record-preflight-20261103/result.json",
         "sha256": "cf633fb966433ef3b1a1fb2fdcee1c17e0aa9a7517312bfce741acde8e1753ef"
       },
       "root_tool": 1602,
       "result": "RealPG160015 originalnegative42804 param9 domain/basecache reproduced. Corrected actualfunction samebackendepochs1\u21922\u21923\u21921:4accept64/4exactrefuse65PASS. Fullschema/data dump unchanged aftereach; only transactionfunctionoverride, original45ledger preserved, no originalR4touch. Bothlabcontainers stopped/PID0/noOOM.",
-      "limits": "SQL typing/claimaccounting only, not UNIONdedup/native/authority/lifecycle/deferredCOMMIT or adjacent fullcontinuationguard qualification. Maintained fixture and declared command in repository; actualcurrentfreshbuild/installed stillrequired."
+      "limits": "SQL typing/claimaccounting only, not UNIONdedup/native/authority/lifecycle/deferredCOMMIT or adjacent fullcontinuationguard qualification. Maintained fixture and declared command in repository; actualcurrentfreshbuild/installed stillrequired.",
+      "review_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-record-preflight-20261103/independent-review.json",
+        "sha256": "8a0f4f6b639232da5b10ffc9308df43b95f59c30fefff5084bc12a5566f635ba"
+      }
     },
     "current_qualification": {
-      "source": "53bfa450fbc31f69e3e1599bc0989dc1fcd6aae5",
-      "state": "REVIEWED_RECORD_TYPE_CORRECTION_REAL_SQL_REGRESSION_PASS_FRESH_PRODUCT_PENDING",
-      "next": "Freeze current reviewed source plus coherent checkpoint; use retained generic guarded builder with R4failure receipt, then current affectedRust/observer and identical fivequeryinstalled journey. No old3ceceproduct reuse for changed migration."
+      "source": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
+      "state": "PASS_STRICT_FRESH_WORKER_BUILD_FOUR_RUST_TARGETS_OBSERVER_INSTALLED_R5_ACTIVE",
+      "next": "ObserveRoot12123 actualsamefivequeryjourney; preserveverdict andclosecustody. Classify anynewfailurebeforecorrection; maintain alllaterauthority/unknowncommit/expiry/lostcandidate/zeroquery gates.",
+      "tree": "ab9897730d6f72525e007a5b643b755a44c6965d",
+      "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc",
+      "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-record-types-20261103",
+      "build_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/build-receipt.json",
+        "sha256": "4458baf3391bdd1e19591365bc659390c8f0cc761f0c2f9f397700e74ddb5693"
+      },
+      "affected_rust": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/library/qualification-receipt.json",
+        "sha256": "c91097c3344c434e309d00c6485de0b7092d66178adef50a2ded77067e89fcae"
+      },
+      "observer": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/probe/terminal-receipt.json",
+        "sha256": "a8b2c76cad68c779ed1958c73546c58b8958789912d4f398aed4615c536014fb"
+      },
+      "assembly": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/assembly-r5-receipt.json",
+        "sha256": "eca4339a1e5a9a9a238f7f4d022877a5db84c140ec421cce2873fc0b137d5753"
+      },
+      "installed_launch": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/root-installed-r5-launch.json",
+        "sha256": "d8fd14c3c741fffff977748937c76113f7e7f4db004cbcf059d2849a7204c6a7"
+      },
+      "root_tools": {
+        "build": 53832,
+        "affected_rust": 81227,
+        "observer": 9430,
+        "assembly": 3193,
+        "installed_active": 12123
+      },
+      "results": "Strict alltarget8.431/Clippy9.684/explicit-DwarningsRustdoc4.373PASS; fresh workerbeforeparent release170.396sPASS. Unfiltered705/234/40/24PASS,27sourceboundrequiredcontrolsPASS,5librarydedicatedignoresNOT_RUN. Exactparentobserver85.538sPASS. Compilercontainersstopped/PID0/noOOM/cache released/original4ELFpostguardscomplete. Private bundle assembled, installedR5 genuinelyrunning; no installedPASS yet."
     }
   }
 }

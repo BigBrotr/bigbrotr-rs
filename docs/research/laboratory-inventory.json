@@ -79286,20 +79286,20 @@
         }
       },
       "settled_adoption_qualification": {
-        "source": "3cece39bb0d864daecd234e2331b0ac9fcdf4618",
-        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-types-20261103",
-        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b",
-        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b",
-        "state": "3CECE_BUILD_RUST_OBSERVER_REAPED_PASS_INSTALLED_R4_FAIL_RECORD_TYPE_CORRECTION_PENDING_FRESH_BUILD",
-        "root_tool": 33233,
-        "launcher_pid": 2223430,
-        "launcher_start_ticks": "39571381",
-        "container": "5138e5665fae7b1d1bc6d9cafcbb50b3feb82d79043a5200054bb9daf69b3094",
+        "source": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
+        "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-record-types-20261103",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-efd570bc",
+        "state": "CURRENT_PRODUCT_AND_AFFECTED_RUST_OBSERVER_QUALIFIED_INSTALLED_R5_ACTIVE",
+        "root_tool": 12123,
+        "launcher_pid": 2349007,
+        "launcher_start_ticks": 42187398,
+        "container": null,
         "cache_lock": "RELEASED_NO_ACTIVE_COMPILER",
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
-        "retention": "Originalfourfailedcompile/lintattempts and cheapmissingCargoHomeFAIL preserved.7cportable692/13/43PASS and currentboundedtutorial14PASS reused within unchanged scopes. Newinstalledfivequery/custody/SQL65/unknownoutcome/laterzeroqueryNOT_RUN.",
+        "retention": "PreserveR1/R2/R3/R4originalFAIL/PG/native/logs, currentproduct/source/receipts andactiveR5unique data. No cleanup. Earlier compilerfailures andSQLsetupfailures unchanged; fullfutureacceptance gates remainopen.",
         "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
-        "next": "Freeze current reviewed source plus coherent checkpoint; use retained generic guarded builder with R4failure receipt, then current affectedRust/observer and identical fivequeryinstalled journey. No old3ceceproduct reuse for changed migration.",
+        "next": "ObserveRoot12123 actualsamefivequeryjourney; preserveverdict andclosecustody. Classify anynewfailurebeforecorrection; maintain alllaterauthority/unknowncommit/expiry/lostcandidate/zeroquery gates.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79313,16 +79313,16 @@
         },
         "qualification_receipts": {
           "build_receipt": {
-            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/build-receipt.json",
-            "sha256": "20ef1cc1b60cd47d46bc036b994314cf06c1fef1f2d2e2da1859f99b0fc624ae"
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/build-receipt.json",
+            "sha256": "4458baf3391bdd1e19591365bc659390c8f0cc761f0c2f9f397700e74ddb5693"
           },
           "affected_rust": {
-            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/library/qualification-receipt.json",
-            "sha256": "4cb6a0eed49aac871e9dc30f5256a74d430ef667aed1f94c47a96ff4fd2c1883"
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/library/qualification-receipt.json",
+            "sha256": "c91097c3344c434e309d00c6485de0b7092d66178adef50a2ded77067e89fcae"
           },
           "observer": {
-            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/probe/terminal-receipt.json",
-            "sha256": "73f0ee1114d97d091991ef01310ea8f34b31e2c5b36155cd30df98cace94f7a5"
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/probe/terminal-receipt.json",
+            "sha256": "a8b2c76cad68c779ed1958c73546c58b8958789912d4f398aed4615c536014fb"
           }
         },
         "record_type_sql_preflight": {
@@ -79335,6 +79335,10 @@
           "engine_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "REAPED0_PG_CLIENT_STOPPED_RETAINED",
           "scope": "SQL typing/claimaccounting only, not UNIONdedup/native/authority/lifecycle/deferredCOMMIT or adjacent fullcontinuationguard qualification. Maintained fixture and declared command in repository; actualcurrentfreshbuild/installed stillrequired."
+        },
+        "installed_launch": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/root-installed-r5-launch.json",
+          "sha256": "d8fd14c3c741fffff977748937c76113f7e7f4db004cbcf059d2849a7204c6a7"
         }
       }
     }
