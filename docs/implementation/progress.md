@@ -8,100 +8,86 @@ releases nor packages/deployment.
 ## Revision and capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **3cece39b** before this checkpoint.
-Canonical main/origin/actual remote are **5a9b7cc4**, clean/pushed and full hosted
-foundation PASS. Reviewed M2 production/oracle and two fixture corrections are
-integrated locally. The new SQL wire-type correction requires a fresh product
-build; no installed same-job continuation PASS yet.
+`work/m2-finite-history-20261101`, observed HEAD **53bfa450** before this checkpoint.
+Canonical main/origin/actual remote are **5a9b7cc4**, clean/pushed, full hosted PASS.
+Reviewed M2 production/oracle, fixture corrections, wire SQL types and now cached
+PL/pgSQL record types are integrated locally. No installed same-job continuation
+PASS yet. Partial work stays separate from main until its gates qualify.
 
 The bounded Monitor increment remains qualified on **b05b0a26**: five installed
-journeys8/8,8/8,10/10,9/9 and12/12 PASS; refactored old-seed regression9/9 PASS.
-[P02](evidence/p02-ingest-dictionary-codec-20260918.json) owns exact original
-failures, fixture artifacts, receipts and resource closure. Wider pressure,
-renewal/recovery/recurring/fleet work stays with existing owners. M1's qualified
-evidence collection remains in the phase index; no all-P02 barrier is imposed.
+journeys and refactored old-seed regression PASS.
+[P02](evidence/p02-ingest-dictionary-codec-20260918.json) owns exact evidence and
+original failures. M1 evidence remains in the phase index; no all-P02 barrier.
 
-## Current M2 result and open gates
+## Current M2 result and remaining gates
 
 Expected capability: continue the same unexpired finite JobId using positive
 settled-source sealing, ordinary native retirement/activation and atomic owner
 adoption; retain original deadline/H/W/B/global query budget and historical
 page-local proofs. Existing P03-T01/T05 and P02 succession work own it.
 
-Product **5e1a99ee** was independently qualified: strict all-target/Clippy/
-explicit-Dwarnings Rustdoc; fresh worker-bound release; four unfiltered Rust
-targets705/234/40/24 with27 required controls (5 dedicated library ignores
-NOT_RUN); native observer. Receipts b60d6d63/9273f668/c46ad038 are in
+Product **3cece39b**, tree0125b48b, completed strict all-target/Clippy/explicit
+-Dwarnings Rustdoc, fresh worker-bound release, unfiltered705/234/40/24 Rust
+checks (27 required controls PASS,5 dedicated library ignores NOT_RUN), and the
+exact-parent native observer. Build/Rust/observer receipts20ef1cc1/4cb6a0ee/
+73f0ee11 and original earlier qualifications are in
 [P03](evidence/p03-initial-sync-native-20261002.json),
-`settled_owner_adoption_root_integration_20261103`. They remain valid only for
-their unchanged responsibilities, not the newly corrected seal/adoption binary.
+`settled_owner_adoption_root_integration_20261103`.
 
-InstalledR1 **FAIL**: first-plan proxy profile exhausted20000 frames before Q2.
-Reviewed700/Root302 correction selects the existing documented retainedcatchup
-profile for later ordinals, preserving64MiB/120s/20sfaultwait. R2 then reached
-exactQ2 fault and validated Native85/history but failed a stale shared request
-oracle. ReviewedA6/Rootbde correction explicitly requires both Monitor columns
-NULL for normal Sync/setup, retaining full equality. Contract/replay/negative
-controls and Root103 affected source controls PASS. All original FAIL remain.
+Installed R4 **5PASS/1FAIL/1NOT_RUN, cleanupPASS** advances past Q2 fault, old-owner
+exclusion, Native85/history/progress, initial seal/native86 and retirement.
+Successor adoption then fails deferred PostgreSQL COMMIT with42804: the capacity
+guard caches epoch1 domain-typed RECORD fields, then receives lineage base types.
+The adjacent continuation validator shares that drift. This is a product defect;
+`Quantum(CommitUnknown)` is preserved as such, not a successful adoption.
 
-R3 **5PASS/1FAIL/1NOT_RUN, cleanupPASS**: Q2 fault, positive old backend exclusion,
-settled Q1/Q2 absence, Native85/history and complete old progress pass. Sealing
-then fails real PostgreSQL parameter3 inference (bytea versus control.id16).
-Reviewed **7d882808**, Root4bbfd218, casts base wire types in exactly3 new DML
-statements, including shard14 bigint; values/predicates/domains/authority/CAS/
-transactions unchanged. Real isolated PostgreSQL160015/schema45/61 receipts
-PREPARE **PASS3**, originalnegative reproduces42P08, productDML EXECUTE0.
-This is migration-owner type inference, not runtimeControl/native qualification.
-Initial subnet/diagnostic-column setup failures remain preserved separately.
+Reviewed **a0de6cf0**, integrated53bfa450, normalizes only two epoch1 projections
+to bytea/numeric/bytea. Same values, quotas, predicates, CAS and authority rules.
+The maintained SQL fixture now reproduces the old42804 and verifies the corrected
+actual capacity function in one backend across1→2→3→1:4accept64 and4refuse65 PASS.
+Root1602 reaped0; full schema/data dump unchanged after both rollback paths.
+This explicit transaction-only function override preserves the old ledger and is
+SQL typing/accounting evidence, not native/authority/deferred-COMMIT proof.
+Narrow fixture review remains pending; Astra already approved the two source casts.
+The Sol source agent hit model capacity; Root saved and integrated its partial work.
 
-Schema45/61 ledger entries/86 tables and original production8bee/oraclec531
-reviews remain scoped as recorded in P03. First final oracle still requires
-5 queries/bodies{24,23,1}, original JobId/deadline/HWB, both boundary gaps,
-old rows/xmins/inputs and Native85→86→91→139. Seal/retire/adopt/final science
-remain unqualified. New SQL64/65/authority/unknown-commit/original-expiry and later
-lost-candidate/zero-new-query handoffs remain required gates. Full500, partitions,
-sparse growth, scheduling/live/NEG/import/fleet and physical capacity stay in
-existing tasks, not prerequisites invented for this bounded profile.
+R1 proxy-profile and R2 shared request-oracle fixture failures, R3 SQL wire-type
+product failure, and R4 cached-record failure remain original FAIL in P03.
+Their targeted corrections and valid scoped evidence are reused. Do not fit
+expectations to observed output, weaken bounds or reconstruct a lost live writer.
 
-## Resources and hosted CI
+Still required: fresh changed-migration product/affected tests/observer, then exact
+five-query installed same-job result/bodies{24,23,1}, JobId/deadline/HWB, both gaps,
+old rows/xmins/inputs and Native85→86→91→139. SQL64/65/authority/unknown-commit/
+original-expiry and later lost-candidate/zero-new-query handoffs remain open.
+Full500, partitions, sparse growth, scheduling/live/NEG/import/fleet and physical
+capacity retain their existing owners, not invented prerequisites for this slice.
 
-Current corrected source **3cece39b**, tree0125b48b, is frozen clean in
-`.research/m2-adoption-core-product-types-20261103`. Actual format/planning plus
-all-target7.880s/strictClippy9.833s/explicit-DwarningsRustdoc4.174s PASS.
-Worker-bound release builder **Root33233** is ACTIVE: launcher2223430/ticks39571381,
-container5138e566; cache115 held exclusively, original4ELF beforeguards passed.
-Actual release/artifacts/tests/observer/installed remain pending. Prepared current
-child library/probe capsules are actual-parentUNBOUND/NOT_RUN.
+## Resources and CI
 
-Prior build/test/observer/installed tools are reaped. R3 Root84616 custody
-**97a78d20**:17 containers stopped/PID0/noOOM,4 processes and1039 command PIDs
-absent,53 acceptance files verified, borrowed bridge1699209a empty/preserved.
-R3 Native closing may precede failed SQL; preserve its original store/PG/logs,
-never claim Native rollback or restart that failure merely for a preflight.
-New SQL prepare lab Root79572 is stopped/retained, internal/nohostports, separate
-from R3. Source agents finished; no engine/compiler/cache holder or source writer
-is active except the named current builder/cacheholder. Original four protected
-ELF fullstat/O_NOATIME postguards wait its actual termination.
-[Inventory](../research/laboratory-inventory.json) owns exact resources. Preserve
-unique data/failures/.research/worktrees; no new cleanup. October31 recovery is
-already reconciled.
+All3cece build/test/observer/installed tools are reaped. R4 Root41988 terminal
+custody **51eb9b45**:20 containers stopped/PID0/noOOM,5 processes and1096 command
+PIDs absent,53 acceptance files verified, borrowed bridge1699209a empty/preserved.
+Keep its original PG/native/activation/logs unchanged; native activation may have
+preceded failed adoption. The isolated SQL-prepare lab is stopped/retained after
+Root1602, internal/no host ports; original R4 was never restarted.
+
+No engine/compiler/cache holder is active. Original four protected ELF fullstat/
+O_NOATIME guards completed on prior compiler closures. Critical fixture reviewer
+is pending; Root owns all writers. [Inventory](../research/laboratory-inventory.json)
+owns resources. Preserve unique data/failures/.research/worktrees. No new cleanup;
+October31 recovery already reconciled.
 
 [5a9 CI41546602945](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41546602945)
-is the latest full hosted **PASS36/36 +scope20**. AMD/ARM Rust1577 each, Mac1572;
-ignored6/5/4 kept separate. All platforms Native12/export13/proxy43 PASS; Linux
-681 acceptance PASS, Mac668PASS/13Linux-onlySKIP. Corrected Mac executes full
-build/strict/Rust/Native. [P01](evidence/p01-ci-hosted-foundation-20261026.json)
-owns terminala7ab38bd/public2194489c:4 artifacts/519members/34logs,0new credentials
-or provideralerts within bounded/asynchronous scanner limits. Root56226 and
-agent36470/37653 are reaped; no hosted observer active. Original551/16ad FAIL and
-historicalf4ad PASS remain. This hosted result does not cover later M2.
+is latest full hosted **PASS36/36 +scope20**, including actual AMD/ARM/Mac build,
+strict checks, Rust and native controls. [P01](evidence/p01-ci-hosted-foundation-20261026.json)
+owns exact results, skips/ignores and bounded public artifact/log inspection.
+No hosted observer active; this result does not cover later M2.
 
-**Next Root action:** reap33233 and authenticate the actual current build using
-the unchanged verifier (write actual session/reap metadata first). Bind prepared
-affected Rust and observer only to a real current PASS receipt, then repeat the
-same installed five-query journey. Retained recipes are under
-`.research/m2-adoption-core-qualification-20261103`; SQL preflight is
-`/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103`.
-Reuse the actual schema-type proof, not an old product binary for changed SQL.
-Keep checkpoints compact and all later gates/performance/ClickHouse/coordinator
-follow-through explicit; publish only one coherent qualified next increment.
+**Next Root action:** freeze reviewed current source plus this checkpoint; use the
+existing guarded build capsule with actual R4 failure receipt, then affected Rust,
+observer and the identical installed five-query journey. Reuse recipes under
+`.research/m2-adoption-core-qualification-20261103`; narrow SQL regression is
+`.research/m2-adoption-record-preflight-20261103`. Fresh product is necessary for
+the changed embedded0045 checksum; never forge a retained database's ledger.
+After these gates, choose the next concrete M2 capability by actual dependencies.

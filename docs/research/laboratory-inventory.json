@@ -79290,16 +79290,16 @@
         "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-product-types-20261103",
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b",
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b",
-        "state": "ACTIVE_CORRECTED_WORKER_PARENT_RELEASE_AFTER_STRICT3PASS",
+        "state": "3CECE_BUILD_RUST_OBSERVER_REAPED_PASS_INSTALLED_R4_FAIL_RECORD_TYPE_CORRECTION_PENDING_FRESH_BUILD",
         "root_tool": 33233,
         "launcher_pid": 2223430,
         "launcher_start_ticks": "39571381",
         "container": "5138e5665fae7b1d1bc6d9cafcbb50b3feb82d79043a5200054bb9daf69b3094",
-        "cache_lock": "HELD_EXCLUSIVELY",
+        "cache_lock": "RELEASED_NO_ACTIVE_COMPILER",
         "evidence_owner": "P03 settled_owner_adoption_root_integration_20261103",
         "retention": "Originalfourfailedcompile/lintattempts and cheapmissingCargoHomeFAIL preserved.7cportable692/13/43PASS and currentboundedtutorial14PASS reused within unchanged scopes. Newinstalledfivequery/custody/SQL65/unknownoutcome/laterzeroqueryNOT_RUN.",
-        "failure_custody": "P03 installed_third_attempt/productfailure receipt +root-terminal97a78d20",
-        "next": "Freshproduct/worker/affectedRust/observer fromreviewedtypedSQLsource, then samefivequeryjourney; old5e onlyremainsvalidforunchangedresponsibilities/schema initializer.",
+        "failure_custody": "P03 installed_fourth_attempt: root-terminal51eb9b45;20stopped/PID0/noOOM,5processes+1096commandPIDsabsent,bridgeempty.",
+        "next": "Freeze current reviewed source plus coherent checkpoint; use retained generic guarded builder with R4failure receipt, then current affectedRust/observer and identical fivequeryinstalled journey. No old3ceceproduct reuse for changed migration.",
         "sql_parameter_preflight": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
           "state": "STOPPED_RETAINED_NO_HOST_PORTS",
@@ -79310,6 +79310,31 @@
             "a2c796bcabb263058d5ea9de1166e9550f54e9104e510b068c179c9e92dbd513",
             "3d79ee0f660e3514bf545b8ad8ab3c7b0e6f805afadf6d455a955cd70f321506"
           ]
+        },
+        "qualification_receipts": {
+          "build_receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/build-receipt.json",
+            "sha256": "20ef1cc1b60cd47d46bc036b994314cf06c1fef1f2d2e2da1859f99b0fc624ae"
+          },
+          "affected_rust": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/library/qualification-receipt.json",
+            "sha256": "4cb6a0eed49aac871e9dc30f5256a74d430ef667aed1f94c47a96ff4fd2c1883"
+          },
+          "observer": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/probe/terminal-receipt.json",
+            "sha256": "73f0ee1114d97d091991ef01310ea8f34b31e2c5b36155cd30df98cace94f7a5"
+          }
+        },
+        "record_type_sql_preflight": {
+          "root": "/home/tux/bigbrotr-rs/.research/m2-adoption-record-preflight-20261103",
+          "tool": 1602,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-record-preflight-20261103/result.json",
+            "sha256": "cf633fb966433ef3b1a1fb2fdcee1c17e0aa9a7517312bfce741acde8e1753ef"
+          },
+          "engine_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-sql-prepare-20261103",
+          "state": "REAPED0_PG_CLIENT_STOPPED_RETAINED",
+          "scope": "SQL typing/claimaccounting only, not UNIONdedup/native/authority/lifecycle/deferredCOMMIT or adjacent fullcontinuationguard qualification. Maintained fixture and declared command in repository; actualcurrentfreshbuild/installed stillrequired."
         }
       }
     }

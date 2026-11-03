@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "CORRECTED_SQL_REAL_TYPE_PREFLIGHT_AND_STRICT_PASS_FRESH_RELEASE_ACTIVE",
+    "status": "RECORD_TYPE_PRODUCT_DEFECT_CORRECTED_REAL_PG_REGRESSION_PASS_FRESH_PRODUCT_PENDING",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Freeze reviewed SQLbind correction andboundedtutorialfence, use existinggenericprepare with actualinstalled5efailure receipt, run freshworker-boundproduct/affectedRust/observerqualification then same installedfivequery. Do not reuseold5eseal/adoptionbinary; preserveallR1/R2/R3failures and fullfuturegates.",
+    "next": "Freeze current reviewed source plus coherent checkpoint; use retained generic guarded builder with R4failure receipt, then current affectedRust/observer and identical fivequeryinstalled journey. No old3ceceproduct reuse for changed migration.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2165,16 +2165,6 @@
       "sha256": "e8a80f10bf2544c287c6bec962600fa0aac0da1b14cce64b0b4bef83cfb32c79",
       "result": "Root42042reaped1; alltargetPASS7.732s/strictClippyFAIL13.238s on bin items_after_test_module and drop_non_drop only. Rustdoc/release/tests/installedNOT_RUN. Builder38bd8ec8 terminal/cache released/post4ELFguardscompleted.",
       "correction": "c3e51a90 moves exact unchanged continuation_grant before cfg(test) module and removes borrowed proof drop with allnative/SQL/lease validations unchanged; no allowance/limit/oracle weakened."
-    },
-    "current_qualification": {
-      "source": "3cece39bb0d864daecd234e2331b0ac9fcdf4618",
-      "tree": "0125b48bbedccec4ccca8bce97205db6d9105ec1",
-      "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b",
-      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b",
-      "root_tool": 33233,
-      "state": "ACTIVE_WORKER_BOUND_RELEASE_BUILD_AFTER_STRICT_PASS",
-      "strict": "Actualformat/planningPASS; alltarget7.880s/strictClippy9.833s/explicit-DwarningsRustdoc4.174sPASS. Release/result/test/observer/installed notyetqualified.",
-      "provenance": "Reviewed7d queries/Root4bb sourceSHA unchanged; realcurrent-schemaPREPARE3+oldnegative42P08PASS reused. Genericpreparedchild library/probeactual-parentUNBOUND/NOT_RUN."
     },
     "installed_first_attempt": {
       "product": "5e1a99ee8862efb6a1cb2faf8016c75f1dd95484",
@@ -2251,6 +2241,63 @@
         "root_tool": 66112,
         "result": "Maintainedexact-parentobserverPASS; actualefc042e1 stopped/PID0/noOOM/cache released; binary3c83b9e4/33986600B, no nativecensusclaim."
       }
+    },
+    "qualified_product_3cece_before_record_correction": {
+      "source": "3cece39bb0d864daecd234e2331b0ac9fcdf4618",
+      "tree": "0125b48bbedccec4ccca8bce97205db6d9105ec1",
+      "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b",
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b",
+      "root_tool": 33233,
+      "state": "QUALIFIED_BUILD_RUST_OBSERVER_INSTALLED_FAIL_RECORD_TYPES",
+      "strict": "Actualformat/planningPASS; alltarget7.880s/strictClippy9.833s/explicit-DwarningsRustdoc4.174sPASS.",
+      "provenance": "Reviewed7d queries/Root4bb sourceSHA unchanged; realcurrent-schemaPREPARE3+oldnegative42P08PASS reused. Genericpreparedchild library/probeactual-parentUNBOUND/NOT_RUN.",
+      "build_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/build-receipt.json",
+        "sha256": "20ef1cc1b60cd47d46bc036b994314cf06c1fef1f2d2e2da1859f99b0fc624ae"
+      },
+      "affected_rust": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/library/qualification-receipt.json",
+        "sha256": "4cb6a0eed49aac871e9dc30f5256a74d430ef667aed1f94c47a96ff4fd2c1883"
+      },
+      "observer": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/probe/terminal-receipt.json",
+        "sha256": "73f0ee1114d97d091991ef01310ea8f34b31e2c5b36155cd30df98cace94f7a5"
+      },
+      "results": "Root33233/4826/55393 reaped0; strict3PASS, fresh worker-bound release, unfiltered705/234/40/24PASS (5 dedicatedlibraryignoresNOT_RUN),27requiredcontrolsPASS, exact-parentobserverPASS. Allcontainersstopped/PID0/noOOM/cache released/original4ELFguardscompleted. InstalledR4FAIL remains."
+    },
+    "installed_fourth_attempt": {
+      "product": "3cece39bb0d864daecd234e2331b0ac9fcdf4618",
+      "root_tool": 41988,
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b/acceptance-settled-owner-adoption-r4",
+      "result": "5PASS/1FAIL/1NOT_RUN,cleanupPASS. Initial seal, native86 and retirement succeed; successor exitsQuantum(CommitUnknown) before adoption acceptance.",
+      "classification": "PRODUCT: same PL/pgSQL RECORD original field uses control.id16/u64/id16 at epoch1 and bytea/numeric/bytea later; cached SQL parameter9 changes OID, real42804 during deferredCOMMIT. Adjacent continuation record a has same branch drift.",
+      "custody": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-3cece39b/acceptance-settled-owner-adoption-r4/root-terminal.json",
+        "sha256": "51eb9b4561184b230ced6073b2b315d41785d0ce29a8668e8da27b099cdc2237"
+      },
+      "failure_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/3cece39b/installed-product-failure-receipt.json",
+        "sha256": "805b3e58fdb138f3706b480406ea46b23c54078e356bc115b78578e771db5e89"
+      },
+      "retention": "20ownedcontainersstopped/PID0/noOOM,5processes and1096commandPIDsabsent,53sourcefilesverified, borrowedbridgeempty/preserved. Preserve original native/PG/activated-candidate state; never reconstruct live capability or claim native rollback."
+    },
+    "record_type_correction": {
+      "original": "a0de6cf00f6047c495dd11d31ed4e8386833a1af",
+      "integrated": "53bfa450fbc31f69e3e1599bc0989dc1fcd6aae5",
+      "scope": "Normalize only2epoch1 SELECT projections to lineage helper basebytea/numeric/bytea in owning0045. No values/predicates/thresholds/CAS/authority/transaction changes. Q40preproductioncorrection in place; no oldledger rewritten.",
+      "review": "Astra independently read owning0045/contract and reviewed actual2projectiondiff, nofinding; narrow regression-fixture review pending. Sol agent prepared code/fixture before modelcapacityfailure; Root completed fixture, executed actualpreflight and committed/integrated.",
+      "preflight": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-record-preflight-20261103/result.json",
+        "sha256": "cf633fb966433ef3b1a1fb2fdcee1c17e0aa9a7517312bfce741acde8e1753ef"
+      },
+      "root_tool": 1602,
+      "result": "RealPG160015 originalnegative42804 param9 domain/basecache reproduced. Corrected actualfunction samebackendepochs1\u21922\u21923\u21921:4accept64/4exactrefuse65PASS. Fullschema/data dump unchanged aftereach; only transactionfunctionoverride, original45ledger preserved, no originalR4touch. Bothlabcontainers stopped/PID0/noOOM.",
+      "limits": "SQL typing/claimaccounting only, not UNIONdedup/native/authority/lifecycle/deferredCOMMIT or adjacent fullcontinuationguard qualification. Maintained fixture and declared command in repository; actualcurrentfreshbuild/installed stillrequired."
+    },
+    "current_qualification": {
+      "source": "53bfa450fbc31f69e3e1599bc0989dc1fcd6aae5",
+      "state": "REVIEWED_RECORD_TYPE_CORRECTION_REAL_SQL_REGRESSION_PASS_FRESH_PRODUCT_PENDING",
+      "next": "Freeze current reviewed source plus coherent checkpoint; use retained generic guarded builder with R4failure receipt, then current affectedRust/observer and identical fivequeryinstalled journey. No old3ceceproduct reuse for changed migration."
     }
   }
 }
