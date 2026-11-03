@@ -36,8 +36,8 @@ def continue_after_prepopulation(directory,call,barrier,status,endpoint,enrollme
 def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     """One real accepted job, one listener, and two actual Serve lifetimes.
 
-    The host releases the second gate only after the successor's five terminals
-    settle. This client sends no replacement job or source-registration command.
+    The host releases the second gate after five settled terminals, or after
+    the declared plan-after seal refusal. The latter makes no successor call.
     NOT_RUN here: installed lifecycle qualification belongs to the host runner.
     """
     import json
@@ -45,6 +45,8 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
     import time
     from installed_sync_client import COMMON_SELECTOR,relay_listener
     from linear_capped_transport import relay
+    fault=json.loads((directory/'linear-quantum-fault.json').read_text())
+    assert fault in ('plan-before','plan-after')
     observations=[];errors=[]
     def call(path,value,key):
         code,answer=request('POST','/management/v1/'+path,value,{**auth,'Idempotency-Key':key})
@@ -75,17 +77,24 @@ def run_adoption(directory,request,cli,logged_in,session,saved,auth):
         assert receipt['execution']=='unobserved' and receipt['authority']=='acceptance-only'
         # No HTTP poll while the original process is deliberately lost. The
         # same authenticated session later observes the same accepted JobId.
-        barrier('adoption-old-cut',110)
-        code,observed=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)
-        assert code==200
-        adoption_status(observed,scope,receipt)
-        publish(directory,'linear-status-observations.json',[observed])
-        logged_out=cli('logout','--session-ref','file:'+str(session))
-        assert json.loads(session.read_text())==saved
-        assert request('GET','/management/v1/me',headers=auth)[0]==401
-        barrier('commands-finished',15)
+        if fault=='plan-after':
+            publish(directory,'adoption-old-cut.json',observations)
+            barrier('unsettled-seal-refusal',110)
+            assert json.loads(session.read_text())==saved
+            result=dict(login=logged_in,observations=observations,job_status=None,completion='unsettled-seal-refusal')
+        else:
+            barrier('adoption-old-cut',110)
+            code,observed=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)
+            assert code==200
+            adoption_status(observed,scope,receipt)
+            publish(directory,'linear-status-observations.json',[observed])
+            logged_out=cli('logout','--session-ref','file:'+str(session))
+            assert json.loads(session.read_text())==saved
+            assert request('GET','/management/v1/me',headers=auth)[0]==401
+            barrier('commands-finished',15)
+            result=dict(login=logged_in,logout=logged_out,observations=observations,job_status=observed)
     finally:
         finished.set();worker.join(4)
         assert not worker.is_alive(),'adoption relay did not join'
     assert not errors
-    return dict(login=logged_in,logout=logged_out,observations=observations,job_status=observed)
+    return result

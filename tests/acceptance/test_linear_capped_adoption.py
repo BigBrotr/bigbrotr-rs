@@ -238,7 +238,161 @@ def fixture(root):
     return before,sealed,retired,after,report,events,wires,first,second,first_dump,model.native,started
 
 
+def unsettled_fixture(root):
+    before,_,_,_,report,events,wires,first,_,dump,*_=fixture(root)
+    job=before['jobs'][0];detail=before['acquisition_jobs'][0];dataset=job['dataset_id']
+    detail.update(actor_id=job['principal_id'],request_key=job['request_key'])
+    job.update(input_complete=True,acquisition_job_protocol=1)
+    before['local_accounts']=[dict(dataset_id=dataset,principal_id=job['principal_id'],active=True)]
+    before['principal_grants']=[dict(dataset_id=dataset,principal_id=job['principal_id'],action='roles.control',
+        resource_kind='dataset',resource_id=dataset)]
+    document=dict(format='bigbrotr-product-policy/3',settings={'sync.enabled':True})
+    for kind in ('config','policy'):
+        before[kind+'_revisions']=[dict(dataset_id=dataset,revision=1,document=copy.deepcopy(document))]
+    before['acquisition_scopes'][0]['policy_revision']=1
+    before['relay_enrollments'][0].update(dataset_id=dataset,enabled=True,generation=1)
+    old=source.only(before['owner_epochs'],role='control');old['lease_expires_at_us']=ACCEPTED+60_000_000
+    pending=copy.deepcopy(before['acquisition_quanta'][0]);predicate=quantum.wire_json(['REQ','0'*48,dict(kinds=[1],since=0,until=23,limit=3)])
+    pending.update(quantum_id='\\x'+'02'*16,quantum_number=2,query_number=2,interval_upper=24,
+        checkpoint_before=5,classified_before=2,created_at_us=wires[0]['closed_at_us']+20,
+        request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+source.sha(predicate),xmin='106')
+    for key in ('terminal_kind','terminal_frame','request_id','terminal_sequence','terminal_received_at_us','checkpoint_sha256',
+            'teardown_complete','retained_events','classified_prefix','effect_records','dependencies','checkpoint_after',
+            'result_class','gap_reason','continuation_upper','disposition','gap_lower','gap_upper','completed_at_us'):
+        pending[key]=None
+    pending['charged_bytes']=1024+len(predicate)+2*1024*1024+3*1024+256*pending['maximum_dependencies']
+    before['acquisition_quanta'].append(pending)
+    before_us=ACCEPTED+61_000_000;after_us=before_us+1_000_000;after=copy.deepcopy(before)
+    previous=source.only(after['owner_epochs'],role='control')
+    previous.update(state='released',released_at_us=before_us+10,exclusion_method='storage_fenced',exclusion_digest='\\x'+'ef'*32,xmin='110')
+    source.only(after['role_instances'],role_instance_id=previous['role_instance_id']).update(retired_at_us=before_us+10,xmin='110')
+    current=dict(old,epoch=old['epoch']+1,process_incarnation='\\x'+'ec'*16,role_instance_id='\\x'+'ed'*16,
+        acquired_at_us=before_us+20,lease_expires_at_us=before_us+5_000_000,xmin='110')
+    after['owner_epochs'].append(current)
+    after['role_instances'].append(dict(dataset_id=dataset,role='control',role_instance_id=current['role_instance_id'],
+        created_at_us=before_us+20,retired_at_us=None,xmin='110'))
+    after['producer_epochs'][0].update(state='closing',xmin='111')
+    after['source_streams'][0].update(state='closed',closed_at_us=before_us+500_000,last_complete_sequence=17,
+        closure_digest='\\x'+source.closure(first['manifest'],'\\x'+report['producer_slot_id'],1,first['inputs'],first['receipts'],17),xmin='112')
+    closed=dict(event='dump-state',sequence=86,rows=[dict(cf=cf,key=key.hex(),value=value.hex())
+        for cf,key,value in check.adoption_closed_native(first,'\\x'+report['producer_slot_id'])])
+    return before,after,report,events,wires[:1],first,dump,closed,before_us,after_us
+
+
 class CappedAdoptionControls(unittest.TestCase):
+    def test_unsettled_plan_refusal_keeps_exact_history_progress_inputs_and_permitted_native_close(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            before,after,report,events,wires,first,dump,closed,start,end=unsettled_fixture(Path(temporary))
+            check.adoption_unsettled_refusal(before,after,first,wires,events,start,end,end)
+            # Independent diagnostics may outlast the failed owner's lease;
+            # authority is required at the immediate command-return clock cut.
+            check.adoption_unsettled_refusal(before,after,first,wires,events,start,end,end+5_000_000)
+            self.assertEqual(check.adoption_unsettled_history(before,wires,events,first),dict(queries_spent=2,
+                attempted_prefix=0,gap_count=0,pending_work='request_pending',pending_interval=['0','24']))
+            self.assertEqual(initial_science(before,report,events,wires,dump,first['inputs'],COMPLETED,
+                mutations=((0,4,0,8),(1,5,0,13)),first_accepted_at_us=ACCEPTED,native_sequence=85),first)
+            check.adoption_progress(after,report,events,wires,first,end,epoch=1)
+            check.adoption_closed_native(first,'\\x'+report['producer_slot_id'],closed)
+            check.adoption_unsettled_error('','error: producer operation unavailable: Control(InvalidMetadata)\n')
+
+    def test_unsettled_history_refuses_wrong_pending_plan_or_second_wire(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            before,_,_,events,wires,first,*_=unsettled_fixture(Path(temporary))
+            for name in ('missing','extra','wire','epoch','query','interval','horizon','budget','checkpoint','classified','terminal','disposition','identity'):
+                state=copy.deepcopy(before);transcript=copy.deepcopy(wires);pending=state['acquisition_quanta'][1]
+                if name=='missing':state['acquisition_quanta'].pop()
+                elif name=='extra':state['acquisition_quanta'].append(copy.deepcopy(pending))
+                elif name=='wire':transcript.append(copy.deepcopy(wires[0]))
+                elif name=='epoch':pending['producer_epoch']=2
+                elif name=='query':pending['query_number']=1
+                elif name=='interval':pending['interval_upper']=23
+                elif name=='horizon':pending['horizon']=172800
+                elif name=='budget':pending['query_budget']=64
+                elif name=='checkpoint':pending['checkpoint_before']=4
+                elif name=='classified':pending['classified_before']=1
+                elif name=='terminal':pending['terminal_kind']='eose'
+                elif name=='disposition':pending['disposition']='overlap'
+                else:pending['quantum_id']=state['acquisition_quanta'][0]['quantum_id']
+                with self.subTest(name=name),self.assertRaises((AssertionError,ValueError)):
+                    check.adoption_unsettled_history(state,transcript,events,first)
+
+    def test_unsettled_refusal_rejects_alternate_ineligibility_or_undeclared_effects(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            baseline,closed,_,events,wires,first,_,_,start,end=unsettled_fixture(Path(temporary))
+            for name in ('actor','grant','policy','source','expiry','old-owner-live','fresh-owner-expired','seal','activation',
+                    'retirement','closure-cut','closure-digest','deadline','job-xmin','old-row-xmin','pending-xmin','input','role','source-identity'):
+                before=copy.deepcopy(baseline);after=copy.deepcopy(closed);finish=end
+                if name=='actor':before['local_accounts'][0]['active']=False
+                elif name=='grant':before['principal_grants']=[]
+                elif name=='policy':before['policy_revisions'][0]['document']['settings']['sync.enabled']=False
+                elif name=='source':before['relay_enrollments'][0]['enabled']=False
+                elif name=='expiry':finish=after['acquisition_jobs'][0]['deadline_at_us']
+                elif name=='old-owner-live':source.only(before['owner_epochs'],role='control')['lease_expires_at_us']=start+1
+                elif name=='fresh-owner-expired':source.only(after['owner_epochs'],role='control',state='active')['lease_expires_at_us']=end
+                elif name=='seal':after['acquisition_continuations']=[{}]
+                elif name=='activation':after['initial_ingest_activations']=[{}]
+                elif name=='retirement':after['producer_epochs'][0]['state']='retired'
+                elif name=='closure-cut':after['source_streams'][0]['last_complete_sequence']=18
+                elif name=='closure-digest':after['source_streams'][0]['closure_digest']='\\x'+'ff'*32
+                elif name=='deadline':after['acquisition_jobs'][0]['deadline_at_us']+=1
+                elif name=='job-xmin':after['jobs'][0]['xmin']='999'
+                elif name=='old-row-xmin':after['acquisition_quanta'][0]['xmin']='999'
+                elif name=='pending-xmin':after['acquisition_quanta'][1]['xmin']='999'
+                elif name=='input':after['producer_requests'][3]['request_digest']='\\x'+'ff'*32
+                elif name=='role':after['role_instances'].pop()
+                else:after['source_streams'][0]['shard_id']=1
+                with self.subTest(name=name),self.assertRaises((AssertionError,ValueError)):
+                    check.adoption_unsettled_refusal(before,after,first,wires,events,start,end,finish)
+            for stdout,stderr in (('{}','error: producer operation unavailable: Control(InvalidMetadata)\n'),
+                    ('','error: database constraint 23514\n'),('','error: producer operation unavailable: Control(Unavailable)\n'),('','')):
+                with self.subTest(stdout=stdout,stderr=stderr),self.assertRaises(AssertionError):check.adoption_unsettled_error(stdout,stderr)
+
+    def test_failed_seal_requires_natural_exact_refusal_and_captures_before_releasing_peer(self):
+        for fault in ('none','exit','error','native'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);before,after,report,events,wires,first,_,closed,start,end=unsettled_fixture(root)
+                runtime=object.__new__(case.CappedAdoptionRuntime);runtime.root=root
+                runtime.home=root/'peer';runtime.home.mkdir();runtime.state=root/'state'
+                directory=runtime.state/'data/ingest/producer-inputs-v1';directory.mkdir(parents=True)
+                for number,data in enumerate(first['inputs'],1):
+                    (directory/f"{report['producer_slot_id']}-0000000000000001-{number:016x}.cbor").write_bytes(data)
+                (runtime.home/'client.stderr').write_text('')
+                publish(runtime.home,'client-result.json',dict(status='PASS',completion='unsettled-seal-refusal',job_status=None))
+                runtime.adoption_before=before;runtime.adoption_first=first;runtime.initialized=report;runtime.events=events
+                runtime.adoption_original_files={'old-inputs':'exact'};runtime.files=Mock(return_value=runtime.adoption_original_files)
+                runtime.sql=Mock(side_effect=[str(start),str(end),str(end+5_000_000)]);runtime.capture=Mock(return_value=(after,{}))
+                runtime.wires=Mock(return_value=wires);runtime.backend_absence=Mock()
+                runtime.launch=Mock(return_value=dict(id='ab'*32));runtime.docker=Mock(return_value=SimpleNamespace(stdout='4\n'))
+                runtime.inspect=Mock(return_value=dict(Id='ab'*32,State=dict(ExitCode=0 if fault=='exit' else 4,
+                    Pid=0,Running=False,OOMKilled=False)))
+                def logs(entry,output):
+                    (output/'serve.stdout').write_text('')
+                    (output/'serve.stderr').write_text('error: producer operation unavailable: Control('
+                        +('Unavailable' if fault=='error' else 'InvalidMetadata')+')\n')
+                runtime.logs=Mock(side_effect=logs);runtime.client=Mock(pid=12345);runtime.client.poll.return_value=None
+                runtime.processes=[runtime.client];runtime.owned_listeners=Mock(return_value=['listener']);runtime.loopback_listener=Mock()
+                def joined(*,timeout):
+                    self.assertEqual(timeout,6)
+                    self.assertTrue((runtime.home/'unsettled-seal-refusal.continue').exists())
+                    self.assertTrue((root/'unsettled-seal-refusal/original-duration.json').exists())
+                    runtime.capture.assert_called_once();runtime.loopback_listener.assert_called_once()
+                    return 0
+                runtime.client.wait.side_effect=joined
+                if fault=='native':closed['sequence']=87
+                with patch.object(case.native,'census',return_value=closed) as census,patch.object(case,'stop_process'):
+                    if fault=='none':runtime.refuse_unsettled_seal()
+                    else:
+                        with self.assertRaises((AssertionError,ValueError)):runtime.refuse_unsettled_seal()
+                    runtime.launch.assert_called_once_with('refuse-unsettled-seal','app','ingest','recover','--file',
+                        '/etc/bigbrotr/instance.toml','--seal-acquisition')
+                    runtime.docker.assert_called_once_with('wait','ab'*32,timeout=180)
+                    if fault=='none':
+                        self.assertEqual(runtime.processes,[])
+                        census.assert_called_once_with(runtime,root/'unsettled-seal-refusal',expected_writer_exit=4,
+                            writer_terminal=root/'unsettled-seal-refusal/terminal-container.json')
+                    else:
+                        runtime.client.wait.assert_not_called();self.assertFalse((runtime.home/'unsettled-seal-refusal.continue').exists())
+
     def successor_runtime(self,root,*,trace=False,role='actual_control',database='actual_database'):
         runtime=object.__new__(case.CappedAdoptionRuntime)
         runtime.args=SimpleNamespace(linear_quantum_trace_successor_sql=trace)
@@ -431,15 +585,16 @@ class CappedAdoptionControls(unittest.TestCase):
                 argv=['run.py',*prefix,'--linear-quantum-trace-successor-sql','--source-root',str(ROOT),'--evidence',str(evidence)]
                 with patch.object(sys,'argv',argv),patch.object(sys,'stderr'),self.assertRaises(SystemExit) as raised:runner.main()
                 self.assertEqual(raised.exception.code,2);self.assertFalse(evidence.exists())
-        for trace in (False,True):
-            with self.subTest(valid_trace=trace),tempfile.TemporaryDirectory() as temporary:
+        for fault,trace in (('plan-before',False),('plan-before',True),('plan-after',False)):
+            with self.subTest(fault=fault,valid_trace=trace),tempfile.TemporaryDirectory() as temporary:
                 evidence=Path(temporary)/'evidence'
                 argv=['run.py','p03-linear-quantum','--linear-quantum-scenario','settled-owner-adoption',
-                    '--linear-quantum-fault','plan-before','--source-root',str(ROOT),'--evidence',str(evidence)]
+                    '--linear-quantum-fault',fault,'--source-root',str(ROOT),'--evidence',str(evidence)]
                 if trace:argv.append('--linear-quantum-trace-successor-sql')
                 with patch.object(sys,'argv',argv),patch.object(sys,'stdout'),patch('cases.first_launch.first_launch') as launched:
                     self.assertEqual(runner.main(),2)
                 self.assertEqual(launched.call_args.args[0].linear_quantum_trace_successor_sql,trace)
+                self.assertEqual(launched.call_args.args[0].linear_quantum_fault,fault)
 
     def test_distinct_retained_job_union_preserves_64_across_categories_and_owner_move(self):
         # Captured metadata semantics only. No connected SQL65 refusal is run.
@@ -706,15 +861,15 @@ class CappedAdoptionControls(unittest.TestCase):
             self.assertLess(size,65536)
             raw=exact(connection,size)
             return first&15,json.loads(raw) if first&15==1 else raw
-        for extra in (False,True):
-            with self.subTest(extra=extra),tempfile.TemporaryDirectory() as temporary:
+        for prefix,extra in ((1,False),(5,False),(5,True)):
+            with self.subTest(prefix=prefix,extra=extra),tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);events=corpus_fixture(root)[:3]
                 publish(root,'linear-capped-adoption-profile.json',peer.ADOPTION_PROFILE)
                 listener=socket.socket();listener.bind(('127.0.0.1',0));listener.listen(1);listener.settimeout(.05)
                 address=listener.getsockname();finished=threading.Event();errors=[]
                 worker=threading.Thread(target=peer.relay,args=(root,listener,finished,errors),kwargs=dict(adoption=True));worker.start()
                 try:
-                    for number,(upper,page) in enumerate(zip(UPPERS,PAGES),1):
+                    for number,(upper,page) in enumerate(list(zip(UPPERS,PAGES))[:prefix],1):
                         with socket.create_connection(address,timeout=3) as connection:
                             connection.settimeout(3)
                             connection.sendall(('GET /installed-fixture HTTP/1.1\r\nHost: 127.0.0.1:7447\r\n'
@@ -730,11 +885,16 @@ class CappedAdoptionControls(unittest.TestCase):
                             self.assertEqual(receive(connection),(1,['EOSE',ident]))
                             send(connection,1,['CLOSE',ident]);send(connection,8,None)
                             self.assertEqual(receive(connection),(8,b''));self.assertEqual(connection.recv(1),b'')
-                    completion=root/'capped-adoption-peer-complete.json';deadline=time.monotonic()+1
-                    while not completion.exists() and time.monotonic()<deadline:time.sleep(.01)
-                    self.assertTrue(completion.exists(),errors);self.assertTrue(json.loads(completion.read_text())['listening'])
+                    completion=root/'capped-adoption-peer-complete.json'
+                    if prefix==5:
+                        deadline=time.monotonic()+1
+                        while not completion.exists() and time.monotonic()<deadline:time.sleep(.01)
+                        self.assertTrue(completion.exists(),errors);self.assertTrue(json.loads(completion.read_text())['listening'])
+                    else:self.assertFalse(completion.exists())
                     self.assertTrue(worker.is_alive());self.assertGreaterEqual(listener.fileno(),0)
-                    check.adoption_wires([json.loads(path.read_text()) for path in sorted(root.glob('relay-closed-*.json'))],events)
+                    deadline=time.monotonic()+1
+                    while not (root/f'relay-closed-{prefix:03}.json').exists() and time.monotonic()<deadline:time.sleep(.01)
+                    check.adoption_wires([json.loads(path.read_text()) for path in sorted(root.glob('relay-closed-*.json'))],events,old_cut=prefix==1)
                     if extra:
                         with socket.create_connection(address,timeout=3):pass
                         worker.join(3);self.assertFalse(worker.is_alive())
@@ -743,13 +903,14 @@ class CappedAdoptionControls(unittest.TestCase):
                 self.assertEqual(listener.fileno(),-1)
                 self.assertEqual(len(errors),int(extra))
                 joined=json.loads((root/'capped-adoption-peer-joined.json').read_text())
-                self.assertEqual((joined['requests'],joined['errors']),(6 if extra else 5,int(extra)))
+                self.assertEqual((joined['requests'],joined['errors']),(prefix+int(extra),int(extra)))
 
     def test_client_accepts_only_one_job_and_observes_its_original_time_after_host_gate(self):
         from linear_capped_client import run_adoption,adoption_status
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);scope='12'*16;job='13'*16;session=root/'session.private';saved=dict(session='private')
             session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
+            publish(root,'linear-quantum-fault.json','plan-before')
             for name in ('prepared','adoption-old-cut','commands-finished'):(root/(name+'.continue')).write_text('released\n')
             final=dict(format='bigbrotr-job-status/1',job_id=job,kind='acquisition',state='queued',job_revision='3',checkpoint_revision='0',
                 created_at_us=str(ACCEPTED),completed_at_us=None,observed_at_us=str(COMPLETED),reason_code=None,authority='observation-only',
@@ -795,6 +956,42 @@ class CappedAdoptionControls(unittest.TestCase):
                 changed=copy.deepcopy(final);changed['linear_quantum'][key]=value
                 with self.subTest(key=key),self.assertRaises(AssertionError):
                     adoption_status(changed,dict(scope_id=scope),dict(job_id=job,accepted_at_us=str(ACCEPTED)))
+
+    def test_negative_client_keeps_peer_until_its_host_gate_and_makes_no_successor_call(self):
+        from linear_capped_client import run_adoption
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);session=root/'session.private';saved=dict(session='private')
+            session.write_text(json.dumps(saved));publish(root,'visibility.json',dict(ordinal='3'))
+            publish(root,'linear-quantum-fault.json','plan-after');(root/'prepared.continue').write_text('prepared\n')
+            calls=[];result=[];errors=[];peer_started=threading.Event();peer_joined=threading.Event();cli=Mock()
+            def request(method,path,body=None,headers=None):
+                calls.append((method,path,body));self.assertEqual(method,'POST')
+                answer=dict(created=True,command_key=headers['Idempotency-Key'])
+                if path.endswith('/relay-endpoints'):answer['endpoint_id']='11'*16
+                elif path.endswith('/relay-enrollments'):answer.update(access_scope_id='14'*16,generation='1',enabled=True)
+                elif path.endswith('/acquisition-scopes'):answer['scope_id']='12'*16
+                else:answer.update(job_id='13'*16,accepted_at_us=str(ACCEPTED),execution='unobserved',authority='acceptance-only')
+                return 202,answer
+            def relay(directory,listener,finished,relay_errors,**kwargs):
+                peer_started.set();finished.wait(3);peer_joined.set()
+            def run():
+                try:result.append(run_adoption(root,request,cli,{},session,saved,{}))
+                except BaseException as error:errors.append(error)
+            with patch('installed_sync_client.relay_listener',return_value=Mock()),patch.object(peer,'relay',side_effect=relay):
+                worker=threading.Thread(target=run);worker.start()
+                try:
+                    deadline=time.monotonic()+1
+                    while not (root/'unsettled-seal-refusal.json').exists() and time.monotonic()<deadline:time.sleep(.01)
+                    self.assertTrue((root/'unsettled-seal-refusal.json').exists(),errors)
+                    self.assertTrue(worker.is_alive());self.assertTrue(peer_started.is_set());self.assertFalse(peer_joined.is_set())
+                    self.assertEqual(len(calls),4);cli.assert_not_called()
+                    self.assertFalse((root/'linear-status-observations.json').exists());self.assertFalse((root/'commands-finished.json').exists())
+                finally:
+                    (root/'unsettled-seal-refusal.continue').write_text('actual failed seal evidence complete\n')
+                    worker.join(4)
+            self.assertFalse(worker.is_alive());self.assertFalse(errors);self.assertTrue(peer_joined.is_set())
+            self.assertEqual(len(calls),4);cli.assert_not_called()
+            self.assertEqual(result[0]['completion'],'unsettled-seal-refusal');self.assertIsNone(result[0]['job_status'])
 
 
 if __name__=='__main__':unittest.main()

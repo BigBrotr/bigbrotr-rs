@@ -361,6 +361,121 @@ def adoption_page_checkpoints(state,wires,events,first,second=None):
     assert all(source.only(state['acquisition_quanta'],quantum_number=n)['checkpoint_sha256']==current for n in (4,5))
 
 
+def adoption_unsettled_history(state,wires,events,first):
+    """The acknowledged Q1 is followed by one committed, unwired Q2 plan."""
+    rows=sorted(state['acquisition_quanta'],key=lambda row:row['quantum_number'])
+    assert len(rows)==2 and len(wires)==1
+    settled,pending=rows
+    # Keep the positive single-page oracle exact; the pending row is checked
+    # separately and again by the complete two-entry traversal below.
+    adoption_history(dict(state,acquisition_quanta=[settled]),wires,events,first)
+    keys=('dataset_id','job_id','scope_id','producer_slot_id','producer_epoch','manifest_sha256',
+        'enrollment_generation','route_id','issuer_role','issuer_resource','issuer_epoch','issuer_incarnation')
+    source.exact({key:pending[key] for key in keys},{key:settled[key] for key in keys},'pending Q2 changed original attribution')
+    assert (pending['quantum_number'],pending['query_number'],pending['producer_epoch'],pending['interval_lower'],
+        pending['interval_upper'],pending['window_end'],pending['horizon'],pending['window_width'],pending['query_budget'],
+        pending['checkpoint_before'],pending['classified_before'])==(2,2,1,0,24,86400,86400,86400,128,5,2)
+    assert pending['quantum_id']!=settled['quantum_id']
+    assert settled['completed_at_us']<=pending['created_at_us']<state['acquisition_jobs'][0]['deadline_at_us']
+    assert pending['terminal_kind'] is pending['disposition'] is None
+    expected={1:[(events[0],2,4,quantum.receipt_refs(first['receipts'][3])),
+        (events[1],2,5,quantum.receipt_refs(first['receipts'][4]))]}
+    result=quantum.journey(state,wires,1,expected,selector=ADOPTION_SELECTOR,entries=ADOPTION_ENTRIES[:2])
+    assert result==dict(queries_spent=2,attempted_prefix=0,gap_count=0,pending_work='request_pending',pending_interval=['0','24'])
+    return result
+
+
+def adoption_seal_eligibility(state,observed_at_us):
+    """The original actor, accepted documents, source and deadline still allow sealing."""
+    job=source.only(state['jobs']);detail=source.only(state['acquisition_jobs']);dataset=source.only(state['datasets'])
+    source.clock(observed_at_us,job['created_at_us'],detail['deadline_at_us']-1)
+    assert detail['deadline_at_us']-job['created_at_us']==120_000_000
+    assert job['state']=='queued' and job['job_revision']==2 and job['input_complete'] is True and job['acquisition_job_protocol']==1
+    assert (job['dataset_id'],job['principal_id'],job['request_key'])==(detail['dataset_id'],detail['actor_id'],detail['request_key'])
+    assert job['dataset_id']==dataset['dataset_id']
+    actor=source.only(state['local_accounts'],dataset_id=job['dataset_id'],principal_id=detail['actor_id'])
+    assert actor['active'] is True
+    source.only(state['principal_grants'],dataset_id=job['dataset_id'],principal_id=detail['actor_id'],
+        action='roles.control',resource_kind='dataset',resource_id=job['dataset_id'])
+    for kind in ('config','policy'):
+        revision=source.only(state[kind+'_revisions'],dataset_id=job['dataset_id'],revision=job[kind+'_revision'])
+        assert dataset[kind+'_revision']==job[kind+'_revision']==1
+        assert revision['document']['format']=='bigbrotr-product-policy/3'
+        assert revision['document']['settings']['sync.enabled'] is True
+    scope=source.only(state['acquisition_scopes'],scope_id=detail['scope_id'])
+    assert scope['policy_revision']==job['policy_revision']
+    enrollment=source.only(state['relay_enrollments'],dataset_id=job['dataset_id'],
+        endpoint_id=scope['endpoint_id'],access_scope_id=scope['access_scope_id'])
+    assert enrollment['enabled'] is True and enrollment['generation']==1
+
+
+def adoption_unsettled_refusal(before,after,first,wires,events,before_us,returned_us,after_us):
+    """No seal or job effect; only authenticated source close and fresh Control custody."""
+    adoption_seal_eligibility(before,before_us);adoption_seal_eligibility(after,after_us)
+    assert before_us<=returned_us<=after_us
+    adoption_unsettled_history(before,wires,events,first);adoption_unsettled_history(after,wires,events,first)
+    assert set(after)==set(before)
+    mutable={'datasets','owner_epochs','role_instances','producer_epochs','source_streams'}
+    canonical=lambda rows:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows)
+    for table in set(before)-mutable:
+        assert canonical(before[table])==canonical(after[table]),'failed seal changed retained '+table
+    for table in ('acquisition_continuations','acquisition_gaps','initial_ingest_successions','initial_ingest_activations',
+            'ingest_successions','ingest_activations'):
+        assert not after.get(table),'unsettled plan acquired lifecycle authority: '+table
+    old=source.only(before['datasets']);new=source.only(after['datasets'])
+    source.exact({k:v for k,v in old.items() if k!='xmin'},{k:v for k,v in new.items() if k!='xmin'},'failed seal changed dataset')
+    producer=source.only(before['producer_epochs']);closed=source.only(after['producer_epochs'])
+    assert producer['producer_epoch']==1 and producer['state']=='open' and closed['state']=='closing'
+    source.exact({k:v for k,v in producer.items() if k not in ('state','xmin')},
+        {k:v for k,v in closed.items() if k not in ('state','xmin')},'failed seal changed producer')
+    stream=source.only(before['source_streams']);closed_stream=source.only(after['source_streams'])
+    assert stream['state']=='open' and closed_stream['state']=='closed' and closed_stream['last_complete_sequence']==17
+    digest='\\x'+source.closure(first['manifest'],producer['producer_slot_id'],1,first['inputs'],first['receipts'],17)
+    assert closed_stream['closure_digest']==digest
+    source.clock(closed_stream['closed_at_us'],before_us,returned_us)
+    ignored={'state','closed_at_us','last_complete_sequence','closure_digest','xmin'}
+    source.exact({k:v for k,v in stream.items() if k not in ignored},
+        {k:v for k,v in closed_stream.items() if k not in ignored},'failed seal changed source identity')
+    job=source.only(before['jobs'])
+    previous=source.only(before['owner_epochs'],role='control',resource_id=job['owner_resource_id'],epoch=job['owner_epoch'])
+    assert previous['state']=='active' and previous['lease_expires_at_us']<=before_us
+    for owner in before['owner_epochs']:
+        current=source.only(after['owner_epochs'],resource_id=owner['resource_id'],role=owner['role'],epoch=owner['epoch'])
+        if owner is previous:
+            assert current['state']=='released' and current['exclusion_method']=='storage_fenced'
+            assert len(source.raw(current['exclusion_digest']))==32
+            source.clock(current['released_at_us'],before_us,returned_us)
+            ignored={'state','released_at_us','exclusion_method','exclusion_digest','xmin'}
+            source.exact({k:v for k,v in owner.items() if k not in ignored},
+                {k:v for k,v in current.items() if k not in ignored},'failed seal rewrote old Control identity')
+        else:source.exact(current,owner,'failed seal changed another old owner')
+    fresh=[row for row in after['owner_epochs'] if not any((row['resource_id'],row['role'],row['epoch'])==(
+        old['resource_id'],old['role'],old['epoch']) for old in before['owner_epochs'])]
+    current,=fresh
+    assert current['role']=='control' and current['resource_id']==previous['resource_id'] and current['dataset_id']==job['dataset_id']
+    assert current['epoch']==max(row['epoch'] for row in before['owner_epochs'] if row['role']=='control')+1
+    assert current['state']=='active' and current['process_incarnation'] not in {row['process_incarnation'] for row in before['owner_epochs']}
+    source.clock(current['acquired_at_us'],before_us,closed_stream['closed_at_us'])
+    assert returned_us<current['lease_expires_at_us']
+    assert len(after['owner_epochs'])==len(before['owner_epochs'])+1
+    for role in before['role_instances']:
+        new=source.only(after['role_instances'],role_instance_id=role['role_instance_id'])
+        if role['role_instance_id']==previous['role_instance_id']:
+            source.clock(new['retired_at_us'],before_us,returned_us)
+            source.exact({k:v for k,v in role.items() if k not in ('retired_at_us','xmin')},
+                {k:v for k,v in new.items() if k not in ('retired_at_us','xmin')},'failed seal changed old Control role')
+        else:source.exact(new,role,'failed seal changed another old role')
+    fresh_role=source.only(after['role_instances'],role_instance_id=current['role_instance_id'])
+    assert fresh_role['dataset_id']==job['dataset_id'] and fresh_role['role']=='control' and fresh_role['retired_at_us'] is None
+    source.clock(fresh_role['created_at_us'],before_us,returned_us)
+    assert current['role_instance_id'] not in {row['role_instance_id'] for row in before['role_instances']}
+    assert len(after['role_instances'])==len(before['role_instances'])+1
+
+
+def adoption_unsettled_error(stdout,stderr):
+    assert stdout=='' and stderr=='error: producer operation unavailable: Control(InvalidMetadata)\n'
+
+
 def adoption_transition(before,sealed,retired,after,first):
     """Allow only the declared old lifecycle and one exact queued-owner CAS."""
     frozen=('producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies',

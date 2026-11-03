@@ -33,6 +33,11 @@ queued claim of that original owner, up to64. It leaves each job's owner, state
 and revision unchanged. Any pending/unknown request plan, incomplete teardown,
 unsupported interruption, missing native proof or uncovered mutation refuses the
 seal. Neither a short page nor EOSE alone supplies the required checkpoint.
+The source can already be legitimately closed when sealing refuses a pending
+plan. A failed recovery can also leave its fresh Control row active until its
+lease expires, even after the process and connection driver have joined. Preserve
+that closed source and pending history; this refusal creates no continuation
+seal and authorizes no implicit retirement, activation or resumed wire work.
 Retirement then consumes the exact sealed workflow obligations. It retains all
 scientific data and original attribution. The final Serve operation prepares and
 activates a fresh native candidate, validates the retained seals through its

@@ -20,10 +20,10 @@ LIMITS=[
 ]
 
 ADOPTION_LIMITS=[
-    'NOT_RUN until installed execution: one accepted finite job crosses an actual stopped initial owner into a locally minted activated successor. The old Q2 plan COMMIT is lost before forwarding; independent SQL must prove Q2 absent after process/backend exclusion.',
-    'Five literal REQs [0,86400),[0,24),[0,23),[0,2),[0,1) deliver24/23,known23,older1,repeat1,empty. Three unique signed bodies, five EVENT observations, both unresolved same-second gaps, original128-query budget/deadline and no sixth socket are required.',
-    'Full old inputs, native facts/receipts, historical SQL rows/xmins and immutable source/principal/policy are preserved. Sealing cannot change job ownership; one exact queued rev2 to rev3/current-Control CAS and actual native handoff/adoption are checked.',
-    'This bounded initial-to-successor case does not qualify negative installed refusal schedules, repeated successor loss, OPEN65, full500-event walker, partitions, sparse growth, fleet capacity, Archive publication or future CLI coverage.',
+    'NOT_RUN until installed execution: plan-before follows one finite job through an activated successor; plan-after instead requires refusal to seal its retained pending Q2 after the original owner and backend exit.',
+    'The plan-before path requires five literal REQs [0,86400),[0,24),[0,23),[0,2),[0,1), bodies24/23/1, five EVENT observations and both gaps. The plan-after path stops at Q1 plus unwired pending Q2. Original128-query budget/deadline and no undeclared socket remain required.',
+    'Full old inputs, native facts/receipts, historical SQL rows/xmins and immutable source/principal/policy are preserved. Sealing cannot change job ownership; the positive path checks one exact queued rev2 to rev3/current-Control CAS and actual native handoff/adoption.',
+    'The plan-after variant retains Q1 wire, five original inputs/outcomes, queued revision2 and pending Q2; native85 to86/source close are permitted, no continuation seal is created, and retirement/activation/successor are not attempted. Other negative schedules, repeated successor loss, OPEN65, full500, fleet and Archive remain outside this case.',
 ]
 
 
@@ -402,7 +402,8 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
             raise
 
     def initial(self):
-        require(self.quantum_fault=='plan-before','adoption requires the declared before-forward Q2 COMMIT fault')
+        require(self.quantum_fault in ('plan-before','plan-after'),'adoption requires the declared Q2 plan COMMIT fault')
+        unsettled=self.quantum_fault=='plan-after'
         entry,output,setup=self.initial_start()
         self.wait(lambda:(self.home/'prepared.json').exists(),'prepared adoption source',15,entry,self.client)
         prepared,_=self.capture(output,'prepared')
@@ -417,19 +418,21 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         self.freeze_control_lease(terminal,output)
         self.stop_quantum_proxy()
         proxy=load(self.root/'quantum-proxy-terminal.json')
-        require(proxy['mode']=='before-forward' and proxy['target']=='control-quantum-plan' and proxy['commit_ordinal']==2
+        require(proxy['mode']==('after-complete' if unsettled else 'before-forward') and proxy['target']=='control-quantum-plan' and proxy['commit_ordinal']==2
             and proxy['matched_commits']==2 and proxy['selected_commits']==1 and proxy['skipped_commits']==1
-            and proxy['selected_server_complete']==proxy['selected_client_complete']==0 and proxy['faults']==1,
-            'before-forward Q2 plan fault was not reached exactly')
+            and proxy['selected_server_complete']==int(unsettled) and proxy['selected_client_complete']==0 and proxy['faults']==1,
+            'declared Q2 plan COMMIT fault was not reached exactly')
+        if unsettled:require('Quantum(CommitUnknown)' in (output/'serve.stderr').read_text(),'pending Q2 did not retain its unknown COMMIT failure')
         self.config.write_text(self.set_value(self.config.read_text(),'postgres.control','endpoint','127.0.0.1:15432'))
         self.inputs['initial_recipe_sha256']=digest(self.config)
         self.backend_absence(output)
         self.adoption_before,_=self.capture(output,'settled-old-cut')
         oracle.adoption_source(self.source_view(self.adoption_before),self.initialized,load(self.home/'adoption-old-cut.json'),
             principal=self.enrolled['principal_id'])
-        require(self.sql('bigbrotr_control',"SELECT count(*)=1 AND max(quantum_number)=1 "
-            "AND bool_and(disposition='overlap' AND continuation_upper=24) FROM control.acquisition_quanta")=='t',
-            'Q2 must be independently absent after old backend exclusion')
+        if not unsettled:
+            require(self.sql('bigbrotr_control',"SELECT count(*)=1 AND max(quantum_number)=1 "
+                "AND bool_and(disposition='overlap' AND continuation_upper=24) FROM control.acquisition_quanta")=='t',
+                'Q2 must be independently absent after old backend exclusion')
         wires=self.wires(1);oracle.adoption_wires(wires,self.events,old_cut=True)
         require(self.client.poll() is None,'old process loss closed the independent peer')
         self.loopback_listener(self.owned_listeners(self.client.pid),7447)
@@ -439,9 +442,13 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         from cases.first_launch_quantum_science import initial_science
         self.adoption_first=initial_science(self.adoption_before,self.initialized,self.events,wires,dump,inputs,time.time_ns()//1000,
             mutations=((0,4,0,8),(1,5,0,13)),first_accepted_at_us=self.adoption_before['jobs'][0]['created_at_us'],native_sequence=85)
-        oracle.adoption_history(self.adoption_before,wires,self.events,self.adoption_first)
+        if unsettled:oracle.adoption_unsettled_history(self.adoption_before,wires,self.events,self.adoption_first)
+        else:oracle.adoption_history(self.adoption_before,wires,self.events,self.adoption_first)
         oracle.adoption_progress(self.adoption_before,self.initialized,self.events,wires,self.adoption_first,time.time_ns()//1000,epoch=1)
         self.wait_control_expiry(output)
+        if unsettled:
+            self.refuse_unsettled_seal()
+            return
         args=('ingest','recover','--file','/etc/bigbrotr/instance.toml')
         seal=self.finite('seal-acquisition',*args,'--seal-acquisition')
         save(output/'seal-report.json',seal)
@@ -477,10 +484,58 @@ class CappedAdoptionRuntime(CappedQuantumRuntime):
         require(load(self.home/'client-result.json')['status']=='PASS','missing adoption HTTP client result')
         self.backend_absence(successor_output)
 
+    def refuse_unsettled_seal(self):
+        output=self.root/'unsettled-seal-refusal';output.mkdir(mode=0o700)
+        clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'
+        before_us=int(self.sql('bigbrotr_control',clock))
+        oracle.adoption_seal_eligibility(self.adoption_before,before_us)
+        entry=self.launch('refuse-unsettled-seal','app','ingest','recover','--file','/etc/bigbrotr/instance.toml','--seal-acquisition')
+        ended=self.docker('wait',entry['id'],timeout=180)
+        returned_us=int(self.sql('bigbrotr_control',clock))
+        self.logs(entry,output);terminal=self.inspect(entry)
+        require(ended.stdout.strip()=='4' and terminal['State']['ExitCode']==4 and terminal['State']['Pid']==0
+            and not terminal['State']['Running'] and not terminal['State']['OOMKilled'],'unsettled seal recovery did not exit4 naturally')
+        save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
+        oracle.adoption_unsettled_error((output/'serve.stdout').read_text(),(output/'serve.stderr').read_text())
+        self.backend_absence(output)
+        self.adoption_refused,_=self.capture(output,'refused')
+        dump=native.census(self,output,expected_writer_exit=4,writer_terminal=output/'terminal-container.json')
+        oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],dump)
+        after_us=int(self.sql('bigbrotr_control',clock))
+        wires=self.wires(1)
+        oracle.adoption_unsettled_refusal(self.adoption_before,self.adoption_refused,self.adoption_first,wires,self.events,before_us,returned_us,after_us)
+        oracle.adoption_progress(self.adoption_refused,self.initialized,self.events,wires,self.adoption_first,after_us,epoch=1)
+        require(source.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,5)==self.adoption_first['inputs']
+            and self.files(self.state/'data/ingest/producer-inputs-v1')==self.adoption_original_files,'failed seal changed original inputs')
+        require(self.client.poll() is None,'negative peer exited before failed seal evidence')
+        self.loopback_listener(self.owned_listeners(self.client.pid),7447)
+        save(output/'original-duration.json',dict(before_us=before_us,command_returned_at_us=returned_us,after_us=after_us,
+            original_deadline_at_us=self.adoption_before['acquisition_jobs'][0]['deadline_at_us'],source_and_actor_eligible=True))
+        self.adoption_refusal_dump=dump
+        (self.home/'unsettled-seal-refusal.continue').write_text('pending Q2 refused; retained SQL/native and live listener checked\n')
+        require(self.client.wait(timeout=6)==0 and not (self.home/'client.stderr').read_bytes(),'negative adoption client failed')
+        stop_process(self.client);self.processes.remove(self.client)
+        result=load(self.home/'client-result.json')
+        require(result['status']=='PASS' and result['completion']=='unsettled-seal-refusal' and result['job_status'] is None,
+            'negative adoption client completion differs')
+        require(not (self.home/'linear-status-observations.json').exists() and not (self.home/'commands-finished.json').exists(),
+            'negative adoption made a successor status request')
+
     def verify_linear_quantum(self):
         self.source_unchanged()
         output=self.root/'linear-quantum';output.mkdir(mode=0o700)
         state,_=self.capture(output,'after');self.backend_absence(output)
+        if self.quantum_fault=='plan-after':
+            canonical=lambda snapshot:{table:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows) for table,rows in snapshot.items()}
+            require(canonical(state)==canonical(self.adoption_refused),'retained failed-seal state changed after stopping the peer')
+            wires=self.wires(1);oracle.adoption_unsettled_history(state,wires,self.events,self.adoption_first)
+            oracle.adoption_closed_native(self.adoption_first,'\\x'+self.initialized['producer_slot_id'],self.adoption_refusal_dump)
+            joined=load(self.home/'capped-adoption-peer-joined.json')
+            require(joined['requests']==1 and joined['listener_closed'] is True and joined['errors']==0,'negative adoption peer did not join after one request')
+            save(output/'verdict.json',dict(status='PASS',scenario='settled-owner-adoption',fault='plan-after',
+                outcome='unsettled-seal-refused',same_job=True,job_revision=2,wire_queries=1,pending_plans=1,
+                mutation_requests=5,continuation_seals=0,successor_activations=0,native_sequence=86,coverage='pending'))
+            return
         for snapshot in (self.adoption_before,self.adoption_sealed,self.adoption_retired,state):
             for producer in snapshot['producer_epochs']:
                 if producer['producer_slot_id']=='\\x'+self.initialized['producer_slot_id']:

@@ -240,15 +240,15 @@ def main():
     if args.linear_quantum_scenario is not None and args.case!='p03-linear-quantum':
         parser.error('--linear-quantum-scenario is only for p03-linear-quantum')
     if args.linear_quantum_trace_successor_sql and (args.case!='p03-linear-quantum'
-            or args.linear_quantum_scenario!='settled-owner-adoption'):
-        parser.error('--linear-quantum-trace-successor-sql is only for settled-owner-adoption')
+            or args.linear_quantum_scenario!='settled-owner-adoption' or args.linear_quantum_fault!='plan-before'):
+        parser.error('--linear-quantum-trace-successor-sql requires settled-owner-adoption with plan-before')
     if args.linear_quantum_fault is not None and args.linear_quantum_scenario not in (None,'interruptions'):
         allowed=(args.linear_quantum_scenario=='window-succession' and args.linear_quantum_fault in ('gap-write','terminal-before','terminal-after')
-            or args.linear_quantum_scenario=='settled-owner-adoption' and args.linear_quantum_fault=='plan-before')
+            or args.linear_quantum_scenario=='settled-owner-adoption' and args.linear_quantum_fault in ('plan-before','plan-after'))
         if not allowed:
-            parser.error('--linear-quantum-fault requires interruptions, window-succession with gap-write/terminal-before/terminal-after, or settled-owner-adoption with plan-before')
-    if args.linear_quantum_scenario=='settled-owner-adoption' and args.linear_quantum_fault!='plan-before':
-        parser.error('settled-owner-adoption requires --linear-quantum-fault plan-before')
+            parser.error('--linear-quantum-fault requires interruptions, window-succession with gap-write/terminal-before/terminal-after, or settled-owner-adoption with plan-before/plan-after')
+    if args.linear_quantum_scenario=='settled-owner-adoption' and args.linear_quantum_fault not in ('plan-before','plan-after'):
+        parser.error('settled-owner-adoption requires --linear-quantum-fault plan-before or plan-after')
     if args.linear_quantum_corruption is not None and (args.case!='p03-linear-quantum'
             or args.linear_quantum_scenario!='capped-continuation' or args.linear_quantum_fault is not None):
         parser.error('--linear-quantum-corruption is only for capped-continuation without --linear-quantum-fault')
