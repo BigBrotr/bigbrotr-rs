@@ -211,8 +211,15 @@ async fn planning<T>(
         None,
         future,
     )
-    .await?
-    .map_err(error)?;
+    .await?;
+    planning_delivery(result, deadline)
+}
+
+fn planning_delivery<T>(
+    result: std::result::Result<Option<T>, InitialEventError>,
+    deadline: Instant,
+) -> Result<Option<T>> {
+    let result = result.map_err(error)?;
     if Instant::now() >= deadline {
         return Err((4, "initial Sync deadline; preserve original outcome".into()));
     }
@@ -963,29 +970,18 @@ mod tests {
         }
     }
 
-    #[tokio::test]
-    async fn quantum_planner_late_success_refuses_but_typed_failure_keeps_precedence() {
+    #[test]
+    fn quantum_planner_late_success_refuses_but_typed_failure_keeps_precedence() {
         use bigbrotr::acquisition::quantum::QuantumError;
         for result in [
             Ok(Some(1)),
             Ok(None),
             Err(InitialEventError::Quantum(QuantumError::CommitUnknown)),
         ] {
-            let progress = planner_progress();
-            let requested = AtomicBool::new(false);
-            let observed = planning(
-                Trace::new(&progress),
-                Instant::now() + Duration::from_millis(10),
-                &requested,
-                async {
-                    requested.store(true, Ordering::Release);
-                    // As for immutable lookups: a synchronous last poll can
-                    // finish after the timer's last observation of its deadline.
-                    std::thread::sleep(Duration::from_millis(15));
-                    result
-                },
-            )
-            .await;
+            // The same completion check runs after the original timeout has
+            // returned a typed result. An already expired instant needs no
+            // wall-clock sleep or race to enter a fake future before expiry.
+            let observed = planning_delivery(result, Instant::now());
             match result {
                 Err(failure) => assert_eq!(observed, Err(error(failure))),
                 Ok(_) => assert!(observed.unwrap_err().1.starts_with("initial Sync deadline")),
