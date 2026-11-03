@@ -28,7 +28,7 @@ use bigbrotr::{
         },
         rocks::store::{
             AdmissionLimits, AdmissionOutcome, CertificationLimits, CertificationOutcome,
-            PreparedCertification, PreparedEvent,
+            PendingQuotaStatus, PreparedCertification, PreparedEvent,
         },
     },
 };
@@ -144,7 +144,17 @@ impl Nomination {
     }
 }
 
-fn scan_grant(budget: &ResourceBudget) -> Result<Option<OwnedPermit>> {
+/// Reobserve the actual owner's stability clock before funding a new scan.
+/// Pressure creates neither a SQL nomination nor a complete-round obligation.
+fn scan_grant(
+    budget: &ResourceBudget,
+    observe_quota: impl FnOnce() -> Result<PendingQuotaStatus>,
+) -> Result<Option<OwnedPermit>> {
+    match observe_quota()? {
+        PendingQuotaStatus::Available => {}
+        PendingQuotaStatus::Pressure => return Ok(None),
+        unavailable => return Err(error(unavailable)),
+    }
     match budget
         .try_acquire(ResourceRequest::data(AcquisitionScan::REQUIRED_BYTES, 1, 0).map_err(error)?)
     {
@@ -337,18 +347,22 @@ impl Sync {
     }
 
     /// One bounded read-only scan before reserving a complete round. No job is
-    /// claimed and no source action is issued. Temporary scan-grant pressure
-    /// simply leaves the scan unchanged; it cannot establish full-work debt.
+    /// claimed and no source action is issued. Known local pending pressure or
+    /// temporary scan-grant pressure leaves the scan unchanged without full-work
+    /// debt. Fresh local observation advances the existing stability interval.
     pub(super) async fn nominate(&mut self, mut work: Dispatch<'_, '_>) -> Result<()> {
         if self.nomination.job.is_some() {
             return Ok(());
         }
-        let Some(permit) = scan_grant(work.budget)? else {
-            return Ok(());
-        };
         if !work.safe_point(self, false).await? {
             return Ok(());
         }
+        let Some(permit) = scan_grant(work.budget, || {
+            work.writer.observe_pending_quota(work.context)
+        })?
+        else {
+            return Ok(());
+        };
         let candidate = commands::sync_operation(
             work.trace,
             work.deadline,
@@ -990,6 +1004,55 @@ mod tests {
     }
 
     #[test]
+    fn known_pressure_reobserves_without_scan_credit_and_availability_resumes() {
+        let needed = ResourceLimits::new(AcquisitionScan::REQUIRED_BYTES, 1, 0, 0);
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(needed.data_bytes(), 0, needed, WaiterLimits::new(0, 0)).unwrap(),
+        );
+        let observations = Cell::new(0);
+        for _ in 0..120 {
+            let permit = scan_grant(&budget, || {
+                observations.set(observations.get() + 1);
+                Ok(PendingQuotaStatus::Pressure)
+            })
+            .unwrap();
+            // The SQL nomination requires this permit. Pressure returns before
+            // funding it, even though the scan itself would fit this budget.
+            assert!(permit.is_none());
+            assert_eq!(budget.snapshot().active_permits(), 0);
+        }
+        assert_eq!(observations.get(), 120);
+        let permit = scan_grant(&budget, || {
+            observations.set(observations.get() + 1);
+            Ok(PendingQuotaStatus::Available)
+        })
+        .unwrap()
+        .expect("fresh availability must resume the unchanged scan");
+        assert_eq!(observations.get(), 121);
+        assert_eq!(budget.snapshot().active_permits(), 1);
+        drop(permit);
+    }
+
+    #[test]
+    fn scan_quota_unknown_and_failed_observations_refuse_before_funding() {
+        let needed = ResourceLimits::new(AcquisitionScan::REQUIRED_BYTES, 1, 0, 0);
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(needed.data_bytes(), 0, needed, WaiterLimits::new(0, 0)).unwrap(),
+        );
+        for unavailable in [
+            PendingQuotaStatus::Unfunded,
+            PendingQuotaStatus::RecoveryBlocked,
+        ] {
+            assert!(scan_grant(&budget, || Ok(unavailable)).is_err());
+            assert_eq!(budget.snapshot().active_permits(), 0);
+        }
+        let failure = (4, "native pending quota observation failed".to_owned());
+        let observed = scan_grant(&budget, || Err(failure.clone()));
+        assert_eq!(observed.unwrap_err(), failure);
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
+
+    #[test]
     fn idle_nomination_creates_no_full_work_debt_and_selected_job_survives_waits() {
         let needed = requirements().unwrap();
         let parent = ResourceBudget::new(
@@ -1014,7 +1077,11 @@ mod tests {
         // An unavailable read is not proof of an empty scan. It cannot advance
         // the position, establish work debt or request the full round.
         let scan = selected.scan;
-        assert!(scan_grant(&parent).unwrap().is_none());
+        assert!(
+            scan_grant(&parent, || Ok(PendingQuotaStatus::Available))
+                .unwrap()
+                .is_none()
+        );
         assert_eq!(selected.scan, scan);
         assert!(selected.reserve(&parent).unwrap().is_none());
         assert_eq!(parent.snapshot().active_permits(), 1);
@@ -1059,7 +1126,8 @@ mod tests {
         assert!(selected.reserve(&parent).unwrap().is_none());
         drop(round);
         parent.close();
-        assert!(scan_grant(&parent).is_err()); // Only temporary Unavailable was suppressed.
+        // Only temporary Unavailable was suppressed.
+        assert!(scan_grant(&parent, || Ok(PendingQuotaStatus::Available)).is_err());
     }
 
     #[test]

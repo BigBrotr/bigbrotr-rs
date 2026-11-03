@@ -2181,6 +2181,15 @@ and policy leases, then revalidate authority before effects. This logical-only
 guard does not invent a filesystem-ready observation or assume `A=R=0`: the full
 combined low-water condition and all physical/OPEN65 gates above remain required.
 
+The finite Sync scheduler observes this actual local quota at each existing
+250ms tick before starting a new nomination. Known pressure leaves the scan
+position unchanged and issues no nomination/claim/source SQL or complete-round
+reservation. The observation advances the same stable-low clock; there is no
+separate parked state. A nomination already selected retains its existing
+capacity obligation and dispatch checks. Unfunded, recovery-blocked, poisoned or
+failed observations refuse the owner. Availability is scheduling information;
+current source authority and admission credit are checked again before effects.
+
 Independent controls require: literal P deltas for bootstrap/dictionary/NewFacts,
 zero deltas for replay/no-effect/ACK/GC; exact high-boundary admission and next-unit
 deferral with no staged original; counter/source mismatch and mixed-copy refusal;

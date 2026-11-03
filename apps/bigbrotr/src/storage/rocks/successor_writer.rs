@@ -208,6 +208,12 @@ impl ActiveSuccessorWriter {
     pub(in crate::storage) fn observe_pending_quota(
         &mut self,
     ) -> Result<super::PendingQuotaStatus, super::PendingQuotaError> {
+        if self.native_unavailable() {
+            return Err(super::PendingQuotaError::WriteUncertain);
+        }
+        self.store
+            .require_admission_owner(None)
+            .map_err(|_| super::PendingQuotaError::Conflict)?;
         self.store.observe_pending_quota()
     }
     pub(in crate::storage) fn reserve_pending_requests(

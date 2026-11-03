@@ -748,6 +748,47 @@ fn reopened_original_without_receipt_stays_recovery_blocked_and_metadata_is_zero
 }
 
 #[test]
+fn reconciled_idle_observation_resumes_at_thirty_seconds_without_writes_or_credit() {
+    let (root, mut store, _b) = fixture();
+    store
+        .bind_reconciled_pending_quota(policy(100, 50, 99))
+        .unwrap();
+    let PendingQuota::Bound(quota) = &store.pending_quota else {
+        panic!()
+    };
+    let start = quota
+        .below_low_since
+        .expect("empty reconciled owner is below low");
+    let accounting = store.pending_accounting().unwrap();
+    let sequence = store.db.latest_sequence_number();
+    // Exercise the public observation kernel with deterministic instants at the
+    // scheduler's unchanged cadence, without proposing any reservation or write.
+    for millis in (0..30_000).step_by(250) {
+        assert_eq!(
+            store.observe_pending_quota_at(start + Duration::from_millis(millis)),
+            Ok(PendingQuotaStatus::Pressure)
+        );
+        assert_eq!(store.pending_reserved_bytes(), Ok(0));
+        assert_eq!(store.pending_accounting().unwrap(), accounting);
+        assert_eq!(store.db.latest_sequence_number(), sequence);
+        assert!(!root.path().join("db/producer-inputs-v1").exists());
+    }
+    assert_eq!(
+        store.observe_pending_quota_at(start + Duration::from_secs(30)),
+        Ok(PendingQuotaStatus::Available)
+    );
+    assert_eq!(store.pending_reserved_bytes(), Ok(0));
+    assert_eq!(store.pending_accounting().unwrap(), accounting);
+    assert_eq!(store.db.latest_sequence_number(), sequence);
+    assert!(!root.path().join("db/producer-inputs-v1").exists());
+    store
+        .reserve_pending_requests_at(&[terms(1, 1)], start + Duration::from_secs(30))
+        .unwrap();
+    assert_eq!(store.pending_reserved_bytes(), Ok(1));
+    assert_eq!(store.db.latest_sequence_number(), sequence);
+}
+
+#[test]
 fn logical_pressure_needs_strict_low_and_a_complete_fresh_stable_interval() {
     let (root, mut store, _b) = fixture();
     store.bind_pending_quota(policy(100, 50, 99)).unwrap();

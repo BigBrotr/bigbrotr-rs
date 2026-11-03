@@ -4,7 +4,7 @@ use bigbrotr::storage::{
     postgres::control_owner::*,
     rocks::store::{
         AdmissionError, AdmissionLimits, DictionaryPreparation, InitialWriterCandidate,
-        StoredCertification, StoredOutcome, StoredReceipt, StoredVisibility,
+        PendingQuotaStatus, StoredCertification, StoredOutcome, StoredReceipt, StoredVisibility,
     },
 };
 use bigbrotr::{acquisition::observation::StoredObservation, runtime::OwnedPermit};
@@ -54,6 +54,22 @@ pub(super) enum NativeOwner {
     Successor(Box<LiveSuccessorWriter>),
 }
 impl NativeOwner {
+    /// Scheduling-only observation of the continuously held native quota. Each
+    /// actual effect still checks current SQL authority and admission credit.
+    pub(super) fn observe_pending_quota(
+        &mut self,
+        context: RuntimeContext<'_>,
+    ) -> Result<PendingQuotaStatus> {
+        context.require(self).map_err(owner_error)?;
+        match self {
+            Self::Initial(store) => store.observe_pending_quota(),
+            Self::Live(writer) => writer.observe_pending_quota(),
+            Self::Successor(writer) => writer.observe_pending_quota(),
+            Self::Candidate(_) => return Err((4, "candidate has no dispatch quota".into())),
+        }
+        .map_err(|e| (4, format!("native pending quota unavailable: {e:?}")))
+    }
+
     pub(super) fn quantum_source<'a>(
         &'a mut self,
         context: RuntimeContext<'a>,

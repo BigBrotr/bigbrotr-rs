@@ -2,7 +2,9 @@
 //! activation or process replacement is inferred from these native-only calls.
 //! New dictionary bytes below are literal CBOR/framing, independent of codecs.
 use super::*;
-use crate::storage::rocks::store::{ActiveSuccessorWriter, NativeSuccessorActivation};
+use crate::storage::rocks::store::{
+    ActiveSuccessorWriter, NativeSuccessorActivation, PendingQuotaError, PendingQuotaStatus,
+};
 use std::collections::BTreeMap;
 
 #[path = "successor_recovery_tests.rs"]
@@ -81,6 +83,24 @@ fn active(f: &Fixture, later: bool) -> ActiveSuccessorWriter {
     writer.validate(&NOT_CANCELLED).unwrap();
     writer
 }
+
+#[test]
+fn pending_quota_observation_refuses_a_poisoned_live_frontier_without_writes() {
+    let f = prepared_fixture();
+    let mut writer = active(&f, false);
+    let before = snapshot(&f, writer.store());
+    assert_eq!(
+        writer.observe_pending_quota(),
+        Ok(PendingQuotaStatus::Available)
+    );
+    writer.poison();
+    assert_eq!(
+        writer.observe_pending_quota(),
+        Err(PendingQuotaError::Conflict)
+    );
+    assert_eq!(snapshot(&f, writer.store()), before);
+}
+
 fn scope(writer: &ActiveSuccessorWriter) -> QualifiedRef {
     QualifiedRef {
         allocation_domain: writer

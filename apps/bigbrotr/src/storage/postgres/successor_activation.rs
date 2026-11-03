@@ -85,6 +85,17 @@ pub(in crate::storage::postgres::control_owner) struct LiveSuccessorBinding {
     quota_policy: crate::storage::rocks::store::PendingQuotaPolicy,
 }
 impl LiveSuccessorWriter {
+    /// Advance the local pending-pressure observation for scheduling only.
+    /// Availability grants no SQL authority, reservation or intake permission;
+    /// connected operations independently revalidate before every effect.
+    pub fn observe_pending_quota(
+        &mut self,
+    ) -> Result<
+        crate::storage::rocks::store::PendingQuotaStatus,
+        crate::storage::rocks::store::PendingQuotaError,
+    > {
+        self.native.observe_pending_quota()
+    }
     pub fn producer_credit(
         &self,
     ) -> Result<crate::storage::rocks::store::ProducerCredit, AdmissionError> {
