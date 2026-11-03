@@ -162,9 +162,9 @@ Product, build, schema, compiled probe, fixture JSON and unknown paths refuse.
 This carries the qualified current runner's reuse boundary; no old executable
 can stand in for changed compiled inputs.
 
-The case applies the complete current catalog through migration43. Its independent
-inventory requires59 applied migration entries and60 hashed inputs, reads the
-declared SQL in manifest order, and requires the exact83 Control table names
+The case applies the complete current catalog through migration45. Its independent
+inventory requires61 applied migration entries and62 hashed inputs, reads the
+declared SQL in manifest order, and requires the exact86 Control table names
 before comparing rows. A
 same-count missing/unexpected table substitution refuses. The previous target19
 was a historical fixture cutoff: the unbound dictionary probe itself needs the
