@@ -2116,13 +2116,13 @@
     "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   },
   "settled_owner_adoption_root_integration_20261103": {
-    "status": "ADOPTION_CONFIRMED_R6_FAIL_CLASSIFIED_FIXTURE_RECOVERY_HYSTERESIS_TIMING",
+    "status": "CONTRACT_DERIVED_RECOVERY_OBSERVATION_WINDOW_REVIEWED_R7_ACTIVE",
     "product_original": "8bee81aa93e6ece51d25f6297a89d275a2ca0541",
     "product_integrated": "8a52d74e54dfad7a2a131ae5d6cd2ae6b1d2960d",
     "oracle_original": "c53142f88946027c322d99b6aff604aa2f7d8a0b",
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
-    "next": "Reviewedfixturederivesacceptedstableinterval+existing20sallowance within ORIGINAL remainingjobdeadline. Productpressureguard/default30s/quotas/science unchanged. No eventualsciencePASS yet.",
+    "next": "Observe/reapRoot93131; authenticate actualderivedbudget, maintainedfivequeryscience andterminalcustody. Reuseunchangedefdproduct; R5/R6stillFAIL. No positivepost-stableorfinalNative139claim untilactualproof.",
     "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
     "initial_host_controls": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
@@ -2300,7 +2300,7 @@
     },
     "current_qualification": {
       "source": "efd570bc1a5a7e4fc60984d8b9e82e7b577ccc68",
-      "state": "PRODUCT_AND_OBSERVER_QUALIFIED_R6_REAPED_FIXTURE_TIMING_FAIL_NO_ENGINE_ACTIVE",
+      "state": "PRODUCT_AND_OBSERVER_UNCHANGED_REVIEWED_STABLE_WINDOW_R7_ACTIVE",
       "next": "Unchangedproduct, bounded opt-in successor-role SQL statement observation with bothbindparameterlimits0 and targeted failurestatecapture, maintaining20s FAIL/oracle andalljoblimits. Reviewharness before nextinstalledrun.",
       "tree": "ab9897730d6f72525e007a5b643b755a44c6965d",
       "capsule": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc",
@@ -2331,7 +2331,8 @@
         "affected_rust": 81227,
         "observer": 9430,
         "assembly": 3193,
-        "installed_terminal": 12123
+        "installed_terminal": 12123,
+        "installed_active": 93131
       },
       "results": "Strict alltarget8.431/Clippy9.684/explicit-DwarningsRustdoc4.373PASS; fresh workerbeforeparent release170.396sPASS. Unfiltered705/234/40/24PASS,27sourceboundrequiredcontrolsPASS,5librarydedicatedignoresNOT_RUN. Exactparentobserver85.538sPASS. Compilercontainersstopped/PID0/noOOM/cache released/original4ELFpostguardscomplete. Private bundle assembled, installedR5 reaped1/5PASS1FAIL1NOT_RUN cleanupPASS; postadoption20swaitFAIL remains."
     },
@@ -2400,6 +2401,32 @@
       },
       "scientific_limit": "Atomicadoption/eligibility/readonlyprogress observed; no post-stablepositivegrowth or finalnative139/fivequerysciencePASS. AllR5/R6FAIL kept.",
       "audit_interface": "FirstmanualtickargumentFAIL andsecondstaleexactargvguardFAIL preservedread-only; actualsessionread directly for finalaudit. Source only optionaltrace bool/argv/receipt hash addition independentlyreviewed e142; alloldcustody/scientificpredicates unchanged."
+    },
+    "recovery_stability_observation_window": {
+      "original": "ee09a0a03cff9175be8f7faca79bb96154fce941",
+      "integrated": "32a5b147e9d482ba24303f6fd35a2bf0434f67ae",
+      "tree": "4ed2f1ace8408a23fc79cfeb0017d556cdfb8185",
+      "frozen_acceptance": "/home/tux/bigbrotr-rs/.research/m2-adoption-acceptance-stable-window-20261103",
+      "scope": "Only2fixturefiles: exactretainedconfig/policy/job/startidentities, acceptedstable\u00b5s+existing20s; currentPGtime lessconservativefullroundtrip mustleavefullboundbeforeORIGINAL120sdeadline. No clamping/productpolicy/quotaguard/scientificchange; derivationreceipt.",
+      "controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-dispatch-observation-checks-20261103/timing-controls/result.json",
+        "sha256": "ef2f0df2579526b5e7632641a49b7899c4be83d263925638bf1b775e2212584e"
+      },
+      "critical_review": "Astra finalee09/clean32a5byteSHA944c/60b nofinding; independentactualR6JSONreplaywithsimulatedhistoricalclockderives50s atactivation+1sandrefusesat+20s. Source-only, notcurrentclock/liveproof. Auditors4lineoptionalartifacthashadditioncb279 reviewed, noverdictmath duplication.",
+      "source_admission": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-installed-preparation-20261103/r7-provenance-admission.json",
+        "sha256": "cf911030e93d502460f23a1492c1017e807767edf17e9a60366e09c1cf5eed5c"
+      },
+      "assembly": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/assembly-r7-receipt.json",
+        "sha256": "6d5b8c7094bb5ed83eb0e01560e83dc127aa6e24d4787cbbd1d90639599ec858"
+      },
+      "active_launch": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-core-qualification-20261103/efd570bc/installed/root-installed-r7-launch.json",
+        "sha256": "8769142af736927fd22af971728977c8d6b7153b0931f7cf3dd44e697969cb57"
+      },
+      "root_tool": 93131,
+      "next": "Observe/reapRoot93131; authenticate actualderivedbudget, maintainedfivequeryscience andterminalcustody. Reuseunchangedefdproduct; R5/R6stillFAIL. No positivepost-stableorfinalNative139claim untilactualproof."
     }
   }
 }

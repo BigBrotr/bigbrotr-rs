@@ -8,7 +8,7 @@ releases nor packages/deployment.
 ## Revision and capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **074c28fc** before this checkpoint.
+`work/m2-finite-history-20261101`, observed HEAD **32a5b147** before this checkpoint.
 Canonical main/origin/actual remote are **5a9b7cc4**, clean/pushed, full hosted PASS.
 Reviewed M2 production/oracle, fixture corrections, wire SQL types and now cached
 PL/pgSQL record types are integrated locally. No installed same-job continuation
@@ -111,10 +111,16 @@ R4 Root41988 terminal custody51eb9b45:20 containers stopped/PID0/noOOM,5 process
 and1096 command PIDs absent,53 acceptance files verified, borrowed bridge1699209a
 preserved. Keep its original PG/native/activation/logs unchanged; native activation
 may precede failed adoption. SQL-prepare lab is stopped/retained, internal/no host
-ports. Original R4 was never restarted. Sol447/Root074 observation change is committed/reviewed. Sol now owns only a
-bounded2-file fixture timing correction in `.research/m2-adoption-dispatch-observation-20261103`;
-Astra reviews before R7. Root alone integrates/launches. No engine/compiler/cache
-holder active.
+ports. Original R4 was never restarted. Sol447/Root074 observation and Solee09/Root32a5 timing corrections are committed
+and independently reviewed. Nine focused timing controls PASS; actualR6 input
+replay derives50s at activation+1s and refuses when only35.85s remain. This replay
+is source-only. No product policy, original deadline or scientific oracle changes.
+
+R7 **ACTIVE Root93131**, runner2431574/start42562228. Same qualifiedefd product,
+worker, Rust and observer; frozen acceptance32a5/tree4ed2f1ac differs only3docs+3
+reviewed acceptancefiles. Admissioncf911030/privateassembly6d5b8c70/startreceipt
+are linked from P03. The actual live derivation remains pending until startup.
+Root alone launches; agents saved work and no compiler/cache holder is active.
 [Inventory](../research/laboratory-inventory.json) owns resources. Preserve unique
 data/failures/.research/worktrees. No new cleanup; October31 recovery reconciled.
 
@@ -124,14 +130,11 @@ strict checks, Rust and native controls. [P01](evidence/p01-ci-hosted-foundation
 owns exact results, skips/ignores and bounded public artifact/log inspection.
 No hosted observer active; this result does not cover later M2.
 
-**Next Root action:** review/integrate the fixture timing correction: derive the
-accepted stable interval plus the existing20s settlement allowance, verify config/
-policy agreement and fit within the original remaining job duration, and record
-the derivation. Preserve default30s product recovery hysteresis, original120s job
-expiry, quota limits and scientific oracles. Then reuse unchangedefd artifacts
-for R7 with exact separate acceptance provenance. No product rebuild or pressure
-guard weakening. Recipes remain under `.research/m2-adoption-installed-preparation-20261103`,
-qualification under `.research/m2-adoption-core-qualification-20261103`, cold setup
-under `.research/m2-adoption-poststart-diagnostic-20261103`. Preserve all later
-negative/lost-candidate/zero-query gates; advance the next useful M2 capability
-after this slice closes.
+**Next Root action:** observe/reap actualRoot93131; authenticate its actual
+accepted-policy/remaining-time derivation, maintained five-query scientific verdict
+and terminal custody with reviewed auditorcb279. Do not restart on observation
+timeout or infer PASS from startup. Productefd and default30s hysteresis are
+unchanged, original120s job expiry and all science/budgets remain mandatory.
+R5/R6 keep their original FAIL. Build/installed recipes and cold setup retain the
+paths above; preserve all later negative/lost-candidate/zero-query gates, then
+advance the next useful M2 capability after this slice closes.
