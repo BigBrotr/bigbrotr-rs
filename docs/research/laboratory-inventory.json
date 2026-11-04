@@ -79755,7 +79755,7 @@
             }
           ],
           "critical_review": "Astra/xhigh on actual native lifecycle oracle and persistent funding boundary before Root engines",
-          "status": "R2_CAPTURED_WITH_GAPS_PUBLISHED_MAIN16E_WORK_JOURNAL_IN_PROGRESS",
+          "status": "R2_CAPTURED_WITH_GAPS_MAIN479_JOURNAL_CANDIDATE_COMPILE_FAIL_RETAINED",
           "scope": "Two finite max-size corpora within absolute64; direct imports do not qualify acquisition-bound reclaim or finalACK64. No numeric physical reserve guarantee or OPEN65 enabled.",
           "local_processes": "Root4394 parent and30093 probe actually reaped0; Root98102 R2 actually reaped0. R2 client stopped143/PG0, bothPid0; native/Control drivers and samplers joined. Cache115 released and original4ELF full-byte/fullstat guards completed. No local autonomous engine/compiler left.",
           "harness_source": "c3804ce1d583b9e17a9f72a25d0ca4fe943d8b4f",
@@ -79784,24 +79784,56 @@
               "path": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/native-work-contract-decision.json",
               "sha256": "b0acec5eb5612e8ab225982fdcb9169ada4137d54462dbde332c00b595e9c9b9"
             },
-            "status": "ACTIVE_PARTIAL_NOT_RUN_NOT_INTEGRATED",
+            "status": "LOCAL_COMMITTED_CANDIDATE_COMPILE_FAIL_NO_ACTIVE_WRITERS",
             "kernel_author": {
               "model": "gpt-6.1-sol",
               "reasoning_effort": "xhigh",
               "worktree": "/home/tux/bigbrotr-rs-native-work-journal",
               "branch": "implementation/native-work-journal-20261103",
               "base": "b82cd0db353c87d53820599c7ce7f2df745d24b6",
-              "kernel_revision": "367453a3624cfde19385597aebc1c1e5a6a31e39",
-              "kernel_status": "Private source committed, not module-activated; rustfmt only. Cargo/build/tests/engines NOT_RUN; constructor/provenance integration continues separately. Astra reviewing exact kernel commit."
+              "kernel_revision": "ea3b70f32bb3537b5f058d765af194749fb7189d",
+              "kernel_status": "Finished clean local branch; source integrated into Root candidate4b0112d4, not main. No independent engine/build launch."
             },
             "configuration_author": {
               "model": "gpt-6.1-sol",
               "reasoning_effort": "xhigh",
               "worktree": "/home/tux/bigbrotr-rs/.research/m2-native-work-configuration-20261104",
               "branch": "work/m2-native-work-configuration-20261104",
-              "base": "b82cd0db353c87d53820599c7ce7f2df745d24b6"
+              "base": "b82cd0db353c87d53820599c7ce7f2df745d24b6",
+              "revision": "8fda01c05f891c7718cab8ef083ca2a6b44b7a2d",
+              "status": "Finished clean local branch; profile2 config/SQL/oracle/common compacted fixtures integrated into candidate, not main."
             },
-            "processes": "Source authors active; no Cargo/native engine launches authorized to them. Root sole integrator/engine launcher."
+            "processes": "All source/review agents finished. Root68043 actually reaped1; compiler container exited1/Pid0/noOOM, supervisor absent. Original4ELF guards completed and cache115 released. No autonomous local development or engine operation remains from this increment.",
+            "fault_hooks_author": {
+              "model": "gpt-6.1-sol",
+              "reasoning_effort": "xhigh",
+              "worktree": "/home/tux/bigbrotr-rs/.research/native-work-authority-hooks-20261104",
+              "branch": "work/native-work-authority-hooks-20261104",
+              "revision": "200474ed6a009e0e741ef7609c05c20141c1ab5f",
+              "status": "Completed, clean and composed into candidate. Source checks only."
+            },
+            "candidate": {
+              "worktree": "/home/tux/bigbrotr-rs/.research/m2-native-work-fixtures-20261104",
+              "branch": "work/m2-native-work-fixtures-20261104",
+              "revision": "4b0112d4d56bcdb1b3d946e4ba0fdfe99b17c442",
+              "tree": "645d453e4095fa5abc8c9a6f6ff6fbabbc9fcd95",
+              "publication": "Local committed partial work; not pushed or integrated into main."
+            },
+            "qualification": {
+              "capsule": "/home/tux/bigbrotr-rs/.research/m2-native-work-qualification-20261104/4b0112d4-r2",
+              "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-4b0112d4",
+              "receipt": "/home/tux/bigbrotr-rs/.research/m2-native-work-qualification-20261104/4b0112d4-r2/build-terminal-receipt.json",
+              "sha256": "c71c1a644e4d23c3b9c8d70c6589623937d647e5b20e442146cecebacd579432",
+              "state": "STOPPED_RETAINED_COMPILATION_FAIL",
+              "root_session": 68043,
+              "root_terminal_chunk": "b343dd",
+              "exit_code": 1,
+              "cache_lock": "released",
+              "container_pid": 0,
+              "supervisor_pid_absent": true,
+              "preservation": "Both preparation capsules, detached frozen source, failed compiler output, all source worktrees and original four full-byte/full-stat ELF identities preserved. No cleanup."
+            },
+            "next": "After goal reactivation, reconcile the15 compiler-identified mutable fixture callers, preserving journaled effects, independent assertions and deliberate out-of-band negative controls; then affected current-source compilation and required qualification. Lifetime64 remains."
           },
           "physical_fixture_ci_followup": {
             "capsule": "/home/tux/bigbrotr-rs/.research/ci-16eb-macos-sol-20261103",
@@ -79816,7 +79848,15 @@
             "original_run": 41730927655,
             "scoped_mac_run": 41734939803,
             "local_engines": "None launched",
-            "retention": "Original MacFAIL/logs/artifact and corrected source retained. Do not retire active qualification refs or cancel original Linux jobs."
+            "retention": "Original Mac FAIL/6NOT_RUN, corrected Mac full foundation PASS, original Linux PASS and current main portable PASS remain separately source-bound. All logs, allowlisted captures and qualification refs/worktrees preserved; no CI running at the observation.",
+            "status": "ALL_THREE_RUNS_TERMINAL_VERIFIED",
+            "current_main_revision": "479473aec8d92c93aa996e203cf9950c116a5335",
+            "current_main_run": 41740066163,
+            "terminal_verification": {
+              "path": "/home/tux/bigbrotr-rs/.research/ci-16eb-macos-sol-20261103/terminal-verification-20261104/summary.json",
+              "sha256": "eaf44d1d327366d1491dae71d64e7f0114943be616a6c22bcbdb1c945b0a9f38"
+            },
+            "active_watchers": 0
           }
         }
       }

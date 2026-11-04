@@ -364,7 +364,7 @@ and real paths together. Use normal increment results to assess setup errors and
 Sol rework and adjust Astra involvement by observed risk. Continue the ACTIVE goal
 and normal checkpoints; no new plan, metrics system or extraordinary checkpoint.
 
-Q38 clarifications (2026-10-31 and 2026-11-01): Reconcile a changed persistent
+Q38 clarifications (2026-10-31, 2026-11-01 and 2026-11-04): Reconcile a changed persistent
 format, admission rule or internal interface with its callers, readers, recovery,
 shared fixtures and documentation in the same coherent increment. Check changed
 scenario premises cheaply before costly runs: schema, actual roles, budgets,
@@ -377,6 +377,9 @@ precedes costly campaigns and repeats for substantive changes or real uncertaint
 Reuse artifacts and evidence for their actual input/provenance scope; test-only
 changes do not require rebuilding an unchanged product. Close current quota and
 recovery failures correctly, then advance the next M2 increment by real dependency.
+Use bounded independent agent assignments under one integrating owner. Preserve
+retry, unresolved-commit, identity, authority and data checks; change expected
+results only when the owning contract justifies the correction.
 Q38/Q40 also apply to prior work, preserving independent evidence and integrity,
 authority, durability, cancellation and recovery guarantees.
 

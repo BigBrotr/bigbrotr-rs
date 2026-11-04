@@ -2918,8 +2918,25 @@
       "attempted_work_contract": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/native-work-contract-decision.json",
         "sha256": "b0acec5eb5612e8ab225982fdcb9169ada4137d54462dbde332c00b595e9c9b9",
-        "status": "Selected mandatory profile2 journal; implementation partial in separate author worktrees, no build or runtime qualification. Attempted B/N and O separate; journal readiness cannot enable OPEN65.",
-        "remaining": "Continuous native allocation/output debt, essential PG share and accepted completion remain physical gates. No compaction multiplier or sampled peak promoted to hard bound."
+        "status": "Mandatory profile2 source composed at4b0112d4 and bounded critical source review accepted; first all-target compilation FAIL in unreconciled mutable fixture callers. No runtime qualification or OPEN65.",
+        "remaining": "Continuous native allocation/output debt, essential PG share and accepted completion remain physical gates. No compaction multiplier or sampled peak promoted to hard bound.",
+        "candidate": {
+          "revision": "4b0112d4d56bcdb1b3d946e4ba0fdfe99b17c442",
+          "tree": "645d453e4095fa5abc8c9a6f6ff6fbabbc9fcd95",
+          "worktree": "/home/tux/bigbrotr-rs/.research/m2-native-work-fixtures-20261104",
+          "branch": "work/m2-native-work-fixtures-20261104",
+          "integration": "Local committed candidate only; not on main or origin."
+        },
+        "qualification": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-native-work-qualification-20261104/4b0112d4-r2/build-terminal-receipt.json",
+          "sha256": "c71c1a644e4d23c3b9c8d70c6589623937d647e5b20e442146cecebacd579432",
+          "status": "FAIL_TEST_FIXTURE_COMPILATION",
+          "critical_source_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/m2-native-work-qualification-20261104/4b0112d4-r2/critical-source-and-preflight.json",
+            "sha256": "cc4742b9d875c6b9f0dca27005de430421dba20f1ba36e577040afa34c3967e6"
+          },
+          "remaining": "Strict Clippy/Rustdoc, release, Rust tests and real profile2 engine paths NOT_RUN. Retain 126 original E0308 errors across15 fixture modules; fix callers without bypassing journal or weakening independent outcomes."
+        }
       }
     }
   }

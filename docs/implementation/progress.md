@@ -1,117 +1,115 @@
 # Current execution checkpoint
 
-2026-11-03 UTC, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5 remains
-incomplete. Q37/Q38/Q40/Q41/Q42 apply; Sol/xhigh ordinary work, Astra/xhigh critical
-boundaries, Root sole integrator/engine launcher. No release/package/deployment.
+2026-11-04 UTC, Tux. Complete selected P00–P10/M1–M5 remains **incomplete**.
+The effective goal control currently reports **PAUSED**. The owner's latest
+direction is to continue; `/goal resume` has been requested because the agent
+cannot reactivate the control. No new campaign was started after that observation.
+Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh ordinary work, Astra/xhigh critical review,
+Root sole integrator/engine launcher. No release/package/deployment authorization.
 
-## Revision and usable evidence
+## Revisions and current increment
 
-Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`: **b82cd0db**, pushed, before this documentary
-checkpoint. Main/origin **16ebcb8e** contains the coherent physical diagnostic.
-The publication receipt is in its existing capsule. The work branch adds only the
-reviewed allocation-fixture correction. Hold the next main push until its existing
-Linux foundation jobs terminate, preserving their compilation work.
+Main/origin and the previous Root work branch `work/m2-finite-history-20261101`
+are **479473aec8d92c93aa996e203cf9950c116a5335**, clean before this documentation
+update. Main includes the verified allocation-fixture correction. This checkpoint
+and its linked evidence update do not integrate the unqualified candidate below.
 
-Product core is unchanged from **672a3865/R26**. Its valid Rust/installed evidence
-is reused for that scope; the new compiled probe is **87a62627**. Current parent
-strict all-target/Clippy/Rustdoc/release PASS, Root4394 actually reaped0, receipt
-fd56753a. Standard probe build Root30093 reaped0/86.394s, receipt8f62bb92;
-parent/worker/source bytes remain bound and unchanged. No fabricated build receipt.
+The attempted-work/profile2 candidate is committed locally at
+**4b0112d4d56bcdb1b3d946e4ba0fdfe99b17c442**, tree
+`645d453e4095fa5abc8c9a6f6ff6fbabbc9fcd95`, clean in
+`.research/m2-native-work-fixtures-20261104`, branch
+`work/m2-native-work-fixtures-20261104`. It is **not on main or origin**.
+It composes the mandatory private journaled native dispatcher, finite B/N/O
+attempt limits, fresh pre-claim preparation, original-policy/manifest binding,
+configuration/profile2 SQL readers/oracles and shared fixture/hook changes.
+Native mutation deltas and policy-v3 identity remain unchanged. This is readiness
+work under **P02-T02 Step4**, not physically funded OPEN65.
 
-**The physical diagnostic now works on real engines:** source c380, Root98102
-actually reaped0/94.085s. Two A/B cases each admit63 distinct signed complete
-262144B events and preserve585 exact native rows,64 originals/PG outcomes,
-16555495 pending bytes and issued64/ACK1/outstanding63 through ordinary reopen.
-Each observes seven atomic flush jobs across3CFs, three successful nontrivial
-compactions and actual PG checkpoint overlap. Original scientific expectations,
-corpus, budgets and compiled inputs were retained across the fixture correction.
+All authors/reviewer finished. Their clean local work remains preserved:
 
-The result remains **CAPTURED_WITH_GAPS**, not physical funding/OPEN65: A1/B2 PG
-FD samples have generic errors with unknown errno/cause. Do not infer zero PG
-unlinked allocation. No native/root census or LOG gap was reported. Separate
-sampled peaks are not upper bounds or simultaneous sums; B's PG cluster retains
-A's database. R2 receipt **cb1b8be3** owns211 evidence hashes. Astra accepted the
-critical source deltas and bounded interpretation; Sol12 focused/17 existing
-policy controls PASS. Two original compile/check failures and R1 identity setup
-FAIL remain preserved. R2 uses the existing real initialization/activation fixture,
-with exact pre-load baseline guards; it is not new CLI initialization qualification.
-[P03](evidence/p03-initial-sync-native-20261002.json), key
-`settled_owner_adoption_root_integration_20261103.physical_open65_prerequisite`,
-owns the concise result and links.
+| Work | Worktree / branch | Commit | Qualification |
+|---|---|---|---|
+| Journal, constructors, provenance | `/home/tux/bigbrotr-rs-native-work-journal`, `implementation/native-work-journal-20261103` | `ea3b70f3` | Composed into candidate; runtime unqualified |
+| Configuration, SQL/oracles, compacted fixtures | `.research/m2-native-work-configuration-20261104`, `work/m2-native-work-configuration-20261104` | `8fda01c0` | Portable/source checks only; composed |
+| Fault delivery hooks | `.research/native-work-authority-hooks-20261104`, `work/native-work-authority-hooks-20261104` | `200474ed` | Source checks only; composed |
+| Critical review | Astra/xhigh, candidate `4b0112d4` | Source-only | Accepted bounded persistence/authority/oracle changes before first compile; no runtime claim |
 
-R26's zero-query handoff stays locally qualified:7/7 installed stages,
-Root29534 reaped0, custody697afe4a and independent science49e33740. Original120s
-job/110s client, two real30s stability periods, root5s and SQL60s stay distinct.
-Coverage stays pending; not fullM2. R23/R24/R25 originalFAIL are preserved. The
-same P03 owner retains detailed continuation/retry/authority/integrity evidence.
-Retained current-artifact tutorialR16 qualifies signed history/export/restart.
+## Actual result and next action
 
-## Next concrete result
+**First compilation FAIL:** Root session68043 was actually reaped exit1,
+terminal chunk `b343dd`. `cargo check --locked --workspace --all-targets` reports
+126 E0308 errors in15 test modules: immutable fixture callers were not reconciled
+with the mutable journaled `put`/`delete` helpers. This is a **test-source integration
+defect**. It establishes no product runtime defect or success. Strict Clippy,
+Rustdoc, release, Rust tests and real profile2 engines are **NOT_RUN**.
+Formatting and planning preflight passed for this source. An earlier launcher-path
+preparation failure occurred before any compiler/container and is preserved
+separately; it was an orchestration error, not this compilation result.
 
-Implement the selected mandatory **profile2 attempted-work journal**: one private
-synced dispatcher for all4 writes charges complete serialized B/mutation N before
-FFI; writing-open attempts charge separate O. The bounded preallocated journal
-has a checked committed head and chained records; uncertain/torn work refuses,
-never refunds or falls back. Existing native sequence deltas stay unchanged.
-Astra's adopted contract is linked from the existing P03 physical prerequisite.
-Two Sol authors own kernel/constructors and configuration separately (inventory
-has exact worktrees). Their source is partial, not integrated or tested. Next:
-complete mandatory provenance, pre-claim custody and caller/fixture wiring, then
-critical review before Root's affected build/real tests. Root fields remain outside
-policy-v3 documents; accepted policy checks and immutable journal limits bind
-separately. No parallel plan or guessed accepted-field migration.
+The original output and exact affected paths are in
+`.research/m2-native-work-qualification-20261104/4b0112d4-r2/build-terminal-receipt.json`
+(SHA256 `c71c1a644e4d23c3b9c8d70c6589623937d647e5b20e442146cecebacd579432`).
+[P03 evidence](evidence/p03-initial-sync-native-20261002.json), key
+`settled_owner_adoption_root_integration_20261103.physical_open65_prerequisite.attempted_work_contract`,
+links the candidate, critical review and failure without replacing prior results.
 
-This is work readiness, **not physically funded OPEN65**. Continuous native output/
-allocation debt and the bounded essential PG/input/journal shares remain necessary.
-A finite native cap alone does not prove accepted completion. Derive d/R from
-actual enforced bounds, then qualify maximum units. R2's256KiB events do not cover
-admitted4MiB native batches or generic16MiB bootstrap; sampled peaks are not bounds.
+**First action after reactivation:** fix mutable fixture ownership in the15
+compiler-identified modules on the candidate branch, retaining the existing
+journaled helpers, intentional out-of-band corruption controls and independent
+expected values. Reuse the unchanged native/dependency cache and guarded build
+recipe; compile the reconciled source before required Rust and real-engine paths.
+Do not bypass the journal or alter an oracle to conceal the integration failure.
 
-Keep lifetime64 until this gate closes. Existing P02-T02 Step4 owns it and the
-subsequent selected132/two-cycle plus128-consumer acceptance; allP02 is not a
-barrier. P03-T05 then owns500-frame/100-distinct B-witness composition. Preserve
-current-domain identity; no dictionary alias/corpus/provenance shortcut.
-P03-T01 Steps3/7 and P03-T05 Steps2/4/7 retain lost-candidate/partitions/sparse
-work. Scheduling/live/NEG/import/fleet/general capacity remain in their tasks.
-Genuine origin reservation without native issue remains UNCOVERED; copied pendingQ2
-is different. R18 outer Root reap/exit remains UNKNOWN; capsulefa812a0c stays,
-with actual freshR19 supplying its own qualification. No scope/task is dropped.
+**Remaining M2 gates:** keep lifetime64. Continuous native allocation/output debt,
+essential PG/input/journal funding and accepted completion still gate OPEN65;
+finite attempted-work limits alone do not prove them. Qualify the supported4MiB
+native and generic16MiB bootstrap units as required by their actual source bounds.
+Then close the selected132/two-cycle and128-consumer paths under P02-T02 Step4,
+followed by P03-T05's500-frame/100-distinct B-witness composition. Coordinated
+restore stays P02-T08/P08-T05, provisioning changes P08-T03, broader sustained
+capacity/maintenance P02-T02 Step8/P02-T09. Other acquisition/scheduling/live/
+NEG/import/fleet work remains in its existing tasks; no phase-wide barrier.
 
-## Resources and hosted checks
+## Valid prior evidence and resources
 
-No local engine/compiler remains. Two isolated source authors are active; their
-partial work must be reviewed/integrated before qualification. R2 client stopped143,
-PostgreSQL0, bothPid0; probe/Control/observer drivers and samplers joined. Cache115
-is released; original4ELF full-byte/fullstat guards completed. Preserve source
-worktrees, R1/R2 native/PG databases, inputs, logs and original failures.
-[Inventory](../research/laboratory-inventory.json) owns custody; the current
-capsule is `.research/m2-physical-envelope-qualification-20261103/87a62627`, with
-runs under `/home/tux/bigbrotr-implementation-20260917/runs`.
-Required tools/generators and declared dependency/build procedures are maintained
-in the repository; private captures/cache are not prerequisites.
+M1's signed admission/archive/read/export/restart evidence remains at its retained
+R16 scope. Main's product core remains `672a3865` with the compiled `87a62627`
+physical probe; those results do **not** qualify the new profile2 candidate.
+R26 zero-query handoff remains7/7 installed stages at its own source. The real
+physical diagnostic R2 preserves both A/B63-event cases through ordinary reopen,
+with actual flush/compaction and PG checkpoint overlap. It remains
+**CAPTURED_WITH_GAPS**: A1/B2 PG descriptor samples are unknown, sampled peaks
+are not upper bounds and no numeric physical funding/OPEN65 claim is made.
+The same P03 evidence retains original R1/R23/R24/R25 failures, missing-origin
+reservation scope and R18's unknown outer reap; none becomes PASS.
 
-Current main16e [full CI](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41730927655)
-is running on Linux x86/ARM. Mac failed before compilation: the fixture wrongly
-required sparse allocation. Original757 controls include1FAIL/15SKIP; six later
-commands remain NOT_RUN. Corrected workb82 retains exact block allocation and
-adds literal sparse/rounded controls:12PASS/1optional signerSKIP, three false
-mappings rejected. No product/helper change or duplicate local product build.
-[Scoped Mac rerun](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41734939803)
-477ccb82 is active with the same9 maintained full foundation commands. Its sole
-qualification matrix change is not merged. Both current runs remain unqualified
-until actual outputs/build/source identities are checked. P01's physical
-publication record owns URLs and the classification/publication receipts.
+The current compiler container is stopped, exit1/Pid0/noOOM. Its supervisor PID
+is absent, cache115 is released and the retained launcher completed the original
+four ELF full-byte/full-stat guards before release. No local autonomous compiler,
+engine or source/review agent remains from this increment. Runtime:
+`/home/tux/bigbrotr-implementation-20260917/runs/m2-adoption-core-4b0112d4`.
+Both preparation capsules, frozen exact source, all author worktrees, prior PG/
+native databases, inputs, raw logs/failures and `.research` are preserved. No
+cleanup was started. [Inventory](../research/laboratory-inventory.json) owns custody.
 
-Prior2cLinux27 +3fMac9 and facportable18 remain valid only for their unchanged
-inputs, not new probe/tool compilation or a relabeled currentmain fullmatrixPASS.
-04e remains the last same-revision full3platform foundationPASS. Original failures
-and NOT_RUN remain. No concrete public exposure was identified by the bounded
-new source/failed-Mac capture scans; these are not a guarantee against all formats.
+## Hosted checks
 
-Five completed local author refs were retired with exact source worktrees/commits
-retained. The completed workflow-only3f qualification ref is also retired locally
-and remotely; its clean detached worktree/commit, logs and artifacts remain. The
-single-Mac matrix was never merged into main. Two completed physical-author refs
-are also retired, with their detached source worktrees/commits/receipts retained.
-No unique data was removed.
+All three observed runs are terminal and their source/artifact/log bindings were
+verified; no watcher remains. [P01 evidence](evidence/p01-ci-hosted-foundation-20261026.json),
+key `physical_diagnostic_publication_20261103`, links the detailed receipts.
+
+- [Original16eb](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41730927655):
+  Linux x86/ARM foundation PASS; original Mac fixture FAIL with6NOT_RUN preserved.
+- [Corrected477 Mac](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41734939803):
+  all9 maintained foundation commands PASS, including actual compilation/tests.
+- [Main479](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41740066163):
+  18/18 portable/doc commands PASS on three platforms; foundation NOT_SELECTED.
+
+This is split input-equivalent coverage, not a same-revision full-main matrix PASS.
+No hosted release-probe executable was uploaded or independently run. Bounded
+review of559 accessible artifact/log files found no new credential candidates;
+54 known exact fixture contexts were retained, without an all-formats guarantee.
+Completed qualification branches/worktrees and all original captures remain.
+
+This documentation increment passed `git diff --check`, the maintained artifact
+checker and the handoff/link checker. It does not rerun or qualify product code.

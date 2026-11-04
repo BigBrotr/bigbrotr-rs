@@ -3050,7 +3050,7 @@
     "revision": "16ebcb8ec0a02d9ba43063428070c688df9495d9",
     "run": 41730927655,
     "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41730927655",
-    "status": "LINUX_RUNNING_ORIGINAL_MAC_FIXTURE_FAIL",
+    "status": "TERMINAL_ORIGINAL_MAC_FIXTURE_FAIL_LINUX_PASS_CORRECTED_MAC_PASS_MAIN_PORTABLE_PASS",
     "publication": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-physical-envelope-qualification-20261103/87a62627/physical-publication-main-receipt.json",
       "sha256": "ef9a9b9c8d7eda8918969f901b657f44dd107162b9dc9a79db6db941c9c58653"
@@ -3062,19 +3062,48 @@
     "correction": {
       "author_revision": "4940f7a85a85993c6fd7a0d8fe6d7c3f8ae4e8b6",
       "integrated_work_revision": "b82cd0db353c87d53820599c7ce7f2df745d24b6",
-      "scope": "Only test fixture. Actual allocation remains exact st_blocks*512. Literal sparse and block-rounded controls reject all3 false mappings;12PASS/1optional signerSKIP. No product rebuild required."
+      "scope": "Only test fixture. Actual allocation remains exact st_blocks*512. Literal sparse and block-rounded controls reject all3 false mappings;12PASS/1optional signerSKIP. No product rebuild required.",
+      "main_revision": "479473aec8d92c93aa996e203cf9950c116a5335"
     },
     "corrected_mac": {
       "run": 41734939803,
       "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41734939803",
       "revision": "477ccb82bd490102b828a894aae9184e19b453eb",
-      "status": "IN_PROGRESS_NOT_QUALIFIED",
+      "status": "SUCCESS_NINE_MAINTAINED_FOUNDATION_COMMANDS_SOURCE_BOUND",
       "publication": {
         "path": "/home/tux/bigbrotr-rs/.research/ci-16eb-macos-sol-20261103/publication-and-dispatch.json",
         "sha256": "fd9d943713e03bc9aa9c90223986b2b95227d3343cabb9952127fb39e5ce0d30"
       },
       "scope": "Declared Mac-only matrix with identical9 maintained commands; normalmain matrix unchanged. Existing main16e Linux runs not canceled/repeated."
     },
-    "limits": "Original Mac FAIL and6NOT_RUN remain, not product/billing/cancellation failure. Corrected hosted success and new Linux outcomes pending; prior input-equivalent scopes remain valid only for unchanged inputs. No aggregate currentmain foundationPASS claimed."
+    "limits": "Split relevant-input-equivalent foundation coverage: Linux27 required commands PASS at16eb and corrected Mac9 PASS at477. Actual current main479 portable18 PASS separately. Original exactmain16eb remains FAIL; no aggregate exact-main three-platform full foundation PASS. CI uploads receipts, source-file hashes, logs and Linux practical outputs. Product/worker/native executable payload bytes are not uploaded; their receipt/log guards and registry bindings were verified, without independent downloaded executable claims. Installed recovery, physical funding, capacity and release remain outside these selected hosted scopes.",
+    "terminal_verification": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-16eb-macos-sol-20261103/terminal-verification-20261104/summary.json",
+      "sha256": "eaf44d1d327366d1491dae71d64e7f0114943be616a6c22bcbdb1c945b0a9f38"
+    },
+    "original_terminal": {
+      "conclusion": "failure",
+      "checks": {
+        "PASS": 29,
+        "FAIL": 1,
+        "NOT_RUN": 6
+      },
+      "classification": "Original Mac allocation-fixture assumption; both Linux foundation jobs PASS. Not billing, cancellation or a demonstrated product defect."
+    },
+    "current_main": {
+      "revision": "479473aec8d92c93aa996e203cf9950c116a5335",
+      "run": 41740066163,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41740066163",
+      "status": "SUCCESS_18_PORTABLE_COMMANDS_THREE_PLATFORMS",
+      "foundation": "NOT_SELECTED; source-bound split foundation evidence remains separate."
+    },
+    "public_output_review": {
+      "status": "BOUNDED_NO_NEW_CANDIDATES",
+      "files": 559,
+      "bytes": 9113351,
+      "known_exact_context_occurrences": 54,
+      "new_candidates": 0,
+      "scope": "Only ten allowlisted artifacts and ten completed current job logs across these three attempts. Retained bounded patterns and exact source/context triage reused. No provider-alert/history/general CI sweep or universal absence claim."
+    }
   }
 }

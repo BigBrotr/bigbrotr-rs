@@ -165,6 +165,11 @@ with their callers, readers, recovery, common fixtures and documentation in the
 same increment. Before costly runs, check changed schema, actual roles, budgets,
 data preparation, source completion and fault reachability cheaply.
 Preserve later qualifications in their existing tasks with explicit owners.
+Close the current quota/recovery failures by their actual product, fixture or
+environment cause before advancing the next M2 capability. Preserve retry,
+unresolved-commit, identity, authority and data checks; correct an expected result
+only from its owning contract. Use bounded independent assignments under one
+integrator, with critical boundary/oracle review before costly campaigns.
 Updates should explain what now works, its evidence, the
 remaining blocker and next useful result. Commit/test counts are not productivity
 or quality measures; there is no imposed deadline or reduced product scope.
